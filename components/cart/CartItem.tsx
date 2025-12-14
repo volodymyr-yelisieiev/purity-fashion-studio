@@ -15,13 +15,13 @@ export function CartItem({ item }: CartItemProps) {
   return (
     <div className="flex gap-4 py-4 border-b border-border">
       {/* Image placeholder */}
-      <div className="w-20 h-20 bg-muted rounded-md flex items-center justify-center flex-shrink-0">
+      <div className="w-20 h-20 bg-muted flex items-center justify-center shrink-0">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={item.image}
             alt={item.name}
-            className="w-full h-full object-cover rounded-md"
+            className="w-full h-full object-cover"
           />
         ) : (
           <span className="text-xs text-muted-foreground uppercase">
@@ -32,7 +32,7 @@ export function CartItem({ item }: CartItemProps) {
 
       {/* Details */}
       <div className="flex-1 min-w-0">
-        <h3 className="font-medium text-sm truncate">{item.name}</h3>
+        <span className="block font-medium text-sm truncate">{item.name}</span>
         <p className="text-sm text-muted-foreground capitalize">{item.type}</p>
         {item.bookingDate && (
           <p className="text-xs text-muted-foreground mt-1">

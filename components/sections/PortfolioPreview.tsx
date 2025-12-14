@@ -1,5 +1,9 @@
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
+import { H2, H3 } from '@/components/ui/typography'
+import { Section, Container, Grid } from '@/components/ui/layout-components'
+import { Button } from '@/components/ui/button'
 
 interface PortfolioItem {
   id: string
@@ -20,22 +24,24 @@ interface PortfolioPreviewProps {
 
 export function PortfolioPreview({
   items,
-  title = 'Portfolio',
-  viewAllText = 'View All',
+  title,
+  viewAllText,
   viewAllLink = '/portfolio',
 }: PortfolioPreviewProps) {
+  const t = useTranslations('navigation')
+  const tCommon = useTranslations('common')
+
   return (
-    <section className="bg-background px-6 py-24">
-      <div className="mx-auto max-w-6xl">
-        <h2 className="mb-16 text-center font-display text-heading-lg font-light tracking-tight text-foreground">
-          {title}
-        </h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <Section spacing="md">
+      <Container>
+        <H2 className="mb-16 text-center">{title || t('portfolio')}</H2>
+        <Grid cols={3} gap="sm">
           {items.map((item) => (
             <Link
               key={item.id}
               href={`/portfolio/${item.slug}`}
-              className="group relative aspect-square overflow-hidden bg-neutral-200 dark:bg-neutral-800"
+              className="group relative aspect-square overflow-hidden bg-muted"
+              prefetch={false}
             >
               {item.featuredImage?.url && (
                 <Image
@@ -46,24 +52,23 @@ export function PortfolioPreview({
                 />
               )}
               <div className="absolute inset-0 flex items-end bg-black/0 p-6 transition-colors group-hover:bg-black/40">
-                <h3 className="font-display text-heading-sm font-light text-white opacity-0 transition-opacity group-hover:opacity-100">
+                <H3 className="text-xl text-white opacity-0 transition-opacity group-hover:opacity-100 md:text-xl">
                   {item.title}
-                </h3>
+                </H3>
               </div>
             </Link>
           ))}
-        </div>
+        </Grid>
         {viewAllLink && (
           <div className="mt-16 text-center">
-            <Link
-              href={viewAllLink}
-              className="inline-block border border-foreground px-8 py-4 text-body-sm font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground hover:text-background"
-            >
-              {viewAllText}
-            </Link>
+            <Button asChild variant="outline" size="lg">
+              <Link href={viewAllLink} prefetch={false}>
+                {viewAllText || tCommon('viewAll')}
+              </Link>
+            </Button>
           </div>
         )}
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { ShoppingBag } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -9,13 +9,16 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetDescription,
 } from '@/components/ui/sheet'
 import { CartItem } from './CartItem'
 import { CartSummary } from './CartSummary'
 import { useCart } from '@/hooks/useCart'
+import { useTranslations } from 'next-intl'
 
 export function MiniCart() {
   const { items, itemCount, isHydrated } = useCart()
+  const t = useTranslations('cart')
 
   return (
     <Sheet>
@@ -33,16 +36,19 @@ export function MiniCart() {
 
       <SheetContent className="flex flex-col">
         <SheetHeader>
-          <SheetTitle>Your Cart</SheetTitle>
+          <SheetTitle>{t('title')}</SheetTitle>
+          <SheetDescription className="sr-only">
+            Shopping cart with your selected items
+          </SheetDescription>
         </SheetHeader>
 
         <div className="flex-1 overflow-auto py-4">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <ShoppingBag className="h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground mb-4">Your cart is empty</p>
+              <p className="text-muted-foreground mb-4">{t('empty')}</p>
               <Button asChild variant="outline">
-                <Link href="/services">Browse Services</Link>
+                <Link href="/services">{t('browseServices')}</Link>
               </Button>
             </div>
           ) : (

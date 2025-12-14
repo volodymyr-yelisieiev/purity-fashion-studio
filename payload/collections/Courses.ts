@@ -6,6 +6,7 @@ export const Courses: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'duration', 'price', 'status', 'updatedAt'],
     group: 'Content',
+    description: 'Educational courses and workshops on styling and fashion',
   },
   access: {
     read: () => true,
@@ -16,6 +17,9 @@ export const Courses: CollectionConfig = {
       type: 'text',
       required: true,
       localized: true,
+      admin: {
+        description: 'Course title in this language',
+      },
     },
     {
       name: 'slug',
@@ -24,6 +28,7 @@ export const Courses: CollectionConfig = {
       unique: true,
       admin: {
         position: 'sidebar',
+        description: 'URL-friendly identifier (auto-generated)',
       },
     },
     {
@@ -40,6 +45,7 @@ export const Courses: CollectionConfig = {
       ],
       admin: {
         position: 'sidebar',
+        description: 'Course category for filtering',
       },
     },
     {
@@ -55,6 +61,7 @@ export const Courses: CollectionConfig = {
       ],
       admin: {
         position: 'sidebar',
+        description: 'Target audience experience level',
       },
     },
     {

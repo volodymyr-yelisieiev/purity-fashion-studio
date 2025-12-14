@@ -1,3 +1,6 @@
+import { H2, H3, Paragraph, Lead } from '@/components/ui/typography'
+import { Section, Container } from '@/components/ui/layout-components'
+
 interface MethodologyStep {
   number: string
   title: string
@@ -16,14 +19,12 @@ export function MethodologySection({
   steps,
 }: MethodologySectionProps) {
   return (
-    <section className="bg-neutral-50 px-6 py-24 dark:bg-neutral-900">
-      <div className="mx-auto max-w-4xl">
+    <Section spacing="md" variant="muted">
+      <Container size="md">
         <div className="mb-16 text-center">
-          <h2 className="font-display text-heading-lg font-light tracking-tight text-foreground">
-            {title}
-          </h2>
+          <H2>{title}</H2>
           {subtitle && (
-            <p className="mt-4 text-body-lg text-muted-foreground">{subtitle}</p>
+            <Lead className="mt-4">{subtitle}</Lead>
           )}
         </div>
         <div className="space-y-12">
@@ -32,21 +33,17 @@ export function MethodologySection({
               key={index}
               className="flex gap-8 border-b border-border pb-12 last:border-0"
             >
-              <span className="font-display text-display-sm font-light text-muted-foreground/30">
+              <span className="font-serif text-4xl font-light text-muted-foreground/30">
                 {step.number}
               </span>
               <div>
-                <h3 className="font-display text-heading-md font-light text-foreground">
-                  {step.title}
-                </h3>
-                <p className="mt-3 text-body-md text-muted-foreground">
-                  {step.description}
-                </p>
+                <H3 className="text-2xl md:text-2xl">{step.title}</H3>
+                <Paragraph className="mt-3">{step.description}</Paragraph>
               </div>
             </div>
           ))}
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }

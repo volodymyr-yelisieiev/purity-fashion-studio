@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -145,9 +145,9 @@ export function BookingForm({
 
   if (isSubmitted) {
     return (
-      <div className="text-center py-12 bg-muted rounded-lg">
+      <div className="text-center py-12 bg-muted">
         <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-6" />
-        <h2 className="text-2xl font-bold mb-2">{t.successTitle}</h2>
+        <span className="block text-2xl font-light mb-2 font-serif">{t.successTitle}</span>
         <p className="text-muted-foreground">{t.successMessage}</p>
       </div>
     )
@@ -161,7 +161,7 @@ export function BookingForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {preSelectedCourse && (
-        <div className="p-4 bg-primary/10 rounded-lg">
+        <div className="p-4 bg-primary/10">
           <p className="text-sm">{t.courseNote}</p>
         </div>
       )}
@@ -228,19 +228,22 @@ export function BookingForm({
       {/* Service Selection */}
       <div className="space-y-2">
         <Label htmlFor="serviceId">{t.service} *</Label>
-        <select
-          id="serviceId"
-          {...register('serviceId')}
-          className={`w-full h-10 px-3 rounded-md border bg-background ${errors.serviceId ? 'border-destructive' : 'border-input'}`}
-        >
-          <option value="">{t.selectService}</option>
-          {services.map((service) => (
-            <option key={service.id} value={service.id}>
-              {service.title}
-              {service.priceUAH && ` - ₴${service.priceUAH}`}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            id="serviceId"
+            {...register('serviceId')}
+            className={`w-full h-10 px-3 pr-10 border bg-background appearance-none ${errors.serviceId ? 'border-destructive' : 'border-input'}`}
+          >
+            <option value="">{t.selectService}</option>
+            {services.map((service) => (
+              <option key={service.id} value={service.id}>
+                {service.title}
+                {service.pricing?.priceUAH && ` - ₴${service.pricing.priceUAH}`}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-3 top-3 h-4 w-4 opacity-50 pointer-events-none" />
+        </div>
         {errors.serviceId && (
           <p className="text-sm text-destructive">{errors.serviceId.message}</p>
         )}
@@ -265,18 +268,21 @@ export function BookingForm({
         {/* Time */}
         <div className="space-y-2">
           <Label htmlFor="preferredTime">{t.time} *</Label>
-          <select
-            id="preferredTime"
-            {...register('preferredTime')}
-            className={`w-full h-10 px-3 rounded-md border bg-background ${errors.preferredTime ? 'border-destructive' : 'border-input'}`}
-          >
-            <option value="">--:--</option>
-            {timeSlots.map((time) => (
-              <option key={time} value={time}>
-                {time}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              id="preferredTime"
+              {...register('preferredTime')}
+              className={`w-full h-10 px-3 pr-10 border bg-background appearance-none ${errors.preferredTime ? 'border-destructive' : 'border-input'}`}
+            >
+              <option value="">--:--</option>
+              {timeSlots.map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-3 h-4 w-4 opacity-50 pointer-events-none" />
+          </div>
           {errors.preferredTime && (
             <p className="text-sm text-destructive">{errors.preferredTime.message}</p>
           )}
@@ -291,13 +297,13 @@ export function BookingForm({
           rows={4}
           {...register('message')}
           placeholder={t.messagePlaceholder}
-          className="w-full px-3 py-2 rounded-md border border-input bg-background resize-none"
+          className="w-full px-3 py-2 border border-input bg-background resize-none"
         />
       </div>
 
       {/* Error */}
       {error && (
-        <div className="p-4 bg-destructive/10 text-destructive rounded-lg">
+        <div className="p-4 bg-destructive/10 text-destructive">
           {error}
         </div>
       )}

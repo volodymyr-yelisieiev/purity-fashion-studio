@@ -1,4 +1,8 @@
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
+import { H3, Paragraph, Label } from '@/components/ui/typography'
+import { Section, Container, Grid } from '@/components/ui/layout-components'
+import { Button } from '@/components/ui/button'
 
 interface Service {
   id: string
@@ -16,47 +20,43 @@ interface ServicesPreviewProps {
 
 export function ServicesPreview({
   services,
-  viewAllText = 'View All Services',
+  viewAllText,
   viewAllLink = '/services',
 }: ServicesPreviewProps) {
+  const t = useTranslations('common')
+
   return (
-    <section className="bg-background px-6 py-24">
-      <div className="mx-auto max-w-6xl">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+    <Section spacing="md">
+      <Container>
+        <Grid cols={3} gap="md">
           {services.map((service) => (
             <Link
               key={service.id}
               href={`/services/${service.slug}`}
               className="group block border border-border p-8 transition-colors hover:border-foreground"
+              prefetch={false}
             >
-              <span className="mb-4 block text-body-xs uppercase tracking-widest text-muted-foreground">
-                {service.category}
-              </span>
-              <h3 className="font-display text-heading-md font-light text-foreground">
-                {service.title}
-              </h3>
+              <Label className="mb-4 block">{service.category}</Label>
+              <H3 className="text-2xl md:text-2xl">{service.title}</H3>
               {service.description && (
-                <p className="mt-4 line-clamp-3 text-body-md text-muted-foreground">
-                  {service.description}
-                </p>
+                <Paragraph className="mt-4 line-clamp-3">{service.description}</Paragraph>
               )}
-              <span className="mt-6 inline-block text-body-sm font-medium uppercase tracking-widest text-foreground opacity-0 transition-opacity group-hover:opacity-100">
-                Learn More →
+              <span className="mt-6 inline-block text-sm font-medium uppercase tracking-widest text-foreground opacity-0 transition-opacity group-hover:opacity-100">
+                {t('learnMore')} →
               </span>
             </Link>
           ))}
-        </div>
+        </Grid>
         {viewAllLink && (
           <div className="mt-16 text-center">
-            <Link
-              href={viewAllLink}
-              className="inline-block border border-foreground px-8 py-4 text-body-sm font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground hover:text-background"
-            >
-              {viewAllText}
-            </Link>
+            <Button asChild variant="outline" size="lg">
+              <Link href={viewAllLink} prefetch={false}>
+                {viewAllText || t('viewAllServices')}
+              </Link>
+            </Button>
           </div>
         )}
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }

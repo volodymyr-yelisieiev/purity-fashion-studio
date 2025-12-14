@@ -1,13 +1,17 @@
-import Link from 'next/link';
-import { Navigation } from './Navigation';
-import { LanguageSwitcher } from '../ui/LanguageSwitcher';
-import { MiniCart } from '../cart/MiniCart';
+'use client'
+
+import { Link } from '@/i18n/navigation'
+import { Navigation } from './Navigation'
+import { MobileMenu } from './MobileMenu'
+import { LanguageSwitcher } from '../ui/LanguageSwitcher'
+import { MiniCart } from '../cart/MiniCart'
+import { Container } from '@/components/ui/layout-components'
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/80 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/80">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-        <Link href="/" className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+      <Container className="flex h-16 items-center justify-between">
+        <Link href="/" className="text-xl font-bold tracking-tight text-foreground font-serif" prefetch={false}>
           PURITY
         </Link>
         <div className="hidden items-center gap-8 md:flex">
@@ -15,11 +19,11 @@ export function Header() {
           <LanguageSwitcher />
           <MiniCart />
         </div>
-        {/* Mobile menu trigger would go here */}
         <div className="flex items-center gap-2 md:hidden">
           <MiniCart />
+          <MobileMenu />
         </div>
-      </div>
+      </Container>
     </header>
-  );
+  )
 }

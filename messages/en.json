@@ -1,9 +1,55 @@
 {
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or has been moved.",
+    "backHome": "Back to Home"
+  },
+  "navigation": {
+    "home": "Home",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "collections": "Collections",
+    "school": "School",
+    "about": "About",
+    "contact": "Contact",
+    "language": "Language"
+  },
   "common": {
     "bookConsultation": "Book a Consultation",
     "viewServices": "View Services",
     "learnMore": "Learn More",
-    "contactUs": "Contact Us"
+    "contactUs": "Contact Us",
+    "viewAll": "View All",
+    "viewAllServices": "View All Services",
+    "noContent": "No content yet",
+    "checkBackSoon": "Please check back soon for updates.",
+    "backToHome": "Back to Home"
+  },
+  "footer": {
+    "description": "Premium fashion studio specializing in personal styling and wardrobe transformation",
+    "navigation": "Navigation",
+    "contact": "Contact",
+    "rights": "PURITY Fashion Studio. All rights reserved.",
+    "links": {
+      "home": "Home",
+      "about": "About",
+      "services": "Services",
+      "portfolio": "Portfolio",
+      "collections": "Collections",
+      "school": "School",
+      "contact": "Contact"
+    }
+  },
+  "school": {
+    "hero": {
+      "title": "PURITY School of Style",
+      "description": "Master the art of personal styling with our professional courses"
+    },
+    "empty": {
+      "title": "No courses available yet",
+      "description": "We're preparing exciting courses for you. Check back soon!",
+      "backHome": "Back to Home"
+    }
   },
   "home": {
     "hero": {
@@ -123,7 +169,21 @@
       "submit": "Send"
     }
   },
-  "footer": {
-    "rights": "All rights reserved"
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "emptyDescription": "Looks like you haven't added anything to your cart yet.",
+    "itemsCount": "{count, plural, one {# item} other {# items}} in your cart",
+    "browseServices": "Browse Services",
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "remove": "Remove"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "emptyCart": "Your cart is empty",
+    "emptyCartDescription": "Add some items to your cart before checking out.",
+    "orderSummary": "Order Summary"
   }
 }

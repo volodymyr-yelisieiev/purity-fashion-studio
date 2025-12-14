@@ -176,107 +176,323 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Styling and atelier services offered by PURITY
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services".
  */
 export interface Service {
   id: number;
+  /**
+   * Service name in this language
+   */
   title: string;
+  /**
+   * URL-friendly identifier (auto-generated from title)
+   */
+  slug: string;
+  /**
+   * Only published services are shown on the website
+   */
+  status: 'draft' | 'published';
+  /**
+   * Full service description with formatting
+   */
   description?: string | null;
-  category: 'research' | 'implementation';
-  format?: ('online' | 'studio') | null;
-  priceEUR?: number | null;
-  priceUAH?: number | null;
+  /**
+   * Brief description for cards and previews (1-2 sentences)
+   */
+  excerpt?: string | null;
+  /**
+   * Service category for filtering
+   */
+  category: 'styling' | 'atelier' | 'consulting' | 'shopping' | 'events';
+  /**
+   * How this service is delivered
+   */
+  format?: ('online' | 'studio' | 'onsite' | 'hybrid') | null;
+  /**
+   * Pricing information
+   */
+  pricing?: {
+    /**
+     * Price in Ukrainian Hryvnia
+     */
+    priceUAH?: number | null;
+    /**
+     * Price in Euros
+     */
+    priceEUR?: number | null;
+    /**
+     * Optional note (e.g., "Starting from", "Per hour")
+     */
+    priceNote?: string | null;
+  };
+  /**
+   * Service duration (e.g., "2 hours", "1-2 days")
+   */
+  duration?: string | null;
+  /**
+   * Main image for the service page
+   */
   heroImage?: (number | null) | Media;
+  /**
+   * How the service works (process steps)
+   */
   steps?:
     | {
-        title?: string | null;
+        title: string;
         description?: string | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * What client gets from this service
+   */
   benefits?:
     | {
-        text?: string | null;
+        text: string;
         id?: string | null;
       }[]
     | null;
-  duration?: string | null;
-  slug?: string | null;
+  /**
+   * Show on homepage featured section
+   */
+  featured?: boolean | null;
+  /**
+   * Allow online booking for this service
+   */
+  bookable?: boolean | null;
+  /**
+   * Search engine optimization settings
+   */
+  seo?: {
+    /**
+     * Custom title for search results (defaults to service title)
+     */
+    metaTitle?: string | null;
+    /**
+     * Description shown in search results (120-160 chars)
+     */
+    metaDescription?: string | null;
+    /**
+     * Image for social media sharing
+     */
+    ogImage?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Atelier products and clothing items
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
 export interface Product {
   id: number;
   name: string;
+  /**
+   * URL-friendly identifier
+   */
+  slug: string;
+  status: 'draft' | 'published' | 'out-of-stock' | 'archived';
+  /**
+   * Show in featured products section
+   */
+  featured?: boolean | null;
+  /**
+   * Brief description for cards and previews
+   */
+  excerpt?: string | null;
+  /**
+   * Full product description
+   */
   description?: string | null;
+  /**
+   * Stock Keeping Unit
+   */
   sku?: string | null;
-  price: number;
+  /**
+   * Product pricing in multiple currencies
+   */
+  pricing: {
+    /**
+     * Price in Ukrainian Hryvnia
+     */
+    priceUAH: number;
+    /**
+     * Price in Euro (optional)
+     */
+    priceEUR?: number | null;
+    /**
+     * Sale price in UAH (leave empty if not on sale)
+     */
+    salePrice?: number | null;
+  };
+  /**
+   * Product images (first is main)
+   */
   images?:
     | {
-        image?: (number | null) | Media;
+        image: number | Media;
+        /**
+         * Alt text for accessibility
+         */
+        alt?: string | null;
         id?: string | null;
       }[]
     | null;
-  category?: ('clothing' | 'accessories') | null;
-  material?: string | null;
-  attributes?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  slug?: string | null;
+  category: 'dresses' | 'tops' | 'bottoms' | 'outerwear' | 'accessories' | 'bags' | 'jewelry';
+  /**
+   * Product specifications
+   */
+  details?: {
+    material?: string | null;
+    /**
+     * Care instructions
+     */
+    care?: string | null;
+    sizes?: ('xs' | 's' | 'm' | 'l' | 'xl' | 'one-size')[] | null;
+    colors?:
+      | {
+          name: string;
+          /**
+           * Hex color code (e.g., #000000)
+           */
+          hex?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Search engine optimization
+   */
+  seo?: {
+    /**
+     * Override default title tag
+     */
+    metaTitle?: string | null;
+    /**
+     * Meta description for search results
+     */
+    metaDescription?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Before/after transformations and client work
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "portfolio".
  */
 export interface Portfolio {
   id: number;
+  /**
+   * Project title (can include client first name)
+   */
   title: string;
+  /**
+   * URL-friendly identifier
+   */
+  slug: string;
+  category?: ('styling' | 'wardrobe-audit' | 'transformation' | 'event' | 'shopping') | null;
+  /**
+   * Story behind the transformation
+   */
   description?: string | null;
-  category?: ('styling' | 'wardrobe-audit') | null;
-  beforeImage?: (number | null) | Media;
-  afterImage?: (number | null) | Media;
+  /**
+   * Before photo
+   */
+  beforeImage: number | Media;
+  /**
+   * After photo
+   */
+  afterImage: number | Media;
+  /**
+   * Additional photos from the project
+   */
   gallery?:
     | {
-        image?: (number | null) | Media;
+        image: number | Media;
+        caption?: string | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Which services were used for this project
+   */
   servicesUsed?: (number | Service)[] | null;
-  slug?: string | null;
+  /**
+   * Optional client testimonial
+   */
+  testimonial?: {
+    quote?: string | null;
+    /**
+     * First name only for privacy
+     */
+    clientName?: string | null;
+    rating?: number | null;
+  };
+  /**
+   * Show on homepage
+   */
+  featured?: boolean | null;
+  /**
+   * Date to display for this project
+   */
+  publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Curated fashion collections and lookbooks
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections".
  */
 export interface Collection {
   id: number;
+  /**
+   * Collection name (e.g., "Autumn Essentials 2024")
+   */
   name: string;
+  /**
+   * URL-friendly identifier
+   */
+  slug: string;
+  season?: ('spring' | 'summer' | 'autumn' | 'winter' | 'all-season') | null;
+  /**
+   * Collection story and inspiration
+   */
   description?: string | null;
+  /**
+   * Main collection image
+   */
+  coverImage?: (number | null) | Media;
+  /**
+   * Lookbook images
+   */
   images?:
     | {
-        image?: (number | null) | Media;
+        image: number | Media;
+        caption?: string | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Show on homepage
+   */
   featured?: boolean | null;
+  /**
+   * When this collection was released
+   */
   releaseDate?: string | null;
+  /**
+   * Products featured in this collection
+   */
   linkedProducts?: (number | Product)[] | null;
-  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -326,14 +542,28 @@ export interface Order {
   createdAt: string;
 }
 /**
+ * Educational courses and workshops on styling and fashion
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "courses".
  */
 export interface Course {
   id: number;
+  /**
+   * Course title in this language
+   */
   title: string;
+  /**
+   * URL-friendly identifier (auto-generated)
+   */
   slug: string;
+  /**
+   * Course category for filtering
+   */
   category: 'personal-styling' | 'color-analysis' | 'wardrobe-audit' | 'shopping' | 'professional' | 'masterclass';
+  /**
+   * Target audience experience level
+   */
   level: 'beginner' | 'intermediate' | 'advanced' | 'all';
   status: 'draft' | 'published' | 'coming-soon' | 'archived';
   /**
@@ -565,11 +795,20 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ServicesSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
+  status?: T;
   description?: T;
+  excerpt?: T;
   category?: T;
   format?: T;
-  priceEUR?: T;
-  priceUAH?: T;
+  pricing?:
+    | T
+    | {
+        priceUAH?: T;
+        priceEUR?: T;
+        priceNote?: T;
+      };
+  duration?: T;
   heroImage?: T;
   steps?:
     | T
@@ -584,8 +823,15 @@ export interface ServicesSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
-  duration?: T;
-  slug?: T;
+  featured?: T;
+  bookable?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -595,19 +841,47 @@ export interface ServicesSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   name?: T;
+  slug?: T;
+  status?: T;
+  featured?: T;
+  excerpt?: T;
   description?: T;
   sku?: T;
-  price?: T;
+  pricing?:
+    | T
+    | {
+        priceUAH?: T;
+        priceEUR?: T;
+        salePrice?: T;
+      };
   images?:
     | T
     | {
         image?: T;
+        alt?: T;
         id?: T;
       };
   category?: T;
-  material?: T;
-  attributes?: T;
-  slug?: T;
+  details?:
+    | T
+    | {
+        material?: T;
+        care?: T;
+        sizes?: T;
+        colors?:
+          | T
+          | {
+              name?: T;
+              hex?: T;
+              id?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -617,18 +891,28 @@ export interface ProductsSelect<T extends boolean = true> {
  */
 export interface PortfolioSelect<T extends boolean = true> {
   title?: T;
-  description?: T;
+  slug?: T;
   category?: T;
+  description?: T;
   beforeImage?: T;
   afterImage?: T;
   gallery?:
     | T
     | {
         image?: T;
+        caption?: T;
         id?: T;
       };
   servicesUsed?: T;
-  slug?: T;
+  testimonial?:
+    | T
+    | {
+        quote?: T;
+        clientName?: T;
+        rating?: T;
+      };
+  featured?: T;
+  publishedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -638,17 +922,20 @@ export interface PortfolioSelect<T extends boolean = true> {
  */
 export interface CollectionsSelect<T extends boolean = true> {
   name?: T;
+  slug?: T;
+  season?: T;
   description?: T;
+  coverImage?: T;
   images?:
     | T
     | {
         image?: T;
+        caption?: T;
         id?: T;
       };
   featured?: T;
   releaseDate?: T;
   linkedProducts?: T;
-  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -820,21 +1107,136 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface SiteSetting {
   id: number;
-  title?: string | null;
+  /**
+   * Site name used in meta tags and branding
+   */
+  siteName: string;
+  /**
+   * Short tagline for the site
+   */
+  tagline?: string | null;
+  /**
+   * Default meta description for SEO
+   */
   description?: string | null;
-  contact?: {
-    email?: string | null;
+  /**
+   * Site logo
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Site favicon (32x32 recommended)
+   */
+  favicon?: (number | null) | Media;
+  contact: {
+    /**
+     * Primary contact email
+     */
+    email: string;
+    /**
+     * Contact phone number
+     */
     phone?: string | null;
+    /**
+     * WhatsApp number (with country code)
+     */
+    whatsapp?: string | null;
+    /**
+     * Telegram username or link
+     */
+    telegram?: string | null;
+    /**
+     * Physical address
+     */
     address?: string | null;
+    /**
+     * Working hours information
+     */
+    workingHours?: string | null;
   };
   social?: {
+    /**
+     * Instagram profile URL
+     */
     instagram?: string | null;
+    /**
+     * Facebook page URL
+     */
     facebook?: string | null;
+    /**
+     * LinkedIn profile URL
+     */
     linkedin?: string | null;
+    /**
+     * Pinterest profile URL
+     */
+    pinterest?: string | null;
+    /**
+     * YouTube channel URL
+     */
+    youtube?: string | null;
   };
   currency?: {
+    /**
+     * Default currency for pricing display
+     */
     default?: ('UAH' | 'EUR' | 'USD') | null;
+    /**
+     * For automatic currency conversion
+     */
     exchangeRateEUR?: number | null;
+    exchangeRateUSD?: number | null;
+  };
+  payments?: {
+    /**
+     * Enable LiqPay payment method
+     */
+    enableLiqPay?: boolean | null;
+    /**
+     * Enable Stripe payment method
+     */
+    enableStripe?: boolean | null;
+    /**
+     * Enable bank transfer payment method
+     */
+    enableBankTransfer?: boolean | null;
+  };
+  booking?: {
+    /**
+     * Enable online booking
+     */
+    enabled?: boolean | null;
+    /**
+     * Minimum hours before appointment can be booked
+     */
+    leadTime?: number | null;
+    /**
+     * Maximum days in advance for booking
+     */
+    maxAdvanceBooking?: number | null;
+    /**
+     * Custom message for booking confirmation email
+     */
+    confirmationEmail?: string | null;
+  };
+  seo?: {
+    /**
+     * Default Open Graph image for social sharing
+     */
+    ogImage?: (number | null) | Media;
+    /**
+     * Google Search Console verification code
+     */
+    googleSiteVerification?: string | null;
+  };
+  analytics?: {
+    /**
+     * Google Analytics 4 Measurement ID (G-XXXXXXX)
+     */
+    googleAnalyticsId?: string | null;
+    /**
+     * Facebook Pixel ID
+     */
+    facebookPixelId?: string | null;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -844,14 +1246,20 @@ export interface SiteSetting {
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
-  title?: T;
+  siteName?: T;
+  tagline?: T;
   description?: T;
+  logo?: T;
+  favicon?: T;
   contact?:
     | T
     | {
         email?: T;
         phone?: T;
+        whatsapp?: T;
+        telegram?: T;
         address?: T;
+        workingHours?: T;
       };
   social?:
     | T
@@ -859,12 +1267,42 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         instagram?: T;
         facebook?: T;
         linkedin?: T;
+        pinterest?: T;
+        youtube?: T;
       };
   currency?:
     | T
     | {
         default?: T;
         exchangeRateEUR?: T;
+        exchangeRateUSD?: T;
+      };
+  payments?:
+    | T
+    | {
+        enableLiqPay?: T;
+        enableStripe?: T;
+        enableBankTransfer?: T;
+      };
+  booking?:
+    | T
+    | {
+        enabled?: T;
+        leadTime?: T;
+        maxAdvanceBooking?: T;
+        confirmationEmail?: T;
+      };
+  seo?:
+    | T
+    | {
+        ogImage?: T;
+        googleSiteVerification?: T;
+      };
+  analytics?:
+    | T
+    | {
+        googleAnalyticsId?: T;
+        facebookPixelId?: T;
       };
   updatedAt?: T;
   createdAt?: T;

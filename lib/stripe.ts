@@ -70,13 +70,20 @@ export function constructWebhookEvent(
   return stripe.webhooks.constructEvent(payload, signature, webhookSecret)
 }
 
+// Currency decimal places mapping (both UAH and EUR use 2)
+const currencyDecimals: Record<'UAH' | 'EUR', number> = {
+  UAH: 2,
+  EUR: 2,
+}
+
 // Helper to convert amount to smallest currency unit
-export function toSmallestUnit(amount: number, _currency: 'UAH' | 'EUR'): number {
-  // Both UAH and EUR use 2 decimal places
-  return Math.round(amount * 100)
+export function toSmallestUnit(amount: number, currency: 'UAH' | 'EUR'): number {
+  const decimals = currencyDecimals[currency]
+  return Math.round(amount * Math.pow(10, decimals))
 }
 
 // Helper to convert from smallest unit to display amount
-export function fromSmallestUnit(amount: number, _currency: 'UAH' | 'EUR'): number {
-  return amount / 100
+export function fromSmallestUnit(amount: number, currency: 'UAH' | 'EUR'): number {
+  const decimals = currencyDecimals[currency]
+  return amount / Math.pow(10, decimals)
 }

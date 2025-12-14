@@ -1,0 +1,124 @@
+/* ============================================
+   PURITY Fashion Studio Design System Tokens
+   ============================================
+   
+   This file defines all design tokens used across the website.
+   Import this file in globals.css to make tokens available.
+   
+   Usage:
+   - Colors: Use semantic colors (foreground, background, muted-foreground)
+   - Typography: Use the typography components in components/ui/typography.tsx
+   - Spacing: Use Tailwind classes with the standardized values below
+   - Shadows: Use shadow-xs, shadow-sm, shadow-md, shadow-lg
+*/
+
+/* ============================================
+   CUSTOM UTILITY CLASSES
+   ============================================ */
+@layer components {
+  /* Section padding - use these for consistent vertical rhythm */
+  .section-sm {
+    @apply py-12 md:py-16;
+  }
+  
+  .section-md {
+    @apply py-16 md:py-24;
+  }
+  
+  .section-lg {
+    @apply py-20 md:py-32;
+  }
+  
+  /* Container sizes */
+  .container-sm {
+    @apply mx-auto max-w-3xl px-6;
+  }
+  
+  .container-md {
+    @apply mx-auto max-w-4xl px-6;
+  }
+  
+  .container-lg {
+    @apply mx-auto max-w-6xl px-6;
+  }
+  
+  .container-xl {
+    @apply mx-auto max-w-7xl px-6;
+  }
+  
+  /* Typography presets */
+  .heading-1 {
+    @apply font-serif text-4xl font-light tracking-tight text-foreground md:text-5xl lg:text-6xl;
+  }
+  
+  .heading-2 {
+    @apply font-serif text-3xl font-light tracking-tight text-foreground md:text-4xl;
+  }
+  
+  .heading-3 {
+    @apply font-serif text-2xl font-light tracking-tight text-foreground md:text-3xl;
+  }
+  
+  .heading-4 {
+    @apply font-serif text-xl font-light text-foreground md:text-2xl;
+  }
+  
+  .body-lead {
+    @apply text-lg leading-relaxed text-muted-foreground md:text-xl;
+  }
+  
+  .body-base {
+    @apply text-base leading-relaxed text-muted-foreground;
+  }
+  
+  .body-small {
+    @apply text-sm text-muted-foreground;
+  }
+  
+  .label {
+    @apply text-xs font-medium uppercase tracking-widest text-muted-foreground;
+  }
+  
+  /* Card styles */
+  .card-base {
+    @apply border border-border bg-background p-6 transition-colors;
+  }
+  
+  .card-hover {
+    @apply hover:border-foreground;
+  }
+  
+  /* Link styles */
+  .link-underline {
+    @apply underline-offset-4 hover:underline;
+  }
+  
+  .link-subtle {
+    @apply transition-colors hover:text-muted-foreground;
+  }
+}
+
+/* ============================================
+   ANIMATION TOKENS
+   ============================================ */
+@layer base {
+  :root {
+    /* Transition durations */
+    --duration-fast: 150ms;
+    --duration-base: 250ms;
+    --duration-slow: 350ms;
+    
+    /* Easing functions */
+    --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Z-index layers */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+  }
+}

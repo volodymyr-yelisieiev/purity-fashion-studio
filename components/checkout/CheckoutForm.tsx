@@ -160,14 +160,14 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {error && (
-        <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-md text-sm">
+        <div className="bg-destructive/10 text-destructive px-4 py-3 text-sm">
           {error}
         </div>
       )}
 
       {/* Customer Information */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Contact Information</h2>
+        <span className="block text-lg font-semibold">Contact Information</span>
         
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
@@ -225,7 +225,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
 
       {/* Shipping Address (Optional) */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Address (Optional)</h2>
+        <span className="block text-lg font-semibold">Address (Optional)</span>
         
         <div className="space-y-2">
           <Label htmlFor="address">Street Address</Label>
@@ -247,10 +247,10 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
 
       {/* Payment Method */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Payment Method</h2>
+        <span className="block text-lg font-semibold">Payment Method</span>
 
         {noPaymentMethods ? (
-          <div className="bg-muted p-4 rounded-md">
+          <div className="bg-muted p-4">
             <p className="text-sm text-muted-foreground">
               Payment methods are not configured yet. Please contact support.
             </p>
@@ -262,7 +262,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
             className="space-y-3"
           >
             {liqpayAvailable && (
-              <div className="flex items-center space-x-3 border rounded-md p-4 cursor-pointer hover:bg-muted/50">
+              <div className="flex items-center space-x-3 border p-4 cursor-pointer hover:bg-muted/50">
                 <RadioGroupItem value="liqpay" id="liqpay" />
                 <Label htmlFor="liqpay" className="flex-1 cursor-pointer">
                   <span className="font-medium">LiqPay</span>
@@ -274,7 +274,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
             )}
             
             {stripeAvailable && (
-              <div className="flex items-center space-x-3 border rounded-md p-4 cursor-pointer hover:bg-muted/50">
+              <div className="flex items-center space-x-3 border p-4 cursor-pointer hover:bg-muted/50">
                 <RadioGroupItem value="stripe" id="stripe" />
                 <Label htmlFor="stripe" className="flex-1 cursor-pointer">
                   <span className="font-medium">Credit Card (Stripe)</span>
@@ -298,7 +298,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
         <textarea
           id="notes"
           {...register('notes')}
-          className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex min-h-20 w-full border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
           placeholder="Any special instructions or preferences..."
         />
       </div>

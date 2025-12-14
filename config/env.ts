@@ -9,7 +9,21 @@ export const features = {
   stripe: !!process.env.STRIPE_SECRET_KEY,
   liqpay: !!(process.env.LIQPAY_PUBLIC_KEY && process.env.LIQPAY_PRIVATE_KEY),
   email: !!process.env.RESEND_API_KEY,
+  database: !!process.env.DATABASE_URL,
 } as const
+
+// Guard helpers for runtime checks
+export function isPaymentsEnabled(): boolean {
+  return features.stripe || features.liqpay
+}
+
+export function isEmailEnabled(): boolean {
+  return features.email
+}
+
+export function isDatabaseEnabled(): boolean {
+  return features.database
+}
 
 // Core environment variables (always required)
 function getRequiredEnv(key: string): string {

@@ -1,58 +1,60 @@
-'use client'
+'use client';
 
-import { useLocale } from 'next-intl'
-import { useRouter, usePathname } from 'next/navigation'
-import { routing } from '@/i18n/routing'
+import { useRouter } from '@/i18n/navigation';
+import { useLocale } from 'next-intl';
+import { useTransition } from 'react';
 
-const localeNames: Record<string, string> = {
-  uk: 'UA',
-  ru: 'RU',
-  en: 'EN',
+interface Language {
+  code: 'en' | 'uk' | 'ru';
+  label: string;
 }
 
+const languages: Language[] = [
+  { code: 'en', label: 'EN' },
+  { code: 'uk', label: 'UK' },
+  { code: 'ru', label: 'RU' },
+];
+
 export function LanguageSwitcher() {
-  const locale = useLocale()
-  const router = useRouter()
-  const pathname = usePathname()
+  const router = useRouter();
+  const locale = useLocale();
+  const [isPending, startTransition] = useTransition();
 
-  const handleLocaleChange = (newLocale: string) => {
-    // Remove current locale prefix if exists
-    let newPath = pathname
-
-    for (const loc of routing.locales) {
-      if (pathname.startsWith(`/${loc}/`)) {
-        newPath = pathname.slice(loc.length + 1)
-        break
-      } else if (pathname === `/${loc}`) {
-        newPath = '/'
-        break
+  const handleLanguageChange = (newLocale: string) => {
+    if (newLocale === locale) return;
+    
+    startTransition(() => {
+      // Robustly get the path without locale
+      let path = window.location.pathname;
+      // Remove locale prefix if present
+      const segments = path.split('/');
+      // segments[0] is empty, segments[1] is locale (maybe)
+      if (['en', 'uk', 'ru'].includes(segments[1])) {
+        path = '/' + segments.slice(2).join('/');
       }
-    }
-
-    // Add new locale prefix (except for default locale with 'as-needed')
-    if (newLocale === routing.defaultLocale) {
-      router.push(newPath)
-    } else {
-      router.push(`/${newLocale}${newPath}`)
-    }
-  }
+      // Ensure path starts with /
+      if (!path.startsWith('/')) path = '/' + path;
+      
+      router.replace(path, { locale: newLocale });
+    });
+  };
 
   return (
-    <div className="flex items-center gap-2">
-      {routing.locales.map((loc) => (
+    <div className="flex gap-2">
+      {languages.map((lang) => (
         <button
-          key={loc}
-          onClick={() => handleLocaleChange(loc)}
-          className={`text-body-xs uppercase tracking-widest transition-colors ${
-            locale === loc
-              ? 'text-foreground font-medium'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-          aria-current={locale === loc ? 'true' : undefined}
+          key={lang.code}
+          onClick={() => handleLanguageChange(lang.code)}
+          disabled={isPending}
+          className={`px-3 py-1 text-sm font-medium transition-colors ${
+            locale === lang.code
+              ? 'text-neutral-900 border-b-2 border-neutral-900'
+              : 'text-neutral-600 hover:text-neutral-900'
+          } ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          {localeNames[loc]}
+          {lang.label}
         </button>
       ))}
     </div>
-  )
+  );
 }
