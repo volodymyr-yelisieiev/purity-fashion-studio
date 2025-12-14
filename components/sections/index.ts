@@ -1,0 +1,5 @@
+export { HeroSection } from './HeroSection'
+export { ServicesPreview } from './ServicesPreview'
+export { CollectionsPreview } from './CollectionsPreview'
+export { PortfolioPreview } from './PortfolioPreview'
+export { MethodologySection } from './MethodologySection'

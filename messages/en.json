@@ -1,0 +1,129 @@
+{
+  "common": {
+    "bookConsultation": "Book a Consultation",
+    "viewServices": "View Services",
+    "learnMore": "Learn More",
+    "contactUs": "Contact Us"
+  },
+  "home": {
+    "hero": {
+      "title": "PURITY Fashion Studio",
+      "subtitle": "Premium minimalist styling services and atelier. Elevate your personal style with curated fashion."
+    },
+    "services": {
+      "title": "Our Services",
+      "subtitle": "Professional styling and consultations"
+    },
+    "portfolio": {
+      "title": "Portfolio",
+      "subtitle": "Our latest work"
+    },
+    "collections": {
+      "title": "Collections",
+      "subtitle": "Exclusive fashion collections"
+    }
+  },
+  "services": {
+    "title": "Services",
+    "description": "Professional styling services for your unique style",
+    "backToServices": "Back to Services",
+    "duration": "Duration",
+    "price": "Price",
+    "bookService": "Book This Service"
+  },
+  "about": {
+    "title": "About Us",
+    "description": "PURITY Fashion Studio Philosophy and Methodology",
+    "philosophy": {
+      "title": "Our Philosophy",
+      "paragraph1": "We believe that style is not just about clothes. It's a way of self-expression, confidence, and comfort in your own skin. PURITY was created for those who value quality, minimalism, and an individual approach.",
+      "paragraph2": "Our mission is to help you discover your unique style that reflects your personality and suits your lifestyle."
+    },
+    "methodology": {
+      "title": "Our Methodology",
+      "subtitle": "Four steps to the perfect style",
+      "step1": {
+        "title": "Consultation",
+        "description": "We get to know you, your lifestyle, preferences, and style goals."
+      },
+      "step2": {
+        "title": "Analysis",
+        "description": "We determine your color type, body type, and style direction."
+      },
+      "step3": {
+        "title": "Strategy",
+        "description": "We develop a personal wardrobe and shopping strategy."
+      },
+      "step4": {
+        "title": "Implementation",
+        "description": "We bring the plan to life: shopping, outfit selection, building a capsule wardrobe."
+      }
+    },
+    "values": {
+      "title": "Our Values",
+      "quality": {
+        "title": "Quality",
+        "description": "We choose only the best materials and brands."
+      },
+      "individuality": {
+        "title": "Individuality",
+        "description": "Every client is unique, and we value that."
+      },
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "We support conscious consumption and a quality wardrobe."
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "description": "Get in touch with us to book a consultation",
+    "info": {
+      "title": "Contact Information",
+      "address": {
+        "label": "Address",
+        "value": "Kyiv, Khreshchatyk St., 1"
+      },
+      "phone": {
+        "label": "Phone"
+      },
+      "email": {
+        "label": "Email"
+      },
+      "hours": {
+        "label": "Working Hours",
+        "value": "Mon-Fri: 10:00 - 19:00, Sat: 11:00 - 17:00"
+      },
+      "social": {
+        "label": "Social Media"
+      }
+    },
+    "form": {
+      "title": "Write to Us",
+      "name": {
+        "label": "Name",
+        "placeholder": "Your name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "your@email.com"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "+380 XX XXX XX XX"
+      },
+      "service": {
+        "label": "Service",
+        "placeholder": "Select a service"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Tell us about your needs..."
+      },
+      "submit": "Send"
+    }
+  },
+  "footer": {
+    "rights": "All rights reserved"
+  }
+}

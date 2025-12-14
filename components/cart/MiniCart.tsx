@@ -1,0 +1,61 @@
+'use client'
+
+import { ShoppingBag } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import { CartItem } from './CartItem'
+import { CartSummary } from './CartSummary'
+import { useCart } from '@/hooks/useCart'
+
+export function MiniCart() {
+  const { items, itemCount, isHydrated } = useCart()
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="relative">
+          <ShoppingBag className="h-5 w-5" />
+          {isHydrated && itemCount > 0 && (
+            <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+              {itemCount > 99 ? '99+' : itemCount}
+            </span>
+          )}
+          <span className="sr-only">Shopping cart</span>
+        </Button>
+      </SheetTrigger>
+
+      <SheetContent className="flex flex-col">
+        <SheetHeader>
+          <SheetTitle>Your Cart</SheetTitle>
+        </SheetHeader>
+
+        <div className="flex-1 overflow-auto py-4">
+          {items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <ShoppingBag className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground mb-4">Your cart is empty</p>
+              <Button asChild variant="outline">
+                <Link href="/services">Browse Services</Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-0">
+              {items.map((item) => (
+                <CartItem key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {items.length > 0 && <CartSummary />}
+      </SheetContent>
+    </Sheet>
+  )
+}
