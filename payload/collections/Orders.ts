@@ -12,10 +12,19 @@ export const Orders: CollectionConfig = {
     group: 'Commerce',
   },
   access: {
-    // Only admins can read/update orders
-    read: () => true, // TODO: Add proper access control
-    create: () => true, // Created via API
-    update: () => true,
+    // Only admins can read/update orders in admin panel
+    // Orders are created via API (webhooks) so create must allow unauthenticated
+    read: ({ req: { user } }) => {
+      // Admins can read all orders
+      if (user?.role === 'admin') return true
+      // No public access to orders
+      return false
+    },
+    create: () => true, // Created via API/webhooks
+    update: ({ req: { user } }) => {
+      // Only admins can update orders
+      return user?.role === 'admin'
+    },
     delete: () => false, // Never delete orders
   },
   fields: [

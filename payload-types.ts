@@ -138,6 +138,12 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  /**
+   * User role for access control
+   */
+  role: 'admin' | 'user';
+  firstName?: string | null;
+  lastName?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -162,7 +168,7 @@ export interface User {
  */
 export interface Media {
   id: number;
-  alt: string;
+  alt?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -174,6 +180,32 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * Styling and atelier services offered by PURITY
@@ -218,11 +250,11 @@ export interface Service {
     /**
      * Price in Ukrainian Hryvnia
      */
-    priceUAH?: number | null;
+    uah?: number | null;
     /**
      * Price in Euros
      */
-    priceEUR?: number | null;
+    eur?: number | null;
     /**
      * Optional note (e.g., "Starting from", "Per hour")
      */
@@ -320,11 +352,11 @@ export interface Product {
     /**
      * Price in Ukrainian Hryvnia
      */
-    priceUAH: number;
+    uah: number;
     /**
      * Price in Euro (optional)
      */
-    priceEUR?: number | null;
+    eur?: number | null;
     /**
      * Sale price in UAH (leave empty if not on sale)
      */
@@ -754,6 +786,9 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  firstName?: T;
+  lastName?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -788,6 +823,40 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        hero?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -804,8 +873,8 @@ export interface ServicesSelect<T extends boolean = true> {
   pricing?:
     | T
     | {
-        priceUAH?: T;
-        priceEUR?: T;
+        uah?: T;
+        eur?: T;
         priceNote?: T;
       };
   duration?: T;
@@ -850,8 +919,8 @@ export interface ProductsSelect<T extends boolean = true> {
   pricing?:
     | T
     | {
-        priceUAH?: T;
-        priceEUR?: T;
+        uah?: T;
+        eur?: T;
         salePrice?: T;
       };
   images?:
@@ -1183,8 +1252,8 @@ export interface SiteSetting {
     /**
      * For automatic currency conversion
      */
-    exchangeRateEUR?: number | null;
-    exchangeRateUSD?: number | null;
+    exchangeRateEur?: number | null;
+    exchangeRateUsd?: number | null;
   };
   payments?: {
     /**
@@ -1274,8 +1343,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | T
     | {
         default?: T;
-        exchangeRateEUR?: T;
-        exchangeRateUSD?: T;
+        exchangeRateEur?: T;
+        exchangeRateUsd?: T;
       };
   payments?:
     | T

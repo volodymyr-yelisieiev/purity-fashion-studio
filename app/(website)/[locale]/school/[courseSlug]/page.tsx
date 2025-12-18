@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { getLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft, Clock, Monitor, Calendar, Users, CheckCircle } from 'lucide-react'
@@ -11,12 +11,12 @@ import type { Media as MediaType, Course } from '@/payload-types'
 interface CourseDetailPageProps {
   params: Promise<{
     courseSlug: string
+    locale: string
   }>
 }
 
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
-  const { courseSlug } = await params
-  const locale = await getLocale()
+  const { courseSlug, locale } = await params
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({

@@ -5,18 +5,25 @@ import { H2, H4, Paragraph, Lead } from '@/components/ui/typography'
 import { Section, Container, Grid } from '@/components/ui/layout-components'
 import type { Metadata } from 'next'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('about')
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'about' })
 
   return generateSeoMetadata({
     title: `${t('title')} | PURITY Fashion Studio`,
     description: t('description'),
     path: '/about',
+    locale,
   })
 }
 
-export default async function AboutPage() {
-  const t = await getTranslations('about')
+export default async function AboutPage({ params }: PageProps) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'about' })
 
   const methodologySteps = [
     {

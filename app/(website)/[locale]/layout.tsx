@@ -4,6 +4,23 @@ import { routing } from '@/i18n/routing'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { RootLayout as AppRootLayout } from "@/components/layout/RootLayout";
+import { Cormorant_Garamond, Inter } from "next/font/google";
+import "@/styles/globals.css";
+
+// Elegant serif font for headings - fashion aesthetic
+const cormorant = Cormorant_Garamond({
+  variable: "--font-serif",
+  subsets: ["latin", "cyrillic"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Clean sans-serif for body text - highly legible
+const inter = Inter({
+  variable: "--font-sans",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+});
 
 type Props = {
   children: React.ReactNode
@@ -21,11 +38,15 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages();
 
   return (
-    <NextIntlClientProvider messages={messages} locale={locale}>
-      <AppRootLayout>
-        {children}
-      </AppRootLayout>
-    </NextIntlClientProvider>
+    <html lang={locale}>
+      <body className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}>
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <AppRootLayout>
+            {children}
+          </AppRootLayout>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   )
 }
 

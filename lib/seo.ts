@@ -5,17 +5,30 @@ interface SeoProps {
   description: string
   path?: string
   image?: string
+  locale?: string
 }
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://purity.studio'
+const locales = ['en', 'uk', 'ru'] as const
 
 export function generateSeoMetadata({
   title,
   description,
   path = '',
   image,
+  locale,
 }: SeoProps): Metadata {
   const url = `${siteUrl}${path}`
+
+  // Generate hreflang alternates for all locales
+  const languages: Record<string, string> = {}
+  if (path && locale) {
+    // Extract the path without the locale prefix
+    const pathWithoutLocale = path.replace(/^\/(en|uk|ru)/, '')
+    locales.forEach((loc) => {
+      languages[loc] = `${siteUrl}/${loc}${pathWithoutLocale}`
+    })
+  }
 
   return {
     title,
@@ -26,6 +39,7 @@ export function generateSeoMetadata({
       url,
       siteName: 'PURITY Fashion Studio',
       type: 'website',
+      locale: locale || 'uk',
       ...(image && { images: [{ url: image }] }),
     },
     twitter: {
@@ -36,6 +50,7 @@ export function generateSeoMetadata({
     },
     alternates: {
       canonical: url,
+      ...(Object.keys(languages).length > 0 && { languages }),
     },
   }
 }

@@ -10,6 +10,28 @@ const config: NextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'purity.studio',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.vercel.app',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+      },
+    ],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
   headers: async () => {
     return [
       {
@@ -22,6 +44,14 @@ const config: NextConfig = {
           {
             key: 'X-Frame-Options',
             value: 'DENY',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
           },
         ],
       },

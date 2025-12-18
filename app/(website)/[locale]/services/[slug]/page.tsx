@@ -3,114 +3,84 @@ import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import { generateSeoMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
+import { getPayload, getServiceBySlug, type Locale } from '@/lib/payload'
 
 interface PageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string; locale: string }>
 }
 
-// Mock services data - will be replaced with Payload CMS data when DB is connected
-const mockServices: Record<string, {
-  id: string
-  title: string
-  slug: string
-  description: string
-  fullDescription: string
-  category: string
-  duration: string
-  price: string
-}> = {
-  'personal-styling': {
-    id: '1',
-    title: 'Personal Styling',
-    slug: 'personal-styling',
-    description: 'Індивідуальний підбір стилю, який підкреслює вашу унікальність.',
-    fullDescription: 'Наша послуга персонального стайлінгу — це комплексний підхід до створення вашого унікального образу. Ми враховуємо ваш тип фігури, колоритип, стиль життя та особисті вподобання, щоб створити гардероб, який працює саме на вас.',
-    category: 'styling',
-    duration: '2-3 години',
-    price: 'від 3000 ₴',
-  },
-  'wardrobe-audit': {
-    id: '2',
-    title: 'Wardrobe Audit',
-    slug: 'wardrobe-audit',
-    description: 'Ревізія гардеробу з рекомендаціями щодо оптимізації.',
-    fullDescription: 'Під час аудиту гардеробу ми детально аналізуємо кожен елемент вашого одягу, визначаємо що залишити, що додати та як максимально ефективно комбінувати наявні речі.',
-    category: 'styling',
-    duration: '3-4 години',
-    price: 'від 4000 ₴',
-  },
-  'shopping-accompaniment': {
-    id: '3',
-    title: 'Shopping Accompaniment',
-    slug: 'shopping-accompaniment',
-    description: 'Супровід під час шопінгу для створення ідеального гардеробу.',
-    fullDescription: 'Разом з вами ми відвідаємо обрані магазини, де я допоможу підібрати речі, які ідеально впишуться у ваш гардероб та стиль життя.',
-    category: 'styling',
-    duration: '3-5 годин',
-    price: 'від 5000 ₴',
-  },
-  'atelier-services': {
-    id: '4',
-    title: 'Atelier Services',
-    slug: 'atelier-services',
-    description: 'Пошив та підгонка одягу за індивідуальними мірками.',
-    fullDescription: 'Наше ательє пропонує послуги індивідуального пошиву та підгонки одягу. Ми працюємо з найякіснішими тканинами та приділяємо увагу кожній деталі.',
-    category: 'atelier',
-    duration: 'індивідуально',
-    price: 'за запитом',
-  },
-  'event-styling': {
-    id: '5',
-    title: 'Event Styling',
-    slug: 'event-styling',
-    description: 'Створення образів для особливих подій та заходів.',
-    fullDescription: 'Ми допоможемо вам створити незабутній образ для будь-якої особливої події — весілля, корпоративу, фотосесії чи важливої зустрічі.',
-    category: 'styling',
-    duration: '2-4 години',
-    price: 'від 4500 ₴',
-  },
-  'image-consultation': {
-    id: '6',
-    title: 'Image Consultation',
-    slug: 'image-consultation',
-    description: 'Комплексна консультація з питань стилю та іміджу.',
-    fullDescription: 'Під час консультації ми визначимо ваш колоритип, тип фігури, стильовий напрямок та створимо персональні рекомендації щодо гардеробу.',
-    category: 'consulting',
-    duration: '1.5-2 години',
-    price: 'від 2500 ₴',
-  },
+export async function generateStaticParams() {
+  const payload = await getPayload()
+  
+  const services = await payload.find({
+    collection: 'services',
+    limit: 100,
+    where: {
+      status: { equals: 'published' },
+    },
+  })
+  
+  const locales = ['en', 'uk', 'ru']
+  
+  return services.docs.flatMap((service) =>
+    locales.map((locale) => ({
+      locale,
+      slug: service.slug,
+    }))
+  )
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params
-  const service = mockServices[slug]
+  const { slug, locale } = await params
+  const service = await getServiceBySlug(slug, locale as Locale)
 
   if (!service) {
+    const t = await getTranslations({ locale, namespace: 'services' })
     return generateSeoMetadata({
-      title: 'Service Not Found | PURITY Fashion Studio',
-      description: 'The requested service could not be found.',
+      title: `${t('serviceNotFound')} | PURITY Fashion Studio`,
+      description: t('serviceNotFoundDescription'),
+      locale,
     })
   }
 
   return generateSeoMetadata({
-    title: `${service.title} | PURITY Fashion Studio`,
-    description: service.description,
+    title: service.seo?.metaTitle || `${service.title} | PURITY Fashion Studio`,
+    description: service.seo?.metaDescription || service.excerpt || service.description || '',
     path: `/services/${slug}`,
+    // @ts-expect-error - Payload types might be tricky with relations
+    image: service.seo?.ogImage,
+    locale,
   })
 }
 
-export function generateStaticParams() {
-  return Object.keys(mockServices).map((slug) => ({ slug }))
-}
-
 export default async function ServiceDetailPage({ params }: PageProps) {
-  const { slug } = await params
-  const t = await getTranslations('services')
-
-  const service = mockServices[slug]
+  const { slug, locale } = await params
+  const t = await getTranslations({ locale, namespace: 'services' })
+  
+  const service = await getServiceBySlug(slug, locale as Locale)
 
   if (!service) {
     notFound()
+  }
+
+  // Format price
+  const priceUAH = service.pricing?.uah
+  const priceEUR = service.pricing?.eur
+  
+  let priceDisplay = ''
+  if (service.pricing?.priceNote) {
+    priceDisplay = service.pricing.priceNote
+  } else if (locale === 'en' && priceEUR) {
+    priceDisplay = `€${priceEUR}`
+  } else if (priceUAH) {
+    priceDisplay = `${priceUAH} ₴`
+  } else {
+    priceDisplay = t('priceOnRequest')
+  }
+  
+  // Fallback if translation key missing or logic fails
+  if (priceDisplay === 'services.priceOnRequest') {
+     priceDisplay = 'On Request'
   }
 
   return (
@@ -146,14 +116,14 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                 {t('price')}
               </span>
               <span className="mt-1 block text-base text-foreground">
-                {service.price}
+                {priceDisplay}
               </span>
             </div>
           </div>
 
           <div className="mt-12">
-            <p className="text-lg leading-relaxed text-foreground">
-              {service.fullDescription}
+            <p className="text-lg leading-relaxed text-foreground whitespace-pre-wrap">
+              {service.description}
             </p>
           </div>
 

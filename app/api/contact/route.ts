@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { features, getSiteConfig } from '@/config/env'
+import { rateLimit, getClientIp } from '@/lib/ratelimit'
 
 interface ContactRequestBody {
   type: 'contact' | 'booking'
@@ -18,6 +19,24 @@ interface ContactRequestBody {
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting: 5 requests per minute per IP
+    const clientIp = getClientIp(request)
+    const { success, remaining, reset } = rateLimit(clientIp, { limit: 5, windowMs: 60000 })
+
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Remaining': String(remaining),
+            'X-RateLimit-Reset': String(reset),
+            'Retry-After': String(Math.ceil((reset - Date.now()) / 1000)),
+          },
+        }
+      )
+    }
+
     const body: ContactRequestBody = await request.json()
 
     const { type, firstName, lastName, email, phone, message, serviceId, preferredDate, preferredTime, course } = body

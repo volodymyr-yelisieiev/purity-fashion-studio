@@ -21,7 +21,7 @@ export function Navigation() {
         <li key={item.key}>
           <Link
             href={item.href}
-            className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition-colors"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             prefetch={false}
           >
             {t(item.key)}

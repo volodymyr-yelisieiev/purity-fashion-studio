@@ -26,7 +26,7 @@ export default async function NotFound() {
   return (
     <PageHeader fullHeight centered>
       <Container size="sm">
-        <span className="mb-4 font-serif text-8xl font-light text-muted-foreground/30">404</span>
+        <div className="mb-8 font-serif text-9xl font-light text-muted-foreground/30">404</div>
         <H1 className="mb-4">{t('title')}</H1>
         <Lead className="mb-8 max-w-md">{t('description')}</Lead>
         <Button asChild size="lg">

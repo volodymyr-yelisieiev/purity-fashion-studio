@@ -1,19 +1,20 @@
-import { getLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import { Calendar, Clock, MapPin, Phone, Mail } from 'lucide-react'
 import { BookingForm } from '@/components/booking/BookingForm'
 import type { Service } from '@/payload-types'
 import { getPayload } from '@/lib/payload'
 
 interface BookingPageProps {
+  params: Promise<{ locale: string }>
   searchParams: Promise<{
     service?: string
     course?: string
   }>
 }
 
-export default async function BookingPage({ searchParams }: BookingPageProps) {
+export default async function BookingPage({ params, searchParams }: BookingPageProps) {
+  const { locale } = await params
   const { service: serviceSlug, course: courseSlug } = await searchParams
-  const locale = await getLocale()
   
   const payload = await getPayload()
   

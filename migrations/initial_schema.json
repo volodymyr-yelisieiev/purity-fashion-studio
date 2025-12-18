@@ -100,6 +100,26 @@
           "primaryKey": true,
           "notNull": true
         },
+        "role": {
+          "name": "role",
+          "type": "enum_users_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'user'"
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -226,7 +246,7 @@
           "name": "alt",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -295,6 +315,114 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
+        },
+        "sizes_thumbnail_url": {
+          "name": "sizes_thumbnail_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_thumbnail_width": {
+          "name": "sizes_thumbnail_width",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_thumbnail_height": {
+          "name": "sizes_thumbnail_height",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_thumbnail_mime_type": {
+          "name": "sizes_thumbnail_mime_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_thumbnail_filesize": {
+          "name": "sizes_thumbnail_filesize",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_thumbnail_filename": {
+          "name": "sizes_thumbnail_filename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_card_url": {
+          "name": "sizes_card_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_card_width": {
+          "name": "sizes_card_width",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_card_height": {
+          "name": "sizes_card_height",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_card_mime_type": {
+          "name": "sizes_card_mime_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_card_filesize": {
+          "name": "sizes_card_filesize",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_card_filename": {
+          "name": "sizes_card_filename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_hero_url": {
+          "name": "sizes_hero_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_hero_width": {
+          "name": "sizes_hero_width",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_hero_height": {
+          "name": "sizes_hero_height",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_hero_mime_type": {
+          "name": "sizes_hero_mime_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_hero_filesize": {
+          "name": "sizes_hero_filesize",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes_hero_filename": {
+          "name": "sizes_hero_filename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -339,6 +467,51 @@
             }
           ],
           "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "media_sizes_thumbnail_sizes_thumbnail_filename_idx": {
+          "name": "media_sizes_thumbnail_sizes_thumbnail_filename_idx",
+          "columns": [
+            {
+              "expression": "sizes_thumbnail_filename",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "media_sizes_card_sizes_card_filename_idx": {
+          "name": "media_sizes_card_sizes_card_filename_idx",
+          "columns": [
+            {
+              "expression": "sizes_card_filename",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "media_sizes_hero_sizes_hero_filename_idx": {
+          "name": "media_sizes_hero_sizes_hero_filename_idx",
+          "columns": [
+            {
+              "expression": "sizes_hero_filename",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
           "concurrently": false,
           "method": "btree",
           "with": {}
@@ -695,14 +868,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "pricing_price_u_a_h": {
-          "name": "pricing_price_u_a_h",
+        "pricing_uah": {
+          "name": "pricing_uah",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
         },
-        "pricing_price_e_u_r": {
-          "name": "pricing_price_e_u_r",
+        "pricing_eur": {
+          "name": "pricing_eur",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
@@ -1429,14 +1602,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "pricing_price_u_a_h": {
-          "name": "pricing_price_u_a_h",
+        "pricing_uah": {
+          "name": "pricing_uah",
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
         },
-        "pricing_price_e_u_r": {
-          "name": "pricing_price_e_u_r",
+        "pricing_eur": {
+          "name": "pricing_eur",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
@@ -5053,14 +5226,14 @@
           "notNull": false,
           "default": "'UAH'"
         },
-        "currency_exchange_rate_e_u_r": {
-          "name": "currency_exchange_rate_e_u_r",
+        "currency_exchange_rate_eur": {
+          "name": "currency_exchange_rate_eur",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
         },
-        "currency_exchange_rate_u_s_d": {
-          "name": "currency_exchange_rate_u_s_d",
+        "currency_exchange_rate_usd": {
+          "name": "currency_exchange_rate_usd",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
@@ -5347,6 +5520,14 @@
         "uk"
       ]
     },
+    "public.enum_users_role": {
+      "name": "enum_users_role",
+      "schema": "public",
+      "values": [
+        "admin",
+        "user"
+      ]
+    },
     "public.enum_services_status": {
       "name": "enum_services_status",
       "schema": "public",
@@ -5549,6 +5730,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "0df9f96b-cbc8-4999-bafa-e4f60c078e36",
+  "id": "685dd3db-f916-4955-adc5-360d262229a1",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

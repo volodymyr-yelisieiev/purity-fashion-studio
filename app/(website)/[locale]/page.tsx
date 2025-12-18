@@ -15,9 +15,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   })
 }
 
-export default async function Home() {
-  const t = await getTranslations('home')
-  const tCommon = await getTranslations('common')
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'home' })
+  const tCommon = await getTranslations({ locale, namespace: 'common' })
 
   return (
     <div className="flex flex-col items-center justify-center">

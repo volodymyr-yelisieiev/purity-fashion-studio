@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import { HeroSection, ServicesPreview } from '@/components/sections'
 import { generateSeoMetadata } from '@/lib/seo'
 import { getPayload } from '@/lib/payload'
@@ -6,20 +6,26 @@ import { EmptyState } from '@/components/ui/empty-state'
 import type { Service } from '@/payload-types'
 import type { Metadata } from 'next'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('services')
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'services' })
 
   return generateSeoMetadata({
     title: `${t('title')} | PURITY Fashion Studio`,
     description: t('description'),
     path: '/services',
+    locale,
   })
 }
 
-export default async function ServicesPage() {
-  const locale = await getLocale()
-  const t = await getTranslations('services')
-  const tCommon = await getTranslations('common')
+export default async function ServicesPage({ params }: PageProps) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'services' })
+  const tCommon = await getTranslations({ locale, namespace: 'common' })
   
   const payload = await getPayload()
   const { docs: services } = await payload.find({
@@ -27,10 +33,9 @@ export default async function ServicesPage() {
     locale: locale as 'en' | 'uk' | 'ru',
     limit: 50,
     sort: 'title',
-    // Note: status filter commented out until database migration is run
-    // where: {
-    //   status: { equals: 'published' },
-    // },
+    where: {
+      status: { equals: 'published' },
+    },
   })
 
   // Transform Payload data to match component interface

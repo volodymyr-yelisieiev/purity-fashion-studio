@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import type { Media as MediaType, Portfolio as PortfolioType } from '@/payload-types'
@@ -7,10 +7,10 @@ import { HeroSection } from '@/components/sections'
 import { EmptyState } from '@/components/ui/empty-state'
 import { H3 } from '@/components/ui/typography'
 
-export default async function PortfolioPage() {
-  const locale = await getLocale()
-  const t = await getTranslations('home.portfolio')
-  const tCommon = await getTranslations('common')
+export default async function PortfolioPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'home.portfolio' })
+  const tCommon = await getTranslations({ locale, namespace: 'common' })
   
   const payload = await getPayload()
   const portfolioItems = await payload.find({

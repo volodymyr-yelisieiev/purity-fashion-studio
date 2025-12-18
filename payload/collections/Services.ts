@@ -109,16 +109,18 @@ export const Services: CollectionConfig = {
       },
       fields: [
         {
-          name: 'priceUAH',
+          name: 'uah',
           type: 'number',
+          label: 'UAH',
           min: 0,
           admin: {
             description: 'Price in Ukrainian Hryvnia',
           },
         },
         {
-          name: 'priceEUR',
+          name: 'eur',
           type: 'number',
+          label: 'EUR',
           min: 0,
           admin: {
             description: 'Price in Euros',

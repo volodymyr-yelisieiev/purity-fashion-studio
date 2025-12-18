@@ -7,18 +7,25 @@ import { Button } from '@/components/ui/button'
 import type { Metadata } from 'next'
 import { ChevronDown } from 'lucide-react'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('contact')
+interface PageProps {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'contact' })
 
   return generateSeoMetadata({
     title: `${t('title')} | PURITY Fashion Studio`,
     description: t('description'),
     path: '/contact',
+    locale,
   })
 }
 
-export default async function ContactPage() {
-  const t = await getTranslations('contact')
+export default async function ContactPage({ params }: PageProps) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'contact' })
 
   return (
     <main>

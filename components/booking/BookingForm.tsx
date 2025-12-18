@@ -238,7 +238,7 @@ export function BookingForm({
             {services.map((service) => (
               <option key={service.id} value={service.id}>
                 {service.title}
-                {service.pricing?.priceUAH && ` - ₴${service.pricing.priceUAH}`}
+                {service.pricing?.uah && ` - ₴${service.pricing.uah}`}
               </option>
             ))}
           </select>

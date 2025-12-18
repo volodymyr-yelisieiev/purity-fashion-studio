@@ -1,4 +1,4 @@
-import { getLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { Sparkles, ArrowRight, CheckCircle } from 'lucide-react'
@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button'
 import type { Media as MediaType, Portfolio as PortfolioType } from '@/payload-types'
 import { getPayload } from '@/lib/payload'
 
-export default async function TransformationPage() {
-  const locale = await getLocale()
+export default async function TransformationPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
   
   const payload = await getPayload()
   

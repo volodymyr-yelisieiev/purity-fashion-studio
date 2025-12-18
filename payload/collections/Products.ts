@@ -5,7 +5,7 @@ export const Products: CollectionConfig = {
   slug: 'products',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'category', 'priceUAH', 'status', 'featured'],
+    defaultColumns: ['name', 'category', 'uah', 'status', 'featured'],
     group: 'Shop',
     description: 'Atelier products and clothing items',
   },
@@ -96,7 +96,7 @@ export const Products: CollectionConfig = {
       },
       fields: [
         {
-          name: 'priceUAH',
+          name: 'uah',
           type: 'number',
           required: true,
           min: 0,
@@ -105,7 +105,7 @@ export const Products: CollectionConfig = {
           },
         },
         {
-          name: 'priceEUR',
+          name: 'eur',
           type: 'number',
           min: 0,
           admin: {

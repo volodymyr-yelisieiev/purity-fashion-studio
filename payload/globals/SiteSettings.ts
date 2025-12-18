@@ -178,7 +178,7 @@ export const SiteSettings: GlobalConfig = {
                   },
                 },
                 {
-                  name: 'exchangeRateEUR',
+                  name: 'exchangeRateEur',
                   type: 'number',
                   label: 'Exchange Rate (1 EUR = X UAH)',
                   admin: {
@@ -186,7 +186,7 @@ export const SiteSettings: GlobalConfig = {
                   },
                 },
                 {
-                  name: 'exchangeRateUSD',
+                  name: 'exchangeRateUsd',
                   type: 'number',
                   label: 'Exchange Rate (1 USD = X UAH)',
                 },

@@ -28,20 +28,10 @@ export const metadata: Metadata = {
   description: "Premium minimalist styling services and atelier",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
-
-  return (
-    <html lang={locale}>
-      <body
-        className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-  );
+  return children;
 }

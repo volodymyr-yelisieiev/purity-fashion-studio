@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { getLocale } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft } from 'lucide-react'
@@ -11,12 +11,12 @@ import type { Media as MediaType, Portfolio as PortfolioType } from '@/payload-t
 interface PortfolioDetailPageProps {
   params: Promise<{
     slug: string
+    locale: string
   }>
 }
 
 export default async function PortfolioDetailPage({ params }: PortfolioDetailPageProps) {
-  const { slug } = await params
-  const locale = await getLocale()
+  const { slug, locale } = await params
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
