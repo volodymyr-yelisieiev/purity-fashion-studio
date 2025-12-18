@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugify } from '@/lib/utils'
+import { revalidateContent } from '../hooks/revalidate'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -9,8 +10,14 @@ export const Products: CollectionConfig = {
     group: 'Shop',
     description: 'Atelier products and clothing items',
   },
+  hooks: {
+    afterChange: [revalidateContent('products')],
+  },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => {
+      if (user) return true
+      return { status: { equals: 'published' } }
+    },
   },
   fields: [
     {
@@ -24,17 +31,31 @@ export const Products: CollectionConfig = {
       type: 'text',
       unique: true,
       required: true,
+      localized: true,
       admin: {
         position: 'sidebar',
         description: 'URL-friendly identifier',
       },
       hooks: {
         beforeValidate: [
-          ({ value, data }) => {
-            if (!value && data?.name) {
-              return slugify(data.name)
+          ({ value, data, req, originalDoc }) => {
+            if (value) return value
+
+            const locale = req.locale
+
+            const pickLocalizedText = (source: unknown): string | undefined => {
+              if (!source) return undefined
+              if (typeof source === 'string' && source) return source
+              if (typeof source === 'object' && source !== null) {
+                const record = source as Record<string, string | undefined>
+                if (locale && record[locale]) return record[locale]
+                return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+              }
+              return undefined
             }
-            return value
+
+            const name = pickLocalizedText(data?.name) || pickLocalizedText(originalDoc?.name)
+            return name ? slugify(name) : value
           },
         ],
       },
@@ -44,6 +65,7 @@ export const Products: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'draft',
+      index: true,
       options: [
         { label: 'Draft', value: 'draft' },
         { label: 'Published', value: 'published' },
@@ -58,6 +80,7 @@ export const Products: CollectionConfig = {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,
+      index: true,
       admin: {
         position: 'sidebar',
         description: 'Show in featured products section',
@@ -150,6 +173,7 @@ export const Products: CollectionConfig = {
       name: 'category',
       type: 'select',
       required: true,
+      index: true,
       options: [
         { label: 'Dresses', value: 'dresses' },
         { label: 'Tops', value: 'tops' },
@@ -214,31 +238,6 @@ export const Products: CollectionConfig = {
               },
             },
           ],
-        },
-      ],
-    },
-    {
-      name: 'seo',
-      type: 'group',
-      admin: {
-        description: 'Search engine optimization',
-      },
-      fields: [
-        {
-          name: 'metaTitle',
-          type: 'text',
-          localized: true,
-          admin: {
-            description: 'Override default title tag',
-          },
-        },
-        {
-          name: 'metaDescription',
-          type: 'textarea',
-          localized: true,
-          admin: {
-            description: 'Meta description for search results',
-          },
         },
       ],
     },

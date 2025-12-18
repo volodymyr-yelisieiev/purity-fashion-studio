@@ -6,6 +6,7 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 
 import { Users } from './payload/collections/Users'
 import { Media } from './payload/collections/Media'
@@ -28,6 +29,28 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    livePreview: {
+      url: ({ data, collectionConfig, locale }) => {
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
+        const pickLocalized = (value: unknown): string | undefined => {
+          if (!value) return undefined
+          if (typeof value === 'string') return value
+          if (typeof value === 'object') {
+            const record = value as Record<string, string | undefined>
+            return (locale?.code && record[locale.code]) || record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+          }
+          return undefined
+        }
+
+        const collectionSlug = collectionConfig?.slug || 'preview'
+        const slug = pickLocalized((data as Record<string, unknown>)?.slug) || 'preview'
+        const localeCode = locale?.code || 'uk'
+
+        return `${baseUrl}/api/preview?collection=${collectionSlug}&slug=${slug}&locale=${localeCode}&secret=${process.env.PAYLOAD_SECRET}`
+      },
+      collections: ['services', 'portfolio', 'products'],
+    },
   },
   // CSRF protection - only allow requests from these origins
   csrf: [
@@ -36,6 +59,7 @@ export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   collections: [Users, Media, Services, Products, Portfolio, Collections, Orders, Courses],
   globals: [SiteSettings],
+  folders: {},
   localization: {
     locales: ['en', 'ru', 'uk'],
     defaultLocale: 'uk',
@@ -100,14 +124,60 @@ export default buildConfig({
   sharp,
   plugins: [
     vercelBlobStorage({
-      enabled: true,
+      enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
       collections: {
         media: true,
       },
-      token: process.env.BLOB_READ_WRITE_TOKEN!,
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
       clientUploads: true,
       addRandomSuffix: true,
       cacheControlMaxAge: 31536000, // 1 year
+    }),
+    seoPlugin({
+      collections: ['services', 'products', 'portfolio', 'collections', 'courses'],
+      uploadsCollection: 'media',
+      generateTitle: ({ doc }: any) => {
+        const pickLocalized = (value: unknown): string | undefined => {
+          if (!value) return undefined
+          if (typeof value === 'string') return value
+          if (typeof value === 'object') {
+            const record = value as Record<string, string | undefined>
+            return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+          }
+          return undefined
+        }
+
+        const title = pickLocalized(doc?.title) || pickLocalized(doc?.name) || 'PURITY Fashion Studio'
+        return `${title} | PURITY Fashion Studio`
+      },
+      generateDescription: ({ doc }: any) => {
+        const pickLocalized = (value: unknown): string | undefined => {
+          if (!value) return undefined
+          if (typeof value === 'string') return value
+          if (typeof value === 'object') {
+            const record = value as Record<string, string | undefined>
+            return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+          }
+          return undefined
+        }
+
+        return pickLocalized(doc?.excerpt) || pickLocalized(doc?.description) || 'PURITY Fashion Studio'
+      },
+      generateURL: ({ doc, collectionSlug }: any) => {
+        const pickLocalized = (value: unknown): string | undefined => {
+          if (!value) return undefined
+          if (typeof value === 'string') return value
+          if (typeof value === 'object') {
+            const record = value as Record<string, string | undefined>
+            return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+          }
+          return undefined
+        }
+
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://purity.studio'
+        const slug = pickLocalized(doc?.slug) || 'unknown'
+        return `${siteUrl}/${collectionSlug}/${slug}`
+      },
     }),
   ],
 })

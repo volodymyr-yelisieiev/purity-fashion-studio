@@ -20,7 +20,18 @@ export const Orders: CollectionConfig = {
       // No public access to orders
       return false
     },
-    create: () => true, // Created via API/webhooks
+    create: ({ req }) => {
+      if (req?.payloadAPI === 'local') return true
+
+      const secret = process.env.PAYLOAD_WEBHOOK_SECRET
+      const headerSecret = req?.headers?.get('x-internal-secret')
+
+      if (secret && headerSecret === secret) {
+        return true
+      }
+
+      return false
+    },
     update: ({ req: { user } }) => {
       // Only admins can update orders
       return user?.role === 'admin'
@@ -42,6 +53,7 @@ export const Orders: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'pending',
+      index: true,
       options: [
         { label: 'Pending', value: 'pending' },
         { label: 'Processing', value: 'processing' },

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugify } from '@/lib/utils'
+import { revalidateContent } from '../hooks/revalidate'
 
 export const Portfolio: CollectionConfig = {
   slug: 'portfolio',
@@ -9,8 +10,14 @@ export const Portfolio: CollectionConfig = {
     group: 'Content',
     description: 'Before/after transformations and client work',
   },
+  hooks: {
+    afterChange: [revalidateContent('portfolio')],
+  },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => {
+      if (user) return true
+      return { status: { equals: 'published' } }
+    },
   },
   fields: [
     {
@@ -27,19 +34,48 @@ export const Portfolio: CollectionConfig = {
       type: 'text',
       unique: true,
       required: true,
+      localized: true,
       admin: {
         position: 'sidebar',
         description: 'URL-friendly identifier',
       },
       hooks: {
         beforeValidate: [
-          ({ value, data }) => {
-            if (!value && data?.title) {
-              return slugify(data.title)
+          ({ value, data, req, originalDoc }) => {
+            if (value) return value
+
+            const locale = req.locale
+
+            const pickLocalizedText = (source: unknown): string | undefined => {
+              if (!source) return undefined
+              if (typeof source === 'string' && source) return source
+              if (typeof source === 'object' && source !== null) {
+                const record = source as Record<string, string | undefined>
+                if (locale && record[locale]) return record[locale]
+                return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+              }
+              return undefined
             }
-            return value
+
+            const title = pickLocalizedText(data?.title) || pickLocalizedText(originalDoc?.title)
+            return title ? slugify(title) : value
           },
         ],
+      },
+    },
+    {
+      name: 'status',
+      type: 'select',
+      required: true,
+      defaultValue: 'draft',
+      index: true,
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Only published items are visible on the site',
       },
     },
     {
@@ -52,6 +88,7 @@ export const Portfolio: CollectionConfig = {
         { label: 'Event Look', value: 'event' },
         { label: 'Shopping Result', value: 'shopping' },
       ],
+      index: true,
       admin: {
         position: 'sidebar',
       },
@@ -142,6 +179,7 @@ export const Portfolio: CollectionConfig = {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,
+      index: true,
       admin: {
         position: 'sidebar',
         description: 'Show on homepage',

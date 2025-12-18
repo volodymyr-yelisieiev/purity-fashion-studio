@@ -1,12 +1,14 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import type { Media as MediaType, Portfolio as PortfolioType } from '@/payload-types'
+import { draftMode } from 'next/headers'
+import { Metadata } from 'next'
+import { generateSeoMetadata } from '@/lib/seo'
 
 interface PortfolioDetailPageProps {
   params: Promise<{
@@ -15,8 +17,9 @@ interface PortfolioDetailPageProps {
   }>
 }
 
-export default async function PortfolioDetailPage({ params }: PortfolioDetailPageProps) {
+export async function generateMetadata({ params }: PortfolioDetailPageProps): Promise<Metadata> {
   const { slug, locale } = await params
+  const { isEnabled: isDraft } = await draftMode()
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
@@ -26,6 +29,41 @@ export default async function PortfolioDetailPage({ params }: PortfolioDetailPag
     },
     locale: locale as 'en' | 'ru' | 'uk',
     limit: 1,
+    draft: isDraft,
+  })
+
+  if (result.docs.length === 0) {
+    return generateSeoMetadata({
+      title: 'Project Not Found | PURITY Fashion Studio',
+      description: 'The requested portfolio project could not be found.',
+      locale,
+    })
+  }
+
+  const portfolio = result.docs[0] as PortfolioType
+
+  return generateSeoMetadata({
+    title: portfolio.meta?.title || `${portfolio.title} | PURITY Fashion Studio`,
+    description: portfolio.meta?.description || portfolio.description || '',
+    path: `/portfolio/${slug}`,
+    image: typeof portfolio.meta?.image === 'object' ? portfolio.meta?.image?.url || undefined : undefined,
+    locale,
+  })
+}
+
+export default async function PortfolioDetailPage({ params }: PortfolioDetailPageProps) {
+  const { slug, locale } = await params
+  const { isEnabled: isDraft } = await draftMode()
+  const payload = await getPayload({ config: configPromise })
+
+  const result = await payload.find({
+    collection: 'portfolio',
+    where: {
+      slug: { equals: slug },
+    },
+    locale: locale as 'en' | 'ru' | 'uk',
+    limit: 1,
+    draft: isDraft,
   })
 
   if (result.docs.length === 0) {

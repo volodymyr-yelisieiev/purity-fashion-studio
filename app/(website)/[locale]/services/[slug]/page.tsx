@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation'
 import { generateSeoMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
 import { getPayload, getServiceBySlug, type Locale } from '@/lib/payload'
+import { draftMode } from 'next/headers'
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>
@@ -32,7 +33,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, locale } = await params
-  const service = await getServiceBySlug(slug, locale as Locale)
+  const { isEnabled: isDraft } = await draftMode()
+  const service = await getServiceBySlug(slug, locale as Locale, isDraft)
 
   if (!service) {
     const t = await getTranslations({ locale, namespace: 'services' })
@@ -44,20 +46,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return generateSeoMetadata({
-    title: service.seo?.metaTitle || `${service.title} | PURITY Fashion Studio`,
-    description: service.seo?.metaDescription || service.excerpt || service.description || '',
+    title: service.meta?.title || `${service.title} | PURITY Fashion Studio`,
+    description: service.meta?.description || service.excerpt || service.description || '',
     path: `/services/${slug}`,
-    // @ts-expect-error - Payload types might be tricky with relations
-    image: service.seo?.ogImage,
+    image: typeof service.meta?.image === 'object' ? service.meta?.image?.url || undefined : undefined,
     locale,
   })
 }
 
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug, locale } = await params
+  const { isEnabled: isDraft } = await draftMode()
   const t = await getTranslations({ locale, namespace: 'services' })
   
-  const service = await getServiceBySlug(slug, locale as Locale)
+  const service = await getServiceBySlug(slug, locale as Locale, isDraft)
 
   if (!service) {
     notFound()

@@ -1,4 +1,3 @@
-import { getTranslations } from 'next-intl/server'
 import { Calendar, Clock, MapPin, Phone, Mail } from 'lucide-react'
 import { BookingForm } from '@/components/booking/BookingForm'
 import type { Service } from '@/payload-types'

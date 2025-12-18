@@ -22,13 +22,28 @@ export async function getServices(locale: Locale = 'uk', category?: string) {
   })
 }
 
-export async function getServiceBySlug(slug: string, locale: Locale = 'uk') {
+export async function getFeaturedServices(locale: Locale = 'uk') {
+  const payload = await getPayload()
+
+  return payload.find({
+    collection: 'services',
+    locale,
+    where: {
+      featured: { equals: true },
+      status: { equals: 'published' },
+    },
+    limit: 3,
+  })
+}
+
+export async function getServiceBySlug(slug: string, locale: Locale = 'uk', draft = false) {
   const payload = await getPayload()
 
   const result = await payload.find({
     collection: 'services',
     where: { slug: { equals: slug } },
     locale,
+    draft,
   })
 
   return result.docs[0] || null
@@ -42,6 +57,19 @@ export async function getPortfolio(locale: Locale = 'uk', page = 1, limit = 6) {
     locale,
     page,
     limit,
+  })
+}
+
+export async function getFeaturedPortfolio(locale: Locale = 'uk') {
+  const payload = await getPayload()
+
+  return payload.find({
+    collection: 'portfolio',
+    locale,
+    where: {
+      featured: { equals: true },
+    },
+    limit: 3,
   })
 }
 

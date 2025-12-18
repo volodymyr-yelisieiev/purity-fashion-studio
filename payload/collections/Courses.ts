@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { slugify } from '@/lib/utils'
 
 export const Courses: CollectionConfig = {
   slug: 'courses',
@@ -9,7 +10,10 @@ export const Courses: CollectionConfig = {
     description: 'Educational courses and workshops on styling and fashion',
   },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => {
+      if (user) return true
+      return { status: { equals: 'published' } }
+    },
   },
   fields: [
     {
@@ -26,15 +30,40 @@ export const Courses: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+      localized: true,
       admin: {
         position: 'sidebar',
         description: 'URL-friendly identifier (auto-generated)',
+      },
+      hooks: {
+        beforeValidate: [
+          ({ value, data, req, originalDoc }) => {
+            if (value) return value
+
+            const locale = req.locale
+
+            const pickLocalizedText = (source: unknown): string | undefined => {
+              if (!source) return undefined
+              if (typeof source === 'string' && source) return source
+              if (typeof source === 'object' && source !== null) {
+                const record = source as Record<string, string | undefined>
+                if (locale && record[locale]) return record[locale]
+                return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+              }
+              return undefined
+            }
+
+            const title = pickLocalizedText(data?.title) || pickLocalizedText(originalDoc?.title)
+            return title ? slugify(title) : value
+          },
+        ],
       },
     },
     {
       name: 'category',
       type: 'select',
       required: true,
+      index: true,
       options: [
         { label: 'Personal Styling', value: 'personal-styling' },
         { label: 'Color Analysis', value: 'color-analysis' },
@@ -53,6 +82,7 @@ export const Courses: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'beginner',
+      index: true,
       options: [
         { label: 'Beginner', value: 'beginner' },
         { label: 'Intermediate', value: 'intermediate' },
@@ -69,6 +99,7 @@ export const Courses: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'draft',
+      index: true,
       options: [
         { label: 'Draft', value: 'draft' },
         { label: 'Published', value: 'published' },
@@ -268,30 +299,6 @@ export const Courses: CollectionConfig = {
           name: 'answer',
           type: 'textarea',
           required: true,
-          localized: true,
-        },
-      ],
-    },
-    {
-      name: 'seo',
-      type: 'group',
-      admin: {
-        description: 'SEO settings for this course',
-      },
-      fields: [
-        {
-          name: 'metaTitle',
-          type: 'text',
-          localized: true,
-        },
-        {
-          name: 'metaDescription',
-          type: 'textarea',
-          localized: true,
-        },
-        {
-          name: 'keywords',
-          type: 'text',
           localized: true,
         },
       ],

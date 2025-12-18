@@ -16,6 +16,7 @@
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d",
+    "db:fresh": "pnpm db:reset && sleep 5 && pnpm payload migrate && pnpm generate:types",
     "test:smoke": "tsx tests/smoke/index.ts"
   },
   "pnpm": {
@@ -30,6 +31,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@payloadcms/db-postgres": "^3.68.5",
     "@payloadcms/next": "^3.68.5",
+    "@payloadcms/plugin-seo": "^3.68.5",
     "@payloadcms/richtext-lexical": "^3.68.5",
     "@payloadcms/storage-vercel-blob": "^3.68.5",
     "@payloadcms/ui": "^3.68.5",

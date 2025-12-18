@@ -1,6 +1,5 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft, Clock, Monitor, Calendar, Users, CheckCircle } from 'lucide-react'

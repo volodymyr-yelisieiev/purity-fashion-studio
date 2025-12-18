@@ -2,6 +2,11 @@ import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  admin: {
+    useAsTitle: 'alt',
+    defaultColumns: ['alt', 'filename', 'mimeType', 'filesize', 'updatedAt'],
+    description: 'Images and documents for the website',
+  },
   access: {
     read: () => true,
   },
@@ -9,11 +14,22 @@ export const Media: CollectionConfig = {
     {
       name: 'alt',
       type: 'text',
-      required: false,
+      required: true,
+      localized: true,
+      admin: {
+        description: 'Localized alt text is required for accessibility and SEO',
+      },
     },
   ],
   upload: {
     disableLocalStorage: true,
+    adminThumbnail: 'thumbnail',
+    resizeOptions: {
+      width: 2560,
+      height: 2560,
+      fit: 'inside',
+      withoutEnlargement: true,
+    },
     imageSizes: [
       {
         name: 'thumbnail',
@@ -34,7 +50,6 @@ export const Media: CollectionConfig = {
         position: 'centre',
       },
     ],
-    adminThumbnail: 'thumbnail',
     mimeTypes: ['image/*'],
   },
 }

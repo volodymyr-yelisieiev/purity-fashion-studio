@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
-import { getLocale } from 'next-intl/server';
 import "@/styles/globals.css";
 
 // Elegant serif font for headings - fashion aesthetic
@@ -33,5 +32,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return children;
+  return (
+    <div className={`${cormorant.variable} ${inter.variable}`}>
+      {children}
+    </div>
+  );
 }

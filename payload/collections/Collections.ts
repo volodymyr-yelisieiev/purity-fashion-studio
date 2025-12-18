@@ -10,7 +10,10 @@ export const Collections: CollectionConfig = {
     description: 'Curated fashion collections and lookbooks',
   },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => {
+      if (user) return true
+      return { status: { equals: 'published' } }
+    },
   },
   fields: [
     {
@@ -27,19 +30,48 @@ export const Collections: CollectionConfig = {
       type: 'text',
       unique: true,
       required: true,
+      localized: true,
       admin: {
         position: 'sidebar',
         description: 'URL-friendly identifier',
       },
       hooks: {
         beforeValidate: [
-          ({ value, data }) => {
-            if (!value && data?.name) {
-              return slugify(data.name)
+          ({ value, data, req, originalDoc }) => {
+            if (value) return value
+
+            const locale = req.locale
+
+            const pickLocalizedText = (source: unknown): string | undefined => {
+              if (!source) return undefined
+              if (typeof source === 'string' && source) return source
+              if (typeof source === 'object' && source !== null) {
+                const record = source as Record<string, string | undefined>
+                if (locale && record[locale]) return record[locale]
+                return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+              }
+              return undefined
             }
-            return value
+
+            const name = pickLocalizedText(data?.name) || pickLocalizedText(originalDoc?.name)
+            return name ? slugify(name) : value
           },
         ],
+      },
+    },
+    {
+      name: 'status',
+      type: 'select',
+      required: true,
+      defaultValue: 'draft',
+      index: true,
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Only published collections are public',
       },
     },
     {
@@ -52,6 +84,7 @@ export const Collections: CollectionConfig = {
         { label: 'Winter', value: 'winter' },
         { label: 'All Season', value: 'all-season' },
       ],
+      index: true,
       admin: {
         position: 'sidebar',
       },
@@ -96,6 +129,7 @@ export const Collections: CollectionConfig = {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,
+      index: true,
       admin: {
         position: 'sidebar',
         description: 'Show on homepage',

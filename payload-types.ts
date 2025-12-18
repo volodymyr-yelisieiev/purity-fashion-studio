@@ -163,12 +163,17 @@ export interface User {
   password?: string | null;
 }
 /**
+ * Images and documents for the website
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
-  alt?: string | null;
+  /**
+   * Localized alt text is required for accessibility and SEO
+   */
+  alt: string;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -295,22 +300,13 @@ export interface Service {
    * Allow online booking for this service
    */
   bookable?: boolean | null;
-  /**
-   * Search engine optimization settings
-   */
-  seo?: {
+  meta?: {
+    title?: string | null;
+    description?: string | null;
     /**
-     * Custom title for search results (defaults to service title)
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
-    metaTitle?: string | null;
-    /**
-     * Description shown in search results (120-160 chars)
-     */
-    metaDescription?: string | null;
-    /**
-     * Image for social media sharing
-     */
-    ogImage?: (number | null) | Media;
+    image?: (number | null) | Media;
   };
   updatedAt: string;
   createdAt: string;
@@ -397,18 +393,13 @@ export interface Product {
         }[]
       | null;
   };
-  /**
-   * Search engine optimization
-   */
-  seo?: {
+  meta?: {
+    title?: string | null;
+    description?: string | null;
     /**
-     * Override default title tag
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
-    metaTitle?: string | null;
-    /**
-     * Meta description for search results
-     */
-    metaDescription?: string | null;
+    image?: (number | null) | Media;
   };
   updatedAt: string;
   createdAt: string;
@@ -429,6 +420,10 @@ export interface Portfolio {
    * URL-friendly identifier
    */
   slug: string;
+  /**
+   * Only published items are visible on the site
+   */
+  status: 'draft' | 'published';
   category?: ('styling' | 'wardrobe-audit' | 'transformation' | 'event' | 'shopping') | null;
   /**
    * Story behind the transformation
@@ -475,6 +470,14 @@ export interface Portfolio {
    * Date to display for this project
    */
   publishedAt?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -494,6 +497,10 @@ export interface Collection {
    * URL-friendly identifier
    */
   slug: string;
+  /**
+   * Only published collections are public
+   */
+  status: 'draft' | 'published';
   season?: ('spring' | 'summer' | 'autumn' | 'winter' | 'all-season') | null;
   /**
    * Collection story and inspiration
@@ -525,6 +532,14 @@ export interface Collection {
    * Products featured in this collection
    */
   linkedProducts?: (number | Product)[] | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -672,13 +687,13 @@ export interface Course {
         id?: string | null;
       }[]
     | null;
-  /**
-   * SEO settings for this course
-   */
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    keywords?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
   };
   updatedAt: string;
   createdAt: string;
@@ -894,12 +909,12 @@ export interface ServicesSelect<T extends boolean = true> {
       };
   featured?: T;
   bookable?: T;
-  seo?:
+  meta?:
     | T
     | {
-        metaTitle?: T;
-        metaDescription?: T;
-        ogImage?: T;
+        title?: T;
+        description?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -945,11 +960,12 @@ export interface ProductsSelect<T extends boolean = true> {
               id?: T;
             };
       };
-  seo?:
+  meta?:
     | T
     | {
-        metaTitle?: T;
-        metaDescription?: T;
+        title?: T;
+        description?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -961,6 +977,7 @@ export interface ProductsSelect<T extends boolean = true> {
 export interface PortfolioSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  status?: T;
   category?: T;
   description?: T;
   beforeImage?: T;
@@ -982,6 +999,13 @@ export interface PortfolioSelect<T extends boolean = true> {
       };
   featured?: T;
   publishedAt?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -992,6 +1016,7 @@ export interface PortfolioSelect<T extends boolean = true> {
 export interface CollectionsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  status?: T;
   season?: T;
   description?: T;
   coverImage?: T;
@@ -1005,6 +1030,13 @@ export interface CollectionsSelect<T extends boolean = true> {
   featured?: T;
   releaseDate?: T;
   linkedProducts?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1120,12 +1152,12 @@ export interface CoursesSelect<T extends boolean = true> {
         answer?: T;
         id?: T;
       };
-  seo?:
+  meta?:
     | T
     | {
-        metaTitle?: T;
-        metaDescription?: T;
-        keywords?: T;
+        title?: T;
+        description?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1202,7 +1234,7 @@ export interface SiteSetting {
      */
     email: string;
     /**
-     * Contact phone number
+     * Contact phone number (international format)
      */
     phone?: string | null;
     /**

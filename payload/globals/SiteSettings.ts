@@ -73,13 +73,23 @@ export const SiteSettings: GlobalConfig = {
                 {
                   name: 'phone',
                   type: 'text',
+                  validate: (val: string | null | undefined) => {
+                    if (!val) return true
+                    const phoneRegex = /^\+?[1-9]\d{1,14}$/
+                    return phoneRegex.test(val) || 'Invalid phone number format (e.g., +380...)'
+                  },
                   admin: {
-                    description: 'Contact phone number',
+                    description: 'Contact phone number (international format)',
                   },
                 },
                 {
                   name: 'whatsapp',
                   type: 'text',
+                  validate: (val: string | null | undefined) => {
+                    if (!val) return true
+                    const phoneRegex = /^\+?[1-9]\d{1,14}$/
+                    return phoneRegex.test(val) || 'Invalid phone number format (e.g., +380...)'
+                  },
                   admin: {
                     description: 'WhatsApp number (with country code)',
                   },

@@ -1,18 +1,51 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import type { Media as MediaType, Collection as CollectionType, Product } from '@/payload-types'
+import { Metadata } from 'next'
+import { generateSeoMetadata } from '@/lib/seo'
 
 interface CollectionDetailPageProps {
   params: Promise<{
     slug: string
     locale: string
   }>
+}
+
+export async function generateMetadata({ params }: CollectionDetailPageProps): Promise<Metadata> {
+  const { slug, locale } = await params
+  const payload = await getPayload({ config: configPromise })
+
+  const result = await payload.find({
+    collection: 'collections',
+    where: {
+      slug: { equals: slug },
+    },
+    locale: locale as 'en' | 'ru' | 'uk',
+    limit: 1,
+  })
+
+  if (result.docs.length === 0) {
+    return generateSeoMetadata({
+      title: 'Collection Not Found | PURITY Fashion Studio',
+      description: 'The requested collection could not be found.',
+      locale,
+    })
+  }
+
+  const collection = result.docs[0] as CollectionType
+
+  return generateSeoMetadata({
+    title: collection.meta?.title || `${collection.name} | PURITY Fashion Studio`,
+    description: collection.meta?.description || collection.description || '',
+    path: `/collections/${slug}`,
+    image: typeof collection.meta?.image === 'object' ? collection.meta?.image?.url || undefined : undefined,
+    locale,
+  })
 }
 
 export default async function CollectionDetailPage({ params }: CollectionDetailPageProps) {

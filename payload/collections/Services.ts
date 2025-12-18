@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { slugify } from '@/lib/utils'
+import { revalidateContent } from '../hooks/revalidate'
 
 export const Services: CollectionConfig = {
   slug: 'services',
@@ -9,8 +10,14 @@ export const Services: CollectionConfig = {
     group: 'Content',
     description: 'Styling and atelier services offered by PURITY',
   },
+  hooks: {
+    afterChange: [revalidateContent('services')],
+  },
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => {
+      if (user) return true
+      return { status: { equals: 'published' } }
+    },
   },
   fields: [
     {
@@ -27,17 +34,31 @@ export const Services: CollectionConfig = {
       type: 'text',
       unique: true,
       required: true,
+      localized: true,
       admin: {
         position: 'sidebar',
         description: 'URL-friendly identifier (auto-generated from title)',
       },
       hooks: {
         beforeValidate: [
-          ({ value, data }) => {
-            if (!value && data?.title) {
-              return slugify(data.title)
+          ({ value, data, req, originalDoc }) => {
+            if (value) return value
+
+            const locale = req.locale
+
+            const pickLocalizedText = (source: unknown): string | undefined => {
+              if (!source) return undefined
+              if (typeof source === 'string' && source) return source
+              if (typeof source === 'object' && source !== null) {
+                const record = source as Record<string, string | undefined>
+                if (locale && record[locale]) return record[locale]
+                return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+              }
+              return undefined
             }
-            return value
+
+            const title = pickLocalizedText(data?.title) || pickLocalizedText(originalDoc?.title)
+            return title ? slugify(title) : value
           },
         ],
       },
@@ -47,6 +68,7 @@ export const Services: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: 'draft',
+      index: true,
       options: [
         { label: 'Draft', value: 'draft' },
         { label: 'Published', value: 'published' },
@@ -83,6 +105,7 @@ export const Services: CollectionConfig = {
         { label: 'Events', value: 'events' },
       ],
       required: true,
+      index: true,
       admin: {
         position: 'sidebar',
         description: 'Service category for filtering',
@@ -191,6 +214,7 @@ export const Services: CollectionConfig = {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,
+      index: true,
       admin: {
         position: 'sidebar',
         description: 'Show on homepage featured section',
@@ -204,39 +228,6 @@ export const Services: CollectionConfig = {
         position: 'sidebar',
         description: 'Allow online booking for this service',
       },
-    },
-    {
-      name: 'seo',
-      type: 'group',
-      admin: {
-        description: 'Search engine optimization settings',
-      },
-      fields: [
-        {
-          name: 'metaTitle',
-          type: 'text',
-          localized: true,
-          admin: {
-            description: 'Custom title for search results (defaults to service title)',
-          },
-        },
-        {
-          name: 'metaDescription',
-          type: 'textarea',
-          localized: true,
-          admin: {
-            description: 'Description shown in search results (120-160 chars)',
-          },
-        },
-        {
-          name: 'ogImage',
-          type: 'upload',
-          relationTo: 'media',
-          admin: {
-            description: 'Image for social media sharing',
-          },
-        },
-      ],
     },
   ],
 }
