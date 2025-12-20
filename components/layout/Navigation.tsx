@@ -2,15 +2,7 @@
 
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-
-const navItems = [
-  { href: '/services', key: 'services' },
-  { href: '/portfolio', key: 'portfolio' },
-  { href: '/collections', key: 'collections' },
-  { href: '/school', key: 'school' },
-  { href: '/about', key: 'about' },
-  { href: '/contact', key: 'contact' },
-] as const
+import { navItems } from '@/config/navigation'
 
 export function Navigation() {
   const t = useTranslations('navigation')

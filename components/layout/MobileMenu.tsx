@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import { Link } from '@/i18n/navigation'
-import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet'
-import { Menu, X } from 'lucide-react'
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet'
+import { Menu } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
+import { navItems } from '@/config/navigation'
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false)
@@ -29,65 +30,18 @@ export function MobileMenu() {
           <SheetTitle>Mobile Menu</SheetTitle>
           <SheetDescription>Navigation links</SheetDescription>
         </SheetHeader>
-        <SheetClose asChild>
-          <button 
-            className="absolute right-4 top-4 cursor-pointer"
-            aria-label="Close menu"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        </SheetClose>
         
         <nav className="flex flex-col gap-6 mt-8">
-          <Link 
-            href="/" 
-            onClick={closeMenu}
-            className="text-lg font-medium cursor-pointer hover:text-foreground/70 transition-colors"
-          >
-            {t('home')}
-          </Link>
-          <Link 
-            href="/about" 
-            onClick={closeMenu}
-            className="text-lg font-medium cursor-pointer hover:text-foreground/70 transition-colors"
-          >
-            {t('about')}
-          </Link>
-          <Link 
-            href="/services" 
-            onClick={closeMenu}
-            className="text-lg font-medium cursor-pointer hover:text-foreground/70 transition-colors"
-          >
-            {t('services')}
-          </Link>
-          <Link 
-            href="/portfolio" 
-            onClick={closeMenu}
-            className="text-lg font-medium cursor-pointer hover:text-foreground/70 transition-colors"
-          >
-            {t('portfolio')}
-          </Link>
-          <Link 
-            href="/collections" 
-            onClick={closeMenu}
-            className="text-lg font-medium cursor-pointer hover:text-foreground/70 transition-colors"
-          >
-            {t('collections')}
-          </Link>
-          <Link 
-            href="/school" 
-            onClick={closeMenu}
-            className="text-lg font-medium cursor-pointer hover:text-foreground/70 transition-colors"
-          >
-            {t('school')}
-          </Link>
-          <Link 
-            href="/contact" 
-            onClick={closeMenu}
-            className="text-lg font-medium cursor-pointer hover:text-foreground/70 transition-colors"
-          >
-            {t('contact')}
-          </Link>
+          {navItems.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              onClick={closeMenu}
+              className="text-lg font-medium cursor-pointer hover:text-foreground/70 transition-colors"
+            >
+              {t(item.key)}
+            </Link>
+          ))}
         </nav>
         <div className="mt-8 pt-8 border-t">
           <p className="text-sm text-muted-foreground mb-4">{t('language')}</p>

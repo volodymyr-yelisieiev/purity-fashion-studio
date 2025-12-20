@@ -8,12 +8,33 @@ import { Button } from '@/components/ui/button'
 import type { Media as MediaType, Collection as CollectionType, Product } from '@/payload-types'
 import { Metadata } from 'next'
 import { generateSeoMetadata } from '@/lib/seo'
+import { getTranslations } from 'next-intl/server'
 
 interface CollectionDetailPageProps {
   params: Promise<{
     slug: string
     locale: string
   }>
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: configPromise })
+  
+  const collections = await payload.find({
+    collection: 'collections',
+    limit: 100,
+  })
+  
+  const locales = ['en', 'uk', 'ru']
+  
+  return collections.docs
+    .filter((item) => item.slug)
+    .flatMap((item) =>
+      locales.map((locale) => ({
+        locale,
+        slug: item.slug,
+      }))
+    )
 }
 
 export async function generateMetadata({ params }: CollectionDetailPageProps): Promise<Metadata> {
@@ -51,6 +72,7 @@ export async function generateMetadata({ params }: CollectionDetailPageProps): P
 export default async function CollectionDetailPage({ params }: CollectionDetailPageProps) {
   const { slug, locale } = await params
   const payload = await getPayload({ config: configPromise })
+  const t = await getTranslations('collections')
 
   const result = await payload.find({
     collection: 'collections',
@@ -80,7 +102,7 @@ export default async function CollectionDetailPage({ params }: CollectionDetailP
       <Button asChild variant="ghost" className="mb-8">
         <Link href={`/${locale}/collections`}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          {locale === 'uk' ? 'Назад до колекцій' : locale === 'ru' ? 'Назад к коллекциям' : 'Back to Collections'}
+          {t('back')}
         </Link>
       </Button>
 
@@ -114,15 +136,39 @@ export default async function CollectionDetailPage({ params }: CollectionDetailP
         </div>
       )}
 
+      {/* Lookbook Gallery */}
+      {collection.images && collection.images.length > 0 && (
+        <section className="mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {collection.images.map((item, index) => {
+              const image = typeof item.image === 'object' ? item.image as MediaType : null
+              if (!image?.url) return null
+
+              return (
+                <div key={item.id || index} className="space-y-4">
+                  <div className="aspect-3/4 relative overflow-hidden rounded-sm">
+                    <Image
+                      src={image.url}
+                      alt={item.caption || `${collection.name} look ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  {item.caption && (
+                    <p className="text-sm text-muted-foreground italic">{item.caption}</p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
       {/* Products */}
       {products.length > 0 && (
-        <section>
+        <section className="border-t pt-16">
           <h2 className="text-2xl font-semibold mb-8">
-            {locale === 'uk'
-              ? 'Товари з колекції'
-              : locale === 'ru'
-                ? 'Товары из коллекции'
-                : 'Collection Products'}
+            {t('featuredProducts')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => {
@@ -152,24 +198,6 @@ export default async function CollectionDetailPage({ params }: CollectionDetailP
             })}
           </div>
         </section>
-      )}
-
-      {/* No Products Message */}
-      {products.length === 0 && (
-        <div className="text-center py-12 bg-muted">
-          <p className="text-muted-foreground mb-4">
-            {locale === 'uk'
-              ? 'Скоро тут з\'являться товари цієї колекції'
-              : locale === 'ru'
-                ? 'Скоро здесь появятся товары этой коллекции'
-                : 'Collection products coming soon'}
-          </p>
-          <Button asChild variant="outline">
-            <Link href={`/${locale}/contact`}>
-              {locale === 'uk' ? 'Зв\'яжіться з нами' : locale === 'ru' ? 'Свяжитесь с нами' : 'Contact Us'}
-            </Link>
-          </Button>
-        </div>
       )}
     </div>
   )

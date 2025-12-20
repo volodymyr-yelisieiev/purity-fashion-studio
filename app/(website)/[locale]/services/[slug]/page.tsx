@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { generateSeoMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
@@ -23,12 +24,14 @@ export async function generateStaticParams() {
   
   const locales = ['en', 'uk', 'ru']
   
-  return services.docs.flatMap((service) =>
-    locales.map((locale) => ({
-      locale,
-      slug: service.slug,
-    }))
-  )
+  return services.docs
+    .filter((service) => service.slug)
+    .flatMap((service) =>
+      locales.map((locale) => ({
+        locale,
+        slug: service.slug,
+      }))
+    )
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -104,6 +107,18 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             {service.title}
           </h1>
 
+          {service.heroImage && typeof service.heroImage === 'object' && service.heroImage.url && (
+            <div className="relative mt-10 aspect-4/3 overflow-hidden bg-muted">
+              <Image
+                src={service.heroImage.url}
+                alt={service.heroImage.alt || service.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 896px) 100vw, 896px"
+              />
+            </div>
+          )}
+
           <div className="mt-8 flex gap-8 border-b border-border pb-8">
             <div>
               <span className="block text-xs uppercase tracking-widest text-muted-foreground">
@@ -128,6 +143,47 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               {service.description}
             </p>
           </div>
+
+          {service.benefits && service.benefits.length > 0 && (
+            <div className="mt-16">
+              <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-6">
+                {t('benefits')}
+              </h2>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {service.benefits.map((benefit, index) => (
+                  <li key={benefit.id || index} className="flex items-start gap-3">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                    <span className="text-base text-foreground">{benefit.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {service.steps && service.steps.length > 0 && (
+            <div className="mt-16">
+              <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-8">
+                {t('process')}
+              </h2>
+              <div className="space-y-12">
+                {service.steps.map((step, index) => (
+                  <div key={step.id || index} className="flex gap-8">
+                    <span className="font-serif text-4xl font-light text-muted-foreground/30">
+                      {(index + 1).toString().padStart(2, '0')}
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-medium text-foreground mb-2">
+                        {step.title}
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {step.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="mt-16">
             <Link

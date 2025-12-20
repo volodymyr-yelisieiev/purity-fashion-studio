@@ -7,6 +7,7 @@
   "navigation": {
     "home": "Home",
     "services": "Services",
+    "transformation": "Transformation",
     "portfolio": "Portfolio",
     "collections": "Collections",
     "school": "School",
@@ -37,7 +38,19 @@
       "portfolio": "Portfolio",
       "collections": "Collections",
       "school": "School",
+      "transformation": "Transformation",
       "contact": "Contact"
+    }
+  },
+  "transformation": {
+    "hero": {
+      "title": "Style Transformation",
+      "description": "Witness the power of professional styling through our client transformations"
+    },
+    "empty": {
+      "title": "No transformations yet",
+      "description": "We're documenting our latest success stories. Check back soon!",
+      "backHome": "Back to Home"
     }
   },
   "school": {
@@ -49,12 +62,42 @@
       "title": "No courses available yet",
       "description": "We're preparing exciting courses for you. Check back soon!",
       "backHome": "Back to Home"
+    },
+    "back": "Back to School",
+    "curriculum": "Curriculum",
+    "instructor": "Instructor",
+    "testimonials": "What Our Students Say",
+    "faq": "Frequently Asked Questions",
+    "enroll": "Enroll Now",
+    "upcomingDates": "Upcoming Dates",
+    "spotsLeft": "spots left",
+    "duration": "Duration",
+    "level": "Level",
+    "format": "Format",
+    "earlyBird": "Early Bird Price",
+    "formats": {
+      "online": "Online",
+      "in-person": "In-Person",
+      "hybrid": "Hybrid"
+    },
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "all": "All Levels"
     }
   },
   "home": {
     "hero": {
       "title": "PURITY Fashion Studio",
       "subtitle": "Premium minimalist styling services and atelier. Elevate your personal style with curated fashion."
+    },
+    "featuredPosts": {
+      "title": "Featured Posts",
+      "description": "Curated picks across services, portfolio, and collections.",
+      "viewAll": "View All Featured",
+      "emptyTitle": "No featured posts yet",
+      "emptyDescription": "Featured content will appear here once published."
     },
     "featuredWork": "Featured Work",
     "services": {
@@ -76,7 +119,23 @@
     "backToServices": "Back to Services",
     "duration": "Duration",
     "price": "Price",
-    "bookService": "Book This Service"
+    "bookService": "Book This Service",
+    "benefits": "What You Get",
+    "process": "How It Works"
+  },
+  "portfolio": {
+    "back": "Back to Portfolio",
+    "before": "Before",
+    "after": "After",
+    "gallery": "Gallery",
+    "ctaTitle": "Ready for your own transformation?",
+    "ctaButton": "Book a Consultation",
+    "servicesUsed": "Services Used",
+    "testimonial": "Client Testimonial"
+  },
+  "collections": {
+    "back": "Back to Collections",
+    "featuredProducts": "Featured Products"
   },
   "about": {
     "title": "About Us",

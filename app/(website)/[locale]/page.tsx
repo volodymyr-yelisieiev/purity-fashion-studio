@@ -1,9 +1,9 @@
-import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import { HeroSection } from '@/components/sections/HeroSection'
-import { ServicesPreview } from '@/components/sections/ServicesPreview'
 import { PortfolioPreview } from '@/components/sections/PortfolioPreview'
-import { getFeaturedServices, getFeaturedPortfolio, type Locale } from '@/lib/payload'
+import { FeaturedPosts } from '@/components/sections/FeaturedPosts'
+import { getFeaturedPortfolio, type Locale } from '@/lib/payload'
+import { getFeaturedPosts } from '@/lib/featured-posts'
 import { generateSeoMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
 
@@ -23,8 +23,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const t = await getTranslations({ locale, namespace: 'home' })
   const tCommon = await getTranslations({ locale, namespace: 'common' })
 
-  const [featuredServices, featuredPortfolio] = await Promise.all([
-    getFeaturedServices(locale as Locale),
+  const [featuredPosts, featuredPortfolio] = await Promise.all([
+    getFeaturedPosts(locale as Locale, 6),
     getFeaturedPortfolio(locale as Locale),
   ])
 
@@ -37,16 +37,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         ctaLink="/booking"
       />
 
-      {featuredServices.docs.length > 0 && (
-        <ServicesPreview 
-          services={featuredServices.docs.map(s => ({
-            id: String(s.id),
-            title: s.title,
-            slug: s.slug,
-            description: s.excerpt || '',
-            category: s.category,
-          }))}
-          viewAllText={tCommon('viewServices')}
+      {featuredPosts.length > 0 && (
+        <FeaturedPosts
+          items={featuredPosts}
+          viewAllText={t('featuredPosts.viewAll')}
+          viewAllLink={undefined}
         />
       )}
 
@@ -64,13 +59,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           title={t('featuredWork')}
         />
       )}
-      
-      <div className="mt-10 flex items-center justify-center gap-x-6 pb-20">
-        <Link href="/services" className="inline-flex items-center gap-2 text-foreground transition-opacity hover:opacity-70">
-          <span className="underline underline-offset-4">{tCommon('viewServices')}</span>
-          <span aria-hidden="true">→</span>
-        </Link>
-      </div>
     </div>
   )
 }

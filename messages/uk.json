@@ -7,6 +7,7 @@
   "navigation": {
     "home": "Головна",
     "services": "Послуги",
+    "transformation": "Трансформація",
     "portfolio": "Портфоліо",
     "collections": "Колекції",
     "school": "Школа",
@@ -37,7 +38,19 @@
       "portfolio": "Портфоліо",
       "collections": "Колекції",
       "school": "Школа",
+      "transformation": "Трансформація",
       "contact": "Контакти"
+    }
+  },
+  "transformation": {
+    "hero": {
+      "title": "Стильова Трансформація",
+      "description": "Відчуйте силу професійного стайлінгу через трансформації наших клієнтів"
+    },
+    "empty": {
+      "title": "Трансформацій поки немає",
+      "description": "Ми готуємо нові історії успіху. Заходьте пізніше!",
+      "backHome": "На головну"
     }
   },
   "school": {
@@ -49,12 +62,42 @@
       "title": "Курсів поки немає",
       "description": "Ми готуємо для вас цікаві курси. Завітайте пізніше!",
       "backHome": "На головну"
+    },
+    "back": "Назад до школи",
+    "curriculum": "Програма курсу",
+    "instructor": "Викладач",
+    "testimonials": "Що кажуть наші студенти",
+    "faq": "Часті запитання",
+    "enroll": "Записатися на курс",
+    "upcomingDates": "Найближчі дати",
+    "spotsLeft": "місць залишилося",
+    "duration": "Тривалість",
+    "level": "Рівень",
+    "format": "Формат",
+    "earlyBird": "Ціна Early Bird",
+    "formats": {
+      "online": "Онлайн",
+      "in-person": "Офлайн",
+      "hybrid": "Гібрид"
+    },
+    "levels": {
+      "beginner": "Початковий",
+      "intermediate": "Середній",
+      "advanced": "Просунутий",
+      "all": "Всі рівні"
     }
   },
   "home": {
     "hero": {
       "title": "PURITY Fashion Studio",
       "subtitle": "Преміум мінімалістичні стайлінг-послуги та ательє. Піднесіть свій особистий стиль з курованою модою."
+    },
+    "featuredPosts": {
+      "title": "Обране",
+      "description": "Добірка обраних послуг, проєктів та колекцій.",
+      "viewAll": "Усе обране",
+      "emptyTitle": "Обраного поки немає",
+      "emptyDescription": "Обраний контент з'явиться тут після публікації."
     },
     "featuredWork": "Обрані роботи",
     "services": {
@@ -76,7 +119,23 @@
     "backToServices": "Назад до послуг",
     "duration": "Тривалість",
     "price": "Вартість",
-    "bookService": "Записатися на послугу"
+    "bookService": "Записатися на послугу",
+    "benefits": "Що ви отримаєте",
+    "process": "Як це працює"
+  },
+  "portfolio": {
+    "back": "Назад до портфоліо",
+    "before": "До",
+    "after": "Після",
+    "gallery": "Галерея",
+    "ctaTitle": "Готові до власної трансформації?",
+    "ctaButton": "Записатися на консультацію",
+    "servicesUsed": "Використані послуги",
+    "testimonial": "Відгук клієнта"
+  },
+  "collections": {
+    "back": "Назад до колекцій",
+    "featuredProducts": "Представлені товари"
   },
   "about": {
     "title": "Про нас",

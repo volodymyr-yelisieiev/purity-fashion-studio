@@ -1,6 +1,7 @@
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import { Container } from '@/components/ui/layout-components'
+import { navItems } from '@/config/navigation'
 
 export function Footer() {
   const t = useTranslations('footer')
@@ -22,62 +23,16 @@ export function Footer() {
           <div className="flex-1">
             <h4 className="font-semibold text-foreground mb-6">{t('navigation')}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link 
-                  href="/" 
-                  className="hover:text-foreground transition-colors cursor-pointer"
-                >
-                  {t('links.home')}
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/about" 
-                  className="hover:text-foreground transition-colors cursor-pointer"
-                >
-                  {t('links.about')}
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/services" 
-                  className="hover:text-foreground transition-colors cursor-pointer"
-                >
-                  {t('links.services')}
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/portfolio" 
-                  className="hover:text-foreground transition-colors cursor-pointer"
-                >
-                  {t('links.portfolio')}
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/collections" 
-                  className="hover:text-foreground transition-colors cursor-pointer"
-                >
-                  {t('links.collections')}
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/school" 
-                  className="hover:text-foreground transition-colors cursor-pointer"
-                >
-                  {t('links.school')}
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/contact" 
-                  className="hover:text-foreground transition-colors cursor-pointer"
-                >
-                  {t('links.contact')}
-                </Link>
-              </li>
+              {navItems.map((item) => (
+                <li key={item.key}>
+                  <Link
+                    href={item.href}
+                    className="hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    {t(`links.${item.key}`)}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           

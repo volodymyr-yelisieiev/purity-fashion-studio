@@ -6,6 +6,7 @@ import { ArrowLeft, Clock, Monitor, Calendar, Users, CheckCircle } from 'lucide-
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import type { Media as MediaType, Course } from '@/payload-types'
+import { getTranslations } from 'next-intl/server'
 
 interface CourseDetailPageProps {
   params: Promise<{
@@ -14,9 +15,33 @@ interface CourseDetailPageProps {
   }>
 }
 
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: configPromise })
+  
+  const courses = await payload.find({
+    collection: 'courses',
+    limit: 100,
+    where: {
+      status: { equals: 'published' },
+    },
+  })
+  
+  const locales = ['en', 'uk', 'ru']
+  
+  return courses.docs
+    .filter((item) => item.slug)
+    .flatMap((item) =>
+      locales.map((locale) => ({
+        locale,
+        courseSlug: item.slug,
+      }))
+    )
+}
+
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
   const { courseSlug, locale } = await params
   const payload = await getPayload({ config: configPromise })
+  const t = await getTranslations('school')
 
   const result = await payload.find({
     collection: 'courses',
@@ -42,26 +67,13 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   const upcomingDates = (course.upcomingDates || []) as Array<{ startDate: string; endDate?: string; spotsAvailable?: number }>
   const faq = (course.faq || []) as Array<{ question: string; answer: string }>
 
-  const formatLabels: Record<string, Record<string, string>> = {
-    online: { uk: 'Онлайн', ru: 'Онлайн', en: 'Online' },
-    'in-person': { uk: 'Офлайн', ru: 'Офлайн', en: 'In-Person' },
-    hybrid: { uk: 'Гібрид', ru: 'Гибрид', en: 'Hybrid' },
-  }
-
-  const levelLabels: Record<string, Record<string, string>> = {
-    beginner: { uk: 'Початковий', ru: 'Начальный', en: 'Beginner' },
-    intermediate: { uk: 'Середній', ru: 'Средний', en: 'Intermediate' },
-    advanced: { uk: 'Просунутий', ru: 'Продвинутый', en: 'Advanced' },
-    all: { uk: 'Всі рівні', ru: 'Все уровни', en: 'All Levels' },
-  }
-
   return (
     <div className="container mx-auto px-4 py-16">
       {/* Back Button */}
       <Button asChild variant="ghost" className="mb-8">
         <Link href={`/${locale}/school`}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          {locale === 'uk' ? 'Назад до школи' : locale === 'ru' ? 'Назад к школе' : 'Back to School'}
+          {t('back')}
         </Link>
       </Button>
 
@@ -72,10 +84,10 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
           <header className="mb-8">
             <div className="flex flex-wrap gap-2 mb-4">
               <span className="px-3 py-1 text-sm bg-primary/10 text-primary rounded-full">
-                {formatLabels[course.format || 'online']?.[locale]}
+                {t(`formats.${course.format || 'online'}`)}
               </span>
               <span className="px-3 py-1 text-sm bg-muted rounded-full">
-                {levelLabels[course.level || 'beginner']?.[locale]}
+                {t(`levels.${course.level || 'beginner'}`)}
               </span>
             </div>
             <h1 className="text-4xl font-bold mb-4">{course.title}</h1>
@@ -98,67 +110,61 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
           )}
 
           {/* Key Info */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            {duration && (
-              <div className="p-4 bg-muted text-center">
-                <Clock className="h-6 w-6 mx-auto mb-2 text-primary" />
-                <p className="font-semibold">{duration.value} {duration.unit}</p>
-                <p className="text-sm text-muted-foreground">
-                  {locale === 'uk' ? 'Тривалість' : locale === 'ru' ? 'Длительность' : 'Duration'}
-                </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 p-6 bg-muted/50 rounded-sm">
+            <div className="flex items-center gap-3">
+              <Clock className="h-5 w-5 text-primary" />
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">{t('duration')}</p>
+                <p className="font-medium">{duration?.value} {duration?.unit}</p>
               </div>
-            )}
-            <div className="p-4 bg-muted text-center">
-              <Monitor className="h-6 w-6 mx-auto mb-2 text-primary" />
-              <p className="font-semibold">{formatLabels[course.format || 'online']?.[locale]}</p>
-              <p className="text-sm text-muted-foreground">
-                {locale === 'uk' ? 'Формат' : locale === 'ru' ? 'Формат' : 'Format'}
-              </p>
             </div>
-            {upcomingDates.length > 0 && (
-              <div className="p-4 bg-muted text-center">
-                <Calendar className="h-6 w-6 mx-auto mb-2 text-primary" />
-                <p className="font-semibold">
-                  {new Date(upcomingDates[0].startDate).toLocaleDateString(locale)}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {locale === 'uk' ? 'Старт' : locale === 'ru' ? 'Старт' : 'Start Date'}
-                </p>
+            <div className="flex items-center gap-3">
+              <Monitor className="h-5 w-5 text-primary" />
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">{t('format')}</p>
+                <p className="font-medium">{t(`formats.${course.format || 'online'}`)}</p>
               </div>
-            )}
-            {upcomingDates[0]?.spotsAvailable && (
-              <div className="p-4 bg-muted text-center">
-                <Users className="h-6 w-6 mx-auto mb-2 text-primary" />
-                <p className="font-semibold">{upcomingDates[0].spotsAvailable}</p>
-                <p className="text-sm text-muted-foreground">
-                  {locale === 'uk' ? 'Місць' : locale === 'ru' ? 'Мест' : 'Spots'}
-                </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Calendar className="h-5 w-5 text-primary" />
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">{t('upcomingDates')}</p>
+                <p className="font-medium">{upcomingDates.length > 0 ? new Date(upcomingDates[0].startDate).toLocaleDateString(locale) : '-'}</p>
               </div>
-            )}
+            </div>
+            <div className="flex items-center gap-3">
+              <Users className="h-5 w-5 text-primary" />
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">{t('level')}</p>
+                <p className="font-medium">{t(`levels.${course.level || 'beginner'}`)}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="prose prose-lg max-w-none mb-12">
+            <div dangerouslySetInnerHTML={{ __html: course.description || '' }} />
           </div>
 
           {/* Curriculum */}
           {curriculum.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-6">
-                {locale === 'uk' ? 'Програма курсу' : locale === 'ru' ? 'Программа курса' : 'Curriculum'}
-              </h2>
+              <h2 className="text-2xl font-bold mb-6">{t('curriculum')}</h2>
               <div className="space-y-4">
-                {curriculum.map((module, index) => (
-                  <div key={index} className="border p-6">
-                    <h3 className="font-semibold mb-3">
-                      {locale === 'uk' ? 'Модуль' : locale === 'ru' ? 'Модуль' : 'Module'} {index + 1}: {module.module}
+                {curriculum.map((item, index) => (
+                  <div key={index} className="border border-border rounded-sm p-6">
+                    <h3 className="font-bold mb-3 flex items-center gap-3">
+                      <span className="text-primary">{(index + 1).toString().padStart(2, '0')}</span>
+                      {item.module}
                     </h3>
-                    {module.topics && module.topics.length > 0 && (
-                      <ul className="space-y-2">
-                        {module.topics.map((topic, topicIndex) => (
-                          <li key={topicIndex} className="flex items-start gap-2 text-muted-foreground">
-                            <CheckCircle className="h-4 w-4 mt-1 text-primary shrink-0" />
-                            {topic.topic}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    <ul className="space-y-2">
+                      {item.topics?.map((topic, tIndex) => (
+                        <li key={tIndex} className="flex items-start gap-2 text-muted-foreground">
+                          <CheckCircle className="h-4 w-4 mt-1 text-primary/60 shrink-0" />
+                          <span>{topic.topic}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 ))}
               </div>
@@ -167,13 +173,11 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
           {/* Instructor */}
           {instructor && (
-            <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-6">
-                {locale === 'uk' ? 'Викладач' : locale === 'ru' ? 'Преподаватель' : 'Instructor'}
-              </h2>
-              <div className="flex gap-6 p-6 bg-muted">
+            <section className="mb-12 p-8 bg-muted rounded-sm">
+              <h2 className="text-2xl font-bold mb-6">{t('instructor')}</h2>
+              <div className="flex flex-col md:flex-row gap-8 items-start">
                 {instructor.photo?.url && (
-                  <div className="w-24 h-24 relative rounded-full overflow-hidden shrink-0">
+                  <div className="w-32 h-32 relative shrink-0 rounded-full overflow-hidden">
                     <Image
                       src={instructor.photo.url}
                       alt={instructor.name}
@@ -183,12 +187,12 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                   </div>
                 )}
                 <div>
-                  <h3 className="text-lg font-semibold">{instructor.name}</h3>
+                  <h3 className="text-xl font-bold mb-1">{instructor.name}</h3>
                   {instructor.title && (
-                    <p className="text-primary mb-2">{instructor.title}</p>
+                    <p className="text-primary font-medium mb-4">{instructor.title}</p>
                   )}
                   {instructor.bio && (
-                    <p className="text-muted-foreground">{instructor.bio}</p>
+                    <p className="text-muted-foreground leading-relaxed">{instructor.bio}</p>
                   )}
                 </div>
               </div>
@@ -198,16 +202,14 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
           {/* Testimonials */}
           {testimonials.length > 0 && (
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-6">
-                {locale === 'uk' ? 'Відгуки випускників' : locale === 'ru' ? 'Отзывы выпускников' : 'Student Reviews'}
-              </h2>
+              <h2 className="text-2xl font-bold mb-6">{t('testimonials')}</h2>
               <div className="grid gap-6">
                 {testimonials.map((testimonial, index) => (
-                  <blockquote key={index} className="p-6 bg-muted">
-                    <p className="text-lg italic mb-4">&quot;{testimonial.quote}&quot;</p>
-                    <cite className="flex items-center gap-3 not-italic">
+                  <blockquote key={index} className="p-8 bg-muted/50 rounded-sm border border-border">
+                    <p className="text-lg italic font-serif leading-relaxed mb-6">&quot;{testimonial.quote}&quot;</p>
+                    <cite className="flex items-center gap-4 not-italic">
                       {testimonial.photo?.url && (
-                        <div className="w-10 h-10 relative rounded-full overflow-hidden">
+                        <div className="w-12 h-12 relative rounded-full overflow-hidden">
                           <Image
                             src={testimonial.photo.url}
                             alt={testimonial.name}
@@ -216,7 +218,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                           />
                         </div>
                       )}
-                      <span className="font-medium">{testimonial.name}</span>
+                      <span className="font-bold">{testimonial.name}</span>
                     </cite>
                   </blockquote>
                 ))}
@@ -226,17 +228,16 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
           {/* FAQ */}
           {faq.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-semibold mb-6">
-                {locale === 'uk' ? 'Часті запитання' : locale === 'ru' ? 'Частые вопросы' : 'FAQ'}
-              </h2>
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold mb-6">{t('faq')}</h2>
               <div className="space-y-4">
                 {faq.map((item, index) => (
-                  <details key={index} className="border">
-                    <summary className="p-4 cursor-pointer font-medium hover:bg-muted">
+                  <details key={index} className="group border border-border rounded-sm">
+                    <summary className="flex items-center justify-between p-6 cursor-pointer font-bold list-none">
                       {item.question}
+                      <span className="transition-transform group-open:rotate-180">↓</span>
                     </summary>
-                    <div className="p-4 pt-0 text-muted-foreground">
+                    <div className="px-6 pb-6 text-muted-foreground leading-relaxed">
                       {item.answer}
                     </div>
                   </details>
@@ -246,65 +247,63 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
           )}
         </div>
 
-        {/* Sidebar - Pricing & CTA */}
+        {/* Sidebar */}
         <div className="lg:col-span-1">
-          <div className="sticky top-24 bg-card border p-6">
-            {price && (
+          <div className="sticky top-24 space-y-6">
+            {/* Pricing Card */}
+            <div className="border border-border rounded-sm p-6 bg-background shadow-sm">
               <div className="mb-6">
-                {price.earlyBirdAmount && (
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-sm text-muted-foreground line-through">
-                      {price.currency === 'UAH' ? '₴' : '€'}{price.amount}
+                {price?.earlyBirdAmount && (
+                  <div className="mb-2">
+                    <span className="text-sm text-muted-foreground line-through mr-2">
+                      {price.amount} {price.currency}
                     </span>
-                    <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full">
-                      Early Bird
+                    <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-bold rounded uppercase">
+                      {t('earlyBird')}
                     </span>
                   </div>
                 )}
-                <div className="text-3xl font-bold">
-                  {price.currency === 'UAH' ? '₴' : '€'}
-                  {price.earlyBirdAmount || price.amount}
-                </div>
+                <p className="text-4xl font-bold">
+                  {price?.earlyBirdAmount || price?.amount} {price?.currency}
+                </p>
               </div>
-            )}
+
+              <Button className="w-full mb-4" size="lg">
+                {t('enroll')}
+              </Button>
+
+              <p className="text-xs text-center text-muted-foreground">
+                Secure checkout with Stripe or LiqPay
+              </p>
+            </div>
 
             {/* Upcoming Dates */}
             {upcomingDates.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold mb-3">
-                  {locale === 'uk' ? 'Найближчі дати' : locale === 'ru' ? 'Ближайшие даты' : 'Upcoming Dates'}
-                </h3>
-                <ul className="space-y-2">
-                  {upcomingDates.slice(0, 3).map((date, index) => (
-                    <li key={index} className="flex justify-between text-sm">
-                      <span>{new Date(date.startDate).toLocaleDateString(locale)}</span>
-                      {date.spotsAvailable !== undefined && (
-                        <span className="text-muted-foreground">
-                          {date.spotsAvailable} {locale === 'uk' ? 'місць' : locale === 'ru' ? 'мест' : 'spots'}
-                        </span>
-                      )}
-                    </li>
+              <div className="border border-border rounded-sm p-6">
+                <h3 className="font-bold mb-4">{t('upcomingDates')}</h3>
+                <div className="space-y-4">
+                  {upcomingDates.map((date, index) => (
+                    <div key={index} className="flex justify-between items-center text-sm">
+                      <div>
+                        <p className="font-medium">
+                          {new Date(date.startDate).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </p>
+                        {date.spotsAvailable && (
+                          <p className="text-xs text-primary">{date.spotsAvailable} {t('spotsLeft')}</p>
+                        )}
+                      </div>
+                      <Button variant="outline" size="sm">
+                        Select
+                      </Button>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
-
-            <Button asChild className="w-full" size="lg">
-              <Link href={`/${locale}/booking?course=${course.slug}`}>
-                {locale === 'uk' ? 'Записатися на курс' : locale === 'ru' ? 'Записаться на курс' : 'Enroll Now'}
-              </Link>
-            </Button>
-
-            <p className="text-center text-sm text-muted-foreground mt-4">
-              {locale === 'uk'
-                ? 'Або зв\'яжіться з нами для консультації'
-                : locale === 'ru'
-                  ? 'Или свяжитесь с нами для консультации'
-                  : 'Or contact us for more info'}
-            </p>
           </div>
         </div>
       </div>
     </div>
   )
 }
+
