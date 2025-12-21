@@ -196,21 +196,6 @@ export const Services: CollectionConfig = {
       ],
     },
     {
-      name: 'benefits',
-      type: 'array',
-      admin: {
-        description: 'What client gets from this service',
-      },
-      fields: [
-        {
-          name: 'text',
-          type: 'text',
-          localized: true,
-          required: true,
-        },
-      ],
-    },
-    {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,

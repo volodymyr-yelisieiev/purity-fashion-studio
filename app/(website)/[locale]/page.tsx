@@ -29,7 +29,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   ])
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col w-full">
       <HeroSection
         title={t('hero.title')}
         subtitle={t('hero.subtitle')}

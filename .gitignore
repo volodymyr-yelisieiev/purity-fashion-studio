@@ -40,3 +40,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local media and data
+/media
+*.db
+*.sqlite
+*.sql
+*.dump
+.payload

@@ -22,7 +22,7 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    disableLocalStorage: true,
+    disableLocalStorage: !!process.env.BLOB_READ_WRITE_TOKEN,
     adminThumbnail: 'thumbnail',
     resizeOptions: {
       width: 2560,

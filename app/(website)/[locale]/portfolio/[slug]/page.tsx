@@ -1,15 +1,15 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+import { getAvailableLocales, getPayload, getPortfolioBySlug, type Locale } from '@/lib/payload'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft, Star } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import type { Media as MediaType, Portfolio as PortfolioType, Service } from '@/payload-types'
+import type { Media as MediaType, Service } from '@/payload-types'
 import { draftMode } from 'next/headers'
 import { Metadata } from 'next'
 import { generateSeoMetadata } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
+import { LanguageFallback } from '@/components/ui/language-fallback'
 
 interface PortfolioDetailPageProps {
   params: Promise<{
@@ -19,7 +19,7 @@ interface PortfolioDetailPageProps {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload()
   
   const portfolio = await payload.find({
     collection: 'portfolio',
@@ -41,30 +41,34 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PortfolioDetailPageProps): Promise<Metadata> {
   const { slug, locale } = await params
   const { isEnabled: isDraft } = await draftMode()
-  const payload = await getPayload({ config: configPromise })
+  const t = await getTranslations({ locale, namespace: 'portfolio' })
+  const portfolio = await getPortfolioBySlug(slug, locale as Locale, isDraft)
 
-  const result = await payload.find({
-    collection: 'portfolio',
-    where: {
-      slug: { equals: slug },
-    },
-    locale: locale as 'en' | 'ru' | 'uk',
-    limit: 1,
-    draft: isDraft,
-  })
-
-  if (result.docs.length === 0) {
+  if (!portfolio) {
+    const availableLocales = await getAvailableLocales('portfolio', slug, isDraft)
+    const title = availableLocales.length > 0 ? t('notAvailable') : t('notFound')
     return generateSeoMetadata({
-      title: 'Project Not Found | PURITY Fashion Studio',
-      description: 'The requested portfolio project could not be found.',
+      title: `${title} | PURITY Fashion Studio`,
+      description: t('notFoundDescription'),
       locale,
     })
   }
 
-  const portfolio = result.docs[0] as PortfolioType
+  const hasContent = (value?: string | null) => Boolean(value && value.toString().trim().length > 0)
+  const primaryDescription = portfolio.description
+
+  if (!hasContent(portfolio.title) || !hasContent(primaryDescription)) {
+    const availableLocales = await getAvailableLocales('portfolio', slug, isDraft)
+    const title = availableLocales.length > 0 ? t('notAvailable') : t('notFound')
+    return generateSeoMetadata({
+      title: `${title} | PURITY Fashion Studio`,
+      description: t('notFoundDescription'),
+      locale,
+    })
+  }
 
   return generateSeoMetadata({
-    title: portfolio.meta?.title || `${portfolio.title} | PURITY Fashion Studio`,
+    title: portfolio.meta?.title || `${portfolio.title} — Персональний Стайлінг | PURITY Fashion Studio`,
     description: portfolio.meta?.description || portfolio.description || '',
     path: `/portfolio/${slug}`,
     image: typeof portfolio.meta?.image === 'object' ? portfolio.meta?.image?.url || undefined : undefined,
@@ -75,25 +79,48 @@ export async function generateMetadata({ params }: PortfolioDetailPageProps): Pr
 export default async function PortfolioDetailPage({ params }: PortfolioDetailPageProps) {
   const { slug, locale } = await params
   const { isEnabled: isDraft } = await draftMode()
-  const payload = await getPayload({ config: configPromise })
-  const t = await getTranslations('portfolio')
+  const t = await getTranslations({ locale, namespace: 'portfolio' })
+  const tCommon = await getTranslations({ locale, namespace: 'common' })
 
-  const result = await payload.find({
-    collection: 'portfolio',
-    where: {
-      slug: { equals: slug },
-    },
-    locale: locale as 'en' | 'ru' | 'uk',
-    limit: 1,
-    draft: isDraft,
-    depth: 2,
-  })
+  const portfolio = await getPortfolioBySlug(slug, locale as Locale, isDraft)
 
-  if (result.docs.length === 0) {
+  if (!portfolio) {
+    const availableLocales = await getAvailableLocales('portfolio', slug, isDraft)
+    if (availableLocales.length > 0) {
+      return (
+        <LanguageFallback
+          title={t('notAvailable')}
+          description={tCommon('viewInAvailableLanguages')}
+          availableLocales={availableLocales}
+          currentSlug={slug}
+          basePath="/portfolio"
+          backLink={{ href: '/portfolio', label: t('back') }}
+        />
+      )
+    }
     notFound()
   }
 
-  const portfolio = result.docs[0] as PortfolioType
+  const hasContent = (value?: string | null) => Boolean(value && value.toString().trim().length > 0)
+  const primaryDescription = portfolio.description
+
+  if (!hasContent(portfolio.title) || !hasContent(primaryDescription)) {
+    const availableLocales = await getAvailableLocales('portfolio', slug, isDraft)
+    if (availableLocales.length > 0) {
+      return (
+        <LanguageFallback
+          title={t('notAvailable')}
+          description={tCommon('viewInAvailableLanguages')}
+          availableLocales={availableLocales}
+          currentSlug={slug}
+          basePath="/portfolio"
+          backLink={{ href: '/portfolio', label: t('back') }}
+        />
+      )
+    }
+    notFound()
+  }
+
   const beforeImage = (typeof portfolio.beforeImage === 'object' ? portfolio.beforeImage : null) as MediaType | null
   const afterImage = (typeof portfolio.afterImage === 'object' ? portfolio.afterImage : null) as MediaType | null
   const gallery = (portfolio.gallery || []) as Array<{ image: number | MediaType | null; caption?: string | null; id?: string | null }>

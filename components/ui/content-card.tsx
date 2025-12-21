@@ -79,7 +79,7 @@ export function ContentCard({
           </Paragraph>
         )}
 
-        {/* Metadata: Duration, Price, Format, Date */}
+        {/* Metadata: Duration, Format, Date */}
         <div className="flex flex-wrap items-center gap-3 text-sm text-foreground">
           {item.duration && (
             <Label className="text-xs! tracking-[0.15em]!">{item.duration}</Label>
@@ -87,11 +87,6 @@ export function ContentCard({
           {item.format && (
             <span className="rounded-full border px-3 py-1 text-xs uppercase tracking-[0.15em]">
               {item.format}
-            </span>
-          )}
-          {item.priceDisplay && (
-            <span className="rounded-full border px-3 py-1 text-xs uppercase tracking-[0.15em]">
-              {item.priceDisplay}
             </span>
           )}
           {item.date && (

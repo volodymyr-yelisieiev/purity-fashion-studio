@@ -30,7 +30,11 @@ export default function Error({
           We&apos;re sorry, but something unexpected happened. Please try again or contact us if the problem persists.
         </Paragraph>
         <div className="flex gap-4 justify-center">
-          <Button onClick={reset}>Try Again</Button>
+          <Button 
+            onClick={() => reset()}
+          >
+            Try Again
+          </Button>
           <Button variant="outline" asChild>
             <Link href="/">Go Home</Link>
           </Button>

@@ -1,22 +1,25 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+import { getAvailableLocales, getPayload, getCourseBySlug, type Locale } from '@/lib/payload'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft, Clock, Monitor, Calendar, Users, CheckCircle } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import type { Media as MediaType, Course } from '@/payload-types'
+import type { Media as MediaType } from '@/payload-types'
 import { getTranslations } from 'next-intl/server'
+import { Metadata } from 'next'
+import { generateSeoMetadata } from '@/lib/seo'
+import { LanguageFallback } from '@/components/ui/language-fallback'
+import { draftMode } from 'next/headers'
 
 interface CourseDetailPageProps {
   params: Promise<{
-    courseSlug: string
+    slug: string
     locale: string
   }>
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload()
   
   const courses = await payload.find({
     collection: 'courses',
@@ -33,31 +36,104 @@ export async function generateStaticParams() {
     .flatMap((item) =>
       locales.map((locale) => ({
         locale,
-        courseSlug: item.slug,
+        slug: item.slug,
       }))
     )
 }
 
-export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
-  const { courseSlug, locale } = await params
-  const payload = await getPayload({ config: configPromise })
-  const t = await getTranslations('school')
+export async function generateMetadata({ params }: CourseDetailPageProps): Promise<Metadata> {
+  const { slug, locale } = await params
+  const { isEnabled: isDraft } = await draftMode()
+  const t = await getTranslations({ locale, namespace: 'school' })
+  const course = await getCourseBySlug(slug, locale as Locale, isDraft)
 
-  const result = await payload.find({
-    collection: 'courses',
-    where: {
-      slug: { equals: courseSlug },
-      status: { equals: 'published' },
-    },
-    locale: locale as 'en' | 'ru' | 'uk',
-    limit: 1,
+  if (!course) {
+    const availableLocales = await getAvailableLocales('courses', slug, isDraft)
+    const title = availableLocales.length > 0 ? t('notAvailable') : t('notFound')
+    return generateSeoMetadata({
+      title: `${title} | PURITY Fashion Studio`,
+      description: t('notFoundDescription'),
+      locale,
+    })
+  }
+
+  const hasContent = (value?: unknown) => {
+    if (!value) return false
+    if (typeof value === 'string') return value.trim().length > 0
+    if (typeof value === 'object' && value !== null && 'root' in value) return true // Lexical object
+    return Boolean(value)
+  }
+  const primaryDescription = course.description || course.excerpt
+
+  if (!hasContent(course.title) || !hasContent(primaryDescription)) {
+    const availableLocales = await getAvailableLocales('courses', slug, isDraft)
+    const title = availableLocales.length > 0 ? t('notAvailable') : t('notFound')
+    return generateSeoMetadata({
+      title: `${title} | PURITY Fashion Studio`,
+      description: t('notFoundDescription'),
+      locale,
+    })
+  }
+
+  return generateSeoMetadata({
+    title: course.meta?.title || `${course.title} — Персональний Стайлінг | PURITY Fashion Studio`,
+    description: course.meta?.description || course.excerpt || '',
+    path: `/school/${slug}`,
+    image: typeof course.meta?.image === 'object' ? course.meta?.image?.url || undefined : undefined,
+    locale,
   })
+}
 
-  if (result.docs.length === 0) {
+export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
+  const { slug, locale } = await params
+  const { isEnabled: isDraft } = await draftMode()
+  const t = await getTranslations({ locale, namespace: 'school' })
+  const tCommon = await getTranslations({ locale, namespace: 'common' })
+
+  const course = await getCourseBySlug(slug, locale as Locale, isDraft)
+
+  if (!course) {
+    const availableLocales = await getAvailableLocales('courses', slug, isDraft)
+    if (availableLocales.length > 0) {
+      return (
+        <LanguageFallback
+          title={t('notAvailable')}
+          description={tCommon('viewInAvailableLanguages')}
+          availableLocales={availableLocales}
+          currentSlug={slug}
+          basePath="/school"
+          backLink={{ href: '/school', label: t('back') }}
+        />
+      )
+    }
     notFound()
   }
 
-  const course = result.docs[0] as Course
+  const hasContent = (value?: unknown) => {
+    if (!value) return false
+    if (typeof value === 'string') return value.trim().length > 0
+    if (typeof value === 'object' && value !== null && 'root' in value) return true // Lexical object
+    return Boolean(value)
+  }
+  const primaryDescription = course.description || course.excerpt
+
+  if (!hasContent(course.title) || !hasContent(primaryDescription)) {
+    const availableLocales = await getAvailableLocales('courses', slug, isDraft)
+    if (availableLocales.length > 0) {
+      return (
+        <LanguageFallback
+          title={t('notAvailable')}
+          description={tCommon('viewInAvailableLanguages')}
+          availableLocales={availableLocales}
+          currentSlug={slug}
+          basePath="/school"
+          backLink={{ href: '/school', label: t('back') }}
+        />
+      )
+    }
+    notFound()
+  }
+
   const featuredImage = course.featuredImage as MediaType | undefined
   const duration = course.duration as { value: number; unit: string } | undefined
   const price = course.price as { amount: number; currency: string; earlyBirdAmount?: number } | undefined

@@ -5,6 +5,7 @@ import { H3, Paragraph } from '@/components/ui/typography'
 import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import { Container } from '@/components/ui/layout-components'
+import { hasContent } from '@/lib/utils'
 import Image from 'next/image'
 import type { Media } from '@/payload-types'
 
@@ -16,10 +17,14 @@ export default async function SchoolPage({ params }: { params: Promise<{ locale:
   const { docs: courses } = await payload.find({
     collection: 'courses',
     locale: locale as 'en' | 'uk' | 'ru',
+    fallbackLocale: false,
     where: { status: { equals: 'published' } },
     sort: '-createdAt',
     limit: 100,
   })
+
+  // Filter out items without content in current locale
+  const filteredCourses = courses.filter(course => hasContent(course.title))
   
   return (
     <>
@@ -30,7 +35,7 @@ export default async function SchoolPage({ params }: { params: Promise<{ locale:
       
       <section className="bg-background">
         <Container>
-          {courses.length === 0 ? (
+          {filteredCourses.length === 0 ? (
             <EmptyState
               title={t('empty.title')}
               description={t('empty.description')}
@@ -41,7 +46,7 @@ export default async function SchoolPage({ params }: { params: Promise<{ locale:
             />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {courses.map((course) => {
+              {filteredCourses.map((course) => {
                  const coverImage = course.featuredImage as Media | undefined
                  const price = course.price as { amount: number; currency: string } | undefined
 

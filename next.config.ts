@@ -36,6 +36,7 @@ const config: NextConfig = {
       bodySizeLimit: '10mb',
     },
   },
+  serverExternalPackages: ['sharp'],
   headers: async () => {
     return [
       {

@@ -24,7 +24,9 @@
     "viewAllServices": "View All Services",
     "noContent": "No content yet",
     "checkBackSoon": "Please check back soon for updates.",
-    "backToHome": "Back to Home"
+    "backToHome": "Back to Home",
+    "notAvailableInLanguage": "This content is not available in your language yet.",
+    "viewInAvailableLanguages": "View in available languages:"
   },
   "footer": {
     "description": "Premium fashion studio specializing in personal styling and wardrobe transformation",
@@ -85,7 +87,10 @@
       "intermediate": "Intermediate",
       "advanced": "Advanced",
       "all": "All Levels"
-    }
+    },
+    "notFound": "Course Not Found",
+    "notFoundDescription": "The requested course could not be found.",
+    "notAvailable": "This course is not available in English yet."
   },
   "home": {
     "hero": {
@@ -121,7 +126,11 @@
     "price": "Price",
     "bookService": "Book This Service",
     "benefits": "What You Get",
-    "process": "How It Works"
+    "process": "How It Works",
+    "serviceNotFound": "Service Not Found",
+    "serviceNotFoundDescription": "The requested service could not be found.",
+    "notAvailable": "This service is not available in English yet.",
+    "priceOnRequest": "Price on request"
   },
   "portfolio": {
     "back": "Back to Portfolio",
@@ -131,11 +140,17 @@
     "ctaTitle": "Ready for your own transformation?",
     "ctaButton": "Book a Consultation",
     "servicesUsed": "Services Used",
-    "testimonial": "Client Testimonial"
+    "testimonial": "Client Testimonial",
+    "notFound": "Project Not Found",
+    "notFoundDescription": "The requested portfolio project could not be found.",
+    "notAvailable": "This project is not available in English yet."
   },
   "collections": {
     "back": "Back to Collections",
-    "featuredProducts": "Featured Products"
+    "featuredProducts": "Featured Products",
+    "notFound": "Collection Not Found",
+    "notFoundDescription": "The requested collection could not be found.",
+    "notAvailable": "This collection is not available in English yet."
   },
   "about": {
     "title": "About Us",

@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import type { Media as MediaType, Portfolio as PortfolioType } from '@/payload-types'
 import { getPayload } from '@/lib/payload'
+import { hasContent } from '@/lib/utils'
 import { HeroSection } from '@/components/sections'
 import { EmptyState } from '@/components/ui/empty-state'
 import { ContentCard, type ContentCardItem } from '@/components/ui/content-card'
@@ -15,6 +16,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ loca
   const portfolioItems = await payload.find({
     collection: 'portfolio',
     locale: locale as 'en' | 'ru' | 'uk',
+    fallbackLocale: false,
     limit: 50,
     sort: '-createdAt',
     where: {
@@ -22,7 +24,10 @@ export default async function PortfolioPage({ params }: { params: Promise<{ loca
     },
   })
 
-  if (portfolioItems.docs.length === 0) {
+  // Filter out items without content in current locale
+  const filteredDocs = portfolioItems.docs.filter(doc => hasContent(doc.title))
+
+  if (filteredDocs.length === 0) {
     return (
       <>
         <HeroSection
@@ -39,7 +44,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ loca
   }
 
   // Transform to ContentCardItem
-  const cardItems: ContentCardItem[] = portfolioItems.docs.map((item) => {
+  const cardItems: ContentCardItem[] = filteredDocs.map((item) => {
     const portfolio = item as PortfolioType
     const coverImage = (typeof portfolio.afterImage === 'object' ? portfolio.afterImage : null) as MediaType | null
     

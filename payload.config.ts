@@ -19,6 +19,7 @@ import { Courses } from './payload/collections/Courses'
 import { SiteSettings } from './payload/globals/SiteSettings'
 import { fixMigrationIdempotency, simplifyMigrationFilename } from './lib/payload-utils'
 import { migrations } from './migrations'
+import { extractPlainText } from './lib/utils'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -49,7 +50,7 @@ export default buildConfig({
 
         return `${baseUrl}/api/preview?collection=${collectionSlug}&slug=${slug}&locale=${localeCode}&secret=${process.env.PAYLOAD_SECRET}`
       },
-      collections: ['services', 'portfolio', 'products'],
+      collections: ['services', 'portfolio', 'products', 'lookbooks', 'courses'],
     },
   },
   // CSRF protection - only allow requests from these origins
@@ -129,54 +130,89 @@ export default buildConfig({
         media: true,
       },
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
-      clientUploads: true,
+      clientUploads: false,
       addRandomSuffix: true,
       cacheControlMaxAge: 31536000, // 1 year
     }),
     seoPlugin({
-      collections: ['services', 'products', 'portfolio', 'collections', 'courses'],
+      collections: ['services', 'products', 'portfolio', 'lookbooks', 'courses'],
       uploadsCollection: 'media',
-      generateTitle: ({ doc }: any) => {
+      tabbedUI: false,
+      fields: ({ defaultFields }) => {
+        return defaultFields.map((field) => {
+          if ('name' in field && (field.name === 'image' || field.name === 'preview')) {
+            return {
+              ...field,
+              admin: {
+                ...(field.admin || {}),
+                hidden: true,
+              },
+            }
+          }
+          return field
+        }) as any
+      },
+      generateTitle: ({ doc, locale }: any) => {
         const pickLocalized = (value: unknown): string | undefined => {
           if (!value) return undefined
           if (typeof value === 'string') return value
           if (typeof value === 'object') {
             const record = value as Record<string, string | undefined>
-            return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+            return record[locale] || record.uk || record.en || record.ru || Object.values(record).find(Boolean)
           }
           return undefined
         }
 
-        const title = pickLocalized(doc?.title) || pickLocalized(doc?.name) || 'PURITY Fashion Studio'
+        const title = pickLocalized(doc?.title) || pickLocalized(doc?.name) || 'PURITY'
         return `${title} | PURITY Fashion Studio`
       },
-      generateDescription: ({ doc }: any) => {
+      generateDescription: ({ doc, locale }: any) => {
         const pickLocalized = (value: unknown): string | undefined => {
           if (!value) return undefined
           if (typeof value === 'string') return value
           if (typeof value === 'object') {
             const record = value as Record<string, string | undefined>
-            return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+            return record[locale] || record.uk || record.en || record.ru || Object.values(record).find(Boolean)
           }
           return undefined
         }
 
-        return pickLocalized(doc?.excerpt) || pickLocalized(doc?.description) || 'PURITY Fashion Studio'
+        const rawDesc = pickLocalized(doc?.excerpt) || pickLocalized(doc?.description)
+        let desc = ''
+        
+        if (typeof rawDesc === 'string') {
+          desc = rawDesc
+        } else if (typeof rawDesc === 'object' && rawDesc !== null) {
+          desc = extractPlainText(rawDesc)
+        }
+
+        if (desc) {
+          return desc.length > 155 ? desc.substring(0, 152) + '...' : desc
+        }
+        
+        return locale === 'uk' ? 'Професійний стайлінг та послуги ательє від PURITY Fashion Studio.'
+             : locale === 'ru' ? 'Профессиональный стайлинг и услуги ателье от PURITY Fashion Studio.'
+             : 'Professional styling and atelier services by PURITY Fashion Studio.'
       },
-      generateURL: ({ doc, collectionSlug }: any) => {
+      generateImage: ({ doc }: any) => {
+        const image = doc?.heroImage || doc?.afterImage || doc?.coverImage || doc?.featuredImage || doc?.images?.[0]?.image
+        if (typeof image === 'object' && image?.url) return image.url
+        return undefined
+      },
+      generateURL: ({ doc, collectionSlug, locale }: any) => {
         const pickLocalized = (value: unknown): string | undefined => {
           if (!value) return undefined
           if (typeof value === 'string') return value
           if (typeof value === 'object') {
             const record = value as Record<string, string | undefined>
-            return record.uk || record.en || record.ru || Object.values(record).find(Boolean)
+            return record[locale] || record.uk || record.en || record.ru || Object.values(record).find(Boolean)
           }
           return undefined
         }
 
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://purity.studio'
         const slug = pickLocalized(doc?.slug) || 'unknown'
-        return `${siteUrl}/${collectionSlug}/${slug}`
+        return `${siteUrl}/${locale}/${collectionSlug}/${slug}`
       },
     }),
   ],

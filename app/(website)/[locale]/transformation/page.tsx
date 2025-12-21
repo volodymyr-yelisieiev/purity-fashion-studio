@@ -5,6 +5,7 @@ import { H3, Paragraph } from '@/components/ui/typography'
 import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import { Container } from '@/components/ui/layout-components'
+import { hasContent } from '@/lib/utils'
 import Image from 'next/image'
 import type { Media } from '@/payload-types'
 
@@ -16,6 +17,7 @@ export default async function TransformationPage({ params }: { params: Promise<{
   const { docs: transformations } = await payload.find({
     collection: 'portfolio',
     locale: locale as 'en' | 'uk' | 'ru',
+    fallbackLocale: false,
     where: { 
       category: { equals: 'transformation' },
       status: { equals: 'published' }
@@ -23,6 +25,9 @@ export default async function TransformationPage({ params }: { params: Promise<{
     sort: '-createdAt',
     limit: 100,
   })
+
+  // Filter out items without content in current locale
+  const filteredTransformations = transformations.filter(item => hasContent(item.title))
   
   return (
     <>
@@ -33,7 +38,7 @@ export default async function TransformationPage({ params }: { params: Promise<{
       
       <section className="bg-background">
         <Container>
-          {transformations.length === 0 ? (
+          {filteredTransformations.length === 0 ? (
             <EmptyState
               title={t('empty.title')}
               description={t('empty.description')}
@@ -44,7 +49,7 @@ export default async function TransformationPage({ params }: { params: Promise<{
             />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {transformations.map((item) => {
+              {filteredTransformations.map((item) => {
                  // Use afterImage as the preview image for transformations
                  const previewImage = item.afterImage as Media | undefined
 

@@ -12,8 +12,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_products_category' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_products_category" AS ENUM('dresses', 'tops', 'bottoms', 'outerwear', 'accessories', 'bags', 'jewelry'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_portfolio_status' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_portfolio_status" AS ENUM('draft', 'published'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_portfolio_category' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_portfolio_category" AS ENUM('styling', 'wardrobe-audit', 'transformation', 'event', 'shopping'); END IF; END $$;
-  DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_collections_status' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_collections_status" AS ENUM('draft', 'published'); END IF; END $$;
-  DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_collections_season' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_collections_season" AS ENUM('spring', 'summer', 'autumn', 'winter', 'all-season'); END IF; END $$;
+  DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_lookbooks_status' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_lookbooks_status" AS ENUM('draft', 'published'); END IF; END $$;
+  DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_lookbooks_season' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_lookbooks_season" AS ENUM('spring', 'summer', 'autumn', 'winter', 'all-season'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_orders_items_type' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_orders_items_type" AS ENUM('service', 'product'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_orders_status' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_orders_status" AS ENUM('pending', 'processing', 'paid', 'failed', 'cancelled', 'completed', 'refunded'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_orders_currency' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_orders_currency" AS ENUM('UAH', 'EUR'); END IF; END $$;
@@ -98,19 +98,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE IF NOT EXISTS "services_steps_locales" (
   	"title" varchar NOT NULL,
   	"description" varchar,
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"_locale" "_locales" NOT NULL,
-  	"_parent_id" varchar NOT NULL
-  );
-  
-  CREATE TABLE IF NOT EXISTS "services_benefits" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" integer NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL
-  );
-  
-  CREATE TABLE IF NOT EXISTS "services_benefits_locales" (
-  	"text" varchar NOT NULL,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" varchar NOT NULL
@@ -257,24 +244,24 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"services_id" integer
   );
   
-  CREATE TABLE IF NOT EXISTS "collections_images" (
+  CREATE TABLE IF NOT EXISTS "lookbooks_images" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
   	"image_id" integer NOT NULL
   );
   
-  CREATE TABLE IF NOT EXISTS "collections_images_locales" (
+  CREATE TABLE IF NOT EXISTS "lookbooks_images_locales" (
   	"caption" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" varchar NOT NULL
   );
   
-  CREATE TABLE IF NOT EXISTS "collections" (
+  CREATE TABLE IF NOT EXISTS "lookbooks" (
   	"id" serial PRIMARY KEY NOT NULL,
-  	"status" "enum_collections_status" DEFAULT 'draft' NOT NULL,
-  	"season" "enum_collections_season",
+  	"status" "enum_lookbooks_status" DEFAULT 'draft' NOT NULL,
+  	"season" "enum_lookbooks_season",
   	"cover_image_id" integer,
   	"featured" boolean DEFAULT false,
   	"release_date" timestamp(3) with time zone,
@@ -282,7 +269,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
   
-  CREATE TABLE IF NOT EXISTS "collections_locales" (
+  CREATE TABLE IF NOT EXISTS "lookbooks_locales" (
   	"name" varchar NOT NULL,
   	"slug" varchar NOT NULL,
   	"description" varchar,
@@ -294,7 +281,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_parent_id" integer NOT NULL
   );
   
-  CREATE TABLE IF NOT EXISTS "collections_rels" (
+  CREATE TABLE IF NOT EXISTS "lookbooks_rels" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" integer,
   	"parent_id" integer NOT NULL,
@@ -459,7 +446,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"services_id" integer,
   	"products_id" integer,
   	"portfolio_id" integer,
-  	"collections_id" integer,
+  	"lookbooks_id" integer,
   	"orders_id" integer,
   	"courses_id" integer
   );
@@ -534,8 +521,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   DO $$ BEGIN ALTER TABLE "media_locales" ADD CONSTRAINT "media_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "services_steps" ADD CONSTRAINT "services_steps_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."services"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "services_steps_locales" ADD CONSTRAINT "services_steps_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."services_steps"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "services_benefits" ADD CONSTRAINT "services_benefits_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."services"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "services_benefits_locales" ADD CONSTRAINT "services_benefits_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."services_benefits"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "services" ADD CONSTRAINT "services_hero_image_id_media_id_fk" FOREIGN KEY ("hero_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "services_locales" ADD CONSTRAINT "services_locales_meta_image_id_media_id_fk" FOREIGN KEY ("meta_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "services_locales" ADD CONSTRAINT "services_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."services"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
@@ -556,14 +541,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   DO $$ BEGIN ALTER TABLE "portfolio_locales" ADD CONSTRAINT "portfolio_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."portfolio"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "portfolio_rels" ADD CONSTRAINT "portfolio_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."portfolio"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "portfolio_rels" ADD CONSTRAINT "portfolio_rels_services_fk" FOREIGN KEY ("services_id") REFERENCES "public"."services"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "collections_images" ADD CONSTRAINT "collections_images_image_id_media_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "collections_images" ADD CONSTRAINT "collections_images_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."collections"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "collections_images_locales" ADD CONSTRAINT "collections_images_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."collections_images"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "collections" ADD CONSTRAINT "collections_cover_image_id_media_id_fk" FOREIGN KEY ("cover_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "collections_locales" ADD CONSTRAINT "collections_locales_meta_image_id_media_id_fk" FOREIGN KEY ("meta_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "collections_locales" ADD CONSTRAINT "collections_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."collections"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "collections_rels" ADD CONSTRAINT "collections_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."collections"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "collections_rels" ADD CONSTRAINT "collections_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  DO $$ BEGIN ALTER TABLE "lookbooks_images" ADD CONSTRAINT "lookbooks_images_image_id_media_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  DO $$ BEGIN ALTER TABLE "lookbooks_images" ADD CONSTRAINT "lookbooks_images_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."lookbooks"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  DO $$ BEGIN ALTER TABLE "lookbooks_images_locales" ADD CONSTRAINT "lookbooks_images_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."lookbooks_images"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  DO $$ BEGIN ALTER TABLE "lookbooks" ADD CONSTRAINT "lookbooks_cover_image_id_media_id_fk" FOREIGN KEY ("cover_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  DO $$ BEGIN ALTER TABLE "lookbooks_locales" ADD CONSTRAINT "lookbooks_locales_meta_image_id_media_id_fk" FOREIGN KEY ("meta_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  DO $$ BEGIN ALTER TABLE "lookbooks_locales" ADD CONSTRAINT "lookbooks_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."lookbooks"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  DO $$ BEGIN ALTER TABLE "lookbooks_rels" ADD CONSTRAINT "lookbooks_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."lookbooks"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  DO $$ BEGIN ALTER TABLE "lookbooks_rels" ADD CONSTRAINT "lookbooks_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "orders_items" ADD CONSTRAINT "orders_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."orders"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "courses_curriculum_topics" ADD CONSTRAINT "courses_curriculum_topics_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."courses_curriculum"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "courses_curriculum_topics_locales" ADD CONSTRAINT "courses_curriculum_topics_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."courses_curriculum_topics"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
@@ -585,7 +570,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   DO $$ BEGIN ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_services_fk" FOREIGN KEY ("services_id") REFERENCES "public"."services"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_portfolio_fk" FOREIGN KEY ("portfolio_id") REFERENCES "public"."portfolio"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
-  DO $$ BEGIN ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_collections_fk" FOREIGN KEY ("collections_id") REFERENCES "public"."collections"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  DO $$ BEGIN ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_lookbooks_fk" FOREIGN KEY ("lookbooks_id") REFERENCES "public"."lookbooks"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_orders_fk" FOREIGN KEY ("orders_id") REFERENCES "public"."orders"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_courses_fk" FOREIGN KEY ("courses_id") REFERENCES "public"."courses"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
   DO $$ BEGIN ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_preferences"("id") ON DELETE cascade ON UPDATE no action; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
@@ -609,9 +594,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "services_steps_order_idx" ON "services_steps" USING btree ("_order");
   CREATE INDEX IF NOT EXISTS "services_steps_parent_id_idx" ON "services_steps" USING btree ("_parent_id");
   CREATE UNIQUE INDEX IF NOT EXISTS "services_steps_locales_locale_parent_id_unique" ON "services_steps_locales" USING btree ("_locale","_parent_id");
-  CREATE INDEX IF NOT EXISTS "services_benefits_order_idx" ON "services_benefits" USING btree ("_order");
-  CREATE INDEX IF NOT EXISTS "services_benefits_parent_id_idx" ON "services_benefits" USING btree ("_parent_id");
-  CREATE UNIQUE INDEX IF NOT EXISTS "services_benefits_locales_locale_parent_id_unique" ON "services_benefits_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX IF NOT EXISTS "services_status_idx" ON "services" USING btree ("status");
   CREATE INDEX IF NOT EXISTS "services_category_idx" ON "services" USING btree ("category");
   CREATE INDEX IF NOT EXISTS "services_hero_image_idx" ON "services" USING btree ("hero_image_id");
@@ -657,23 +639,23 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "portfolio_rels_parent_idx" ON "portfolio_rels" USING btree ("parent_id");
   CREATE INDEX IF NOT EXISTS "portfolio_rels_path_idx" ON "portfolio_rels" USING btree ("path");
   CREATE INDEX IF NOT EXISTS "portfolio_rels_services_id_idx" ON "portfolio_rels" USING btree ("services_id");
-  CREATE INDEX IF NOT EXISTS "collections_images_order_idx" ON "collections_images" USING btree ("_order");
-  CREATE INDEX IF NOT EXISTS "collections_images_parent_id_idx" ON "collections_images" USING btree ("_parent_id");
-  CREATE INDEX IF NOT EXISTS "collections_images_image_idx" ON "collections_images" USING btree ("image_id");
-  CREATE UNIQUE INDEX IF NOT EXISTS "collections_images_locales_locale_parent_id_unique" ON "collections_images_locales" USING btree ("_locale","_parent_id");
-  CREATE INDEX IF NOT EXISTS "collections_status_idx" ON "collections" USING btree ("status");
-  CREATE INDEX IF NOT EXISTS "collections_season_idx" ON "collections" USING btree ("season");
-  CREATE INDEX IF NOT EXISTS "collections_cover_image_idx" ON "collections" USING btree ("cover_image_id");
-  CREATE INDEX IF NOT EXISTS "collections_featured_idx" ON "collections" USING btree ("featured");
-  CREATE INDEX IF NOT EXISTS "collections_updated_at_idx" ON "collections" USING btree ("updated_at");
-  CREATE INDEX IF NOT EXISTS "collections_created_at_idx" ON "collections" USING btree ("created_at");
-  CREATE UNIQUE INDEX IF NOT EXISTS "collections_slug_idx" ON "collections_locales" USING btree ("slug","_locale");
-  CREATE INDEX IF NOT EXISTS "collections_meta_meta_image_idx" ON "collections_locales" USING btree ("meta_image_id","_locale");
-  CREATE UNIQUE INDEX IF NOT EXISTS "collections_locales_locale_parent_id_unique" ON "collections_locales" USING btree ("_locale","_parent_id");
-  CREATE INDEX IF NOT EXISTS "collections_rels_order_idx" ON "collections_rels" USING btree ("order");
-  CREATE INDEX IF NOT EXISTS "collections_rels_parent_idx" ON "collections_rels" USING btree ("parent_id");
-  CREATE INDEX IF NOT EXISTS "collections_rels_path_idx" ON "collections_rels" USING btree ("path");
-  CREATE INDEX IF NOT EXISTS "collections_rels_products_id_idx" ON "collections_rels" USING btree ("products_id");
+  CREATE INDEX IF NOT EXISTS "lookbooks_images_order_idx" ON "lookbooks_images" USING btree ("_order");
+  CREATE INDEX IF NOT EXISTS "lookbooks_images_parent_id_idx" ON "lookbooks_images" USING btree ("_parent_id");
+  CREATE INDEX IF NOT EXISTS "lookbooks_images_image_idx" ON "lookbooks_images" USING btree ("image_id");
+  CREATE UNIQUE INDEX IF NOT EXISTS "lookbooks_images_locales_locale_parent_id_unique" ON "lookbooks_images_locales" USING btree ("_locale","_parent_id");
+  CREATE INDEX IF NOT EXISTS "lookbooks_status_idx" ON "lookbooks" USING btree ("status");
+  CREATE INDEX IF NOT EXISTS "lookbooks_season_idx" ON "lookbooks" USING btree ("season");
+  CREATE INDEX IF NOT EXISTS "lookbooks_cover_image_idx" ON "lookbooks" USING btree ("cover_image_id");
+  CREATE INDEX IF NOT EXISTS "lookbooks_featured_idx" ON "lookbooks" USING btree ("featured");
+  CREATE INDEX IF NOT EXISTS "lookbooks_updated_at_idx" ON "lookbooks" USING btree ("updated_at");
+  CREATE INDEX IF NOT EXISTS "lookbooks_created_at_idx" ON "lookbooks" USING btree ("created_at");
+  CREATE UNIQUE INDEX IF NOT EXISTS "lookbooks_slug_idx" ON "lookbooks_locales" USING btree ("slug","_locale");
+  CREATE INDEX IF NOT EXISTS "lookbooks_meta_meta_image_idx" ON "lookbooks_locales" USING btree ("meta_image_id","_locale");
+  CREATE UNIQUE INDEX IF NOT EXISTS "lookbooks_locales_locale_parent_id_unique" ON "lookbooks_locales" USING btree ("_locale","_parent_id");
+  CREATE INDEX IF NOT EXISTS "lookbooks_rels_order_idx" ON "lookbooks_rels" USING btree ("order");
+  CREATE INDEX IF NOT EXISTS "lookbooks_rels_parent_idx" ON "lookbooks_rels" USING btree ("parent_id");
+  CREATE INDEX IF NOT EXISTS "lookbooks_rels_path_idx" ON "lookbooks_rels" USING btree ("path");
+  CREATE INDEX IF NOT EXISTS "lookbooks_rels_products_id_idx" ON "lookbooks_rels" USING btree ("products_id");
   CREATE INDEX IF NOT EXISTS "orders_items_order_idx" ON "orders_items" USING btree ("_order");
   CREATE INDEX IF NOT EXISTS "orders_items_parent_id_idx" ON "orders_items" USING btree ("_parent_id");
   CREATE UNIQUE INDEX IF NOT EXISTS "orders_order_number_idx" ON "orders" USING btree ("order_number");
@@ -717,7 +699,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_services_id_idx" ON "payload_locked_documents_rels" USING btree ("services_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_products_id_idx" ON "payload_locked_documents_rels" USING btree ("products_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_portfolio_id_idx" ON "payload_locked_documents_rels" USING btree ("portfolio_id");
-  CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_collections_id_idx" ON "payload_locked_documents_rels" USING btree ("collections_id");
+  CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_lookbooks_id_idx" ON "payload_locked_documents_rels" USING btree ("lookbooks_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_orders_id_idx" ON "payload_locked_documents_rels" USING btree ("orders_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_courses_id_idx" ON "payload_locked_documents_rels" USING btree ("courses_id");
   CREATE INDEX IF NOT EXISTS "payload_preferences_key_idx" ON "payload_preferences" USING btree ("key");
@@ -743,8 +725,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "media_locales" CASCADE;
   DROP TABLE "services_steps" CASCADE;
   DROP TABLE "services_steps_locales" CASCADE;
-  DROP TABLE "services_benefits" CASCADE;
-  DROP TABLE "services_benefits_locales" CASCADE;
   DROP TABLE "services" CASCADE;
   DROP TABLE "services_locales" CASCADE;
   DROP TABLE "products_images" CASCADE;
@@ -759,11 +739,11 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "portfolio" CASCADE;
   DROP TABLE "portfolio_locales" CASCADE;
   DROP TABLE "portfolio_rels" CASCADE;
-  DROP TABLE "collections_images" CASCADE;
-  DROP TABLE "collections_images_locales" CASCADE;
-  DROP TABLE "collections" CASCADE;
-  DROP TABLE "collections_locales" CASCADE;
-  DROP TABLE "collections_rels" CASCADE;
+  DROP TABLE "lookbooks_images" CASCADE;
+  DROP TABLE "lookbooks_images_locales" CASCADE;
+  DROP TABLE "lookbooks" CASCADE;
+  DROP TABLE "lookbooks_locales" CASCADE;
+  DROP TABLE "lookbooks_rels" CASCADE;
   DROP TABLE "orders_items" CASCADE;
   DROP TABLE "orders" CASCADE;
   DROP TABLE "courses_curriculum_topics" CASCADE;
@@ -795,8 +775,8 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_products_category";
   DROP TYPE "public"."enum_portfolio_status";
   DROP TYPE "public"."enum_portfolio_category";
-  DROP TYPE "public"."enum_collections_status";
-  DROP TYPE "public"."enum_collections_season";
+  DROP TYPE "public"."enum_lookbooks_status";
+  DROP TYPE "public"."enum_lookbooks_season";
   DROP TYPE "public"."enum_orders_items_type";
   DROP TYPE "public"."enum_orders_status";
   DROP TYPE "public"."enum_orders_currency";

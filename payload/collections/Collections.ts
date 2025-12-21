@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { slugify } from '@/lib/utils'
 
 export const Collections: CollectionConfig = {
-  slug: 'collections', // Fashion collections
+  slug: 'lookbooks', // Fashion collections
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'season', 'featured', 'releaseDate'],

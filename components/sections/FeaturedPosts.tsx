@@ -38,7 +38,7 @@ export function FeaturedPosts({
 
   return (
     <Section spacing="md">
-      <Container size="lg">
+      <Container className="w-full">
         <H2 className="mb-16 text-center">{title || t('title')}</H2>
         <Grid cols={3} gap="md">
           {cardItems.map((item) => (

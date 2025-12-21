@@ -208,7 +208,7 @@ export async function createTestCollection(): Promise<TestDocument> {
     featured: false,
   }
 
-  const response = await fetch(ENDPOINTS.collections, {
+  const response = await fetch(ENDPOINTS.lookbooks, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -225,8 +225,8 @@ export async function createTestCollection(): Promise<TestDocument> {
   const result: PayloadResponse<TestDocument> = await response.json()
   const doc = result.doc!
 
-  const existing = createdDocuments.get('collections') || []
-  createdDocuments.set('collections', [...existing, doc])
+  const existing = createdDocuments.get('lookbooks') || []
+  createdDocuments.set('lookbooks', [...existing, doc])
 
   console.log(`   Created collection: ${doc.slug}`)
   return doc

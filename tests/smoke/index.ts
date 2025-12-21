@@ -176,9 +176,9 @@ async function testContentReading(): Promise<void> {
     console.log(`   Found ${docs.length} portfolio items`)
   })
 
-  await runTest('Fetch Collections', async () => {
-    const docs = await fetchCollection('collections')
-    console.log(`   Found ${docs.length} collections`)
+  await runTest('Fetch Lookbooks', async () => {
+    const docs = await fetchCollection('lookbooks')
+    console.log(`   Found ${docs.length} lookbooks`)
   })
 
   await runTest('Fetch Courses', async () => {

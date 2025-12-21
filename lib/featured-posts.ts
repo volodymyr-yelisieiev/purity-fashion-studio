@@ -1,6 +1,7 @@
 import { getPayload } from '@/lib/payload'
 import type { Locale } from '@/lib/payload'
-import type { Media, Service, Portfolio, Collection } from '@/payload-types'
+import type { Media, Service, Portfolio, Lookbook as Collection } from '@/payload-types'
+import { hasContent } from './utils'
 
 export type FeaturedPostItem = {
   id: string
@@ -16,9 +17,6 @@ export type FeaturedPostItem = {
 }
 
 function getServicePriceDisplay(service: Service, locale: Locale): string | null {
-  const priceNote = service.pricing?.priceNote
-  if (priceNote) return priceNote
-
   const priceEUR = service.pricing?.eur
   const priceUAH = service.pricing?.uah
 
@@ -34,6 +32,7 @@ export async function getFeaturedPosts(locale: Locale, limit = 6): Promise<Featu
     payload.find({
       collection: 'services',
       locale,
+      fallbackLocale: false,
       where: { featured: { equals: true }, status: { equals: 'published' } },
       sort: '-updatedAt',
       depth: 1,
@@ -42,14 +41,16 @@ export async function getFeaturedPosts(locale: Locale, limit = 6): Promise<Featu
     payload.find({
       collection: 'portfolio',
       locale,
+      fallbackLocale: false,
       where: { featured: { equals: true }, status: { equals: 'published' } },
       sort: '-updatedAt',
       depth: 1,
       limit,
     }),
     payload.find({
-      collection: 'collections',
+      collection: 'lookbooks',
       locale,
+      fallbackLocale: false,
       where: { featured: { equals: true }, status: { equals: 'published' } },
       sort: '-updatedAt',
       depth: 1,
@@ -58,7 +59,7 @@ export async function getFeaturedPosts(locale: Locale, limit = 6): Promise<Featu
   ])
 
   const serviceItems: FeaturedPostItem[] = services.docs
-    .filter((service) => service.slug)
+    .filter((service) => service.slug && hasContent(service.title))
     .map((service) => {
       const hero = typeof service.heroImage === 'object' ? (service.heroImage as Media | null) : null
       return {
@@ -76,7 +77,7 @@ export async function getFeaturedPosts(locale: Locale, limit = 6): Promise<Featu
     })
 
   const portfolioItems: FeaturedPostItem[] = portfolio.docs
-    .filter((item) => (item as Portfolio).slug)
+    .filter((item) => (item as Portfolio).slug && hasContent((item as Portfolio).title))
     .map((item) => {
       const project = item as Portfolio
       const cover = typeof project.afterImage === 'object' ? (project.afterImage as Media | null) : null
@@ -95,7 +96,7 @@ export async function getFeaturedPosts(locale: Locale, limit = 6): Promise<Featu
     })
 
   const collectionItems: FeaturedPostItem[] = collections.docs
-    .filter((item) => (item as Collection).slug)
+    .filter((item) => (item as Collection).slug && hasContent((item as Collection).name))
     .map((item) => {
       const collection = item as Collection
       const cover = typeof collection.coverImage === 'object' ? (collection.coverImage as Media | null) : null

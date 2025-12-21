@@ -12,33 +12,32 @@ export const revalidateContent = (collectionSlug: string): CollectionAfterChange
 
     // Construct paths to revalidate
     // 1. The specific item page
-    const itemPath = `/${collectionSlug}/${doc.slug}`
-    
-    // 2. The collection index page
-    const collectionPath = `/${collectionSlug}`
+    const locales = ['uk', 'ru', 'en']
+    const paths: string[] = []
 
-    // 3. The home page (in case it's featured)
-    const homePath = '/'
+    locales.forEach((locale) => {
+      // 1. The specific item page
+      paths.push(`/${locale}/${collectionSlug}/${doc.slug}`)
+      // 2. The collection index page
+      paths.push(`/${locale}/${collectionSlug}`)
+      // 3. The home page
+      paths.push(`/${locale}`)
+    })
 
-    const paths = [itemPath, collectionPath, homePath]
-
-    // We can fire these in parallel
-    await Promise.all(paths.map(async (path) => {
-      try {
-        await fetch(`${siteUrl}/api/revalidate?secret=${secret}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            path,
-          }),
-        })
-        req.payload.logger.info(`Revalidated path: ${path}`)
-      } catch (err) {
-        req.payload.logger.error(`Error revalidating path ${path}: ${err}`)
-      }
-    }))
+    try {
+      await fetch(`${siteUrl}/api/revalidate?secret=${secret}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          paths,
+        }),
+      })
+      req.payload.logger.info(`Revalidated ${paths.length} paths for ${collectionSlug}`)
+    } catch (err) {
+      req.payload.logger.error(`Error revalidating paths: ${err}`)
+    }
 
   } catch (err) {
     req.payload.logger.error(`Error in revalidate hook: ${err}`)

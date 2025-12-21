@@ -4,8 +4,9 @@ import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { generateSeoMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
-import { getPayload, getServiceBySlug, type Locale } from '@/lib/payload'
+import { getAvailableLocales, getPayload, getServiceBySlug, type Locale } from '@/lib/payload'
 import { draftMode } from 'next/headers'
+import { LanguageFallback } from '@/components/ui/language-fallback'
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>
@@ -37,12 +38,27 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, locale } = await params
   const { isEnabled: isDraft } = await draftMode()
+  const t = await getTranslations({ locale, namespace: 'services' })
   const service = await getServiceBySlug(slug, locale as Locale, isDraft)
 
   if (!service) {
-    const t = await getTranslations({ locale, namespace: 'services' })
+    const availableLocales = await getAvailableLocales('services', slug, isDraft)
+    const title = availableLocales.length > 0 ? t('notAvailable') : t('serviceNotFound')
     return generateSeoMetadata({
-      title: `${t('serviceNotFound')} | PURITY Fashion Studio`,
+      title: `${title} | PURITY Fashion Studio`,
+      description: t('serviceNotFoundDescription'),
+      locale,
+    })
+  }
+
+  const hasContent = (value?: string | null) => Boolean(value && value.toString().trim().length > 0)
+  const primaryDescription = service.description || service.excerpt
+
+  if (!hasContent(service.title) || !hasContent(primaryDescription)) {
+    const availableLocales = await getAvailableLocales('services', slug, isDraft)
+    const title = availableLocales.length > 0 ? t('notAvailable') : t('serviceNotFound')
+    return generateSeoMetadata({
+      title: `${title} | PURITY Fashion Studio`,
       description: t('serviceNotFoundDescription'),
       locale,
     })
@@ -61,32 +77,57 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug, locale } = await params
   const { isEnabled: isDraft } = await draftMode()
   const t = await getTranslations({ locale, namespace: 'services' })
-  
+  const tCommon = await getTranslations({ locale, namespace: 'common' })
+
   const service = await getServiceBySlug(slug, locale as Locale, isDraft)
 
   if (!service) {
+    const availableLocales = await getAvailableLocales('services', slug, isDraft)
+    if (availableLocales.length > 0) {
+      return (
+        <LanguageFallback
+          title={t('notAvailable')}
+          description={tCommon('viewInAvailableLanguages')}
+          availableLocales={availableLocales}
+          currentSlug={slug}
+          basePath="/services"
+          backLink={{ href: '/services', label: t('backToServices') }}
+        />
+      )
+    }
     notFound()
   }
 
-  // Format price
+  const hasContent = (value?: string | null) => Boolean(value && value.toString().trim().length > 0)
+  const primaryDescription = service.description || service.excerpt
+
+  if (!hasContent(service.title) || !hasContent(primaryDescription)) {
+    const availableLocales = await getAvailableLocales('services', slug, isDraft)
+    if (availableLocales.length > 0) {
+      return (
+        <LanguageFallback
+          title={t('notAvailable')}
+          description={tCommon('viewInAvailableLanguages')}
+          availableLocales={availableLocales}
+          currentSlug={slug}
+          basePath="/services"
+          backLink={{ href: '/services', label: t('backToServices') }}
+        />
+      )
+    }
+    notFound()
+  }
+
+  // Format prices
   const priceUAH = service.pricing?.uah
   const priceEUR = service.pricing?.eur
+  const priceNote = service.pricing?.priceNote
   
-  let priceDisplay = ''
-  if (service.pricing?.priceNote) {
-    priceDisplay = service.pricing.priceNote
-  } else if (locale === 'en' && priceEUR) {
-    priceDisplay = `€${priceEUR}`
-  } else if (priceUAH) {
-    priceDisplay = `${priceUAH} ₴`
-  } else {
-    priceDisplay = t('priceOnRequest')
-  }
+  const prices = []
+  if (priceUAH) prices.push(`${priceUAH} ₴`)
+  if (priceEUR) prices.push(`€${priceEUR}`)
   
-  // Fallback if translation key missing or logic fails
-  if (priceDisplay === 'services.priceOnRequest') {
-     priceDisplay = 'On Request'
-  }
+  const priceDisplay = prices.length > 0 ? prices.join(' / ') : t('priceOnRequest')
 
   return (
     <main className="min-h-screen bg-background">
@@ -135,6 +176,11 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               <span className="mt-1 block text-base text-foreground">
                 {priceDisplay}
               </span>
+              {priceNote && (
+                <span className="mt-1 block text-xs text-muted-foreground italic">
+                  {priceNote}
+                </span>
+              )}
             </div>
           </div>
 
@@ -143,22 +189,6 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               {service.description}
             </p>
           </div>
-
-          {service.benefits && service.benefits.length > 0 && (
-            <div className="mt-16">
-              <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-6">
-                {t('benefits')}
-              </h2>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {service.benefits.map((benefit, index) => (
-                  <li key={benefit.id || index} className="flex items-start gap-3">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
-                    <span className="text-base text-foreground">{benefit.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
 
           {service.steps && service.steps.length > 0 && (
             <div className="mt-16">

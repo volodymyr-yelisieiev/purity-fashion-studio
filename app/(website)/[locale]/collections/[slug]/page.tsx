@@ -1,14 +1,15 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+import { getAvailableLocales, getPayload, getCollectionBySlug, type Locale } from '@/lib/payload'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import type { Media as MediaType, Collection as CollectionType, Product } from '@/payload-types'
+import type { Media as MediaType, Product } from '@/payload-types'
 import { Metadata } from 'next'
 import { generateSeoMetadata } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
+import { draftMode } from 'next/headers'
+import { LanguageFallback } from '@/components/ui/language-fallback'
 
 interface CollectionDetailPageProps {
   params: Promise<{
@@ -18,10 +19,10 @@ interface CollectionDetailPageProps {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload()
   
   const collections = await payload.find({
-    collection: 'collections',
+    collection: 'lookbooks',
     limit: 100,
   })
   
@@ -39,29 +40,35 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: CollectionDetailPageProps): Promise<Metadata> {
   const { slug, locale } = await params
-  const payload = await getPayload({ config: configPromise })
+  const { isEnabled: isDraft } = await draftMode()
+  const t = await getTranslations({ locale, namespace: 'collections' })
+  const collection = await getCollectionBySlug(slug, locale as Locale, isDraft)
 
-  const result = await payload.find({
-    collection: 'collections',
-    where: {
-      slug: { equals: slug },
-    },
-    locale: locale as 'en' | 'ru' | 'uk',
-    limit: 1,
-  })
-
-  if (result.docs.length === 0) {
+  if (!collection) {
+    const availableLocales = await getAvailableLocales('lookbooks', slug, isDraft)
+    const title = availableLocales.length > 0 ? t('notAvailable') : t('notFound')
     return generateSeoMetadata({
-      title: 'Collection Not Found | PURITY Fashion Studio',
-      description: 'The requested collection could not be found.',
+      title: `${title} | PURITY Fashion Studio`,
+      description: t('notFoundDescription'),
       locale,
     })
   }
 
-  const collection = result.docs[0] as CollectionType
+  const hasContent = (value?: string | null) => Boolean(value && value.toString().trim().length > 0)
+  const primaryDescription = collection.description
+
+  if (!hasContent(collection.name) || !hasContent(primaryDescription)) {
+    const availableLocales = await getAvailableLocales('lookbooks', slug, isDraft)
+    const title = availableLocales.length > 0 ? t('notAvailable') : t('notFound')
+    return generateSeoMetadata({
+      title: `${title} | PURITY Fashion Studio`,
+      description: t('notFoundDescription'),
+      locale,
+    })
+  }
 
   return generateSeoMetadata({
-    title: collection.meta?.title || `${collection.name} | PURITY Fashion Studio`,
+    title: collection.meta?.title || `${collection.name} — Персональний Стайлінг | PURITY Fashion Studio`,
     description: collection.meta?.description || collection.description || '',
     path: `/collections/${slug}`,
     image: typeof collection.meta?.image === 'object' ? collection.meta?.image?.url || undefined : undefined,
@@ -71,24 +78,49 @@ export async function generateMetadata({ params }: CollectionDetailPageProps): P
 
 export default async function CollectionDetailPage({ params }: CollectionDetailPageProps) {
   const { slug, locale } = await params
-  const payload = await getPayload({ config: configPromise })
-  const t = await getTranslations('collections')
+  const { isEnabled: isDraft } = await draftMode()
+  const t = await getTranslations({ locale, namespace: 'collections' })
+  const tCommon = await getTranslations({ locale, namespace: 'common' })
 
-  const result = await payload.find({
-    collection: 'collections',
-    where: {
-      slug: { equals: slug },
-    },
-    locale: locale as 'en' | 'ru' | 'uk',
-    limit: 1,
-    depth: 2, // Get related products
-  })
+  const collection = await getCollectionBySlug(slug, locale as Locale, isDraft)
 
-  if (result.docs.length === 0) {
+  if (!collection) {
+    const availableLocales = await getAvailableLocales('lookbooks', slug, isDraft)
+    if (availableLocales.length > 0) {
+      return (
+        <LanguageFallback
+          title={t('notAvailable')}
+          description={tCommon('viewInAvailableLanguages')}
+          availableLocales={availableLocales}
+          currentSlug={slug}
+          basePath="/collections"
+          backLink={{ href: '/collections', label: t('back') }}
+        />
+      )
+    }
     notFound()
   }
 
-  const collection = result.docs[0] as CollectionType
+  const hasContent = (value?: string | null) => Boolean(value && value.toString().trim().length > 0)
+  const primaryDescription = collection.description
+
+  if (!hasContent(collection.name) || !hasContent(primaryDescription)) {
+    const availableLocales = await getAvailableLocales('lookbooks', slug, isDraft)
+    if (availableLocales.length > 0) {
+      return (
+        <LanguageFallback
+          title={t('notAvailable')}
+          description={tCommon('viewInAvailableLanguages')}
+          availableLocales={availableLocales}
+          currentSlug={slug}
+          basePath="/collections"
+          backLink={{ href: '/collections', label: t('back') }}
+        />
+      )
+    }
+    notFound()
+  }
+
   // Use coverImage or first image from images array
   const coverImg = collection.coverImage as MediaType | null
   const firstImage = collection.images?.[0]

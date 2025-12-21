@@ -28,7 +28,7 @@ export const TEST_CONFIG = {
   locales: ['en', 'uk', 'ru'] as const,
 
   // Collections to test CRUD operations
-  collections: ['services', 'portfolio', 'collections', 'courses'] as const,
+  collections: ['services', 'portfolio', 'lookbooks', 'courses'] as const,
 
   // Request timeout in milliseconds
   timeout: 30000,
@@ -47,7 +47,7 @@ export const ENDPOINTS = {
   // Collections
   services: `${TEST_CONFIG.baseUrl}/api/services`,
   portfolio: `${TEST_CONFIG.baseUrl}/api/portfolio`,
-  collections: `${TEST_CONFIG.baseUrl}/api/collections`,
+  lookbooks: `${TEST_CONFIG.baseUrl}/api/lookbooks`,
   courses: `${TEST_CONFIG.baseUrl}/api/courses`,
   media: `${TEST_CONFIG.baseUrl}/api/media`,
 } as const

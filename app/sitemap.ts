@@ -68,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     
     // Collection pages
     const collections = await payload.find({
-      collection: 'collections',
+      collection: 'lookbooks',
       limit: 100,
     })
 

@@ -9,16 +9,30 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { path, tag } = await request.json()
+    const { path, paths, tag, tags } = await request.json()
 
     if (path) {
       revalidatePath(path)
       console.log(`Revalidated path: ${path}`)
     }
 
+    if (paths && Array.isArray(paths)) {
+      paths.forEach((p) => {
+        revalidatePath(p)
+        console.log(`Revalidated path: ${p}`)
+      })
+    }
+
     if (tag) {
       revalidateTag(tag)
       console.log(`Revalidated tag: ${tag}`)
+    }
+
+    if (tags && Array.isArray(tags)) {
+      tags.forEach((t) => {
+        revalidateTag(t)
+        console.log(`Revalidated tag: ${t}`)
+      })
     }
 
     return NextResponse.json({ revalidated: true, now: Date.now() })

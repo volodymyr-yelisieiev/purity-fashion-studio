@@ -29,3 +29,54 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, '')          // Remove leading/trailing dashes
     .replace(/-+/g, '-')              // Replace multiple dashes with single
 }
+
+/**
+ * Extract plain text from Lexical rich text data
+ */
+export function extractPlainText(lexicalData: unknown): string {
+  if (!lexicalData || typeof lexicalData !== 'object' || !('root' in lexicalData)) return ''
+  
+  const data = lexicalData as { root: { children?: unknown[] } }
+  if (!data.root?.children) return ''
+  
+  let text = ''
+  
+  function traverse(node: unknown) {
+    if (!node || typeof node !== 'object') return
+
+    const n = node as { text?: string; children?: unknown[] }
+    
+    if (n.text) {
+      text += n.text + ' '
+    }
+    if (n.children) {
+      n.children.forEach(traverse)
+    }
+  }
+  
+  traverse(data.root)
+  return text.trim()
+}
+
+/**
+ * Check if a value has meaningful content
+ * Handles strings, null/undefined, and Lexical rich text objects
+ */
+export function hasContent(value: unknown): boolean {
+  if (value === null || value === undefined) return false
+  
+  if (typeof value === 'string') {
+    return value.trim().length > 0
+  }
+  
+  if (typeof value === 'object') {
+    // Check if it's a Lexical object
+    if ('root' in value) {
+      return extractPlainText(value).length > 0
+    }
+    // For other objects, check if they have keys
+    return Object.keys(value).length > 0
+  }
+  
+  return Boolean(value)
+}

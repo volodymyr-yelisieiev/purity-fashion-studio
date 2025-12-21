@@ -72,7 +72,7 @@ export interface Config {
     services: Service;
     products: Product;
     portfolio: Portfolio;
-    collections: Collection;
+    lookbooks: Lookbook;
     orders: Order;
     courses: Course;
     'payload-kv': PayloadKv;
@@ -87,7 +87,7 @@ export interface Config {
     services: ServicesSelect<false> | ServicesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     portfolio: PortfolioSelect<false> | PortfolioSelect<true>;
-    collections: CollectionsSelect<false> | CollectionsSelect<true>;
+    lookbooks: LookbooksSelect<false> | LookbooksSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -284,15 +284,6 @@ export interface Service {
       }[]
     | null;
   /**
-   * What client gets from this service
-   */
-  benefits?:
-    | {
-        text: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
    * Show on homepage featured section
    */
   featured?: boolean | null;
@@ -485,9 +476,9 @@ export interface Portfolio {
  * Curated fashion collections and lookbooks
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "collections".
+ * via the `definition` "lookbooks".
  */
-export interface Collection {
+export interface Lookbook {
   id: number;
   /**
    * Collection name (e.g., "Autumn Essentials 2024")
@@ -743,8 +734,8 @@ export interface PayloadLockedDocument {
         value: number | Portfolio;
       } | null)
     | ({
-        relationTo: 'collections';
-        value: number | Collection;
+        relationTo: 'lookbooks';
+        value: number | Lookbook;
       } | null)
     | ({
         relationTo: 'orders';
@@ -901,12 +892,6 @@ export interface ServicesSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
-  benefits?:
-    | T
-    | {
-        text?: T;
-        id?: T;
-      };
   featured?: T;
   bookable?: T;
   meta?:
@@ -1011,9 +996,9 @@ export interface PortfolioSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "collections_select".
+ * via the `definition` "lookbooks_select".
  */
-export interface CollectionsSelect<T extends boolean = true> {
+export interface LookbooksSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   status?: T;

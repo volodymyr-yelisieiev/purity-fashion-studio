@@ -748,156 +748,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.services_benefits": {
-      "name": "services_benefits",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        }
-      },
-      "indexes": {
-        "services_benefits_order_idx": {
-          "name": "services_benefits_order_idx",
-          "columns": [
-            {
-              "expression": "_order",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "services_benefits_parent_id_idx": {
-          "name": "services_benefits_parent_id_idx",
-          "columns": [
-            {
-              "expression": "_parent_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "services_benefits_parent_id_fk": {
-          "name": "services_benefits_parent_id_fk",
-          "tableFrom": "services_benefits",
-          "tableTo": "services",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.services_benefits_locales": {
-      "name": "services_benefits_locales",
-      "schema": "",
-      "columns": {
-        "text": {
-          "name": "text",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "_locale": {
-          "name": "_locale",
-          "type": "_locales",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {
-        "services_benefits_locales_locale_parent_id_unique": {
-          "name": "services_benefits_locales_locale_parent_id_unique",
-          "columns": [
-            {
-              "expression": "_locale",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "_parent_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "services_benefits_locales_parent_id_fk": {
-          "name": "services_benefits_locales_parent_id_fk",
-          "tableFrom": "services_benefits_locales",
-          "tableTo": "services_benefits",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.services": {
       "name": "services",
       "schema": "",
@@ -2735,8 +2585,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.collections_images": {
-      "name": "collections_images",
+    "public.lookbooks_images": {
+      "name": "lookbooks_images",
       "schema": "",
       "columns": {
         "_order": {
@@ -2765,8 +2615,8 @@
         }
       },
       "indexes": {
-        "collections_images_order_idx": {
-          "name": "collections_images_order_idx",
+        "lookbooks_images_order_idx": {
+          "name": "lookbooks_images_order_idx",
           "columns": [
             {
               "expression": "_order",
@@ -2780,8 +2630,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_images_parent_id_idx": {
-          "name": "collections_images_parent_id_idx",
+        "lookbooks_images_parent_id_idx": {
+          "name": "lookbooks_images_parent_id_idx",
           "columns": [
             {
               "expression": "_parent_id",
@@ -2795,8 +2645,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_images_image_idx": {
-          "name": "collections_images_image_idx",
+        "lookbooks_images_image_idx": {
+          "name": "lookbooks_images_image_idx",
           "columns": [
             {
               "expression": "image_id",
@@ -2812,9 +2662,9 @@
         }
       },
       "foreignKeys": {
-        "collections_images_image_id_media_id_fk": {
-          "name": "collections_images_image_id_media_id_fk",
-          "tableFrom": "collections_images",
+        "lookbooks_images_image_id_media_id_fk": {
+          "name": "lookbooks_images_image_id_media_id_fk",
+          "tableFrom": "lookbooks_images",
           "tableTo": "media",
           "columnsFrom": [
             "image_id"
@@ -2825,10 +2675,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "collections_images_parent_id_fk": {
-          "name": "collections_images_parent_id_fk",
-          "tableFrom": "collections_images",
-          "tableTo": "collections",
+        "lookbooks_images_parent_id_fk": {
+          "name": "lookbooks_images_parent_id_fk",
+          "tableFrom": "lookbooks_images",
+          "tableTo": "lookbooks",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -2845,8 +2695,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.collections_images_locales": {
-      "name": "collections_images_locales",
+    "public.lookbooks_images_locales": {
+      "name": "lookbooks_images_locales",
       "schema": "",
       "columns": {
         "caption": {
@@ -2876,8 +2726,8 @@
         }
       },
       "indexes": {
-        "collections_images_locales_locale_parent_id_unique": {
-          "name": "collections_images_locales_locale_parent_id_unique",
+        "lookbooks_images_locales_locale_parent_id_unique": {
+          "name": "lookbooks_images_locales_locale_parent_id_unique",
           "columns": [
             {
               "expression": "_locale",
@@ -2899,10 +2749,10 @@
         }
       },
       "foreignKeys": {
-        "collections_images_locales_parent_id_fk": {
-          "name": "collections_images_locales_parent_id_fk",
-          "tableFrom": "collections_images_locales",
-          "tableTo": "collections_images",
+        "lookbooks_images_locales_parent_id_fk": {
+          "name": "lookbooks_images_locales_parent_id_fk",
+          "tableFrom": "lookbooks_images_locales",
+          "tableTo": "lookbooks_images",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -2919,8 +2769,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.collections": {
-      "name": "collections",
+    "public.lookbooks": {
+      "name": "lookbooks",
       "schema": "",
       "columns": {
         "id": {
@@ -2931,7 +2781,7 @@
         },
         "status": {
           "name": "status",
-          "type": "enum_collections_status",
+          "type": "enum_lookbooks_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -2939,7 +2789,7 @@
         },
         "season": {
           "name": "season",
-          "type": "enum_collections_season",
+          "type": "enum_lookbooks_season",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
@@ -2979,8 +2829,8 @@
         }
       },
       "indexes": {
-        "collections_status_idx": {
-          "name": "collections_status_idx",
+        "lookbooks_status_idx": {
+          "name": "lookbooks_status_idx",
           "columns": [
             {
               "expression": "status",
@@ -2994,8 +2844,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_season_idx": {
-          "name": "collections_season_idx",
+        "lookbooks_season_idx": {
+          "name": "lookbooks_season_idx",
           "columns": [
             {
               "expression": "season",
@@ -3009,8 +2859,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_cover_image_idx": {
-          "name": "collections_cover_image_idx",
+        "lookbooks_cover_image_idx": {
+          "name": "lookbooks_cover_image_idx",
           "columns": [
             {
               "expression": "cover_image_id",
@@ -3024,8 +2874,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_featured_idx": {
-          "name": "collections_featured_idx",
+        "lookbooks_featured_idx": {
+          "name": "lookbooks_featured_idx",
           "columns": [
             {
               "expression": "featured",
@@ -3039,8 +2889,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_updated_at_idx": {
-          "name": "collections_updated_at_idx",
+        "lookbooks_updated_at_idx": {
+          "name": "lookbooks_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -3054,8 +2904,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_created_at_idx": {
-          "name": "collections_created_at_idx",
+        "lookbooks_created_at_idx": {
+          "name": "lookbooks_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -3071,9 +2921,9 @@
         }
       },
       "foreignKeys": {
-        "collections_cover_image_id_media_id_fk": {
-          "name": "collections_cover_image_id_media_id_fk",
-          "tableFrom": "collections",
+        "lookbooks_cover_image_id_media_id_fk": {
+          "name": "lookbooks_cover_image_id_media_id_fk",
+          "tableFrom": "lookbooks",
           "tableTo": "media",
           "columnsFrom": [
             "cover_image_id"
@@ -3091,8 +2941,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.collections_locales": {
-      "name": "collections_locales",
+    "public.lookbooks_locales": {
+      "name": "lookbooks_locales",
       "schema": "",
       "columns": {
         "name": {
@@ -3152,8 +3002,8 @@
         }
       },
       "indexes": {
-        "collections_slug_idx": {
-          "name": "collections_slug_idx",
+        "lookbooks_slug_idx": {
+          "name": "lookbooks_slug_idx",
           "columns": [
             {
               "expression": "slug",
@@ -3173,8 +3023,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_meta_meta_image_idx": {
-          "name": "collections_meta_meta_image_idx",
+        "lookbooks_meta_meta_image_idx": {
+          "name": "lookbooks_meta_meta_image_idx",
           "columns": [
             {
               "expression": "meta_image_id",
@@ -3194,8 +3044,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_locales_locale_parent_id_unique": {
-          "name": "collections_locales_locale_parent_id_unique",
+        "lookbooks_locales_locale_parent_id_unique": {
+          "name": "lookbooks_locales_locale_parent_id_unique",
           "columns": [
             {
               "expression": "_locale",
@@ -3217,9 +3067,9 @@
         }
       },
       "foreignKeys": {
-        "collections_locales_meta_image_id_media_id_fk": {
-          "name": "collections_locales_meta_image_id_media_id_fk",
-          "tableFrom": "collections_locales",
+        "lookbooks_locales_meta_image_id_media_id_fk": {
+          "name": "lookbooks_locales_meta_image_id_media_id_fk",
+          "tableFrom": "lookbooks_locales",
           "tableTo": "media",
           "columnsFrom": [
             "meta_image_id"
@@ -3230,10 +3080,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "collections_locales_parent_id_fk": {
-          "name": "collections_locales_parent_id_fk",
-          "tableFrom": "collections_locales",
-          "tableTo": "collections",
+        "lookbooks_locales_parent_id_fk": {
+          "name": "lookbooks_locales_parent_id_fk",
+          "tableFrom": "lookbooks_locales",
+          "tableTo": "lookbooks",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -3250,8 +3100,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.collections_rels": {
-      "name": "collections_rels",
+    "public.lookbooks_rels": {
+      "name": "lookbooks_rels",
       "schema": "",
       "columns": {
         "id": {
@@ -3286,8 +3136,8 @@
         }
       },
       "indexes": {
-        "collections_rels_order_idx": {
-          "name": "collections_rels_order_idx",
+        "lookbooks_rels_order_idx": {
+          "name": "lookbooks_rels_order_idx",
           "columns": [
             {
               "expression": "order",
@@ -3301,8 +3151,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_rels_parent_idx": {
-          "name": "collections_rels_parent_idx",
+        "lookbooks_rels_parent_idx": {
+          "name": "lookbooks_rels_parent_idx",
           "columns": [
             {
               "expression": "parent_id",
@@ -3316,8 +3166,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_rels_path_idx": {
-          "name": "collections_rels_path_idx",
+        "lookbooks_rels_path_idx": {
+          "name": "lookbooks_rels_path_idx",
           "columns": [
             {
               "expression": "path",
@@ -3331,8 +3181,8 @@
           "method": "btree",
           "with": {}
         },
-        "collections_rels_products_id_idx": {
-          "name": "collections_rels_products_id_idx",
+        "lookbooks_rels_products_id_idx": {
+          "name": "lookbooks_rels_products_id_idx",
           "columns": [
             {
               "expression": "products_id",
@@ -3348,10 +3198,10 @@
         }
       },
       "foreignKeys": {
-        "collections_rels_parent_fk": {
-          "name": "collections_rels_parent_fk",
-          "tableFrom": "collections_rels",
-          "tableTo": "collections",
+        "lookbooks_rels_parent_fk": {
+          "name": "lookbooks_rels_parent_fk",
+          "tableFrom": "lookbooks_rels",
+          "tableTo": "lookbooks",
           "columnsFrom": [
             "parent_id"
           ],
@@ -3361,9 +3211,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "collections_rels_products_fk": {
-          "name": "collections_rels_products_fk",
-          "tableFrom": "collections_rels",
+        "lookbooks_rels_products_fk": {
+          "name": "lookbooks_rels_products_fk",
+          "tableFrom": "lookbooks_rels",
           "tableTo": "products",
           "columnsFrom": [
             "products_id"
@@ -5064,8 +4914,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "collections_id": {
-          "name": "collections_id",
+        "lookbooks_id": {
+          "name": "lookbooks_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -5204,11 +5054,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_collections_id_idx": {
-          "name": "payload_locked_documents_rels_collections_id_idx",
+        "payload_locked_documents_rels_lookbooks_id_idx": {
+          "name": "payload_locked_documents_rels_lookbooks_id_idx",
           "columns": [
             {
-              "expression": "collections_id",
+              "expression": "lookbooks_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -5329,12 +5179,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_collections_fk": {
-          "name": "payload_locked_documents_rels_collections_fk",
+        "payload_locked_documents_rels_lookbooks_fk": {
+          "name": "payload_locked_documents_rels_lookbooks_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "collections",
+          "tableTo": "lookbooks",
           "columnsFrom": [
-            "collections_id"
+            "lookbooks_id"
           ],
           "columnsTo": [
             "id"
@@ -6149,16 +5999,16 @@
         "shopping"
       ]
     },
-    "public.enum_collections_status": {
-      "name": "enum_collections_status",
+    "public.enum_lookbooks_status": {
+      "name": "enum_lookbooks_status",
       "schema": "public",
       "values": [
         "draft",
         "published"
       ]
     },
-    "public.enum_collections_season": {
-      "name": "enum_collections_season",
+    "public.enum_lookbooks_season": {
+      "name": "enum_lookbooks_season",
       "schema": "public",
       "values": [
         "spring",
@@ -6284,6 +6134,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "8acc86df-8022-4f27-b7e9-8933edec737c",
+  "id": "0ffd94eb-2b01-43c9-a991-dcbf88bd3a7d",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
