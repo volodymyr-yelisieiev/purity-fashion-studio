@@ -1,11 +1,10 @@
 import { getTranslations } from 'next-intl/server'
-import Image from 'next/image'
-import { Link } from '@/i18n/navigation'
 import type { Media as MediaType, Collection as CollectionType } from '@/payload-types'
 import { getPayload } from '@/lib/payload'
 import { HeroSection } from '@/components/sections'
 import { EmptyState } from '@/components/ui/empty-state'
-import { H3 } from '@/components/ui/typography'
+import { ContentCard, type ContentCardItem } from '@/components/ui/content-card'
+import { Section, Container, Grid } from '@/components/ui/layout-components'
 
 export default async function CollectionsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
@@ -18,6 +17,9 @@ export default async function CollectionsPage({ params }: { params: Promise<{ lo
     locale: locale as 'en' | 'ru' | 'uk',
     limit: 50,
     sort: '-createdAt',
+    where: {
+      status: { equals: 'published' },
+    },
   })
 
   if (collections.docs.length === 0) {
@@ -36,6 +38,29 @@ export default async function CollectionsPage({ params }: { params: Promise<{ lo
     )
   }
 
+  // Transform to ContentCardItem
+  const cardItems: ContentCardItem[] = collections.docs.map((item) => {
+    const collection = item as CollectionType
+    const coverImg = collection.coverImage as MediaType | null
+    const firstImage = collection.images?.[0]
+    const fallbackImage = (typeof firstImage?.image === 'object' ? firstImage.image : null) as MediaType | null
+    const displayImage = coverImg || fallbackImage
+    
+    return {
+      id: String(collection.id),
+      type: 'collection',
+      title: collection.name,
+      href: `/collections/${collection.slug}`,
+      image: displayImage?.url ? { url: displayImage.url, alt: displayImage.alt || collection.name } : undefined,
+      excerpt: collection.description || undefined,
+      category: collection.season || null,
+      categoryLabel: collection.season || null,
+      date: collection.releaseDate
+        ? new Date(collection.releaseDate).toLocaleDateString(locale, { year: 'numeric', month: 'long' })
+        : null,
+    }
+  })
+
   return (
     <>
       <HeroSection
@@ -43,55 +68,21 @@ export default async function CollectionsPage({ params }: { params: Promise<{ lo
         subtitle={t('subtitle')}
       />
 
-      <div className="container mx-auto px-4 py-16">
-        {/* Collections Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {collections.docs.map((item) => {
-            const collection = item as CollectionType
-            // Use first image from images array as cover, or coverImage if available
-            const coverImg = collection.coverImage as MediaType | null
-            const firstImage = collection.images?.[0]
-            const fallbackImage = (typeof firstImage?.image === 'object' ? firstImage.image : null) as MediaType | null
-            const displayImage = coverImg || fallbackImage
-            
-            return (
-              <Link
-                key={collection.id}
-                href={`/${locale}/collections/${collection.slug}`}
-                className="group block"
-              >
-                <article className="bg-card overflow-hidden border transition-shadow hover:shadow-lg">
-                  {displayImage?.url && (
-                    <div className="aspect-3/2 relative overflow-hidden">
-                      <Image
-                        src={displayImage.url}
-                        alt={collection.name || ''}
-                        fill
-                        className="object-cover transition-transform group-hover:scale-105"
-                      />
-                    </div>
-                  )}
-                  <div className="p-8">
-                    {collection.releaseDate && (
-                      <span className="text-sm text-muted-foreground uppercase tracking-wider">
-                        {new Date(collection.releaseDate).toLocaleDateString(locale, { year: 'numeric', month: 'long' })}
-                      </span>
-                    )}
-                    <H3 className="text-2xl font-semibold mt-2 mb-3 group-hover:text-primary transition-colors">
-                      {collection.name}
-                    </H3>
-                    {collection.description && (
-                      <p className="text-muted-foreground line-clamp-2">
-                        {collection.description}
-                      </p>
-                    )}
-                  </div>
-                </article>
-              </Link>
-            )
-          })}
-        </div>
-      </div>
+      <Section spacing="md">
+        <Container>
+          <Grid cols={2} gap="lg">
+            {cardItems.map((item) => (
+              <ContentCard
+                key={item.id}
+                item={item}
+                learnMoreText={`${tCommon('learnMore')} →`}
+                showType={false}
+                aspectRatio="3/2"
+              />
+            ))}
+          </Grid>
+        </Container>
+      </Section>
     </>
   )
 }

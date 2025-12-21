@@ -1,8 +1,8 @@
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { H3, Paragraph, Label } from '@/components/ui/typography'
 import { Section, Container, Grid } from '@/components/ui/layout-components'
 import { Button } from '@/components/ui/button'
+import { ContentCard, type ContentCardItem } from '@/components/ui/content-card'
 
 interface Service {
   id: string
@@ -10,6 +10,11 @@ interface Service {
   slug: string
   description?: string
   category: string
+  categoryLabel?: string
+  priceDisplay?: string | null
+  duration?: string | null
+  format?: string | null
+  image?: { url: string; alt?: string }
 }
 
 interface ServicesPreviewProps {
@@ -25,26 +30,32 @@ export function ServicesPreview({
 }: ServicesPreviewProps) {
   const t = useTranslations('common')
 
+  // Transform services to ContentCardItem
+  const cardItems: ContentCardItem[] = services.map((service) => ({
+    id: service.id,
+    type: 'service',
+    title: service.title,
+    href: `/services/${service.slug}`,
+    image: service.image,
+    excerpt: service.description,
+    category: service.category,
+    categoryLabel: service.categoryLabel || service.category,
+    priceDisplay: service.priceDisplay,
+    duration: service.duration,
+    format: service.format,
+  }))
+
   return (
     <Section spacing="md">
       <Container>
         <Grid cols={3} gap="md">
-          {services.map((service) => (
-            <Link
-              key={service.id}
-              href={`/services/${service.slug}`}
-              className="group block border border-border p-8 transition-colors hover:border-foreground"
-              prefetch={false}
-            >
-              <Label className="mb-4 block">{service.category}</Label>
-              <H3 className="text-2xl md:text-2xl">{service.title}</H3>
-              {service.description && (
-                <Paragraph className="mt-4 line-clamp-3">{service.description}</Paragraph>
-              )}
-              <span className="mt-6 inline-block text-sm font-medium uppercase tracking-widest text-foreground opacity-0 transition-opacity group-hover:opacity-100">
-                {t('learnMore')} →
-              </span>
-            </Link>
+          {cardItems.map((item) => (
+            <ContentCard
+              key={item.id}
+              item={item}
+              learnMoreText={`${t('learnMore')} →`}
+              showType={false}
+            />
           ))}
         </Grid>
         {viewAllLink && (

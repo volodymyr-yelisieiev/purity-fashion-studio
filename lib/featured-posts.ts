@@ -57,55 +57,61 @@ export async function getFeaturedPosts(locale: Locale, limit = 6): Promise<Featu
     }),
   ])
 
-  const serviceItems: FeaturedPostItem[] = services.docs.map((service) => {
-    const hero = typeof service.heroImage === 'object' ? (service.heroImage as Media | null) : null
-    return {
-      id: String(service.id),
-      type: 'service',
-      title: service.title,
-      slug: service.slug,
-      href: `/${locale}/services/${service.slug}`,
-      image: hero?.url ? { url: hero.url, alt: hero.alt || service.title } : undefined,
-      excerpt: service.excerpt || service.description || '',
-      category: service.category,
-      priceDisplay: getServicePriceDisplay(service as Service, locale),
-      duration: service.duration || null,
-    }
-  })
+  const serviceItems: FeaturedPostItem[] = services.docs
+    .filter((service) => service.slug)
+    .map((service) => {
+      const hero = typeof service.heroImage === 'object' ? (service.heroImage as Media | null) : null
+      return {
+        id: String(service.id),
+        type: 'service',
+        title: service.title,
+        slug: service.slug,
+        href: `/services/${service.slug}`,
+        image: hero?.url ? { url: hero.url, alt: hero.alt || service.title } : undefined,
+        excerpt: service.excerpt || service.description || '',
+        category: service.category,
+        priceDisplay: getServicePriceDisplay(service as Service, locale),
+        duration: service.duration || null,
+      }
+    })
 
-  const portfolioItems: FeaturedPostItem[] = portfolio.docs.map((item) => {
-    const project = item as Portfolio
-    const cover = typeof project.afterImage === 'object' ? (project.afterImage as Media | null) : null
-    return {
-      id: String(project.id),
-      type: 'portfolio',
-      title: project.title,
-      slug: project.slug,
-      href: `/${locale}/portfolio/${project.slug}`,
-      image: cover?.url ? { url: cover.url, alt: cover.alt || project.title } : undefined,
-      excerpt: project.description || '',
-      category: project.category,
-      priceDisplay: null,
-      duration: null,
-    }
-  })
+  const portfolioItems: FeaturedPostItem[] = portfolio.docs
+    .filter((item) => (item as Portfolio).slug)
+    .map((item) => {
+      const project = item as Portfolio
+      const cover = typeof project.afterImage === 'object' ? (project.afterImage as Media | null) : null
+      return {
+        id: String(project.id),
+        type: 'portfolio',
+        title: project.title,
+        slug: project.slug,
+        href: `/portfolio/${project.slug}`,
+        image: cover?.url ? { url: cover.url, alt: cover.alt || project.title } : undefined,
+        excerpt: project.description || '',
+        category: project.category,
+        priceDisplay: null,
+        duration: null,
+      }
+    })
 
-  const collectionItems: FeaturedPostItem[] = collections.docs.map((item) => {
-    const collection = item as Collection
-    const cover = typeof collection.coverImage === 'object' ? (collection.coverImage as Media | null) : null
-    return {
-      id: String(collection.id),
-      type: 'collection',
-      title: collection.name,
-      slug: collection.slug,
-      href: `/${locale}/collections/${collection.slug}`,
-      image: cover?.url ? { url: cover.url, alt: cover.alt || collection.name } : undefined,
-      excerpt: collection.description || '',
-      category: collection.season,
-      priceDisplay: null,
-      duration: null,
-    }
-  })
+  const collectionItems: FeaturedPostItem[] = collections.docs
+    .filter((item) => (item as Collection).slug)
+    .map((item) => {
+      const collection = item as Collection
+      const cover = typeof collection.coverImage === 'object' ? (collection.coverImage as Media | null) : null
+      return {
+        id: String(collection.id),
+        type: 'collection',
+        title: collection.name,
+        slug: collection.slug,
+        href: `/collections/${collection.slug}`,
+        image: cover?.url ? { url: cover.url, alt: cover.alt || collection.name } : undefined,
+        excerpt: collection.description || '',
+        category: collection.season,
+        priceDisplay: null,
+        duration: null,
+      }
+    })
 
   const combined = [...serviceItems, ...portfolioItems, ...collectionItems]
 

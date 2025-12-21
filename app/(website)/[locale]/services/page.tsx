@@ -3,7 +3,7 @@ import { HeroSection, ServicesPreview } from '@/components/sections'
 import { generateSeoMetadata } from '@/lib/seo'
 import { getPayload } from '@/lib/payload'
 import { EmptyState } from '@/components/ui/empty-state'
-import type { Service } from '@/payload-types'
+import type { Service, Media } from '@/payload-types'
 import type { Metadata } from 'next'
 
 interface PageProps {
@@ -33,20 +33,41 @@ export default async function ServicesPage({ params }: PageProps) {
     locale: locale as 'en' | 'uk' | 'ru',
     limit: 50,
     sort: 'title',
+    depth: 1,
     where: {
       status: { equals: 'published' },
     },
   })
 
-  // Transform Payload data to match component interface
-  // Use excerpt if available, otherwise use description
-  const formattedServices = services.map((service: Service) => ({
-    id: String(service.id),
-    title: service.title,
-    slug: service.slug || String(service.id),
-    description: service.excerpt || service.description || '',
-    category: service.category || 'styling',
-  }))
+  // Helper function for price display
+  const getServicePriceDisplay = (service: Service): string | null => {
+    const priceNote = service.pricing?.priceNote
+    if (priceNote) return priceNote
+
+    const priceEUR = service.pricing?.eur
+    const priceUAH = service.pricing?.uah
+
+    if (locale === 'en' && priceEUR) return `€${priceEUR}`
+    if (priceUAH) return `${priceUAH} ₴`
+    return null
+  }
+
+  // Transform Payload data to match component interface with all available fields
+  const formattedServices = services.map((service: Service) => {
+    const heroImage = typeof service.heroImage === 'object' ? (service.heroImage as Media | null) : null
+    return {
+      id: String(service.id),
+      title: service.title,
+      slug: service.slug || String(service.id),
+      description: service.excerpt || service.description || '',
+      category: service.category || 'styling',
+      categoryLabel: service.category || 'styling',
+      priceDisplay: getServicePriceDisplay(service),
+      duration: service.duration || null,
+      format: service.format || null,
+      image: heroImage?.url ? { url: heroImage.url, alt: heroImage.alt || service.title } : undefined,
+    }
+  })
 
   if (formattedServices.length === 0) {
     return (
