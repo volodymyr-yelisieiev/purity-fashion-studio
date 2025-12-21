@@ -1,9 +1,7 @@
 import { getTranslations } from 'next-intl/server'
-import { HeroSection } from '@/components/sections/HeroSection'
-import { PortfolioPreview } from '@/components/sections/PortfolioPreview'
-import { FeaturedPosts } from '@/components/sections/FeaturedPosts'
+import { HeroSection, PortfolioPreview, FeaturedPosts } from '@/components/sections'
 import { getFeaturedPortfolio, type Locale } from '@/lib/payload'
-import { getFeaturedPosts } from '@/lib/featured-posts'
+import { getFeaturedPosts } from '@/lib/featuredPosts'
 import { generateSeoMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
 

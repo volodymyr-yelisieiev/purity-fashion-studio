@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Link } from '@/i18n/navigation'
 import { CheckCircle, Clock, XCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 
 interface OrderConfirmationPageProps {
   params: Promise<{

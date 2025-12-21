@@ -1,5 +1,4 @@
-import { H2, H3, Paragraph, Lead } from '@/components/ui/typography'
-import { Section, Container } from '@/components/ui/layout-components'
+import { H2, H3, Paragraph, Lead, Section, Container } from '@/components/ui'
 
 interface MethodologyStep {
   number: string

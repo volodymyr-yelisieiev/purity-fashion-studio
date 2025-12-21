@@ -1,9 +1,7 @@
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { H2, H3 } from '@/components/ui/typography'
-import { Section, Container, Grid } from '@/components/ui/layout-components'
-import { Button } from '@/components/ui/button'
+import { H2, H3, Section, Container, Grid, Button } from '@/components/ui'
 
 interface PortfolioItem {
   id: string

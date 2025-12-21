@@ -1,6 +1,6 @@
 import { Link } from '@/i18n/navigation'
-import { Container } from './layout-components'
-import { H1, Paragraph } from './typography'
+import { Container } from './LayoutComponents'
+import { H1, Paragraph } from './Typography'
 import type { Locale } from '@/lib/payload'
 
 interface LanguageFallbackProps {

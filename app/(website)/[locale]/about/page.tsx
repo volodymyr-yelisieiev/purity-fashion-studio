@@ -1,8 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { HeroSection, MethodologySection } from '@/components/sections'
 import { generateSeoMetadata } from '@/lib/seo'
-import { H2, H4, Paragraph, Lead } from '@/components/ui/typography'
-import { Section, Container, Grid } from '@/components/ui/layout-components'
+import { H2, H4, Paragraph, Lead, Section, Container, Grid } from '@/components/ui'
 import type { Metadata } from 'next'
 
 interface PageProps {

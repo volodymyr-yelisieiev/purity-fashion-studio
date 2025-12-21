@@ -1,8 +1,7 @@
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { H2, H3, Paragraph } from '@/components/ui/typography'
-import { Section, Container, Grid } from '@/components/ui/layout-components'
+import { H2, H3, Paragraph, Section, Container, Grid } from '@/components/ui'
 
 interface Collection {
   id: string

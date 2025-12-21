@@ -2,10 +2,17 @@
 
 import { useState } from 'react'
 import { Link } from '@/i18n/navigation'
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet'
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetTrigger, 
+  SheetHeader, 
+  SheetTitle, 
+  SheetDescription,
+  LanguageSwitcher 
+} from '@/components/ui'
 import { Menu } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 import { navItems } from '@/config/navigation'
 
 export function MobileMenu() {

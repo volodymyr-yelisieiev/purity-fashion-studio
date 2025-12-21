@@ -17,7 +17,7 @@ import { Collections } from './payload/collections/Collections'
 import { Orders } from './payload/collections/Orders'
 import { Courses } from './payload/collections/Courses'
 import { SiteSettings } from './payload/globals/SiteSettings'
-import { fixMigrationIdempotency, simplifyMigrationFilename } from './lib/payload-utils'
+import { fixMigrationIdempotency, simplifyMigrationFilename } from './lib/payloadUtils'
 import { migrations } from './migrations'
 import { extractPlainText } from './lib/utils'
 

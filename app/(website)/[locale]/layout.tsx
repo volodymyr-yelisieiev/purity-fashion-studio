@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { RootLayout as AppRootLayout } from "@/components/layout/RootLayout";
+import { RootLayout as AppRootLayout } from "@/components/layout";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "@/styles/globals.css";
 

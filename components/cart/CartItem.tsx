@@ -1,7 +1,7 @@
 'use client'
 
 import { Minus, Plus, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import { useCart, formatPrice } from '@/hooks/useCart'
 import type { CartItem as CartItemType } from '@/lib/store/cart'
 

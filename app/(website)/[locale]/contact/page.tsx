@@ -1,9 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { HeroSection } from '@/components/sections'
 import { generateSeoMetadata } from '@/lib/seo'
-import { H3, Label } from '@/components/ui/typography'
-import { Section, Container, Grid } from '@/components/ui/layout-components'
-import { Button } from '@/components/ui/button'
+import { H3, Label, Section, Container, Grid, Button } from '@/components/ui'
 import type { Metadata } from 'next'
 import { ChevronDown } from 'lucide-react'
 

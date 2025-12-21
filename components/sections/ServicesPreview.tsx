@@ -1,8 +1,6 @@
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { Section, Container, Grid } from '@/components/ui/layout-components'
-import { Button } from '@/components/ui/button'
-import { ContentCard, type ContentCardItem } from '@/components/ui/content-card'
+import { Section, Container, Grid, Button, ContentCard, type ContentCardItem } from '@/components/ui'
 
 interface Service {
   id: string

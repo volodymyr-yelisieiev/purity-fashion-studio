@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
-import { H3, Paragraph, Label } from '@/components/ui/typography'
+import { H3, Paragraph, Label } from '@/components/ui'
 
 export interface ContentCardItem {
   id: string

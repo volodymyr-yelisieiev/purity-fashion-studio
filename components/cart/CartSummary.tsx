@@ -1,7 +1,7 @@
 'use client'
 
 import { Link } from '@/i18n/navigation'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import { useCart, formatPrice } from '@/hooks/useCart'
 
 interface CartSummaryProps {

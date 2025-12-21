@@ -2,7 +2,7 @@
 
 import { Link } from '@/i18n/navigation'
 import { ShoppingBag, ArrowLeft } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import { CartItem } from '@/components/cart'
 import { useCart, formatPrice } from '@/hooks/useCart'
 import { useTranslations } from 'next-intl'

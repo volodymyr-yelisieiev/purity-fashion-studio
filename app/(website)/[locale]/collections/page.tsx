@@ -3,9 +3,7 @@ import type { Media as MediaType, Lookbook as CollectionType } from '@/payload-t
 import { getPayload } from '@/lib/payload'
 import { hasContent } from '@/lib/utils'
 import { HeroSection } from '@/components/sections'
-import { EmptyState } from '@/components/ui/empty-state'
-import { ContentCard, type ContentCardItem } from '@/components/ui/content-card'
-import { Section, Container, Grid } from '@/components/ui/layout-components'
+import { EmptyState, ContentCard, type ContentCardItem, Section, Container, Grid } from '@/components/ui'
 
 export default async function CollectionsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params

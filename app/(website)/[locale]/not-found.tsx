@@ -1,9 +1,7 @@
 import {getLocale, getTranslations} from 'next-intl/server';
 import {Link} from '@/i18n/navigation';
 import type { Metadata } from 'next';
-import { Button } from '@/components/ui/button';
-import { H1, Lead } from '@/components/ui/typography';
-import { Container, PageHeader } from '@/components/ui/layout-components';
+import { Button, H1, Lead, Container, PageHeader } from '@/components/ui';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();

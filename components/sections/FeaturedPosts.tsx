@@ -1,10 +1,7 @@
 import { useTranslations } from 'next-intl'
-import { H2 } from '@/components/ui/typography'
-import { Section, Container, Grid } from '@/components/ui/layout-components'
-import { Button } from '@/components/ui/button'
-import { ContentCard, type ContentCardItem } from '@/components/ui/content-card'
+import { H2, Section, Container, Grid, Button, ContentCard, type ContentCardItem } from '@/components/ui'
 import { Link } from '@/i18n/navigation'
-import type { FeaturedPostItem } from '@/lib/featured-posts'
+import type { FeaturedPostItem } from '@/lib/featuredPosts'
 
 interface FeaturedPostsProps {
   items: FeaturedPostItem[]

@@ -3,13 +3,13 @@ import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui'
 import type { Media as MediaType, Product } from '@/payload-types'
 import { Metadata } from 'next'
 import { generateSeoMetadata } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
-import { LanguageFallback } from '@/components/ui/language-fallback'
+import { LanguageFallback } from '@/components/ui'
 
 interface CollectionDetailPageProps {
   params: Promise<{

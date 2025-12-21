@@ -2,9 +2,7 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { H2, Paragraph } from '@/components/ui/typography'
-import { Container, PageHeader } from '@/components/ui/layout-components'
+import { Button, H2, Paragraph, Container, PageHeader } from '@/components/ui'
 
 /**
  * Error Boundary for website routes

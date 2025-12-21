@@ -1,6 +1,6 @@
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { Container } from '@/components/ui/layout-components'
+import { Container } from '@/components/ui'
 import { navItems } from '@/config/navigation'
 
 export function Footer() {

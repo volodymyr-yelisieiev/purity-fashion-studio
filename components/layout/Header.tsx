@@ -3,9 +3,8 @@
 import { Link } from '@/i18n/navigation'
 import { Navigation } from './Navigation'
 import { MobileMenu } from './MobileMenu'
-import { LanguageSwitcher } from '../ui/LanguageSwitcher'
-import { MiniCart } from '../cart/MiniCart'
-import { Container } from '@/components/ui/layout-components'
+import { LanguageSwitcher, Container } from '@/components/ui'
+import { MiniCart } from '@/components/cart'
 
 export function Header() {
   return (

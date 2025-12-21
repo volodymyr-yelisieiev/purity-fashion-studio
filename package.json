@@ -6,17 +6,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "payload generate:importmap && next build",
-    "prebuild": "payload migrate",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "payload": "payload",
     "generate:types": "payload generate:types",
-    "generate:importmap": "payload generate:importmap",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
-    "db:reset": "docker compose down -v && docker compose up -d",
-    "db:fresh": "pnpm db:reset && sleep 5 && pnpm payload migrate && pnpm generate:types",
+    "db:migrate": "payload migrate",
+    "db:reset": "docker compose down -v && docker compose up -d && sleep 5 && payload migrate",
     "test:smoke": "tsx tests/smoke/index.ts"
   },
   "pnpm": {

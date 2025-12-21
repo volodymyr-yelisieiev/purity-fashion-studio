@@ -2,15 +2,15 @@
 
 import { ShoppingBag } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
-import { Button } from '@/components/ui/button'
 import {
+  Button,
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
   SheetDescription,
-} from '@/components/ui/sheet'
+} from '@/components/ui'
 import { CartItem } from './CartItem'
 import { CartSummary } from './CartSummary'
 import { useCart } from '@/hooks/useCart'

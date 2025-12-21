@@ -5,7 +5,7 @@
  * Use these instead of raw div elements with inline Tailwind classes.
  * 
  * @example
- * import { Container, Section } from '@/components/ui/layout-components'
+ * import { Container, Section } from '@/components/ui'
  * 
  * <Section spacing="lg">
  *   <Container size="md">

@@ -12,8 +12,8 @@
  * />
  */
 
-import { Button } from './button'
-import { H3, Paragraph } from './typography'
+import { Button } from './Button'
+import { H3, Paragraph } from './Typography'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 

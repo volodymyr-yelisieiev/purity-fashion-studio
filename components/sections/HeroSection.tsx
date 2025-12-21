@@ -1,7 +1,5 @@
 import { Link } from '@/i18n/navigation'
-import { H1, Lead } from '@/components/ui/typography'
-import { Container, PageHeader } from '@/components/ui/layout-components'
-import { Button } from '@/components/ui/button'
+import { H1, Lead, Container, PageHeader, Button } from '@/components/ui'
 
 interface HeroSectionProps {
   title: string

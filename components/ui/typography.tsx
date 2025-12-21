@@ -5,7 +5,7 @@
  * Use these components instead of raw HTML elements for headings and text.
  * 
  * @example
- * import { H1, H2, Paragraph, Lead } from '@/components/ui/typography'
+ * import { H1, H2, Paragraph, Lead } from '@/components/ui'
  * 
  * <H1>Main Title</H1>
  * <Lead>Introductory paragraph with larger text</Lead>
@@ -166,24 +166,6 @@ export function Muted({ children, className, ...props }: TypographyProps) {
     >
       {children}
     </p>
-  )
-}
-
-/**
- * Label - Uppercase label text
- * Use for form labels, category tags, section labels
- */
-export function Label({ children, className, ...props }: TypographyProps) {
-  return (
-    <span
-      className={cn(
-        'text-xs font-medium uppercase tracking-widest text-muted-foreground',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </span>
   )
 }
 

@@ -6,7 +6,7 @@ import { generateSeoMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
 import { getAvailableLocales, getPayload, getServiceBySlug, type Locale } from '@/lib/payload'
 import { draftMode } from 'next/headers'
-import { LanguageFallback } from '@/components/ui/language-fallback'
+import { LanguageFallback } from '@/components/ui'
 
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>
