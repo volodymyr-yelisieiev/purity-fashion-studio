@@ -1,106 +1,129 @@
-import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
-import { H3, Paragraph, Label } from '@/components/ui'
-
-export interface ContentCardItem {
-  id: string
-  type: 'service' | 'portfolio' | 'collection' | 'course'
-  title: string
-  href: string
-  image?: { url: string; alt?: string }
-  excerpt?: string
-  category?: string | null
-  categoryLabel?: string | null
-  priceDisplay?: string | null
-  duration?: string | null
-  format?: string | null
-  date?: string | null
-}
+import Image from 'next/image'
+import { Card } from './Card'
+import { Button } from './Button'
+import { cn } from '@/lib/utils'
 
 interface ContentCardProps {
-  item: ContentCardItem
-  learnMoreText?: string
-  showType?: boolean
-  aspectRatio?: 'square' | '4/3' | '3/2' | '4/5' | '16/9'
-}
-
-const aspectClasses = {
-  square: 'aspect-square',
-  '4/3': 'aspect-4/3',
-  '3/2': 'aspect-3/2',
-  '4/5': 'aspect-4/5',
-  '16/9': 'aspect-video',
+  title: string
+  description?: string | null
+  category?: string | null
+  image?: {
+    url: string | null
+    alt?: string | null
+  } | null
+  price?: {
+    eur?: number | null
+    uah?: number | null
+    note?: string | null
+  } | null
+  metadata?: {
+    label: string
+    value: string
+  }[]
+  link: {
+    href: string
+    label?: string
+  }
+  variant?: 'default' | 'portfolio' | 'collection' | 'service' | 'course'
+  className?: string
 }
 
 export function ContentCard({
-  item,
-  learnMoreText = 'Learn More →',
-  showType = true,
-  aspectRatio = '4/3',
+  title,
+  description,
+  category,
+  image,
+  price,
+  metadata,
+  link,
+  className
 }: ContentCardProps) {
   return (
-    <Link
-      href={item.href}
-      className="group block overflow-hidden border border-border transition-colors hover:border-foreground"
-      prefetch={false}
-    >
-      {item.image?.url && (
-        <div className={`relative overflow-hidden bg-muted ${aspectClasses[aspectRatio]}`}>
-          <Image
-            src={item.image.url}
-            alt={item.image.alt || item.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
-      )}
-      <div className="p-6 space-y-3">
-        {/* Type and Category */}
-        <div className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          {showType && <span>{item.type}</span>}
-          {item.categoryLabel && (
-            <>
-              {showType && <span className="text-foreground/70">•</span>}
-              <span className={showType ? 'text-foreground/70' : ''}>{item.categoryLabel}</span>
-            </>
+    <Link href={link.href} className={cn("group block h-full", className)}>
+      <Card hoverable className="h-full flex flex-col overflow-hidden transition-all duration-300">
+        {/* Image - Consistent 4:5 aspect ratio for all cards */}
+        <div className="relative aspect-4/5 w-full overflow-hidden bg-neutral-100">
+          {image?.url ? (
+            <Image
+              src={image.url}
+              alt={image.alt || title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="font-serif text-4xl text-neutral-300">P</span>
+            </div>
           )}
         </div>
-
-        {/* Title */}
-        <H3 className="text-2xl font-light leading-tight group-hover:text-foreground">
-          {item.title}
-        </H3>
-
-        {/* Excerpt */}
-        {item.excerpt && (
-          <Paragraph className="text-muted-foreground line-clamp-2">
-            {item.excerpt}
-          </Paragraph>
-        )}
-
-        {/* Metadata: Duration, Format, Date */}
-        <div className="flex flex-wrap items-center gap-3 text-sm text-foreground">
-          {item.duration && (
-            <Label className="text-xs! tracking-[0.15em]!">{item.duration}</Label>
+        
+        {/* Content */}
+        <div className="flex-1 flex flex-col p-6 md:p-8">
+          {/* Category - Small caps tracking */}
+          {category && (
+            <p className="font-sans text-[10px] font-medium uppercase tracking-[0.25em] text-neutral-500 mb-3">
+              {category}
+            </p>
           )}
-          {item.format && (
-            <span className="rounded-full border px-3 py-1 text-xs uppercase tracking-[0.15em]">
-              {item.format}
-            </span>
+          
+          {/* Title - Serif font, elegant */}
+          <h3 className="font-serif text-xl md:text-2xl font-light tracking-tight mb-3 group-hover:opacity-70 transition-opacity duration-300">
+            {title}
+          </h3>
+          
+          {/* Description */}
+          {description && (
+            <p className="font-sans text-sm text-neutral-600 leading-relaxed mb-4 line-clamp-3">
+              {description}
+            </p>
           )}
-          {item.date && (
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">
-              {item.date}
-            </span>
+          
+          {/* Metadata */}
+          {metadata && metadata.length > 0 && (
+            <div className="space-y-1.5 mb-4">
+              {metadata.map((item, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <span className="font-sans text-neutral-500">{item.label}</span>
+                  <span className="font-sans font-medium text-neutral-900">{item.value}</span>
+                </div>
+              ))}
+            </div>
           )}
+          
+          {/* Spacer to push price and button to bottom */}
+          <div className="flex-1 min-h-4" />
+          
+          {/* Price - Always at bottom, before button */}
+          {price && (price.eur || price.uah) && (
+            <div className="mb-4 pt-4 border-t border-neutral-200">
+              <p className="font-serif text-2xl md:text-3xl font-light tracking-tight">
+                {price.eur && `€${price.eur}`}
+                {price.eur && price.uah && <span className="text-neutral-400 mx-2">/</span>}
+                {price.uah && `₴${price.uah}`}
+              </p>
+              {price.note && (
+                <p className="font-sans text-xs text-neutral-500 mt-1">
+                  {price.note}
+                </p>
+              )}
+            </div>
+          )}
+          
+          {/* CTA Button - Always at very bottom */}
+          <div className={cn("mt-auto", !price?.eur && !price?.uah && "pt-4 border-t border-neutral-200")}>
+            <Button 
+              variant="primary" 
+              size="sm"
+              className="w-full"
+              asChild
+            >
+              <span>{link.label || 'Learn More'}</span>
+            </Button>
+          </div>
         </div>
-
-        {/* Learn More */}
-        <span className="inline-block text-sm font-medium uppercase tracking-widest text-foreground/80 transition-opacity group-hover:opacity-80">
-          {learnMoreText}
-        </span>
-      </div>
+      </Card>
     </Link>
   )
 }

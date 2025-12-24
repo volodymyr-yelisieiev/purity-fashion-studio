@@ -592,6 +592,110 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.services_includes": {
+      "name": "services_includes",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "item": {
+          "name": "item",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "services_includes_order_idx": {
+          "name": "services_includes_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "services_includes_parent_id_idx": {
+          "name": "services_includes_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "services_includes_locale_idx": {
+          "name": "services_includes_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "services_includes_parent_id_fk": {
+          "name": "services_includes_parent_id_fk",
+          "tableFrom": "services_includes",
+          "tableTo": "services",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.services_steps": {
       "name": "services_steps",
       "schema": "",
@@ -811,6 +915,13 @@
           "primaryKey": false,
           "notNull": false,
           "default": true
+        },
+        "payment_enabled": {
+          "name": "payment_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -2096,14 +2207,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "before_image_id": {
-          "name": "before_image_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "after_image_id": {
-          "name": "after_image_id",
+        "main_image_id": {
+          "name": "main_image_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -2132,6 +2237,32 @@
           "type": "timestamp(3) with time zone",
           "primaryKey": false,
           "notNull": false
+        },
+        "price_e_u_r": {
+          "name": "price_e_u_r",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price_u_a_h": {
+          "name": "price_u_a_h",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bookable": {
+          "name": "bookable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "payment_enabled": {
+          "name": "payment_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -2179,26 +2310,11 @@
           "method": "btree",
           "with": {}
         },
-        "portfolio_before_image_idx": {
-          "name": "portfolio_before_image_idx",
+        "portfolio_main_image_idx": {
+          "name": "portfolio_main_image_idx",
           "columns": [
             {
-              "expression": "before_image_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "portfolio_after_image_idx": {
-          "name": "portfolio_after_image_idx",
-          "columns": [
-            {
-              "expression": "after_image_id",
+              "expression": "main_image_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -2256,25 +2372,12 @@
         }
       },
       "foreignKeys": {
-        "portfolio_before_image_id_media_id_fk": {
-          "name": "portfolio_before_image_id_media_id_fk",
+        "portfolio_main_image_id_media_id_fk": {
+          "name": "portfolio_main_image_id_media_id_fk",
           "tableFrom": "portfolio",
           "tableTo": "media",
           "columnsFrom": [
-            "before_image_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "portfolio_after_image_id_media_id_fk": {
-          "name": "portfolio_after_image_id_media_id_fk",
-          "tableFrom": "portfolio",
-          "tableTo": "media",
-          "columnsFrom": [
-            "after_image_id"
+            "main_image_id"
           ],
           "columnsTo": [
             "id"
@@ -2813,6 +2916,32 @@
           "primaryKey": false,
           "notNull": false
         },
+        "price_e_u_r": {
+          "name": "price_e_u_r",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price_u_a_h": {
+          "name": "price_u_a_h",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bookable": {
+          "name": "bookable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "payment_enabled": {
+          "name": "payment_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -2959,6 +3088,24 @@
         },
         "description": {
           "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "materials": {
+          "name": "materials",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "care_instructions": {
+          "name": "care_instructions",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sizes": {
+          "name": "sizes",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -4391,6 +4538,39 @@
           "primaryKey": false,
           "notNull": false
         },
+        "featured": {
+          "name": "featured",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "price_e_u_r": {
+          "name": "price_e_u_r",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price_u_a_h": {
+          "name": "price_u_a_h",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bookable": {
+          "name": "bookable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "payment_enabled": {
+          "name": "payment_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -4472,6 +4652,21 @@
           "columns": [
             {
               "expression": "instructor_photo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "courses_featured_idx": {
+          "name": "courses_featured_idx",
+          "columns": [
+            {
+              "expression": "featured",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -4572,6 +4767,18 @@
         "description": {
           "name": "description",
           "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "prerequisites": {
+          "name": "prerequisites",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "materials": {
+          "name": "materials",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -5994,9 +6201,9 @@
       "values": [
         "styling",
         "wardrobe-audit",
-        "transformation",
         "event",
-        "shopping"
+        "shopping",
+        "editorial"
       ]
     },
     "public.enum_lookbooks_status": {
@@ -6134,6 +6341,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "0ffd94eb-2b01-43c9-a991-dcbf88bd3a7d",
+  "id": "edbdcee3-ab14-4937-9bc0-db7c00df264c",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

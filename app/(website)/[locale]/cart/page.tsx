@@ -4,7 +4,8 @@ import { Link } from '@/i18n/navigation'
 import { ShoppingBag, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui'
 import { CartItem } from '@/components/cart'
-import { useCart, formatPrice } from '@/hooks/useCart'
+import { useCart } from '@/hooks/useCart'
+import { formatPrice } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 
 export default function CartPage() {

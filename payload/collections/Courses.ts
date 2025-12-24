@@ -124,6 +124,22 @@ export const Courses: CollectionConfig = {
       localized: true,
     },
     {
+      name: 'prerequisites',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'What students should know before taking this course',
+      },
+    },
+    {
+      name: 'materials',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'What students need to have for this course',
+      },
+    },
+    {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
@@ -302,6 +318,50 @@ export const Courses: CollectionConfig = {
           localized: true,
         },
       ],
+    },
+    {
+      name: 'featured',
+      type: 'checkbox',
+      defaultValue: false,
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description: 'Show on homepage featured section',
+      },
+    },
+    {
+      name: 'priceEUR',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        description: 'Price in EUR (overrides price group if set)',
+      },
+    },
+    {
+      name: 'priceUAH',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        description: 'Price in UAH (overrides price group if set)',
+      },
+    },
+    {
+      name: 'bookable',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        position: 'sidebar',
+        description: 'Allow online booking for this course',
+      },
+    },
+    {
+      name: 'paymentEnabled',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Enable online payment for this course',
+      },
     },
   ],
 }

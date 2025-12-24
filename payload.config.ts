@@ -97,6 +97,7 @@ export default buildConfig({
       const instance = originalInit(args)
       const originalCreateMigration = instance.createMigration
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       instance.createMigration = async (migrationArgs: any) => {
         await originalCreateMigration.call(instance, migrationArgs)
 
@@ -150,8 +151,10 @@ export default buildConfig({
             }
           }
           return field
-        }) as any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any[]
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       generateTitle: ({ doc, locale }: any) => {
         const pickLocalized = (value: unknown): string | undefined => {
           if (!value) return undefined
@@ -166,6 +169,7 @@ export default buildConfig({
         const title = pickLocalized(doc?.title) || pickLocalized(doc?.name) || 'PURITY'
         return `${title} | PURITY Fashion Studio`
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       generateDescription: ({ doc, locale }: any) => {
         const pickLocalized = (value: unknown): string | undefined => {
           if (!value) return undefined
@@ -194,11 +198,13 @@ export default buildConfig({
              : locale === 'ru' ? 'Профессиональный стайлинг и услуги ателье от PURITY Fashion Studio.'
              : 'Professional styling and atelier services by PURITY Fashion Studio.'
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       generateImage: ({ doc }: any) => {
-        const image = doc?.heroImage || doc?.afterImage || doc?.coverImage || doc?.featuredImage || doc?.images?.[0]?.image
+        const image = doc?.heroImage || doc?.mainImage || doc?.afterImage || doc?.coverImage || doc?.featuredImage || doc?.images?.[0]?.image
         if (typeof image === 'object' && image?.url) return image.url
         return undefined
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       generateURL: ({ doc, collectionSlug, locale }: any) => {
         const pickLocalized = (value: unknown): string | undefined => {
           if (!value) return undefined

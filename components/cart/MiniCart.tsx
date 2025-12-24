@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { ShoppingBag } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import {
@@ -17,11 +18,12 @@ import { useCart } from '@/hooks/useCart'
 import { useTranslations } from 'next-intl'
 
 export function MiniCart() {
+  const [open, setOpen] = useState(false)
   const { items, itemCount, isHydrated } = useCart()
   const t = useTranslations('cart')
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative hover:bg-transparent">
           <ShoppingBag className="h-5 w-5" />
@@ -34,7 +36,7 @@ export function MiniCart() {
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col">
+      <SheetContent className="flex flex-col z-110" overlayClassName="z-110">
         <SheetHeader>
           <SheetTitle>{t('title')}</SheetTitle>
           <SheetDescription className="sr-only">
@@ -48,7 +50,7 @@ export function MiniCart() {
               <ShoppingBag className="h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-muted-foreground mb-4">{t('empty')}</p>
               <Button asChild variant="outline">
-                <Link href="/services">{t('browseServices')}</Link>
+                <Link href="/services" onClick={() => setOpen(false)}>{t('browseServices')}</Link>
               </Button>
             </div>
           ) : (
@@ -60,7 +62,11 @@ export function MiniCart() {
           )}
         </div>
 
-        {items.length > 0 && <CartSummary />}
+        {items.length > 0 && (
+          <div onClick={() => setOpen(false)}>
+            <CartSummary />
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   )

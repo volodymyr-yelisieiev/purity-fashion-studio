@@ -1,15 +1,15 @@
 import { getAvailableLocales, getPayload, getCollectionBySlug, type Locale } from '@/lib/payload'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
-import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import { Button } from '@/components/ui'
 import type { Media as MediaType, Product } from '@/payload-types'
 import { Metadata } from 'next'
 import { generateSeoMetadata } from '@/lib/seo'
 import { getTranslations } from 'next-intl/server'
 import { draftMode } from 'next/headers'
-import { LanguageFallback } from '@/components/ui'
+import { LanguageFallback, Button, ContentCard } from '@/components/ui'
+import { HeroSection } from '@/components/sections'
+import { FadeInStagger, FadeInStaggerContainer } from '@/components/animations/FadeInStagger'
 
 interface CollectionDetailPageProps {
   params: Promise<{
@@ -21,10 +21,19 @@ interface CollectionDetailPageProps {
 export async function generateStaticParams() {
   const payload = await getPayload()
   
-  const collections = await payload.find({
-    collection: 'lookbooks',
-    limit: 100,
-  })
+  let collections
+  try {
+    collections = await payload.find({
+      collection: 'lookbooks',
+      limit: 100,
+    })
+  } catch (err) {
+    // If the schema is out-of-sync (missing columns) or DB is unavailable,
+    // don't fail the entire build. Return no params so pages can still build.
+    // The `prebuild` migration (added to package.json) should ensure schema is applied on CI.
+    console.error('generateStaticParams: failed to fetch lookbooks —', err)
+    return []
+  }
   
   const locales = ['en', 'uk', 'ru']
   
@@ -45,19 +54,6 @@ export async function generateMetadata({ params }: CollectionDetailPageProps): P
   const collection = await getCollectionBySlug(slug, locale as Locale, isDraft)
 
   if (!collection) {
-    const availableLocales = await getAvailableLocales('lookbooks', slug, isDraft)
-    const title = availableLocales.length > 0 ? t('notAvailable') : t('notFound')
-    return generateSeoMetadata({
-      title: `${title} | PURITY Fashion Studio`,
-      description: t('notFoundDescription'),
-      locale,
-    })
-  }
-
-  const hasContent = (value?: string | null) => Boolean(value && value.toString().trim().length > 0)
-  const primaryDescription = collection.description
-
-  if (!hasContent(collection.name) || !hasContent(primaryDescription)) {
     const availableLocales = await getAvailableLocales('lookbooks', slug, isDraft)
     const title = availableLocales.length > 0 ? t('notAvailable') : t('notFound')
     return generateSeoMetadata({
@@ -129,108 +125,160 @@ export default async function CollectionDetailPage({ params }: CollectionDetailP
   const products = (collection.linkedProducts || []).filter(p => typeof p === 'object') as Product[]
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      {/* Back Button */}
-      <Button asChild variant="ghost" className="mb-8">
-        <Link href={`/${locale}/collections`}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {t('back')}
-        </Link>
-      </Button>
-
-      {/* Header */}
-      <header className="mb-12">
-        {collection.releaseDate && (
-          <span className="text-sm text-muted-foreground uppercase tracking-wider">
-            {new Date(collection.releaseDate).toLocaleDateString(locale, { year: 'numeric', month: 'long' })}
-          </span>
-        )}
-        <h1 className="text-4xl md:text-5xl font-bold mt-2 mb-4">{collection.name}</h1>
-      </header>
-
-      {/* Cover Image */}
-      {coverImage?.url && (
-        <div className="aspect-21/9 relative overflow-hidden rounded-sm mb-12">
-          <Image
-            src={coverImage.url}
-            alt={collection.name || ''}
-            fill
-            className="object-cover"
-            priority
-          />
+    <main className="min-h-screen bg-background">
+      {/* Hero */}
+      <HeroSection
+        title={collection.name}
+        subtitle={collection.season ? t(`seasons.${collection.season}`) : ''}
+        backgroundImage={coverImage?.url || ''}
+      />
+      
+      {/* Overview - White */}
+      <section className="py-24 bg-white">
+        <div className="container max-w-4xl">
+          <FadeInStaggerContainer>
+            <FadeInStagger>
+              <h2 className="text-3xl font-serif mb-8">{tCommon('overview')}</h2>
+            </FadeInStagger>
+            <FadeInStagger>
+              <p className="text-xl font-light leading-relaxed text-foreground">
+                {collection.description}
+              </p>
+            </FadeInStagger>
+          </FadeInStaggerContainer>
         </div>
-      )}
-
-      {/* Description */}
-      {collection.description && (
-        <div className="prose prose-lg max-w-3xl mb-16">
-          <p className="text-xl text-muted-foreground">{collection.description}</p>
+      </section>
+      
+      {/* Details - Gray */}
+      <section className="py-24 bg-neutral-50">
+        <div className="container max-w-4xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* Materials */}
+            <FadeInStaggerContainer>
+              <FadeInStagger>
+                <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
+                  {t('materials')}
+                </h3>
+                <p className="text-lg font-light">{collection.materials}</p>
+              </FadeInStagger>
+            </FadeInStaggerContainer>
+            
+            {/* Sizes */}
+            <FadeInStaggerContainer>
+              <FadeInStagger>
+                <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
+                  {t('sizes')}
+                </h3>
+                <p className="text-lg font-light">{collection.sizes}</p>
+              </FadeInStagger>
+            </FadeInStaggerContainer>
+            
+            {/* Care */}
+            <FadeInStaggerContainer>
+              <FadeInStagger>
+                <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
+                  {t('care')}
+                </h3>
+                <p className="text-lg font-light">{collection.careInstructions}</p>
+              </FadeInStagger>
+            </FadeInStaggerContainer>
+          </div>
         </div>
-      )}
-
-      {/* Lookbook Gallery */}
+      </section>
+      
+      {/* Lookbook Gallery - White */}
       {collection.images && collection.images.length > 0 && (
-        <section className="mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {collection.images.map((item, index) => {
-              const image = typeof item.image === 'object' ? item.image as MediaType : null
-              if (!image?.url) return null
+        <section className="py-24 bg-white">
+          <div className="container">
+            <FadeInStaggerContainer>
+              <FadeInStagger>
+                <h2 className="text-3xl font-serif mb-16 text-center">{t('lookbook')}</h2>
+              </FadeInStagger>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+                {collection.images.map((item, index) => {
+                  const image = typeof item.image === 'object' ? item.image as MediaType : null
+                  if (!image?.url) return null
 
-              return (
-                <div key={item.id || index} className="space-y-4">
-                  <div className="aspect-3/4 relative overflow-hidden rounded-sm">
-                    <Image
-                      src={image.url}
-                      alt={item.caption || `${collection.name} look ${index + 1}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  {item.caption && (
-                    <p className="text-sm text-muted-foreground italic">{item.caption}</p>
-                  )}
-                </div>
-              )
-            })}
+                  return (
+                    <FadeInStagger key={item.id || index}>
+                      <div className="space-y-6">
+                        <div className="aspect-4/5 relative overflow-hidden bg-muted">
+                          <Image
+                            src={image.url}
+                            alt={item.caption || `${collection.name} look ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                          />
+                        </div>
+                        {item.caption && (
+                          <p className="text-sm text-muted-foreground italic text-center">{item.caption}</p>
+                        )}
+                      </div>
+                    </FadeInStagger>
+                  )
+                })}
+              </div>
+            </FadeInStaggerContainer>
           </div>
         </section>
       )}
-
-      {/* Products */}
+      
+      {/* Products - Gray */}
       {products.length > 0 && (
-        <section className="border-t pt-16">
-          <h2 className="text-2xl font-semibold mb-8">
-            {t('featuredProducts')}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => {
-              const productImageData = product.images?.[0]
-              const productImage = (typeof productImageData?.image === 'object' ? productImageData.image : null) as MediaType | null
-              
-              return (
-                <article key={product.id} className="group">
-                  {productImage?.url && (
-                    <div className="aspect-3/4 relative overflow-hidden rounded-sm mb-4 bg-muted">
-                      <Image
-                        src={productImage.url}
-                        alt={product.name || ''}
-                        fill
-                        className="object-cover transition-transform group-hover:scale-105"
+        <section className="py-24 bg-neutral-50">
+          <div className="container">
+            <FadeInStaggerContainer>
+              <FadeInStagger>
+                <h2 className="text-3xl font-serif mb-16 text-center">{t('featuredProducts')}</h2>
+              </FadeInStagger>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {products.map((product) => {
+                  const productImageData = product.images?.[0]
+                  const productImage = (typeof productImageData?.image === 'object' ? productImageData.image : null) as MediaType | null
+                  
+                  return (
+                    <FadeInStagger key={product.id}>
+                      <ContentCard
+                        title={product.name}
+                        description={null}
+                        image={productImage?.url ? { url: productImage.url, alt: productImage.alt || product.name } : undefined}
+                        price={{
+                          uah: product.pricing?.uah,
+                          eur: product.pricing?.eur
+                        }}
+                        link={{
+                          href: `/products/${product.slug}`,
+                          label: t('viewProduct') || 'View Product'
+                        }}
+                        variant="default"
                       />
-                    </div>
-                  )}
-                  <h3 className="font-medium">{product.name}</h3>
-                  {product.pricing?.uah && (
-                    <p className="text-muted-foreground">
-                      ₴{product.pricing.uah}
-                    </p>
-                  )}
-                </article>
-              )
-            })}
+                    </FadeInStagger>
+                  )
+                })}
+              </div>
+            </FadeInStaggerContainer>
           </div>
         </section>
       )}
-    </div>
+      
+      {/* CTA - White */}
+      <section className="py-32 bg-white">
+        <div className="container text-center">
+          <FadeInStaggerContainer>
+            <FadeInStagger>
+              <h2 className="text-4xl font-serif mb-8">{t('interestedInCollection')}</h2>
+            </FadeInStagger>
+            <FadeInStagger>
+              <Button asChild variant="primary" size="lg">
+                <Link href="/contact">
+                  {tCommon('bookConsultation')}
+                </Link>
+              </Button>
+            </FadeInStagger>
+          </FadeInStaggerContainer>
+        </div>
+      </section>
+    </main>
   )
 }

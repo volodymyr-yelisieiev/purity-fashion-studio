@@ -84,9 +84,9 @@ export const Portfolio: CollectionConfig = {
       options: [
         { label: 'Personal Styling', value: 'styling' },
         { label: 'Wardrobe Audit', value: 'wardrobe-audit' },
-        { label: 'Style Transformation', value: 'transformation' },
         { label: 'Event Look', value: 'event' },
         { label: 'Shopping Result', value: 'shopping' },
+        { label: 'Editorial', value: 'editorial' },
       ],
       index: true,
       admin: {
@@ -94,29 +94,44 @@ export const Portfolio: CollectionConfig = {
       },
     },
     {
+      name: 'mainImage',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+      admin: {
+        description: 'Primary project image',
+      },
+    },
+    {
       name: 'description',
       type: 'textarea',
       localized: true,
       admin: {
-        description: 'Story behind the transformation',
+        description: 'Story behind the project',
       },
     },
     {
-      name: 'beforeImage',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
+      name: 'challenge',
+      type: 'textarea',
+      localized: true,
       admin: {
-        description: 'Before photo',
+        description: 'The problem or starting point for the client',
       },
     },
     {
-      name: 'afterImage',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
+      name: 'solution',
+      type: 'textarea',
+      localized: true,
       admin: {
-        description: 'After photo',
+        description: 'What we did to address the challenge',
+      },
+    },
+    {
+      name: 'result',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'The final outcome and transformation',
       },
     },
     {
@@ -191,6 +206,40 @@ export const Portfolio: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description: 'Date to display for this project',
+      },
+    },
+    {
+      name: 'priceEUR',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        description: 'Price in EUR for this type of transformation',
+      },
+    },
+    {
+      name: 'priceUAH',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        description: 'Price in UAH for this type of transformation',
+      },
+    },
+    {
+      name: 'bookable',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Allow booking a similar transformation',
+      },
+    },
+    {
+      name: 'paymentEnabled',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Enable online payment for this transformation package',
       },
     },
   ],

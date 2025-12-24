@@ -137,6 +137,10 @@ const config: Config = {
       },
       boxShadow: tokens.shadows,
       transitionDuration: tokens.animation.duration,
+      aspectRatio: {
+        '4/5': '4 / 5',
+        '4/3': '4 / 3',
+      },
     },
   },
   plugins: [],

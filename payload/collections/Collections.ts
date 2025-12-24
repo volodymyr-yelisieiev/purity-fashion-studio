@@ -98,6 +98,30 @@ export const Collections: CollectionConfig = {
       },
     },
     {
+      name: 'materials',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Materials used in this collection',
+      },
+    },
+    {
+      name: 'careInstructions',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'How to care for items in this collection',
+      },
+    },
+    {
+      name: 'sizes',
+      type: 'text',
+      localized: true,
+      admin: {
+        description: 'Available sizes (e.g., "XS-XL", "Custom")',
+      },
+    },
+    {
       name: 'coverImage',
       type: 'upload',
       relationTo: 'media',
@@ -150,6 +174,40 @@ export const Collections: CollectionConfig = {
       hasMany: true,
       admin: {
         description: 'Products featured in this collection',
+      },
+    },
+    {
+      name: 'priceEUR',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        description: 'Base price in EUR for items in this collection',
+      },
+    },
+    {
+      name: 'priceUAH',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        description: 'Base price in UAH for items in this collection',
+      },
+    },
+    {
+      name: 'bookable',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Allow booking a consultation for this collection',
+      },
+    },
+    {
+      name: 'paymentEnabled',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Enable online payment for this collection',
       },
     },
   ],

@@ -2,7 +2,8 @@
 
 import { Link } from '@/i18n/navigation'
 import { Button } from '@/components/ui'
-import { useCart, formatPrice } from '@/hooks/useCart'
+import { useCart } from '@/hooks/useCart'
+import { formatPrice } from '@/lib/utils'
 
 interface CartSummaryProps {
   showCheckoutButton?: boolean

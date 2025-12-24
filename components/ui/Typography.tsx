@@ -14,6 +14,7 @@
 
 import { cn } from '@/lib/utils'
 import type { HTMLAttributes, ReactNode } from 'react'
+import { FadeInStagger, FadeInStaggerContainer } from '@/components/animations/FadeInStagger'
 
 interface TypographyProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode
@@ -181,11 +182,15 @@ interface SectionTitleProps extends HTMLAttributes<HTMLDivElement> {
 
 export function SectionTitle({ title, subtitle, className, ...props }: SectionTitleProps) {
   return (
-    <div className={cn('mb-12 text-center md:mb-16', className)} {...props}>
-      <H2>{title}</H2>
+    <FadeInStaggerContainer className={cn('mb-12 text-center md:mb-16', className)} {...props}>
+      <FadeInStagger>
+        <H2>{title}</H2>
+      </FadeInStagger>
       {subtitle && (
-        <Lead className="mt-4 mx-auto max-w-2xl">{subtitle}</Lead>
+        <FadeInStagger>
+          <Lead className="mt-4 mx-auto max-w-2xl">{subtitle}</Lead>
+        </FadeInStagger>
       )}
-    </div>
+    </FadeInStaggerContainer>
   )
 }

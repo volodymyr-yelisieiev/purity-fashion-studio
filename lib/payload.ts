@@ -24,6 +24,7 @@ export async function getServices(locale: Locale = 'uk', category?: string) {
     locale,
     fallbackLocale: false,
     where,
+    sort: '-featured,-createdAt',
   })
 }
 
@@ -134,6 +135,7 @@ export async function getPortfolio(locale: Locale = 'uk', page = 1, limit = 6) {
     fallbackLocale: false,
     page,
     limit,
+    sort: '-featured,-createdAt',
   })
 }
 
@@ -159,7 +161,7 @@ export async function getCollections(locale: Locale = 'uk', limit = 4) {
     locale,
     fallbackLocale: false,
     limit,
-    sort: '-releaseDate',
+    sort: '-featured,-createdAt',
   })
 }
 

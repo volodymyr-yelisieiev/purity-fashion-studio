@@ -45,16 +45,3 @@ export function useCart() {
     setCurrency: store.setCurrency,
   }
 }
-
-/**
- * Format price with currency symbol
- */
-export function formatPrice(amount: number, currency: 'UAH' | 'EUR' = 'UAH'): string {
-  const formatter = new Intl.NumberFormat(currency === 'UAH' ? 'uk-UA' : 'en-EU', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  })
-  return formatter.format(amount)
-}

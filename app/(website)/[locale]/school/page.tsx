@@ -1,15 +1,16 @@
 import { getPayload } from '@/lib/payload'
 import { HeroSection } from '@/components/sections'
-import { EmptyState, H3, Paragraph, Container } from '@/components/ui'
-import { Link } from '@/i18n/navigation'
+import { EmptyState, Container, Section, Lead, Grid, ContentCard } from '@/components/ui'
+import { FadeInStagger, FadeInStaggerContainer } from '@/components/animations/FadeInStagger'
 import { getTranslations } from 'next-intl/server'
 import { hasContent } from '@/lib/utils'
-import Image from 'next/image'
 import type { Media } from '@/payload-types'
 
 export default async function SchoolPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'school' })
+  const tPages = await getTranslations({ locale, namespace: 'pages' })
+  const tCommon = await getTranslations({ locale, namespace: 'common' })
   
   const payload = await getPayload()
   const { docs: courses } = await payload.find({
@@ -17,7 +18,7 @@ export default async function SchoolPage({ params }: { params: Promise<{ locale:
     locale: locale as 'en' | 'uk' | 'ru',
     fallbackLocale: false,
     where: { status: { equals: 'published' } },
-    sort: '-createdAt',
+    sort: '-featured,-createdAt',
     limit: 100,
   })
 
@@ -27,11 +28,26 @@ export default async function SchoolPage({ params }: { params: Promise<{ locale:
   return (
     <>
       <HeroSection
-        title={t('hero.title')}
-        subtitle={t('hero.description')}
+        title={tPages('school.title')}
+        subtitle={tPages('school.subtitle')}
+        backgroundImage="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1920&h=1080&fit=crop&q=85"
       />
+
+      {/* Intro Section */}
+      <Section spacing="md">
+        <Container size="sm" className="text-center">
+          <FadeInStaggerContainer>
+            <FadeInStagger>
+              <Lead className="text-muted-foreground">
+                {t('intro') || 'Our courses and programs are designed to help you develop a deep understanding of personal style, color theory, and wardrobe building.'}
+              </Lead>
+            </FadeInStagger>
+          </FadeInStaggerContainer>
+        </Container>
+      </Section>
       
-      <section className="bg-background">
+      {/* Courses Grid */}
+      <Section spacing="md" variant="muted">
         <Container>
           {filteredCourses.length === 0 ? (
             <EmptyState
@@ -43,49 +59,33 @@ export default async function SchoolPage({ params }: { params: Promise<{ locale:
               }}
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Grid cols={3} gap="md">
               {filteredCourses.map((course) => {
-                 const coverImage = course.featuredImage as Media | undefined
-                 const price = course.price as { amount: number; currency: string } | undefined
+                const coverImage = course.featuredImage as Media | undefined
 
-                 return (
-                  <Link
+                return (
+                  <ContentCard
                     key={course.id}
-                    href={`/school/${course.slug}`}
-                    className="group cursor-pointer block"
-                  >
-                    <div className="space-y-4">
-                      {coverImage?.url && (
-                        <div className="relative aspect-4/3 overflow-hidden bg-muted">
-                          <Image
-                            src={coverImage.url}
-                            alt={course.title}
-                            fill
-                            className="object-cover transition-transform group-hover:scale-105"
-                          />
-                        </div>
-                      )}
-                      <H3 className="group-hover:text-foreground/70 transition-colors">
-                        {course.title}
-                      </H3>
-                      {course.excerpt && (
-                        <Paragraph className="line-clamp-2 text-muted-foreground">
-                          {course.excerpt}
-                        </Paragraph>
-                      )}
-                      {price && (
-                        <p className="text-sm font-semibold">
-                          {price.amount} {price.currency}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
+                    title={course.title}
+                    description={course.excerpt}
+                    category={course.category?.replace('-', ' ') || 'Course'}
+                    image={coverImage?.url ? { url: coverImage.url, alt: coverImage.alt || course.title } : undefined}
+                    price={{
+                      eur: course.priceEUR || undefined,
+                      uah: course.priceUAH || undefined,
+                    }}
+                    link={{
+                      href: `/school/${course.slug}`,
+                      label: tCommon('learnMore')
+                    }}
+                    variant="course"
+                  />
                 )
               })}
-            </div>
+            </Grid>
           )}
         </Container>
-      </section>
+      </Section>
     </>
   )
 }

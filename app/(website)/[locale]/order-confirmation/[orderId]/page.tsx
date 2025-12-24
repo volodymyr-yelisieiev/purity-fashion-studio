@@ -3,6 +3,7 @@ import configPromise from '@payload-config'
 import { Link } from '@/i18n/navigation'
 import { CheckCircle, Clock, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { formatPrice } from '@/lib/utils'
 
 interface OrderConfirmationPageProps {
   params: Promise<{
@@ -71,7 +72,6 @@ export default async function OrderConfirmationPage({
   }>) || []
 
   const currency = (order.currency as 'UAH' | 'EUR') || 'UAH'
-  const currencySymbol = currency === 'UAH' ? '₴' : '€'
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -149,7 +149,7 @@ export default async function OrderConfirmationPage({
                   </p>
                 </div>
                 <p className="font-medium">
-                  {currencySymbol}{(item.price * item.quantity).toFixed(2)}
+                  {formatPrice(item.price * item.quantity, currency)}
                 </p>
               </div>
             ))}
@@ -157,7 +157,7 @@ export default async function OrderConfirmationPage({
           <div className="bg-muted px-4 py-3 flex justify-between items-center">
             <span className="font-semibold">Total</span>
             <span className="text-lg font-bold">
-              {currencySymbol}{(order.total as number).toFixed(2)}
+              {formatPrice(order.total as number, currency)}
             </span>
           </div>
         </div>

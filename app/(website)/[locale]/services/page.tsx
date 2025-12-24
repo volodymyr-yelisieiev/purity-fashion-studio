@@ -3,7 +3,7 @@ import { HeroSection, ServicesPreview } from '@/components/sections'
 import { generateSeoMetadata } from '@/lib/seo'
 import { getPayload } from '@/lib/payload'
 import { EmptyState } from '@/components/ui'
-import { hasContent } from '@/lib/utils'
+import { hasContent, formatPrice } from '@/lib/utils'
 import type { Service, Media } from '@/payload-types'
 import type { Metadata } from 'next'
 
@@ -13,11 +13,11 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'services' })
+  const tPages = await getTranslations({ locale, namespace: 'pages' })
 
   return generateSeoMetadata({
-    title: `${t('title')} | PURITY Fashion Studio`,
-    description: t('description'),
+    title: `${tPages('services.title')} | PURITY Fashion Studio`,
+    description: tPages('services.subtitle'),
     path: '/services',
     locale,
   })
@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ServicesPage({ params }: PageProps) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'services' })
+  const tPages = await getTranslations({ locale, namespace: 'pages' })
   const tCommon = await getTranslations({ locale, namespace: 'common' })
   
   const payload = await getPayload()
@@ -34,7 +35,7 @@ export default async function ServicesPage({ params }: PageProps) {
     locale: locale as 'en' | 'uk' | 'ru',
     fallbackLocale: false,
     limit: 50,
-    sort: 'title',
+    sort: '-featured,-createdAt',
     depth: 1,
     where: {
       status: { equals: 'published' },
@@ -49,8 +50,8 @@ export default async function ServicesPage({ params }: PageProps) {
     const priceEUR = service.pricing?.eur
     const priceUAH = service.pricing?.uah
 
-    if (locale === 'en' && priceEUR) return `€${priceEUR}`
-    if (priceUAH) return `${priceUAH} ₴`
+    if (locale === 'en' && priceEUR) return formatPrice(priceEUR, 'EUR')
+    if (priceUAH) return formatPrice(priceUAH, 'UAH')
     return null
   }
 
@@ -62,11 +63,12 @@ export default async function ServicesPage({ params }: PageProps) {
       title: service.title,
       slug: service.slug || String(service.id),
       description: service.excerpt || service.description || '',
-      category: service.category || 'styling',
-      categoryLabel: service.category || 'styling',
+      category: service.category ? t(`categories.${service.category}`) : t('categories.styling'),
+      categoryLabel: service.category ? t(`categories.${service.category}`) : t('categories.styling'),
       priceDisplay: getServicePriceDisplay(service),
+      pricing: service.pricing,
       duration: service.duration || null,
-      format: service.format || null,
+      format: service.format ? t(`formats.${service.format}`) : null,
       image: heroImage?.url ? { url: heroImage.url, alt: heroImage.alt || service.title } : undefined,
     }
   })
@@ -75,8 +77,8 @@ export default async function ServicesPage({ params }: PageProps) {
     return (
       <main>
         <HeroSection
-          title={t('title')}
-          subtitle={t('description')}
+          title={tPages('services.title')}
+          subtitle={tPages('services.subtitle')}
         />
         <EmptyState
           title={tCommon('noContent')}
@@ -90,8 +92,8 @@ export default async function ServicesPage({ params }: PageProps) {
   return (
     <main>
       <HeroSection
-        title={t('title')}
-        subtitle={t('description')}
+        title={tPages('services.title')}
+        subtitle={tPages('services.subtitle')}
       />
       <ServicesPreview
         services={formattedServices}

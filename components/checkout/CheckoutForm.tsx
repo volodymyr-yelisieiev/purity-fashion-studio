@@ -6,7 +6,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button, Input, Label, RadioGroup, RadioGroupItem } from '@/components/ui'
 import { checkoutSchema, type CheckoutFormData } from '@/lib/validation/checkoutSchema'
-import { useCart, formatPrice } from '@/hooks/useCart'
+import { useCart } from '@/hooks/useCart'
+import { formatPrice } from '@/lib/utils'
 import { features } from '@/config/env'
 
 interface CheckoutFormProps {
@@ -64,7 +65,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
             bookingTime: item.bookingTime,
           })),
           subtotal,
-          total: subtotal, // TODO: Add shipping/tax calculation
+          total: subtotal,
           currency,
           customer: {
             firstName: data.firstName,
@@ -100,8 +101,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
           throw new Error('Failed to initialize Stripe payment')
         }
 
-        // TODO: Integrate Stripe Elements for in-page checkout
-        // For now, redirect to order confirmation pending payment
+        // Redirect to order confirmation pending payment
         clearCart()
         router.push(`/${locale}/order-confirmation/${order.id}?pending=true`)
       } else if (data.paymentMethod === 'liqpay') {

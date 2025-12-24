@@ -1,13 +1,14 @@
 import { getTranslations } from 'next-intl/server'
-import type { Media as MediaType, Lookbook as CollectionType } from '@/payload-types'
+import type { Lookbook as CollectionType, Media } from '@/payload-types'
 import { getPayload } from '@/lib/payload'
 import { hasContent } from '@/lib/utils'
 import { HeroSection } from '@/components/sections'
-import { EmptyState, ContentCard, type ContentCardItem, Section, Container, Grid } from '@/components/ui'
+import { EmptyState, Section, Container, Lead, Grid, ContentCard } from '@/components/ui'
+import { FadeInStagger, FadeInStaggerContainer } from '@/components/animations/FadeInStagger'
 
 export default async function CollectionsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'home.collections' })
+  const tPages = await getTranslations({ locale, namespace: 'pages' })
   const tCommon = await getTranslations({ locale, namespace: 'common' })
   
   const payload = await getPayload()
@@ -16,7 +17,7 @@ export default async function CollectionsPage({ params }: { params: Promise<{ lo
     locale: locale as 'en' | 'ru' | 'uk',
     fallbackLocale: false,
     limit: 50,
-    sort: '-createdAt',
+    sort: '-featured,-createdAt',
     where: {
       status: { equals: 'published' },
     },
@@ -29,8 +30,9 @@ export default async function CollectionsPage({ params }: { params: Promise<{ lo
     return (
       <>
         <HeroSection
-          title={t('title')}
-          subtitle={t('subtitle')}
+          title={tPages('collections.title')}
+          subtitle={tPages('collections.subtitle')}
+          backgroundImage="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop&q=85"
         />
         <EmptyState
           title={tCommon('noContent')}
@@ -41,48 +43,53 @@ export default async function CollectionsPage({ params }: { params: Promise<{ lo
     )
   }
 
-  // Transform to ContentCardItem
-  const cardItems: ContentCardItem[] = filteredDocs.map((item) => {
-    const collection = item as CollectionType
-    const coverImg = collection.coverImage as MediaType | null
-    const firstImage = collection.images?.[0]
-    const fallbackImage = (typeof firstImage?.image === 'object' ? firstImage.image : null) as MediaType | null
-    const displayImage = coverImg || fallbackImage
-    
-    return {
-      id: String(collection.id),
-      type: 'collection',
-      title: collection.name,
-      href: `/collections/${collection.slug}`,
-      image: displayImage?.url ? { url: displayImage.url, alt: displayImage.alt || collection.name } : undefined,
-      excerpt: collection.description || undefined,
-      category: collection.season || null,
-      categoryLabel: collection.season || null,
-      date: collection.releaseDate
-        ? new Date(collection.releaseDate).toLocaleDateString(locale, { year: 'numeric', month: 'long' })
-        : null,
-    }
-  })
-
   return (
     <>
       <HeroSection
-        title={t('title')}
-        subtitle={t('subtitle')}
+        title={tPages('collections.title')}
+        subtitle={tPages('collections.subtitle')}
+        backgroundImage="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop&q=85"
       />
 
+      {/* Intro Section */}
       <Section spacing="md">
+        <Container size="sm" className="text-center">
+          <FadeInStaggerContainer>
+            <FadeInStagger>
+              <Lead className="text-muted-foreground">
+                {tCommon('collectionsIntro') || 'Each collection represents a unique vision of elegance, crafted with attention to detail and timeless design.'}
+              </Lead>
+            </FadeInStagger>
+          </FadeInStaggerContainer>
+        </Container>
+      </Section>
+
+      {/* Collections Grid */}
+      <Section spacing="md" variant="muted">
         <Container>
-          <Grid cols={2} gap="lg">
-            {cardItems.map((item) => (
-              <ContentCard
-                key={item.id}
-                item={item}
-                learnMoreText={`${tCommon('learnMore')} →`}
-                showType={false}
-                aspectRatio="3/2"
-              />
-            ))}
+          <Grid cols={2} gap="md">
+            {filteredDocs.map((item) => {
+              const collection = item as CollectionType
+              const coverImage = typeof collection.coverImage === 'object' ? (collection.coverImage as Media | null) : null
+              return (
+                <ContentCard
+                  key={collection.id}
+                  title={collection.name}
+                  description={collection.description}
+                  category={collection.season}
+                  image={coverImage?.url ? { url: coverImage.url, alt: coverImage.alt || collection.name } : undefined}
+                  price={{
+                    eur: collection.priceEUR || undefined,
+                    uah: collection.priceUAH || undefined,
+                  }}
+                  link={{
+                    href: `/collections/${collection.slug}`,
+                    label: tCommon('viewCollection') || 'View Collection'
+                  }}
+                  variant="collection"
+                />
+              )
+            })}
           </Grid>
         </Container>
       </Section>

@@ -98,6 +98,9 @@ export const Services: CollectionConfig = {
       name: 'category',
       type: 'select',
       options: [
+        { label: 'Research', value: 'research' },
+        { label: 'Realisation', value: 'realisation' },
+        { label: 'Transformation', value: 'transformation' },
         { label: 'Personal Styling', value: 'styling' },
         { label: 'Atelier & Tailoring', value: 'atelier' },
         { label: 'Consulting', value: 'consulting' },
@@ -176,6 +179,21 @@ export const Services: CollectionConfig = {
       },
     },
     {
+      name: 'includes',
+      type: 'array',
+      localized: true,
+      admin: {
+        description: 'What is included in this service',
+      },
+      fields: [
+        {
+          name: 'item',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
+    {
       name: 'steps',
       type: 'array',
       admin: {
@@ -212,6 +230,15 @@ export const Services: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description: 'Allow online booking for this service',
+      },
+    },
+    {
+      name: 'paymentEnabled',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Enable online payment for this service',
       },
     },
   ],

@@ -1,4 +1,5 @@
 import { H2, H3, Paragraph, Lead, Section, Container } from '@/components/ui'
+import { FadeInStagger, FadeInStaggerContainer } from '@/components/animations/FadeInStagger'
 
 interface MethodologyStep {
   number: string
@@ -20,28 +21,35 @@ export function MethodologySection({
   return (
     <Section spacing="md" variant="muted">
       <Container size="md">
-        <div className="mb-16 text-center">
-          <H2>{title}</H2>
-          {subtitle && (
-            <Lead className="mt-4">{subtitle}</Lead>
-          )}
-        </div>
-        <div className="space-y-12">
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className="flex gap-8 border-b border-border pb-12 last:border-0"
-            >
-              <span className="font-serif text-4xl font-light text-muted-foreground/30">
-                {step.number}
-              </span>
-              <div>
-                <H3 className="text-2xl md:text-2xl">{step.title}</H3>
-                <Paragraph className="mt-3">{step.description}</Paragraph>
-              </div>
-            </div>
-          ))}
-        </div>
+        <FadeInStaggerContainer>
+          <div className="mb-16 text-center">
+            <FadeInStagger>
+              <H2>{title}</H2>
+            </FadeInStagger>
+            {subtitle && (
+              <FadeInStagger>
+                <Lead className="mt-4">{subtitle}</Lead>
+              </FadeInStagger>
+            )}
+          </div>
+          <div className="space-y-12">
+            {steps.map((step, index) => (
+              <FadeInStagger key={index}>
+                <div
+                  className="flex flex-col md:flex-row gap-4 md:gap-8 border-b border-border pb-12 last:border-0"
+                >
+                  <span className="font-serif text-3xl md:text-4xl font-light text-muted-foreground/30">
+                    {step.number}
+                  </span>
+                  <div>
+                    <H3>{step.title}</H3>
+                    <Paragraph className="mt-3">{step.description}</Paragraph>
+                  </div>
+                </div>
+              </FadeInStagger>
+            ))}
+          </div>
+        </FadeInStaggerContainer>
       </Container>
     </Section>
   )

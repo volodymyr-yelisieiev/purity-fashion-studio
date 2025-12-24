@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { HeroSection, MethodologySection } from '@/components/sections'
 import { generateSeoMetadata } from '@/lib/seo'
 import { H2, H4, Paragraph, Lead, Section, Container, Grid } from '@/components/ui'
+import { FadeInStagger, FadeInStaggerContainer } from '@/components/animations/FadeInStagger'
 import type { Metadata } from 'next'
 
 interface PageProps {
@@ -10,11 +11,11 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'about' })
+  const tPages = await getTranslations({ locale, namespace: 'pages' })
 
   return generateSeoMetadata({
-    title: `${t('title')} | PURITY Fashion Studio`,
-    description: t('description'),
+    title: `${tPages('about.title')} | PURITY Fashion Studio`,
+    description: tPages('about.subtitle'),
     path: '/about',
     locale,
   })
@@ -23,6 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function AboutPage({ params }: PageProps) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'about' })
+  const tPages = await getTranslations({ locale, namespace: 'pages' })
 
   const methodologySteps = [
     {
@@ -50,17 +52,26 @@ export default async function AboutPage({ params }: PageProps) {
   return (
     <main>
       <HeroSection
-        title={t('title')}
-        subtitle={t('description')}
+        title={tPages('about.title')}
+        subtitle={tPages('about.subtitle')}
+        backgroundImage="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=1080&fit=crop&q=85"
       />
 
       <Section spacing="md">
         <Container size="md">
-          <H2 className="mb-8">{t('philosophy.title')}</H2>
-          <div className="space-y-6">
-            <Lead>{t('philosophy.paragraph1')}</Lead>
-            <Lead>{t('philosophy.paragraph2')}</Lead>
-          </div>
+          <FadeInStaggerContainer>
+            <FadeInStagger>
+              <H2 className="mb-8">{t('philosophy.title')}</H2>
+            </FadeInStagger>
+            <div className="space-y-6">
+              <FadeInStagger>
+                <Lead>{t('philosophy.paragraph1')}</Lead>
+              </FadeInStagger>
+              <FadeInStagger>
+                <Lead>{t('philosophy.paragraph2')}</Lead>
+              </FadeInStagger>
+            </div>
+          </FadeInStaggerContainer>
         </Container>
       </Section>
 
@@ -72,21 +83,31 @@ export default async function AboutPage({ params }: PageProps) {
 
       <Section spacing="md">
         <Container size="md" className="text-center">
-          <H2 className="mb-12">{t('values.title')}</H2>
-          <Grid cols={3} gap="lg">
-            <div>
-              <H4 className="mb-4 text-xl md:text-2xl">{t('values.quality.title')}</H4>
-              <Paragraph>{t('values.quality.description')}</Paragraph>
-            </div>
-            <div>
-              <H4 className="mb-4 text-xl md:text-2xl">{t('values.individuality.title')}</H4>
-              <Paragraph>{t('values.individuality.description')}</Paragraph>
-            </div>
-            <div>
-              <H4 className="mb-4 text-xl md:text-2xl">{t('values.sustainability.title')}</H4>
-              <Paragraph>{t('values.sustainability.description')}</Paragraph>
-            </div>
-          </Grid>
+          <FadeInStaggerContainer>
+            <FadeInStagger>
+              <H2 className="mb-12">{t('values.title')}</H2>
+            </FadeInStagger>
+            <Grid cols={3} gap="lg">
+              <FadeInStagger>
+                <div>
+                  <H4 className="mb-4 text-xl md:text-2xl">{t('values.quality.title')}</H4>
+                  <Paragraph>{t('values.quality.description')}</Paragraph>
+                </div>
+              </FadeInStagger>
+              <FadeInStagger>
+                <div>
+                  <H4 className="mb-4 text-xl md:text-2xl">{t('values.individuality.title')}</H4>
+                  <Paragraph>{t('values.individuality.description')}</Paragraph>
+                </div>
+              </FadeInStagger>
+              <FadeInStagger>
+                <div>
+                  <H4 className="mb-4 text-xl md:text-2xl">{t('values.sustainability.title')}</H4>
+                  <Paragraph>{t('values.sustainability.description')}</Paragraph>
+                </div>
+              </FadeInStagger>
+            </Grid>
+          </FadeInStaggerContainer>
         </Container>
       </Section>
     </main>

@@ -1,6 +1,7 @@
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { Section, Container, Grid, Button, ContentCard, type ContentCardItem } from '@/components/ui'
+import { Section, Container, Grid, Button, ContentCard } from '@/components/ui'
+import { FadeInStagger, FadeInStaggerContainer } from '@/components/animations/FadeInStagger'
 
 interface Service {
   id: string
@@ -13,6 +14,11 @@ interface Service {
   duration?: string | null
   format?: string | null
   image?: { url: string; alt?: string }
+  pricing?: {
+    eur?: number | null
+    uah?: number | null
+    priceNote?: string | null
+  }
 }
 
 interface ServicesPreviewProps {
@@ -28,43 +34,48 @@ export function ServicesPreview({
 }: ServicesPreviewProps) {
   const t = useTranslations('common')
 
-  // Transform services to ContentCardItem
-  const cardItems: ContentCardItem[] = services.map((service) => ({
-    id: service.id,
-    type: 'service',
-    title: service.title,
-    href: `/services/${service.slug}`,
-    image: service.image,
-    excerpt: service.description,
-    category: service.category,
-    categoryLabel: service.categoryLabel || service.category,
-    priceDisplay: service.priceDisplay,
-    duration: service.duration,
-    format: service.format,
-  }))
-
   return (
     <Section spacing="md">
       <Container>
-        <Grid cols={3} gap="md">
-          {cardItems.map((item) => (
-            <ContentCard
-              key={item.id}
-              item={item}
-              learnMoreText={`${t('learnMore')} →`}
-              showType={false}
-            />
-          ))}
-        </Grid>
-        {viewAllLink && (
-          <div className="mt-16 text-center">
-            <Button asChild variant="outline" size="lg">
-              <Link href={viewAllLink} prefetch={false}>
-                {viewAllText || t('viewAllServices')}
-              </Link>
-            </Button>
-          </div>
-        )}
+        <FadeInStaggerContainer>
+          <Grid cols={3} gap="md">
+            {services.map((service) => (
+              <FadeInStagger key={service.id}>
+                <ContentCard
+                  title={service.title}
+                  description={service.description}
+                  category={service.categoryLabel || service.category}
+                  image={service.image}
+                  price={{
+                    eur: service.pricing?.eur,
+                    uah: service.pricing?.uah,
+                    note: service.pricing?.priceNote
+                  }}
+                  metadata={[
+                    ...(service.duration ? [{ label: t('duration') || 'Duration', value: service.duration }] : []),
+                    ...(service.format ? [{ label: t('format') || 'Format', value: service.format }] : [])
+                  ]}
+                  link={{
+                    href: `/services/${service.slug}`,
+                    label: t('learnMore')
+                  }}
+                  variant="service"
+                />
+              </FadeInStagger>
+            ))}
+          </Grid>
+          {viewAllLink && (
+            <FadeInStagger>
+              <div className="mt-16 text-center">
+                <Button asChild variant="outline" size="lg">
+                  <Link href={viewAllLink} prefetch={false}>
+                    {viewAllText || t('viewAllServices')}
+                  </Link>
+                </Button>
+              </div>
+            </FadeInStagger>
+          )}
+        </FadeInStaggerContainer>
       </Container>
     </Section>
   )

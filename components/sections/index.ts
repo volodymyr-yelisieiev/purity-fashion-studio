@@ -1,6 +1,5 @@
 export { HeroSection } from './HeroSection'
 export { ServicesPreview } from './ServicesPreview'
 export { MethodologySection } from './MethodologySection'
-export { FeaturedPosts } from './FeaturedPosts'
-export { PortfolioPreview } from './PortfolioPreview'
-export { CollectionsPreview } from './CollectionsPreview'
+export { ThreeStageHero, type HeroStage, type ThreeStageHeroProps } from './ThreeStageHero'
+export { CTASection } from './CTASection'

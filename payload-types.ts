@@ -243,7 +243,15 @@ export interface Service {
   /**
    * Service category for filtering
    */
-  category: 'styling' | 'atelier' | 'consulting' | 'shopping' | 'events';
+  category:
+    | 'research'
+    | 'realisation'
+    | 'transformation'
+    | 'styling'
+    | 'atelier'
+    | 'consulting'
+    | 'shopping'
+    | 'events';
   /**
    * How this service is delivered
    */
@@ -274,6 +282,15 @@ export interface Service {
    */
   heroImage?: (number | null) | Media;
   /**
+   * What is included in this service
+   */
+  includes?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * How the service works (process steps)
    */
   steps?:
@@ -291,6 +308,10 @@ export interface Service {
    * Allow online booking for this service
    */
   bookable?: boolean | null;
+  /**
+   * Enable online payment for this service
+   */
+  paymentEnabled?: boolean | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -415,19 +436,27 @@ export interface Portfolio {
    * Only published items are visible on the site
    */
   status: 'draft' | 'published';
-  category?: ('styling' | 'wardrobe-audit' | 'transformation' | 'event' | 'shopping') | null;
+  category?: ('styling' | 'wardrobe-audit' | 'event' | 'shopping' | 'editorial') | null;
   /**
-   * Story behind the transformation
+   * Primary project image
+   */
+  mainImage: number | Media;
+  /**
+   * Story behind the project
    */
   description?: string | null;
   /**
-   * Before photo
+   * The problem or starting point for the client
    */
-  beforeImage: number | Media;
+  challenge?: string | null;
   /**
-   * After photo
+   * What we did to address the challenge
    */
-  afterImage: number | Media;
+  solution?: string | null;
+  /**
+   * The final outcome and transformation
+   */
+  result?: string | null;
   /**
    * Additional photos from the project
    */
@@ -461,6 +490,22 @@ export interface Portfolio {
    * Date to display for this project
    */
   publishedAt?: string | null;
+  /**
+   * Price in EUR for this type of transformation
+   */
+  priceEUR?: number | null;
+  /**
+   * Price in UAH for this type of transformation
+   */
+  priceUAH?: number | null;
+  /**
+   * Allow booking a similar transformation
+   */
+  bookable?: boolean | null;
+  /**
+   * Enable online payment for this transformation package
+   */
+  paymentEnabled?: boolean | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -498,6 +543,18 @@ export interface Lookbook {
    */
   description?: string | null;
   /**
+   * Materials used in this collection
+   */
+  materials?: string | null;
+  /**
+   * How to care for items in this collection
+   */
+  careInstructions?: string | null;
+  /**
+   * Available sizes (e.g., "XS-XL", "Custom")
+   */
+  sizes?: string | null;
+  /**
    * Main collection image
    */
   coverImage?: (number | null) | Media;
@@ -523,6 +580,22 @@ export interface Lookbook {
    * Products featured in this collection
    */
   linkedProducts?: (number | Product)[] | null;
+  /**
+   * Base price in EUR for items in this collection
+   */
+  priceEUR?: number | null;
+  /**
+   * Base price in UAH for items in this collection
+   */
+  priceUAH?: number | null;
+  /**
+   * Allow booking a consultation for this collection
+   */
+  bookable?: boolean | null;
+  /**
+   * Enable online payment for this collection
+   */
+  paymentEnabled?: boolean | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -623,6 +696,14 @@ export interface Course {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * What students should know before taking this course
+   */
+  prerequisites?: string | null;
+  /**
+   * What students need to have for this course
+   */
+  materials?: string | null;
   featuredImage?: (number | null) | Media;
   duration: {
     value: number;
@@ -678,6 +759,26 @@ export interface Course {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Show on homepage featured section
+   */
+  featured?: boolean | null;
+  /**
+   * Price in EUR (overrides price group if set)
+   */
+  priceEUR?: number | null;
+  /**
+   * Price in UAH (overrides price group if set)
+   */
+  priceUAH?: number | null;
+  /**
+   * Allow online booking for this course
+   */
+  bookable?: boolean | null;
+  /**
+   * Enable online payment for this course
+   */
+  paymentEnabled?: boolean | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -885,6 +986,12 @@ export interface ServicesSelect<T extends boolean = true> {
       };
   duration?: T;
   heroImage?: T;
+  includes?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
   steps?:
     | T
     | {
@@ -894,6 +1001,7 @@ export interface ServicesSelect<T extends boolean = true> {
       };
   featured?: T;
   bookable?: T;
+  paymentEnabled?: T;
   meta?:
     | T
     | {
@@ -964,9 +1072,11 @@ export interface PortfolioSelect<T extends boolean = true> {
   slug?: T;
   status?: T;
   category?: T;
+  mainImage?: T;
   description?: T;
-  beforeImage?: T;
-  afterImage?: T;
+  challenge?: T;
+  solution?: T;
+  result?: T;
   gallery?:
     | T
     | {
@@ -984,6 +1094,10 @@ export interface PortfolioSelect<T extends boolean = true> {
       };
   featured?: T;
   publishedAt?: T;
+  priceEUR?: T;
+  priceUAH?: T;
+  bookable?: T;
+  paymentEnabled?: T;
   meta?:
     | T
     | {
@@ -1004,6 +1118,9 @@ export interface LookbooksSelect<T extends boolean = true> {
   status?: T;
   season?: T;
   description?: T;
+  materials?: T;
+  careInstructions?: T;
+  sizes?: T;
   coverImage?: T;
   images?:
     | T
@@ -1015,6 +1132,10 @@ export interface LookbooksSelect<T extends boolean = true> {
   featured?: T;
   releaseDate?: T;
   linkedProducts?: T;
+  priceEUR?: T;
+  priceUAH?: T;
+  bookable?: T;
+  paymentEnabled?: T;
   meta?:
     | T
     | {
@@ -1079,6 +1200,8 @@ export interface CoursesSelect<T extends boolean = true> {
   status?: T;
   excerpt?: T;
   description?: T;
+  prerequisites?: T;
+  materials?: T;
   featuredImage?: T;
   duration?:
     | T
@@ -1137,6 +1260,11 @@ export interface CoursesSelect<T extends boolean = true> {
         answer?: T;
         id?: T;
       };
+  featured?: T;
+  priceEUR?: T;
+  priceUAH?: T;
+  bookable?: T;
+  paymentEnabled?: T;
   meta?:
     | T
     | {

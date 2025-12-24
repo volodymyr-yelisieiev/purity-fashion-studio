@@ -2,8 +2,10 @@
 
 import { Minus, Plus, X } from 'lucide-react'
 import { Button } from '@/components/ui'
-import { useCart, formatPrice } from '@/hooks/useCart'
+import { useCart } from '@/hooks/useCart'
+import { formatPrice } from '@/lib/utils'
 import type { CartItem as CartItemType } from '@/lib/store/cart'
+import Image from 'next/image'
 
 interface CartItemProps {
   item: CartItemType
@@ -15,13 +17,14 @@ export function CartItem({ item }: CartItemProps) {
   return (
     <div className="flex gap-4 py-4 border-b border-border">
       {/* Image placeholder */}
-      <div className="w-20 h-20 bg-muted flex items-center justify-center shrink-0">
+      <div className="w-20 h-20 bg-muted flex items-center justify-center shrink-0 relative overflow-hidden">
         {item.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={item.image}
             alt={item.name}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="80px"
           />
         ) : (
           <span className="text-xs text-muted-foreground uppercase">

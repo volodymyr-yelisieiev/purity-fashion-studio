@@ -1,7 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import { HeroSection, PortfolioPreview, FeaturedPosts } from '@/components/sections'
-import { getFeaturedPortfolio, type Locale } from '@/lib/payload'
-import { getFeaturedPosts } from '@/lib/featuredPosts'
+import { ThreeStageHero, type HeroStage } from '@/components/sections'
 import { generateSeoMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
 
@@ -10,10 +8,21 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'home' })
   
   return generateSeoMetadata({
-    title: 'PURITY Fashion Studio | Premium Styling & Atelier Services',
+    title: `PURITY Fashion Studio | ${t('hero.title')}`,
     description: t('hero.subtitle'),
     path: '/',
+    locale,
   })
+}
+
+/**
+ * Default hero stage images (Unsplash placeholders)
+ * These are used until CMS has real images
+ */
+const defaultStageImages = {
+  research: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=2070&auto=format&fit=crop',
+  realisation: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2070&auto=format&fit=crop',
+  transformation: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop',
 }
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
@@ -21,42 +30,49 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const t = await getTranslations({ locale, namespace: 'home' })
   const tCommon = await getTranslations({ locale, namespace: 'common' })
 
-  const [featuredPosts, featuredPortfolio] = await Promise.all([
-    getFeaturedPosts(locale as Locale, 6),
-    getFeaturedPortfolio(locale as Locale),
-  ])
+  // Define the three transformation stages
+  const heroStages: HeroStage[] = [
+    {
+      key: 'research',
+      title: 'Research',
+      localizedTitle: t('stages.research.localizedTitle'),
+      subtitle: t('stages.research.subtitle'),
+      description: t('stages.research.description'),
+      backgroundImage: defaultStageImages.research,
+      href: '/research',
+    },
+    {
+      key: 'realisation',
+      title: 'Realisation',
+      localizedTitle: t('stages.realisation.localizedTitle'),
+      subtitle: t('stages.realisation.subtitle'),
+      description: t('stages.realisation.description'),
+      backgroundImage: defaultStageImages.realisation,
+      href: '/realisation',
+    },
+    {
+      key: 'transformation',
+      title: 'Transformation',
+      localizedTitle: t('stages.transformation.localizedTitle'),
+      subtitle: t('stages.transformation.subtitle'),
+      description: t('stages.transformation.description'),
+      backgroundImage: defaultStageImages.transformation,
+      href: '/transformation',
+    },
+  ]
 
   return (
     <div className="flex flex-col w-full">
-      <HeroSection
-        title={t('hero.title')}
-        subtitle={t('hero.subtitle')}
+      {/* Three Stage Hero */}
+      <ThreeStageHero
+        headline={t('hero.title')}
+        subheadline={t('hero.subtitle')}
+        stages={heroStages}
         ctaText={tCommon('bookConsultation')}
-        ctaLink="/booking"
+        ctaLink="/contact"
+        finalCtaTitle={t('cta.title')}
+        finalCtaDescription={t('cta.description')}
       />
-
-      {featuredPosts.length > 0 && (
-        <FeaturedPosts
-          items={featuredPosts}
-          viewAllText={t('featuredPosts.viewAll')}
-          viewAllLink={undefined}
-        />
-      )}
-
-      {featuredPortfolio.docs.length > 0 && (
-        <PortfolioPreview 
-          items={featuredPortfolio.docs.map(p => ({
-            id: String(p.id),
-            title: p.title,
-            slug: p.slug,
-            featuredImage: p.afterImage && typeof p.afterImage === 'object' ? {
-              url: p.afterImage.url || '',
-              alt: p.afterImage.alt || p.title,
-            } : undefined,
-          }))}
-          title={t('featuredWork')}
-        />
-      )}
     </div>
   )
 }

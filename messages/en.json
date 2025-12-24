@@ -6,6 +6,8 @@
   },
   "navigation": {
     "home": "Home",
+    "research": "Research",
+    "realisation": "Realisation",
     "services": "Services",
     "transformation": "Transformation",
     "portfolio": "Portfolio",
@@ -13,7 +15,9 @@
     "school": "School",
     "about": "About",
     "contact": "Contact",
-    "language": "Language"
+    "language": "Language",
+    "menu": "Menu",
+    "close": "Close"
   },
   "common": {
     "bookConsultation": "Book a Consultation",
@@ -26,7 +30,70 @@
     "checkBackSoon": "Please check back soon for updates.",
     "backToHome": "Back to Home",
     "notAvailableInLanguage": "This content is not available in your language yet.",
-    "viewInAvailableLanguages": "View in available languages:"
+    "viewInAvailableLanguages": "View in available languages:",
+    "collectionsIntro": "Each collection represents a unique vision of elegance, crafted with attention to detail and timeless design.",
+    "portfolioIntro": "Discover the transformations of our clients. Each story represents a unique journey to authentic personal style.",
+    "overview": "Overview",
+    "whatsIncluded": "What's Included",
+    "process": "Process",
+    "readyToStart": "Ready to get started?",
+    "ourServices": "Our Services",
+    "featured": "Featured",
+    "viewCase": "View Project",
+    "viewCollection": "View Collection",
+    "duration": "Duration",
+    "format": "Format",
+    "formats": {
+      "online": "Online",
+      "studio": "In Studio",
+      "onsite": "At Client Location",
+      "hybrid": "Hybrid"
+    }
+  },
+  "pages": {
+    "home": {
+      "title": "Home",
+      "hero": {
+        "title": "RESEARCH. IMAGINE. CREATE",
+        "subtitle": "your PERFECT WARDROBE"
+      }
+    },
+    "research": {
+      "title": "Research",
+      "subtitle": "Know yourself. Find your style."
+    },
+    "realisation": {
+      "title": "Realisation",
+      "subtitle": "From plan to reality."
+    },
+    "transformation": {
+      "title": "Transformation",
+      "subtitle": "Become yourself."
+    },
+    "collections": {
+      "title": "Collections",
+      "subtitle": "Ready capsule solutions"
+    },
+    "portfolio": {
+      "title": "Portfolio",
+      "subtitle": "Our transformations"
+    },
+    "school": {
+      "title": "School",
+      "subtitle": "Education and mastery"
+    },
+    "about": {
+      "title": "About",
+      "subtitle": "PURITY Philosophy"
+    },
+    "services": {
+      "title": "Services",
+      "subtitle": "Personal Styling & Atelier"
+    },
+    "contact": {
+      "title": "Contact",
+      "subtitle": "Get in touch"
+    }
   },
   "footer": {
     "description": "Premium fashion studio specializing in personal styling and wardrobe transformation",
@@ -36,11 +103,12 @@
     "links": {
       "home": "Home",
       "about": "About",
-      "services": "Services",
+      "research": "Research",
+      "realisation": "Realisation",
+      "transformation": "Transformation",
       "portfolio": "Portfolio",
       "collections": "Collections",
       "school": "School",
-      "transformation": "Transformation",
       "contact": "Contact"
     }
   },
@@ -56,6 +124,7 @@
     }
   },
   "school": {
+    "intro": "Our courses and programs are designed to help you develop a deep understanding of personal style, color theory, and wardrobe building.",
     "hero": {
       "title": "PURITY School of Style",
       "description": "Master the art of personal styling with our professional courses"
@@ -77,6 +146,10 @@
     "level": "Level",
     "format": "Format",
     "earlyBird": "Early Bird Price",
+    "overview": "Overview",
+    "prerequisites": "Prerequisites",
+    "materials": "Materials",
+    "readyToStart": "Ready to start your journey?",
     "formats": {
       "online": "Online",
       "in-person": "In-Person",
@@ -94,15 +167,29 @@
   },
   "home": {
     "hero": {
-      "title": "PURITY Fashion Studio",
-      "subtitle": "Premium minimalist styling services and atelier. Elevate your personal style with curated fashion."
+      "title": "Research. Imagine. Create your Perfect Wardrobe.",
+      "subtitle": "Premium minimalist styling services and atelier. Three-stage transformation to discover your authentic style."
     },
-    "featuredPosts": {
-      "title": "Featured Posts",
-      "description": "Curated picks across services, portfolio, and collections.",
-      "viewAll": "View All Featured",
-      "emptyTitle": "No featured posts yet",
-      "emptyDescription": "Featured content will appear here once published."
+    "stages": {
+      "research": {
+        "localizedTitle": "I Am Research",
+        "subtitle": "Feel color. Feel form.",
+        "description": "Discover your unique color palette and silhouette strategy. Through deep analysis, we reveal the colors and shapes that enhance your natural beauty."
+      },
+      "realisation": {
+        "localizedTitle": "I Am Realisation",
+        "subtitle": "Realize your style.",
+        "description": "Transform knowledge into wardrobe. From personal shopping to custom atelier pieces, we bring your style vision to life."
+      },
+      "transformation": {
+        "localizedTitle": "I Am Transformation",
+        "subtitle": "Become yourself.",
+        "description": "Experience complete metamorphosis. Courses, retreats, and photo meditations that unlock your authentic self."
+      }
+    },
+    "cta": {
+      "title": "Ready for your transformation?",
+      "description": "Start your journey with a personal consultation and discover the style that truly reflects who you are."
     },
     "featuredWork": "Featured Work",
     "services": {
@@ -111,7 +198,7 @@
     },
     "portfolio": {
       "title": "Portfolio",
-      "subtitle": "Our latest work"
+      "subtitle": "Discover our client transformations"
     },
     "collections": {
       "title": "Collections",
@@ -130,10 +217,40 @@
     "serviceNotFound": "Service Not Found",
     "serviceNotFoundDescription": "The requested service could not be found.",
     "notAvailable": "This service is not available in English yet.",
-    "priceOnRequest": "Price on request"
+    "priceOnRequest": "Price on request",
+    "overview": "Overview",
+    "whatsIncluded": "What's Included",
+    "format": "Format",
+    "category": "Category",
+    "readyToStart": "Ready to start?",
+    "bookConsultationDesc": "Book a consultation to discuss how this service can help you achieve your style goals.",
+    "categories": {
+      "styling": "Personal Styling",
+      "atelier": "Atelier & Tailoring",
+      "consulting": "Consulting",
+      "shopping": "Shopping",
+      "events": "Events",
+      "research": "Research",
+      "realisation": "Realisation",
+      "transformation": "Transformation"
+    },
+    "formats": {
+      "online": "Online",
+      "studio": "In Studio",
+      "onsite": "At Client Location",
+      "hybrid": "Hybrid"
+    }
   },
   "portfolio": {
     "back": "Back to Portfolio",
+    "overview": "Overview",
+    "categories": {
+      "styling": "Personal Styling",
+      "wardrobe-audit": "Wardrobe Audit",
+      "event": "Event Look",
+      "shopping": "Shopping Result",
+      "editorial": "Editorial"
+    },
     "before": "Before",
     "after": "After",
     "gallery": "Gallery",
@@ -143,14 +260,33 @@
     "testimonial": "Client Testimonial",
     "notFound": "Project Not Found",
     "notFoundDescription": "The requested portfolio project could not be found.",
-    "notAvailable": "This project is not available in English yet."
+    "notAvailable": "This project is not available in English yet.",
+    "challenge": "The Challenge",
+    "transformation": "The Transformation",
+    "solution": "The Solution",
+    "readyForTransformation": "Ready for your own transformation?",
+    "startJourney": "Start your journey today"
   },
   "collections": {
     "back": "Back to Collections",
     "featuredProducts": "Featured Products",
     "notFound": "Collection Not Found",
     "notFoundDescription": "The requested collection could not be found.",
-    "notAvailable": "This collection is not available in English yet."
+    "notAvailable": "This collection is not available in English yet.",
+    "overview": "Overview",
+    "materials": "Materials",
+    "sizes": "Sizes",
+    "care": "Care",
+    "lookbook": "Lookbook",
+    "interestedInCollection": "Interested in this collection?",
+    "seasons": {
+      "spring": "Spring",
+      "summer": "Summer",
+      "autumn": "Autumn",
+      "winter": "Winter",
+      "all-season": "All Season",
+      "resort": "Resort"
+    }
   },
   "about": {
     "title": "About Us",
@@ -198,29 +334,9 @@
   },
   "contact": {
     "title": "Contact",
-    "description": "Get in touch with us to book a consultation",
-    "info": {
-      "title": "Contact Information",
-      "address": {
-        "label": "Address",
-        "value": "Kyiv, Khreshchatyk St., 1"
-      },
-      "phone": {
-        "label": "Phone"
-      },
-      "email": {
-        "label": "Email"
-      },
-      "hours": {
-        "label": "Working Hours",
-        "value": "Mon-Fri: 10:00 - 19:00, Sat: 11:00 - 17:00"
-      },
-      "social": {
-        "label": "Social Media"
-      }
-    },
+    "description": "Get in touch with us for consultations, atelier services, or any inquiries.",
     "form": {
-      "title": "Write to Us",
+      "title": "Send a Message",
       "name": {
         "label": "Name",
         "placeholder": "Your name"
@@ -231,17 +347,50 @@
       },
       "phone": {
         "label": "Phone",
-        "placeholder": "+380 XX XXX XX XX"
+        "placeholder": "+380 XX XXX XXXX"
       },
-      "service": {
-        "label": "Service",
-        "placeholder": "Select a service"
+      "subject": {
+        "label": "Subject",
+        "placeholder": "What is this about?",
+        "options": {
+          "consultation": "Consultation",
+          "services": "Services",
+          "atelier": "Atelier",
+          "other": "Other"
+        }
       },
       "message": {
         "label": "Message",
-        "placeholder": "Tell us about your needs..."
+        "placeholder": "Your message..."
       },
-      "submit": "Send"
+      "submit": {
+        "label": "Send Message",
+        "sending": "Sending...",
+        "success": "Message sent successfully!",
+        "error": "Failed to send message. Please try again."
+      }
+    },
+    "info": {
+      "title": "Contact Information",
+      "address": {
+        "label": "Address",
+        "value": "Kyiv, Ukraine"
+      },
+      "email": {
+        "label": "Email",
+        "value": "hello@purity-fashion-studio.ua"
+      },
+      "phone": {
+        "label": "Phone",
+        "value": "+380 XX XXX XXXX"
+      },
+      "hours": {
+        "label": "Hours",
+        "value": "Mon-Fri: 10:00-19:00"
+      },
+      "social": {
+        "label": "Social Media"
+      }
     }
   },
   "cart": {
@@ -260,5 +409,126 @@
     "emptyCart": "Your cart is empty",
     "emptyCartDescription": "Add some items to your cart before checking out.",
     "orderSummary": "Order Summary"
+  },
+  "research": {
+    "meta": {
+      "title": "Research - Discover Your Style | PURITY Fashion Studio",
+      "description": "Discover your unique color palette and silhouette strategy. Personal styling consultation and wardrobe analysis."
+    },
+    "hero": {
+      "localizedTitle": "I Am Research",
+      "title": "Research",
+      "subtitle": "Feel color. Feel form."
+    },
+    "intro": {
+      "title": "Why Research?",
+      "subtitle": "Understanding yourself is the first step to authentic style",
+      "paragraph1": "Before building a wardrobe, we must understand who we are. Through deep color analysis and silhouette strategy, we discover which colors enhance your natural beauty and which shapes complement your unique body.",
+      "paragraph2": "This research phase forms the foundation of your personal style. Every future decision - from shopping to custom garments - will be guided by these insights."
+    },
+    "services": {
+      "title": "Research Services",
+      "subtitle": "Personalized analysis and discovery"
+    },
+    "process": {
+      "title": "The Research Process",
+      "subtitle": "How we discover your authentic style",
+      "step1": {
+        "title": "Color Analysis",
+        "description": "We determine your seasonal color palette using professional draping techniques."
+      },
+      "step2": {
+        "title": "Silhouette Strategy",
+        "description": "We analyze your body proportions to find the most flattering cuts and shapes."
+      },
+      "step3": {
+        "title": "Personal Lookbook",
+        "description": "You receive a comprehensive guide with your colors, styles, and recommendations."
+      }
+    },
+    "cta": {
+      "title": "Ready to realize your style?",
+      "description": "Take the next step and bring your style vision to life.",
+      "button": "Explore Realisation"
+    }
+  },
+  "realisation": {
+    "meta": {
+      "title": "Realisation - Bring Your Style to Life | PURITY Fashion Studio",
+      "description": "Transform knowledge into wardrobe. Personal shopping service and custom atelier garments."
+    },
+    "hero": {
+      "localizedTitle": "I Am Realisation",
+      "title": "Realisation",
+      "subtitle": "Realize your style."
+    },
+    "intro": {
+      "title": "From Vision to Reality",
+      "subtitle": "Transforming knowledge into wardrobe",
+      "paragraph1": "Armed with your personal color palette and silhouette strategy, we now bring your style to life. Whether through curated shopping or custom-made garments, every piece will reflect your unique identity."
+    },
+    "shopping": {
+      "title": "Shopping Services",
+      "subtitle": "Curated selections for your wardrobe"
+    },
+    "atelier": {
+      "title": "Atelier Services",
+      "subtitle": "Custom garments made for you"
+    },
+    "process": {
+      "title": "The Atelier Process",
+      "subtitle": "How we create your perfect garment",
+      "step1": {
+        "title": "Consultation",
+        "description": "We discuss your vision, lifestyle, and the occasions for your garment."
+      },
+      "step2": {
+        "title": "Dossier Creation",
+        "description": "We create your personal mannequin (dossier) for perfect fit."
+      },
+      "step3": {
+        "title": "Design",
+        "description": "Together we select fabrics, colors, and finalize the design."
+      },
+      "step4": {
+        "title": "Crafting",
+        "description": "Our artisans carefully construct your garment with attention to every detail."
+      },
+      "step5": {
+        "title": "Fitting & Delivery",
+        "description": "Final fitting adjustments ensure the perfect fit before delivery."
+      }
+    },
+    "cta": {
+      "title": "Ready for your transformation?",
+      "description": "Experience a complete metamorphosis and unlock your authentic self.",
+      "button": "Explore Transformation"
+    }
+  },
+  "transformationPage": {
+    "meta": {
+      "title": "Transformation - Complete Style Metamorphosis | PURITY Fashion Studio",
+      "description": "Experience complete style transformation. Courses, retreats, and photo meditations for holistic change."
+    },
+    "hero": {
+      "localizedTitle": "I Am Transformation",
+      "title": "Transformation",
+      "subtitle": "Become yourself."
+    },
+    "intro": {
+      "title": "Beyond Style",
+      "subtitle": "A journey of self-discovery and empowerment",
+      "paragraph1": "Transformation is more than changing clothes - it's about becoming who you truly are. Through immersive courses, retreats, and photo meditations, we guide you through a complete metamorphosis that touches every aspect of your life."
+    },
+    "programs": {
+      "title": "Transformation Programs",
+      "subtitle": "Immersive experiences for lasting change"
+    },
+    "portfolio": {
+      "title": "Transformation Stories",
+      "subtitle": "Real journeys, real results",
+      "emptyTitle": "Coming Soon",
+      "emptyDescription": "We're documenting transformation stories. Check back soon!"
+    }
   }
 }
