@@ -1,26 +1,24 @@
-'use client'
+"use client";
 
-import { useTranslations } from 'next-intl'
-import { Label, Paragraph } from '@/components/ui'
+import { useTranslations } from "next-intl";
+import { Label, Body } from "@/components/ui";
 
 export function ContactInfo() {
-  const t = useTranslations('contact')
+  const t = useTranslations("contact");
 
   return (
     <div className="space-y-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <Label className="mb-2 block text-muted-foreground uppercase tracking-wider text-xs">
-            {t('info.address.label')}
+            {t("info.address.label")}
           </Label>
-          <Paragraph className="text-lg">
-            {t('info.address.value')}
-          </Paragraph>
+          <Body className="text-lg">{t("info.address.value")}</Body>
         </div>
 
         <div>
           <Label className="mb-2 block text-muted-foreground uppercase tracking-wider text-xs">
-            {t('info.phone.label')}
+            {t("info.phone.label")}
           </Label>
           <a
             href="tel:+380991234567"
@@ -32,7 +30,7 @@ export function ContactInfo() {
 
         <div>
           <Label className="mb-2 block text-muted-foreground uppercase tracking-wider text-xs">
-            {t('info.email.label')}
+            {t("info.email.label")}
           </Label>
           <a
             href="mailto:hello@purity.studio"
@@ -44,17 +42,15 @@ export function ContactInfo() {
 
         <div>
           <Label className="mb-2 block text-muted-foreground uppercase tracking-wider text-xs">
-            {t('info.hours.label')}
+            {t("info.hours.label")}
           </Label>
-          <Paragraph className="text-lg">
-            {t('info.hours.value')}
-          </Paragraph>
+          <Body className="text-lg">{t("info.hours.value")}</Body>
         </div>
       </div>
 
       <div>
         <Label className="mb-4 block text-muted-foreground uppercase tracking-wider text-xs">
-          {t('info.social.label')}
+          {t("info.social.label")}
         </Label>
         <div className="flex gap-8">
           <a
@@ -76,5 +72,5 @@ export function ContactInfo() {
         </div>
       </div>
     </div>
-  )
+  );
 }

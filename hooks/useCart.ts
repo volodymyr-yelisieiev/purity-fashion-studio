@@ -1,26 +1,30 @@
-'use client'
+"use client";
 
-import { useSyncExternalStore } from 'react'
-import { useCartStore, type CartItem } from '@/lib/store/cart'
+import { useSyncExternalStore } from "react";
+import { useCartStore, type CartItem } from "@/lib/store/cart";
 
 // Subscribe function for hydration detection
-const emptySubscribe = () => () => {}
-const getSnapshot = () => true
-const getServerSnapshot = () => false
+const emptySubscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 /**
  * Custom hook for cart operations with SSR hydration handling
  * Prevents hydration mismatches by only returning cart data after client-side hydration
  */
 export function useCart() {
-  const store = useCartStore()
-  const isHydrated = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot)
+  const store = useCartStore();
+  const isHydrated = useSyncExternalStore(
+    emptySubscribe,
+    getSnapshot,
+    getServerSnapshot
+  );
 
   // Return empty values during SSR to prevent hydration mismatch
   if (!isHydrated) {
     return {
       items: [] as CartItem[],
-      currency: 'UAH' as const,
+      currency: "UAH" as const,
       itemCount: 0,
       subtotal: 0,
       isHydrated: false,
@@ -29,7 +33,7 @@ export function useCart() {
       updateQuantity: store.updateQuantity,
       clearCart: store.clearCart,
       setCurrency: store.setCurrency,
-    }
+    };
   }
 
   return {
@@ -43,5 +47,5 @@ export function useCart() {
     updateQuantity: store.updateQuantity,
     clearCart: store.clearCart,
     setCurrency: store.setCurrency,
-  }
+  };
 }

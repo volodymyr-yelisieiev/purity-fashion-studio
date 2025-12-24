@@ -1,25 +1,25 @@
-import { Link } from '@/i18n/navigation'
-import { Container } from './LayoutComponents'
-import { H1, Paragraph } from './Typography'
-import type { Locale } from '@/lib/payload'
+import { Link } from "@/i18n/navigation";
+import { Container } from "@/components/layout";
+import { H1, Body } from "./Typography";
+import type { Locale } from "@/lib/payload";
 
 interface LanguageFallbackProps {
-  title: string
-  description: string
-  availableLocales: Locale[]
-  currentSlug: string
-  basePath: string
+  title: string;
+  description: string;
+  availableLocales: Locale[];
+  currentSlug: string;
+  basePath: string;
   backLink: {
-    href: string
-    label: string
-  }
+    href: string;
+    label: string;
+  };
 }
 
 const localeLabels: Record<Locale, string> = {
-  en: 'English',
-  uk: 'Українська',
-  ru: 'Русский',
-}
+  en: "English",
+  uk: "Українська",
+  ru: "Русский",
+};
 
 export function LanguageFallback({
   title,
@@ -29,15 +29,17 @@ export function LanguageFallback({
   basePath,
   backLink,
 }: LanguageFallbackProps) {
-  const normalizedBasePath = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath
+  const normalizedBasePath = basePath.endsWith("/")
+    ? basePath.slice(0, -1)
+    : basePath;
 
   return (
     <main className="min-h-[60vh] bg-background">
       <Container size="md" className="py-16 text-center">
         <H1 className="mb-6 font-light">{title}</H1>
-        <Paragraph className="mb-10 text-base text-muted-foreground">
+        <Body className="mb-10 text-base text-muted-foreground">
           {description}
-        </Paragraph>
+        </Body>
 
         <div className="flex flex-wrap justify-center gap-4">
           {availableLocales.map((locale) => (
@@ -62,5 +64,5 @@ export function LanguageFallback({
         </div>
       </Container>
     </main>
-  )
+  );
 }

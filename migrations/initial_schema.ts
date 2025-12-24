@@ -1,11 +1,11 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import { MigrateUpArgs, MigrateDownArgs, sql } from "@payloadcms/db-postgres";
 
-export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
    DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = '_locales' AND n.nspname = 'public') THEN CREATE TYPE "public"."_locales" AS ENUM('en', 'ru', 'uk'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_users_role' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_users_role" AS ENUM('admin', 'user'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_services_status' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_services_status" AS ENUM('draft', 'published'); END IF; END $$;
-  DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_services_category' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_services_category" AS ENUM('styling', 'atelier', 'consulting', 'shopping', 'events'); END IF; END $$;
+  DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_services_category' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_services_category" AS ENUM('research', 'realisation', 'transformation', 'styling', 'atelier', 'consulting', 'shopping', 'events'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_services_format' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_services_format" AS ENUM('online', 'studio', 'onsite', 'hybrid'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_products_details_sizes' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_products_details_sizes" AS ENUM('xs', 's', 'm', 'l', 'xl', 'one-size'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_products_status' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_products_status" AS ENUM('draft', 'published', 'out-of-stock', 'archived'); END IF; END $$;
@@ -23,7 +23,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_courses_status' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_courses_status" AS ENUM('draft', 'published', 'coming-soon', 'archived'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_courses_duration_unit' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_courses_duration_unit" AS ENUM('hours', 'days', 'weeks', 'months'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_courses_format' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_courses_format" AS ENUM('online', 'in-person', 'hybrid'); END IF; END $$;
-  DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_courses_price_currency' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_courses_price_currency" AS ENUM('UAH', 'EUR'); END IF; END $$;
   DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'enum_site_settings_currency_default' AND n.nspname = 'public') THEN CREATE TYPE "public"."enum_site_settings_currency_default" AS ENUM('UAH', 'EUR', 'USD'); END IF; END $$;
   CREATE TABLE IF NOT EXISTS "users_sessions" (
   	"_order" integer NOT NULL,
@@ -54,7 +53,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"url" varchar,
-  	"thumbnail_u_r_l" varchar,
+  	"thumbnail_url" varchar,
   	"filename" varchar,
   	"mime_type" varchar,
   	"filesize" numeric,
@@ -126,6 +125,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
   
+  ALTER TABLE "services" ADD COLUMN IF NOT EXISTS "payment_enabled" boolean DEFAULT false;
+  ALTER TABLE "services" ADD COLUMN IF NOT EXISTS "bookable" boolean DEFAULT true;
+
   CREATE TABLE IF NOT EXISTS "services_locales" (
   	"title" varchar NOT NULL,
   	"slug" varchar NOT NULL,
@@ -227,19 +229,28 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"testimonial_rating" numeric,
   	"featured" boolean DEFAULT false,
   	"published_at" timestamp(3) with time zone,
-  	"price_e_u_r" numeric,
-  	"price_u_a_h" numeric,
+  	"pricing_uah" numeric,
+  	"pricing_eur" numeric,
   	"bookable" boolean DEFAULT false,
   	"payment_enabled" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
   
+  ALTER TABLE "portfolio" ADD COLUMN IF NOT EXISTS "pricing_eur" numeric;
+  ALTER TABLE "portfolio" ADD COLUMN IF NOT EXISTS "pricing_uah" numeric;
+  ALTER TABLE "portfolio" ADD COLUMN IF NOT EXISTS "payment_enabled" boolean DEFAULT false;
+  ALTER TABLE "portfolio" ADD COLUMN IF NOT EXISTS "bookable" boolean DEFAULT false;
+
   CREATE TABLE IF NOT EXISTS "portfolio_locales" (
   	"title" varchar NOT NULL,
   	"slug" varchar NOT NULL,
   	"description" varchar,
+  	"challenge" varchar,
+  	"solution" varchar,
+  	"result" varchar,
   	"testimonial_quote" varchar,
+  	"pricing_price_note" varchar,
   	"meta_title" varchar,
   	"meta_description" varchar,
   	"meta_image_id" integer,
@@ -277,14 +288,19 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"cover_image_id" integer,
   	"featured" boolean DEFAULT false,
   	"release_date" timestamp(3) with time zone,
-  	"price_e_u_r" numeric,
-  	"price_u_a_h" numeric,
+  	"pricing_uah" numeric,
+  	"pricing_eur" numeric,
   	"bookable" boolean DEFAULT false,
   	"payment_enabled" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
   
+  ALTER TABLE "lookbooks" ADD COLUMN IF NOT EXISTS "pricing_eur" numeric;
+  ALTER TABLE "lookbooks" ADD COLUMN IF NOT EXISTS "pricing_uah" numeric;
+  ALTER TABLE "lookbooks" ADD COLUMN IF NOT EXISTS "payment_enabled" boolean DEFAULT false;
+  ALTER TABLE "lookbooks" ADD COLUMN IF NOT EXISTS "bookable" boolean DEFAULT false;
+
   CREATE TABLE IF NOT EXISTS "lookbooks_locales" (
   	"name" varchar NOT NULL,
   	"slug" varchar NOT NULL,
@@ -292,6 +308,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"materials" varchar,
   	"care_instructions" varchar,
   	"sizes" varchar,
+  	"pricing_price_note" varchar,
   	"meta_title" varchar,
   	"meta_description" varchar,
   	"meta_image_id" integer,
@@ -418,20 +435,25 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"duration_value" numeric NOT NULL,
   	"duration_unit" "enum_courses_duration_unit" DEFAULT 'hours' NOT NULL,
   	"format" "enum_courses_format" DEFAULT 'online' NOT NULL,
-  	"price_amount" numeric NOT NULL,
-  	"price_currency" "enum_courses_price_currency" DEFAULT 'UAH' NOT NULL,
-  	"price_early_bird_amount" numeric,
+  	"pricing_uah" numeric,
+  	"pricing_eur" numeric,
+  	"pricing_early_bird_amount" numeric,
   	"instructor_name" varchar NOT NULL,
   	"instructor_photo_id" integer,
   	"featured" boolean DEFAULT false,
-  	"price_e_u_r" numeric,
-  	"price_u_a_h" numeric,
   	"bookable" boolean DEFAULT true,
   	"payment_enabled" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
   
+  ALTER TABLE "courses" ADD COLUMN IF NOT EXISTS "featured" boolean DEFAULT false;
+  ALTER TABLE "courses" ADD COLUMN IF NOT EXISTS "pricing_eur" numeric;
+  ALTER TABLE "courses" ADD COLUMN IF NOT EXISTS "pricing_uah" numeric;
+  ALTER TABLE "courses" ADD COLUMN IF NOT EXISTS "pricing_early_bird_amount" numeric;
+  ALTER TABLE "courses" ADD COLUMN IF NOT EXISTS "payment_enabled" boolean DEFAULT false;
+  ALTER TABLE "courses" ADD COLUMN IF NOT EXISTS "bookable" boolean DEFAULT true;
+
   CREATE TABLE IF NOT EXISTS "courses_locales" (
   	"title" varchar NOT NULL,
   	"slug" varchar NOT NULL,
@@ -439,6 +461,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"description" jsonb,
   	"prerequisites" varchar,
   	"materials" varchar,
+  	"pricing_price_note" varchar,
   	"instructor_title" varchar,
   	"instructor_bio" varchar,
   	"meta_title" varchar,
@@ -743,10 +766,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "site_settings_logo_idx" ON "site_settings" USING btree ("logo_id");
   CREATE INDEX IF NOT EXISTS "site_settings_favicon_idx" ON "site_settings" USING btree ("favicon_id");
   CREATE INDEX IF NOT EXISTS "site_settings_seo_seo_og_image_idx" ON "site_settings" USING btree ("seo_og_image_id");
-  CREATE UNIQUE INDEX IF NOT EXISTS "site_settings_locales_locale_parent_id_unique" ON "site_settings_locales" USING btree ("_locale","_parent_id");`)
+  CREATE UNIQUE INDEX IF NOT EXISTS "site_settings_locales_locale_parent_id_unique" ON "site_settings_locales" USING btree ("_locale","_parent_id");`);
 }
 
-export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+export async function down({ db }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    DROP TABLE "users_sessions" CASCADE;
   DROP TABLE "users" CASCADE;
@@ -816,6 +839,5 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_courses_status";
   DROP TYPE "public"."enum_courses_duration_unit";
   DROP TYPE "public"."enum_courses_format";
-  DROP TYPE "public"."enum_courses_price_currency";
-  DROP TYPE "public"."enum_site_settings_currency_default";`)
+  DROP TYPE "public"."enum_site_settings_currency_default";`);
 }

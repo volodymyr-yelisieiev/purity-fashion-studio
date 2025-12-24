@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 
 export const viewport: Viewport = {
-  width: 320,
-  maximumScale: 5,
-}
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "PURITY Fashion Studio",

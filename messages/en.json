@@ -6,10 +6,10 @@
   },
   "navigation": {
     "home": "Home",
-    "research": "Research",
-    "realisation": "Realisation",
+    "research": "I Am Research",
+    "realisation": "I Am Realisation",
     "services": "Services",
-    "transformation": "Transformation",
+    "transformation": "I Am Transformation",
     "portfolio": "Portfolio",
     "collections": "Collections",
     "school": "School",
@@ -59,15 +59,15 @@
       }
     },
     "research": {
-      "title": "Research",
+      "title": "I Am Research",
       "subtitle": "Know yourself. Find your style."
     },
     "realisation": {
-      "title": "Realisation",
+      "title": "I Am Realisation",
       "subtitle": "From plan to reality."
     },
     "transformation": {
-      "title": "Transformation",
+      "title": "I Am Transformation",
       "subtitle": "Become yourself."
     },
     "collections": {
@@ -103,9 +103,9 @@
     "links": {
       "home": "Home",
       "about": "About",
-      "research": "Research",
-      "realisation": "Realisation",
-      "transformation": "Transformation",
+      "research": "I Am Research",
+      "realisation": "I Am Realisation",
+      "transformation": "I Am Transformation",
       "portfolio": "Portfolio",
       "collections": "Collections",
       "school": "School",
@@ -409,6 +409,31 @@
     "emptyCart": "Your cart is empty",
     "emptyCartDescription": "Add some items to your cart before checking out.",
     "orderSummary": "Order Summary"
+  },
+  "orderConfirmation": {
+    "notFound": "Order Not Found",
+    "notFoundDescription": "We couldn't find the order you're looking for.",
+    "goHome": "Go Home",
+    "thankYou": "Thank You!",
+    "orderConfirmed": "Your order has been confirmed and paid.",
+    "orderReceived": "Order Received",
+    "waitingPayment": "We're waiting for your payment to be confirmed.",
+    "paymentFailed": "Payment Failed",
+    "paymentFailedDescription": "There was an issue with your payment. Please try again.",
+    "orderNumber": "Order Number",
+    "date": "Date",
+    "confirmationSentTo": "Confirmation sent to:",
+    "orderItems": "Order Items",
+    "total": "Total",
+    "continueShopping": "Continue Shopping",
+    "needHelp": "Need Help?",
+    "whatsNext": "What's Next?",
+    "step1Title": "Confirmation Email",
+    "step1Description": "Check your inbox for order details",
+    "step2Title": "We'll Reach Out",
+    "step2Description": "Our team will contact you shortly",
+    "step3Title": "Your Experience",
+    "step3Description": "Enjoy your PURITY service"
   },
   "research": {
     "meta": {

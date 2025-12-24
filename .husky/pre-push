@@ -1,0 +1,6 @@
+echo "🔍 Running checks before push..."
+
+pnpm typecheck || exit 1
+pnpm lint || exit 1
+
+echo "✅ All checks passed!"

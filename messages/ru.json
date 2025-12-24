@@ -6,10 +6,10 @@
   },
   "navigation": {
     "home": "Главная",
-    "research": "Исследование",
-    "realisation": "Воплощение",
+    "research": "Я Исследование",
+    "realisation": "Я Воплощение",
     "services": "Услуги",
-    "transformation": "Трансформация",
+    "transformation": "Я Трансформация",
     "portfolio": "Портфолио",
     "collections": "Коллекции",
     "school": "Школа",
@@ -159,8 +159,8 @@
       "beginner": "Начальный",
       "intermediate": "Средний",
       "advanced": "Продвинутый",
-      "all": "Все уровни"    }
-    ,
+      "all": "Все уровни"
+    },
     "notFound": "Курс не найден",
     "notFoundDescription": "Запрошенный курс не найден.",
     "notAvailable": "Этот курс еще не доступен на русском языке."
@@ -410,6 +410,31 @@
     "emptyCartDescription": "Добавьте товары в корзину перед оформлением.",
     "orderSummary": "Ваш заказ"
   },
+  "orderConfirmation": {
+    "notFound": "Заказ не найден",
+    "notFoundDescription": "Мы не смогли найти заказ, который вы ищете.",
+    "goHome": "На главную",
+    "thankYou": "Спасибо!",
+    "orderConfirmed": "Ваш заказ подтверждён и оплачен.",
+    "orderReceived": "Заказ получен",
+    "waitingPayment": "Мы ожидаем подтверждения вашего платежа.",
+    "paymentFailed": "Ошибка платежа",
+    "paymentFailedDescription": "Возникла проблема с вашим платежом. Пожалуйста, попробуйте ещё раз.",
+    "orderNumber": "Номер заказа",
+    "date": "Дата",
+    "confirmationSentTo": "Подтверждение отправлено на:",
+    "orderItems": "Товары заказа",
+    "total": "Итого",
+    "continueShopping": "Продолжить покупки",
+    "needHelp": "Нужна помощь?",
+    "whatsNext": "Что дальше?",
+    "step1Title": "Письмо-подтверждение",
+    "step1Description": "Проверьте почту для деталей заказа",
+    "step2Title": "Мы свяжемся с вами",
+    "step2Description": "Наша команда скоро свяжется с вами",
+    "step3Title": "Ваш опыт",
+    "step3Description": "Наслаждайтесь услугой PURITY"
+  },
   "research": {
     "meta": {
       "title": "Исследование - Откройте Свой Стиль | PURITY Fashion Studio",
@@ -444,11 +469,13 @@
       "step3": {
         "title": "Персональный лукбук",
         "description": "Вы получаете полный гайд с вашими цветами, стилями и рекомендациями."
-      }    },
+      }
+    },
     "cta": {
       "title": "Готовы воплотить свой стиль?",
       "description": "Сделайте следующий шаг и воплотите своё видение стиля в жизнь.",
-      "button": "Исследовать Воплощение"    }
+      "button": "Исследовать Воплощение"
+    }
   },
   "realisation": {
     "meta": {

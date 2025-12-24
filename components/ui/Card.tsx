@@ -1,60 +1,150 @@
-/**
- * Card Component
- *
- * Reusable card component for displaying content in a consistent style.
- * Follows minimalist design principles: white background, subtle borders,
- * clean typography, and smooth hover transitions.
- *
- * @example
- * <Card>
- *   <CardImage src="/image.jpg" alt="Description" />
- *   <CardContent>
- *     <CardTitle>Card Title</CardTitle>
- *     <CardDescription>Description text</CardDescription>
- *   </CardContent>
- * </Card>
- */
-
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
-import type { HTMLAttributes, ReactNode } from 'react'
+import { type ReactNode, type HTMLAttributes } from "react";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { Link } from "@/i18n/navigation";
 
 /* ============================================
    Card Container
    ============================================ */
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode
-  /** Apply hover effects */
-  hoverable?: boolean
-  /** Remove border and background */
-  plain?: boolean
-  className?: string
+  children: ReactNode;
+  variant?: "default" | "bordered" | "elevated" | "flat";
+  padding?: "none" | "sm" | "md" | "lg";
+  className?: string;
+  onClick?: () => void;
+  hover?: boolean | "scale";
+  hoverable?: boolean;
+  link?: {
+    href: string;
+    label?: string;
+  };
 }
 
-/**
- * Card - Base container with consistent styling
- */
 export function Card({
   children,
-  hoverable = false,
-  plain = false,
+  variant = "default",
+  padding = "md",
   className,
+  onClick,
+  hover = false,
+  hoverable,
+  link,
   ...props
 }: CardProps) {
-  return (
+  const isHoverable = hoverable || hover;
+  const content = (
     <div
       className={cn(
-        'overflow-hidden rounded-sm',
-        !plain && 'border border-border bg-background',
-        hoverable && 'transition-shadow duration-200 hover:shadow-md',
+        "transition-colors duration-300 overflow-hidden h-full flex flex-col rounded-none",
+        {
+          // Variants
+          "bg-background border border-border": variant === "default",
+          "border border-border bg-background": variant === "bordered",
+          "shadow-sm border border-border bg-background":
+            variant === "elevated",
+          "bg-transparent": variant === "flat",
+
+          // Padding
+          "p-0": padding === "none",
+          "p-4": padding === "sm",
+          "p-6": padding === "md",
+          "p-8": padding === "lg",
+
+          // Hover
+          "cursor-pointer hover:border-neutral-400": isHoverable,
+        },
         className
       )}
+      onClick={onClick}
       {...props}
     >
       {children}
     </div>
-  )
+  );
+
+  if (link) {
+    return (
+      <Link href={link.href} className="block h-full">
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
+}
+
+/* ============================================
+   Card Header
+   ============================================ */
+
+export function CardHeader({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={cn("mb-4", className)}>{children}</div>;
+}
+
+/* ============================================
+   Card Body
+   ============================================ */
+
+export function CardBody({
+  children,
+  title,
+  description,
+  category,
+  className,
+}: {
+  children?: ReactNode;
+  title?: string;
+  description?: string;
+  category?: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn("flex-1 flex flex-col", className)}>
+      <div className="flex flex-col gap-2">
+        {category && (
+          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            {category}
+          </span>
+        )}
+        {title && (
+          <h3 className="font-serif text-xl font-light leading-tight text-foreground">
+            {title}
+          </h3>
+        )}
+        {description && (
+          <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">
+            {description}
+          </p>
+        )}
+      </div>
+      {children && <div className="mt-auto pt-4">{children}</div>}
+    </div>
+  );
+}
+
+/* ============================================
+   Card Footer
+   ============================================ */
+
+export function CardFooter({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("mt-4 pt-4 border-t border-border", className)}>
+      {children}
+    </div>
+  );
 }
 
 /* ============================================
@@ -62,30 +152,25 @@ export function Card({
    ============================================ */
 
 interface CardImageProps {
-  src: string
-  alt: string
-  /** Aspect ratio preset */
-  aspect?: 'portrait' | 'landscape' | 'square'
-  /** Custom aspect ratio (e.g., '4/3') */
-  aspectRatio?: string
-  /** Priority loading for above-fold images */
-  priority?: boolean
-  className?: string
+  src: string;
+  alt: string;
+  aspect?: "portrait" | "landscape" | "square" | "video";
+  aspectRatio?: string;
+  priority?: boolean;
+  className?: string;
 }
 
 const aspectRatios = {
-  portrait: 'aspect-4/5',
-  landscape: 'aspect-4/3',
-  square: 'aspect-square',
-}
+  portrait: "aspect-4/5",
+  landscape: "aspect-4/3",
+  square: "aspect-square",
+  video: "aspect-video",
+};
 
-/**
- * CardImage - Image component for cards with aspect ratio handling
- */
 export function CardImage({
   src,
   alt,
-  aspect = 'portrait',
+  aspect = "portrait",
   aspectRatio,
   priority = false,
   className,
@@ -93,7 +178,7 @@ export function CardImage({
   return (
     <div
       className={cn(
-        'relative overflow-hidden bg-muted',
+        "relative overflow-hidden bg-white rounded-none mb-4",
         aspectRatio ? `aspect-[${aspectRatio}]` : aspectRatios[aspect],
         className
       )}
@@ -104,188 +189,43 @@ export function CardImage({
         alt={alt}
         fill
         priority={priority}
-        className="object-cover transition-transform duration-300 hover:scale-105"
+        className="object-cover"
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
     </div>
-  )
-}
-
-/* ============================================
-   Card Content
-   ============================================ */
-
-interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode
-  /** Padding size */
-  padding?: 'sm' | 'md' | 'lg'
-  className?: string
-}
-
-const paddingSizes = {
-  sm: 'p-4',
-  md: 'p-6',
-  lg: 'p-8',
-}
-
-/**
- * CardContent - Container for card text content
- */
-export function CardContent({
-  children,
-  padding = 'md',
-  className,
-  ...props
-}: CardContentProps) {
-  return (
-    <div className={cn(paddingSizes[padding], className)} {...props}>
-      {children}
-    </div>
-  )
-}
-
-/* ============================================
-   Card Title
-   ============================================ */
-
-interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {
-  children: ReactNode
-  /** Heading level for accessibility */
-  as?: 'h2' | 'h3' | 'h4'
-  className?: string
-}
-
-/**
- * CardTitle - Card heading with consistent styling
- */
-export function CardTitle({
-  children,
-  as: Component = 'h3',
-  className,
-  ...props
-}: CardTitleProps) {
-  return (
-    <Component
-      className={cn(
-        'font-serif text-lg font-light tracking-tight text-foreground',
-        'md:text-xl',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </Component>
-  )
-}
-
-/* ============================================
-   Card Description
-   ============================================ */
-
-interface CardDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {
-  children: ReactNode
-  className?: string
-}
-
-/**
- * CardDescription - Secondary text for cards
- */
-export function CardDescription({
-  children,
-  className,
-  ...props
-}: CardDescriptionProps) {
-  return (
-    <p
-      className={cn(
-        'mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-3',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </p>
-  )
-}
-
-/* ============================================
-   Card Footer
-   ============================================ */
-
-interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode
-  className?: string
-}
-
-/**
- * CardFooter - Footer area for prices, buttons, metadata
- */
-export function CardFooter({
-  children,
-  className,
-  ...props
-}: CardFooterProps) {
-  return (
-    <div
-      className={cn(
-        'mt-4 flex items-center justify-between gap-4',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  )
+  );
 }
 
 /* ============================================
    Card Price
    ============================================ */
 
-interface CardPriceProps extends HTMLAttributes<HTMLDivElement> {
-  /** Price in EUR */
-  eur?: number | null
-  /** Price in UAH */
-  uah?: number | null
-  /** Optional price note (e.g., "from", "per hour") */
-  note?: string
-  className?: string
+interface CardPriceProps {
+  eur?: number | null;
+  uah?: number | null;
+  note?: string | null;
+  className?: string;
 }
 
-/**
- * CardPrice - Price display with EUR/UAH
- */
-export function CardPrice({
-  eur,
-  uah,
-  note,
-  className,
-  ...props
-}: CardPriceProps) {
-  const hasPrice = eur || uah
+export function CardPrice({ eur, uah, note, className }: CardPriceProps) {
+  const hasPrice = eur || uah;
 
   if (!hasPrice) {
     return (
-      <div className={cn('text-sm text-muted-foreground', className)} {...props}>
+      <div className={cn("text-sm text-muted-foreground", className)}>
         Price on request
       </div>
-    )
+    );
   }
 
   return (
-    <div className={cn('text-sm', className)} {...props}>
-      {note && (
-        <span className="text-muted-foreground mr-1">{note}</span>
-      )}
-      {eur && (
-        <span className="font-medium text-foreground">€{eur}</span>
-      )}
-      {eur && uah && (
-        <span className="text-muted-foreground mx-1">/</span>
-      )}
+    <div className={cn("text-sm", className)}>
+      {note && <span className="text-muted-foreground mr-1">{note}</span>}
+      {eur && <span className="font-medium text-foreground">€{eur}</span>}
+      {eur && uah && <span className="text-muted-foreground mx-1">/</span>}
       {uah && (
         <span className="text-muted-foreground">₴{uah.toLocaleString()}</span>
       )}
     </div>
-  )
+  );
 }

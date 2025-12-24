@@ -1,42 +1,45 @@
-import { Resend } from 'resend'
-import { getEmailConfig, features, getSiteConfig } from '@/config/env'
+import { Resend } from "resend";
+import { getEmailConfig, features, getSiteConfig } from "@/config/env";
+import { logger } from "@/lib/logger";
 
 // Create a singleton Resend instance
-let resendInstance: Resend | null = null
+let resendInstance: Resend | null = null;
 
 function getResend(): Resend | null {
   if (!features.email) {
-    return null
+    return null;
   }
 
   if (!resendInstance) {
-    const config = getEmailConfig()
-    if (!config) return null
-    resendInstance = new Resend(config.apiKey)
+    const config = getEmailConfig();
+    if (!config) return null;
+    resendInstance = new Resend(config.apiKey);
   }
 
-  return resendInstance
+  return resendInstance;
 }
 
 export interface SendEmailParams {
-  to: string | string[]
-  subject: string
-  html: string
-  text?: string
-  replyTo?: string
+  to: string | string[];
+  subject: string;
+  html: string;
+  text?: string;
+  replyTo?: string;
 }
 
-export async function sendEmail(params: SendEmailParams): Promise<{ success: boolean; error?: string }> {
-  const resend = getResend()
-  
+export async function sendEmail(
+  params: SendEmailParams
+): Promise<{ success: boolean; error?: string }> {
+  const resend = getResend();
+
   if (!resend) {
-    console.warn('Email is not configured. Skipping email send.')
-    return { success: false, error: 'Email not configured' }
+    logger.warn("Email is not configured. Skipping email send.");
+    return { success: false, error: "Email not configured" };
   }
 
-  const config = getEmailConfig()
+  const config = getEmailConfig();
   if (!config) {
-    return { success: false, error: 'Email configuration missing' }
+    return { success: false, error: "Email configuration missing" };
   }
 
   try {
@@ -47,52 +50,60 @@ export async function sendEmail(params: SendEmailParams): Promise<{ success: boo
       html: params.html,
       text: params.text,
       replyTo: params.replyTo,
-    })
+    });
 
     if (error) {
-      console.error('Failed to send email:', error)
-      return { success: false, error: error.message }
+      logger.error("Failed to send email:", error);
+      return { success: false, error: error.message };
     }
 
-    return { success: true }
+    return { success: true };
   } catch (err) {
-    console.error('Email send error:', err)
-    return { 
-      success: false, 
-      error: err instanceof Error ? err.message : 'Unknown error' 
-    }
+    logger.error("Email send error:", err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
   }
 }
 
 // Order Confirmation Email
 export interface OrderConfirmationEmailParams {
-  orderNumber: string
-  customerName: string
-  customerEmail: string
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
   items: Array<{
-    name: string
-    quantity: number
-    price: number
-  }>
-  total: number
-  currency: 'UAH' | 'EUR'
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  total: number;
+  currency: "UAH" | "EUR";
 }
 
-export async function sendOrderConfirmationEmail(params: OrderConfirmationEmailParams) {
-  const siteConfig = getSiteConfig()
-  const currencySymbol = params.currency === 'UAH' ? '₴' : '€'
+export async function sendOrderConfirmationEmail(
+  params: OrderConfirmationEmailParams
+) {
+  const siteConfig = getSiteConfig();
+  const currencySymbol = params.currency === "UAH" ? "₴" : "€";
 
   const itemsHtml = params.items
     .map(
       (item) => `
         <tr>
-          <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.name}</td>
-          <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
-          <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">${currencySymbol}${item.price.toFixed(2)}</td>
+          <td style="padding: 12px; border-bottom: 1px solid #eee;">${
+            item.name
+          }</td>
+          <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${
+            item.quantity
+          }</td>
+          <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">${currencySymbol}${item.price.toFixed(
+        2
+      )}</td>
         </tr>
       `
     )
-    .join('')
+    .join("");
 
   const html = `
     <!DOCTYPE html>
@@ -109,12 +120,16 @@ export async function sendOrderConfirmationEmail(params: OrderConfirmationEmailP
 
       <div style="padding: 30px 0;">
         <h2 style="margin: 0 0 10px;">Thank you for your order!</h2>
-        <p style="color: #666; margin: 0;">Hi ${params.customerName}, your order has been confirmed.</p>
+        <p style="color: #666; margin: 0;">Hi ${
+          params.customerName
+        }, your order has been confirmed.</p>
       </div>
 
       <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
         <p style="margin: 0; font-size: 14px; color: #666;">Order Number</p>
-        <p style="margin: 5px 0 0; font-size: 18px; font-weight: bold;">${params.orderNumber}</p>
+        <p style="margin: 5px 0 0; font-size: 18px; font-weight: bold;">${
+          params.orderNumber
+        }</p>
       </div>
 
       <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
@@ -131,7 +146,9 @@ export async function sendOrderConfirmationEmail(params: OrderConfirmationEmailP
         <tfoot>
           <tr>
             <td colspan="2" style="padding: 12px; font-weight: bold;">Total</td>
-            <td style="padding: 12px; text-align: right; font-weight: bold; font-size: 18px;">${currencySymbol}${params.total.toFixed(2)}</td>
+            <td style="padding: 12px; text-align: right; font-weight: bold; font-size: 18px;">${currencySymbol}${params.total.toFixed(
+    2
+  )}</td>
           </tr>
         </tfoot>
       </table>
@@ -147,7 +164,7 @@ export async function sendOrderConfirmationEmail(params: OrderConfirmationEmailP
       </div>
     </body>
     </html>
-  `
+  `;
 
   const text = `
 Thank you for your order!
@@ -157,19 +174,26 @@ Hi ${params.customerName}, your order has been confirmed.
 Order Number: ${params.orderNumber}
 
 Items:
-${params.items.map((item) => `- ${item.name} x${item.quantity}: ${currencySymbol}${item.price.toFixed(2)}`).join('\n')}
+${params.items
+  .map(
+    (item) =>
+      `- ${item.name} x${item.quantity}: ${currencySymbol}${item.price.toFixed(
+        2
+      )}`
+  )
+  .join("\n")}
 
 Total: ${currencySymbol}${params.total.toFixed(2)}
 
 Questions? Reply to this email or visit ${siteConfig.url}
 
 © ${new Date().getFullYear()} PURITY Fashion Studio
-  `.trim()
+  `.trim();
 
   return sendEmail({
     to: params.customerEmail,
     subject: `Order Confirmed - ${params.orderNumber}`,
     html,
     text,
-  })
+  });
 }

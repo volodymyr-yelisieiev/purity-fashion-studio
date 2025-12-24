@@ -12,22 +12,26 @@
  * />
  */
 
-import { Link } from '@/i18n/navigation'
-import { Container, Section, Button, H2, Lead } from '@/components/ui'
-import { FadeInStagger, FadeInStaggerContainer } from '@/components/animations/FadeInStagger'
+import { Link } from "@/i18n/navigation";
+import { Button, H2, Lead } from "@/components/ui";
+import { Container, Section } from "@/components/layout";
+import {
+  FadeInStagger,
+  FadeInStaggerContainer,
+} from "@/components/animations/FadeInStagger";
 
 interface CTASectionProps {
   /** Main heading */
-  title: string
+  title: string;
   /** Description text */
-  description?: string
+  description?: string;
   /** Button text */
-  ctaText: string
+  ctaText: string;
   /** Button link */
-  ctaLink: string
+  ctaLink: string;
   /** Background variant */
-  variant?: 'default' | 'muted'
-  className?: string
+  variant?: "default" | "muted";
+  className?: string;
 }
 
 export function CTASection({
@@ -35,12 +39,16 @@ export function CTASection({
   description,
   ctaText,
   ctaLink,
-  variant = 'default',
+  variant = "default",
   className,
 }: CTASectionProps) {
   return (
-    <Section spacing="lg" variant={variant} className={className}>
-      <Container size="md">
+    <Section
+      spacing="lg"
+      background={variant === "muted" ? "gray" : "white"}
+      className={className}
+    >
+      <Container size="sm">
         <div className="mx-auto max-w-2xl text-center">
           <FadeInStaggerContainer>
             <FadeInStagger>
@@ -60,5 +68,5 @@ export function CTASection({
         </div>
       </Container>
     </Section>
-  )
+  );
 }

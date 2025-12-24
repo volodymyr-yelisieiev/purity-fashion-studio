@@ -1,23 +1,23 @@
-'use client'
+"use client";
 
-import { Minus, Plus, X } from 'lucide-react'
-import { Button } from '@/components/ui'
-import { useCart } from '@/hooks/useCart'
-import { formatPrice } from '@/lib/utils'
-import type { CartItem as CartItemType } from '@/lib/store/cart'
-import Image from 'next/image'
+import { Minus, Plus, X } from "lucide-react";
+import { Button } from "@/components/ui";
+import { useCart } from "@/hooks/useCart";
+import { formatPrice } from "@/lib/utils";
+import type { CartItem as CartItemType } from "@/lib/store/cart";
+import Image from "next/image";
 
 interface CartItemProps {
-  item: CartItemType
+  item: CartItemType;
 }
 
 export function CartItem({ item }: CartItemProps) {
-  const { removeItem, updateQuantity, currency } = useCart()
+  const { removeItem, updateQuantity, currency } = useCart();
 
   return (
     <div className="flex gap-4 py-4 border-b border-border">
       {/* Image placeholder */}
-      <div className="w-20 h-20 bg-muted flex items-center justify-center shrink-0 relative overflow-hidden">
+      <div className="w-20 h-20 bg-background flex items-center justify-center shrink-0 relative overflow-hidden">
         {item.image ? (
           <Image
             src={item.image}
@@ -59,7 +59,7 @@ export function CartItem({ item }: CartItemProps) {
           <span className="sr-only">Remove</span>
         </Button>
 
-        {item.type === 'product' && (
+        {item.type === "product" && (
           <div className="flex items-center gap-1">
             <Button
               variant="outline"
@@ -82,5 +82,5 @@ export function CartItem({ item }: CartItemProps) {
         )}
       </div>
     </div>
-  )
+  );
 }

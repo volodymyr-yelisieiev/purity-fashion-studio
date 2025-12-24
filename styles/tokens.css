@@ -29,21 +29,25 @@
     @apply py-20 md:py-32;
   }
   
+  .section-xl {
+    @apply py-24 md:py-40;
+  }
+  
   /* Container sizes */
   .container-sm {
-    @apply mx-auto max-w-3xl px-6;
+    @apply mx-auto max-w-3xl px-4 md:px-6 lg:px-8;
   }
   
   .container-md {
-    @apply mx-auto max-w-4xl px-6;
+    @apply mx-auto max-w-4xl px-4 md:px-6 lg:px-8;
   }
   
   .container-lg {
-    @apply mx-auto max-w-6xl px-6;
+    @apply mx-auto max-w-6xl px-4 md:px-6 lg:px-8;
   }
   
   .container-xl {
-    @apply mx-auto max-w-7xl px-6;
+    @apply mx-auto max-w-7xl px-4 md:px-6 lg:px-8;
   }
   
   /* Typography presets */

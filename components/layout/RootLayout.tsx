@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
-import { Header } from './Header';
-import { Footer } from './Footer';
+import { ReactNode } from "react";
+import { Header } from "./Header";
+import { Footer } from "./Footer";
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -8,11 +8,9 @@ interface RootLayoutProps {
 
 export function RootLayout({ children }: RootLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col font-sans text-neutral-900 bg-background">
+    <div className="flex min-h-screen flex-col font-sans text-foreground bg-background">
       <Header />
-      <main className="flex-1 w-full">
-        {children}
-      </main>
+      <main className="flex-1 w-full">{children}</main>
       <Footer />
     </div>
   );

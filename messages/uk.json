@@ -6,10 +6,10 @@
   },
   "navigation": {
     "home": "Головна",
-    "research": "Дослідження",
-    "realisation": "Втілення",
+    "research": "Я Дослідження",
+    "realisation": "Я Втілення",
     "services": "Послуги",
-    "transformation": "Трансформація",
+    "transformation": "Я Трансформація",
     "portfolio": "Портфоліо",
     "collections": "Колекції",
     "school": "Школа",
@@ -104,7 +104,7 @@
       "home": "Головна",
       "about": "Про нас",
       "research": "Я Дослідження",
-      "realisation": "Я Воплочення",
+      "realisation": "Я Втілення",
       "transformation": "Я Трансформація",
       "portfolio": "Портфоліо",
       "collections": "Колекції",
@@ -410,6 +410,31 @@
     "emptyCartDescription": "Додайте товари до кошика перед оформленням.",
     "orderSummary": "Ваше замовлення"
   },
+  "orderConfirmation": {
+    "notFound": "Замовлення не знайдено",
+    "notFoundDescription": "Ми не змогли знайти замовлення, яке ви шукаєте.",
+    "goHome": "На головну",
+    "thankYou": "Дякуємо!",
+    "orderConfirmed": "Ваше замовлення підтверджено та оплачено.",
+    "orderReceived": "Замовлення отримано",
+    "waitingPayment": "Ми очікуємо підтвердження вашого платежу.",
+    "paymentFailed": "Помилка платежу",
+    "paymentFailedDescription": "Виникла проблема з вашим платежем. Будь ласка, спробуйте ще раз.",
+    "orderNumber": "Номер замовлення",
+    "date": "Дата",
+    "confirmationSentTo": "Підтвердження надіслано на:",
+    "orderItems": "Товари замовлення",
+    "total": "Всього",
+    "continueShopping": "Продовжити покупки",
+    "needHelp": "Потрібна допомога?",
+    "whatsNext": "Що далі?",
+    "step1Title": "Лист-підтвердження",
+    "step1Description": "Перевірте вашу пошту для деталей замовлення",
+    "step2Title": "Ми зв'яжемося з вами",
+    "step2Description": "Наша команда незабаром зв'яжеться з вами",
+    "step3Title": "Ваш досвід",
+    "step3Description": "Насолоджуйтесь послугою PURITY"
+  },
   "research": {
     "meta": {
       "title": "Дослідження - Відкрийте Свій Стиль | PURITY Fashion Studio",
@@ -444,11 +469,13 @@
       "step3": {
         "title": "Персональний лукбук",
         "description": "Ви отримуєте повний гайд з вашими кольорами, стилями та рекомендаціями."
-      }    },
+      }
+    },
     "cta": {
       "title": "Готові втілити свій стиль?",
       "description": "Зробіть наступний крок і втілюйте своє бачення стилю в життя.",
-      "button": "Дослідити Втілення"    }
+      "button": "Дослідити Втілення"
+    }
   },
   "realisation": {
     "meta": {

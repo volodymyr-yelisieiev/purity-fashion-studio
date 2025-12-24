@@ -1,42 +1,44 @@
-import Stripe from 'stripe'
-import { getStripeConfig, features } from '@/config/env'
+import Stripe from "stripe";
+import { getStripeConfig, features } from "@/config/env";
 
 // Create a singleton Stripe instance
-let stripeInstance: Stripe | null = null
+let stripeInstance: Stripe | null = null;
 
 export function getStripe(): Stripe | null {
   if (!features.stripe) {
-    return null
+    return null;
   }
 
   if (!stripeInstance) {
-    const config = getStripeConfig()
-    if (!config) return null
+    const config = getStripeConfig();
+    if (!config) return null;
 
     stripeInstance = new Stripe(config.secretKey, {
-      apiVersion: '2025-11-17.clover',
+      apiVersion: "2025-11-17.clover",
       typescript: true,
-    })
+    });
   }
 
-  return stripeInstance
+  return stripeInstance;
 }
 
 export interface CreatePaymentIntentParams {
-  amount: number // in smallest currency unit (cents for EUR, kopiyka for UAH)
-  currency: 'uah' | 'eur'
-  orderId: number
-  customerEmail: string
-  metadata?: Record<string, string>
+  amount: number; // in smallest currency unit (cents for EUR, kopiyka for UAH)
+  currency: "uah" | "eur";
+  orderId: number;
+  customerEmail: string;
+  metadata?: Record<string, string>;
 }
 
 export async function createPaymentIntent(params: CreatePaymentIntentParams) {
-  const stripe = getStripe()
+  const stripe = getStripe();
   if (!stripe) {
-    throw new Error('Stripe is not configured. Please add STRIPE_SECRET_KEY to your environment variables.')
+    throw new Error(
+      "Stripe is not configured. Please add STRIPE_SECRET_KEY to your environment variables."
+    );
   }
 
-  const { amount, currency, orderId, customerEmail, metadata = {} } = params
+  const { amount, currency, orderId, customerEmail, metadata = {} } = params;
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount,
@@ -49,12 +51,12 @@ export async function createPaymentIntent(params: CreatePaymentIntentParams) {
     automatic_payment_methods: {
       enabled: true,
     },
-  })
+  });
 
   return {
     clientSecret: paymentIntent.client_secret,
     paymentIntentId: paymentIntent.id,
-  }
+  };
 }
 
 export function constructWebhookEvent(
@@ -62,28 +64,34 @@ export function constructWebhookEvent(
   signature: string,
   webhookSecret: string
 ): Stripe.Event {
-  const stripe = getStripe()
+  const stripe = getStripe();
   if (!stripe) {
-    throw new Error('Stripe is not configured')
+    throw new Error("Stripe is not configured");
   }
 
-  return stripe.webhooks.constructEvent(payload, signature, webhookSecret)
+  return stripe.webhooks.constructEvent(payload, signature, webhookSecret);
 }
 
 // Currency decimal places mapping (both UAH and EUR use 2)
-const currencyDecimals: Record<'UAH' | 'EUR', number> = {
+const currencyDecimals: Record<"UAH" | "EUR", number> = {
   UAH: 2,
   EUR: 2,
-}
+};
 
 // Helper to convert amount to smallest currency unit
-export function toSmallestUnit(amount: number, currency: 'UAH' | 'EUR'): number {
-  const decimals = currencyDecimals[currency]
-  return Math.round(amount * Math.pow(10, decimals))
+export function toSmallestUnit(
+  amount: number,
+  currency: "UAH" | "EUR"
+): number {
+  const decimals = currencyDecimals[currency];
+  return Math.round(amount * Math.pow(10, decimals));
 }
 
 // Helper to convert from smallest unit to display amount
-export function fromSmallestUnit(amount: number, currency: 'UAH' | 'EUR'): number {
-  const decimals = currencyDecimals[currency]
-  return amount / Math.pow(10, decimals)
+export function fromSmallestUnit(
+  amount: number,
+  currency: "UAH" | "EUR"
+): number {
+  const decimals = currencyDecimals[currency];
+  return amount / Math.pow(10, decimals);
 }

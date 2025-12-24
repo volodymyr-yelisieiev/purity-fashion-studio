@@ -1,33 +1,33 @@
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 
 interface SeoProps {
-  title: string
-  description: string
-  path?: string
-  image?: string
-  locale?: string
+  title: string;
+  description: string;
+  path?: string;
+  image?: string;
+  locale?: string;
 }
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://purity.studio'
-const locales = ['en', 'uk', 'ru'] as const
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://purity.studio";
+const locales = ["en", "uk", "ru"] as const;
 
 export function generateSeoMetadata({
   title,
   description,
-  path = '',
+  path = "",
   image,
   locale,
 }: SeoProps): Metadata {
-  const url = `${siteUrl}${path}`
+  const url = `${siteUrl}${path}`;
 
   // Generate hreflang alternates for all locales
-  const languages: Record<string, string> = {}
+  const languages: Record<string, string> = {};
   if (path && locale) {
     // Extract the path without the locale prefix
-    const pathWithoutLocale = path.replace(/^\/(en|uk|ru)/, '')
+    const pathWithoutLocale = path.replace(/^\/(en|uk|ru)/, "");
     locales.forEach((loc) => {
-      languages[loc] = `${siteUrl}/${loc}${pathWithoutLocale}`
-    })
+      languages[loc] = `${siteUrl}/${loc}${pathWithoutLocale}`;
+    });
   }
 
   return {
@@ -37,13 +37,13 @@ export function generateSeoMetadata({
       title,
       description,
       url,
-      siteName: 'PURITY Fashion Studio',
-      type: 'website',
-      locale: locale || 'uk',
+      siteName: "PURITY Fashion Studio",
+      type: "website",
+      locale: locale || "uk",
       ...(image && { images: [{ url: image }] }),
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title,
       description,
       ...(image && { images: [image] }),
@@ -52,7 +52,7 @@ export function generateSeoMetadata({
       canonical: url,
       ...(Object.keys(languages).length > 0 && { languages }),
     },
-  }
+  };
 }
 
 export function generateServiceMetadata(
@@ -61,7 +61,8 @@ export function generateServiceMetadata(
 ): Metadata {
   return generateSeoMetadata({
     title: `${service.title} | PURITY Fashion Studio`,
-    description: service.description || `Professional styling service: ${service.title}`,
+    description:
+      service.description || `Professional styling service: ${service.title}`,
     path: `/${locale}/services/${service.slug}`,
-  })
+  });
 }

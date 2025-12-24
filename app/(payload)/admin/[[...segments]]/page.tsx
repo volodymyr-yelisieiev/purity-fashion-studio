@@ -1,21 +1,21 @@
 /* This file is required for Payload to work with the App Router */
-import config from '@payload-config'
-import { RootPage, generatePageMetadata } from '@payloadcms/next/views'
-import { importMap } from '@/app/(payload)/admin/importMap'
+import config from "@payload-config";
+import { RootPage, generatePageMetadata } from "@payloadcms/next/views";
+import { importMap } from "@/app/(payload)/admin/importMap";
 
 type Args = {
   params: Promise<{
-    segments: string[]
-  }>
+    segments: string[];
+  }>;
   searchParams: Promise<{
-    [key: string]: string | string[]
-  }>
-}
+    [key: string]: string | string[];
+  }>;
+};
 
 export const generateMetadata = ({ params, searchParams }: Args) =>
-  generatePageMetadata({ config, params, searchParams })
+  generatePageMetadata({ config, params, searchParams });
 
 const Page = ({ params, searchParams }: Args) =>
-  RootPage({ config, params, searchParams, importMap })
+  RootPage({ config, params, searchParams, importMap });
 
-export default Page
+export default Page;

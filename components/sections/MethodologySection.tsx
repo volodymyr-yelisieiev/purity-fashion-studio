@@ -1,26 +1,32 @@
-import { H2, H3, Paragraph, Lead, Section, Container } from '@/components/ui'
-import { FadeInStagger, FadeInStaggerContainer } from '@/components/animations/FadeInStagger'
+import { H2, H3, Body, Lead } from "@/components/ui";
+import { Section, Container } from "@/components/layout";
+import {
+  FadeInStagger,
+  FadeInStaggerContainer,
+} from "@/components/animations/FadeInStagger";
 
 interface MethodologyStep {
-  number: string
-  title: string
-  description: string
+  number: string;
+  title: string;
+  description: string;
 }
 
 interface MethodologySectionProps {
-  title?: string
-  subtitle?: string
-  steps: MethodologyStep[]
+  title?: string;
+  subtitle?: string;
+  steps: MethodologyStep[];
+  background?: "white" | "gray" | "black";
 }
 
 export function MethodologySection({
-  title = 'Our Methodology',
+  title = "Our Methodology",
   subtitle,
   steps,
+  background = "white",
 }: MethodologySectionProps) {
   return (
-    <Section spacing="md" variant="muted">
-      <Container size="md">
+    <Section spacing="md" background={background}>
+      <Container size="sm">
         <FadeInStaggerContainer>
           <div className="mb-16 text-center">
             <FadeInStagger>
@@ -35,15 +41,13 @@ export function MethodologySection({
           <div className="space-y-12">
             {steps.map((step, index) => (
               <FadeInStagger key={index}>
-                <div
-                  className="flex flex-col md:flex-row gap-4 md:gap-8 border-b border-border pb-12 last:border-0"
-                >
+                <div className="flex flex-col md:flex-row gap-4 md:gap-8 border-b border-border pb-12 last:border-0">
                   <span className="font-serif text-3xl md:text-4xl font-light text-muted-foreground/30">
                     {step.number}
                   </span>
                   <div>
                     <H3>{step.title}</H3>
-                    <Paragraph className="mt-3">{step.description}</Paragraph>
+                    <Body className="mt-3">{step.description}</Body>
                   </div>
                 </div>
               </FadeInStagger>
@@ -52,5 +56,5 @@ export function MethodologySection({
         </FadeInStaggerContainer>
       </Container>
     </Section>
-  )
+  );
 }

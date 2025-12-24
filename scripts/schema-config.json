@@ -1,0 +1,149 @@
+{
+  "tables": [
+    {
+      "name": "services",
+      "columns": [
+        "id",
+        "status",
+        "category",
+        "format",
+        "pricing_uah",
+        "pricing_eur",
+        "hero_image_id",
+        "featured",
+        "bookable",
+        "payment_enabled",
+        "updated_at",
+        "created_at"
+      ]
+    },
+    {
+      "name": "services_locales",
+      "columns": [
+        "id",
+        "_parent_id",
+        "_locale",
+        "title",
+        "slug",
+        "description",
+        "excerpt"
+      ]
+    },
+    {
+      "name": "services_includes",
+      "columns": ["id", "_parent_id", "item", "_locale", "_order"]
+    },
+    {
+      "name": "services_steps",
+      "columns": ["id", "_parent_id", "_order"]
+    },
+    {
+      "name": "services_steps_locales",
+      "columns": ["id", "_parent_id", "_locale", "title", "description"]
+    },
+    {
+      "name": "portfolio",
+      "columns": [
+        "id",
+        "status",
+        "category",
+        "main_image_id",
+        "featured",
+        "published_at",
+        "pricing_eur",
+        "pricing_uah",
+        "bookable",
+        "payment_enabled",
+        "updated_at",
+        "created_at"
+      ]
+    },
+    {
+      "name": "portfolio_locales",
+      "columns": [
+        "id",
+        "_parent_id",
+        "_locale",
+        "title",
+        "slug",
+        "description",
+        "testimonial_quote"
+      ]
+    },
+    {
+      "name": "portfolio_gallery",
+      "columns": ["id", "_parent_id", "image_id", "_order"]
+    },
+    {
+      "name": "portfolio_gallery_locales",
+      "columns": ["id", "_parent_id", "_locale", "caption"]
+    },
+    {
+      "name": "lookbooks",
+      "columns": [
+        "id",
+        "status",
+        "season",
+        "cover_image_id",
+        "featured",
+        "release_date",
+        "pricing_eur",
+        "pricing_uah",
+        "bookable",
+        "payment_enabled",
+        "updated_at",
+        "created_at"
+      ]
+    },
+    {
+      "name": "lookbooks_locales",
+      "columns": [
+        "id",
+        "_parent_id",
+        "_locale",
+        "name",
+        "slug",
+        "description",
+        "materials",
+        "care_instructions",
+        "sizes"
+      ]
+    },
+    {
+      "name": "courses",
+      "columns": [
+        "id",
+        "category",
+        "level",
+        "status",
+        "featured_image_id",
+        "duration_value",
+        "duration_unit",
+        "format",
+        "instructor_name",
+        "featured",
+        "pricing_eur",
+        "pricing_uah",
+        "pricing_early_bird_amount",
+        "bookable",
+        "payment_enabled",
+        "updated_at",
+        "created_at"
+      ]
+    },
+    {
+      "name": "courses_locales",
+      "columns": [
+        "id",
+        "_parent_id",
+        "_locale",
+        "title",
+        "slug",
+        "excerpt",
+        "description",
+        "prerequisites",
+        "materials"
+      ]
+    }
+  ]
+}

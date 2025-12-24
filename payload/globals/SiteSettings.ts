@@ -1,120 +1,126 @@
-import type { GlobalConfig } from 'payload'
+import type { GlobalConfig } from "payload";
 
 export const SiteSettings: GlobalConfig = {
-  slug: 'site-settings',
+  slug: "site-settings",
   admin: {
-    group: 'Settings',
+    group: "Settings",
   },
   fields: [
     {
-      type: 'tabs',
+      type: "tabs",
       tabs: [
         {
-          label: 'General',
+          label: "General",
           fields: [
             {
-              name: 'siteName',
-              type: 'text',
+              name: "siteName",
+              type: "text",
               required: true,
-              defaultValue: 'PURITY Fashion Studio',
+              defaultValue: "PURITY Fashion Studio",
               admin: {
-                description: 'Site name used in meta tags and branding',
+                description: "Site name used in meta tags and branding",
               },
             },
             {
-              name: 'tagline',
-              type: 'text',
+              name: "tagline",
+              type: "text",
               localized: true,
               admin: {
-                description: 'Short tagline for the site',
+                description: "Short tagline for the site",
               },
             },
             {
-              name: 'description',
-              type: 'textarea',
+              name: "description",
+              type: "textarea",
               localized: true,
               admin: {
-                description: 'Default meta description for SEO',
+                description: "Default meta description for SEO",
               },
             },
             {
-              name: 'logo',
-              type: 'upload',
-              relationTo: 'media',
+              name: "logo",
+              type: "upload",
+              relationTo: "media",
               admin: {
-                description: 'Site logo',
+                description: "Site logo",
               },
             },
             {
-              name: 'favicon',
-              type: 'upload',
-              relationTo: 'media',
+              name: "favicon",
+              type: "upload",
+              relationTo: "media",
               admin: {
-                description: 'Site favicon (32x32 recommended)',
+                description: "Site favicon (32x32 recommended)",
               },
             },
           ],
         },
         {
-          label: 'Contact',
+          label: "Contact",
           fields: [
             {
-              name: 'contact',
-              type: 'group',
+              name: "contact",
+              type: "group",
               fields: [
                 {
-                  name: 'email',
-                  type: 'email',
+                  name: "email",
+                  type: "email",
                   required: true,
                   admin: {
-                    description: 'Primary contact email',
+                    description: "Primary contact email",
                   },
                 },
                 {
-                  name: 'phone',
-                  type: 'text',
+                  name: "phone",
+                  type: "text",
                   validate: (val: string | null | undefined) => {
-                    if (!val) return true
-                    const phoneRegex = /^\+?[1-9]\d{1,14}$/
-                    return phoneRegex.test(val) || 'Invalid phone number format (e.g., +380...)'
+                    if (!val) return true;
+                    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+                    return (
+                      phoneRegex.test(val) ||
+                      "Invalid phone number format (e.g., +380...)"
+                    );
                   },
                   admin: {
-                    description: 'Contact phone number (international format)',
+                    description: "Contact phone number (international format)",
                   },
                 },
                 {
-                  name: 'whatsapp',
-                  type: 'text',
+                  name: "whatsapp",
+                  type: "text",
                   validate: (val: string | null | undefined) => {
-                    if (!val) return true
-                    const phoneRegex = /^\+?[1-9]\d{1,14}$/
-                    return phoneRegex.test(val) || 'Invalid phone number format (e.g., +380...)'
+                    if (!val) return true;
+                    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+                    return (
+                      phoneRegex.test(val) ||
+                      "Invalid phone number format (e.g., +380...)"
+                    );
                   },
                   admin: {
-                    description: 'WhatsApp number (with country code)',
+                    description: "WhatsApp number (with country code)",
                   },
                 },
                 {
-                  name: 'telegram',
-                  type: 'text',
+                  name: "telegram",
+                  type: "text",
                   admin: {
-                    description: 'Telegram username or link',
+                    description: "Telegram username or link",
                   },
                 },
                 {
-                  name: 'address',
-                  type: 'textarea',
+                  name: "address",
+                  type: "textarea",
                   localized: true,
                   admin: {
-                    description: 'Physical address',
+                    description: "Physical address",
                   },
                 },
                 {
-                  name: 'workingHours',
-                  type: 'textarea',
+                  name: "workingHours",
+                  type: "textarea",
                   localized: true,
                   admin: {
-                    description: 'Working hours information',
+                    description: "Working hours information",
                   },
                 },
               ],
@@ -122,45 +128,45 @@ export const SiteSettings: GlobalConfig = {
           ],
         },
         {
-          label: 'Social Media',
+          label: "Social Media",
           fields: [
             {
-              name: 'social',
-              type: 'group',
+              name: "social",
+              type: "group",
               fields: [
                 {
-                  name: 'instagram',
-                  type: 'text',
+                  name: "instagram",
+                  type: "text",
                   admin: {
-                    description: 'Instagram profile URL',
+                    description: "Instagram profile URL",
                   },
                 },
                 {
-                  name: 'facebook',
-                  type: 'text',
+                  name: "facebook",
+                  type: "text",
                   admin: {
-                    description: 'Facebook page URL',
+                    description: "Facebook page URL",
                   },
                 },
                 {
-                  name: 'linkedin',
-                  type: 'text',
+                  name: "linkedin",
+                  type: "text",
                   admin: {
-                    description: 'LinkedIn profile URL',
+                    description: "LinkedIn profile URL",
                   },
                 },
                 {
-                  name: 'pinterest',
-                  type: 'text',
+                  name: "pinterest",
+                  type: "text",
                   admin: {
-                    description: 'Pinterest profile URL',
+                    description: "Pinterest profile URL",
                   },
                 },
                 {
-                  name: 'youtube',
-                  type: 'text',
+                  name: "youtube",
+                  type: "text",
                   admin: {
-                    description: 'YouTube channel URL',
+                    description: "YouTube channel URL",
                   },
                 },
               ],
@@ -168,66 +174,66 @@ export const SiteSettings: GlobalConfig = {
           ],
         },
         {
-          label: 'Currency & Payments',
+          label: "Currency & Payments",
           fields: [
             {
-              name: 'currency',
-              type: 'group',
+              name: "currency",
+              type: "group",
               fields: [
                 {
-                  name: 'default',
-                  type: 'select',
+                  name: "default",
+                  type: "select",
                   options: [
-                    { label: 'UAH (₴)', value: 'UAH' },
-                    { label: 'EUR (€)', value: 'EUR' },
-                    { label: 'USD ($)', value: 'USD' },
+                    { label: "UAH (₴)", value: "UAH" },
+                    { label: "EUR (€)", value: "EUR" },
+                    { label: "USD ($)", value: "USD" },
                   ],
-                  defaultValue: 'UAH',
+                  defaultValue: "UAH",
                   admin: {
-                    description: 'Default currency for pricing display',
+                    description: "Default currency for pricing display",
                   },
                 },
                 {
-                  name: 'exchangeRateEur',
-                  type: 'number',
-                  label: 'Exchange Rate (1 EUR = X UAH)',
+                  name: "exchangeRateEur",
+                  type: "number",
+                  label: "Exchange Rate (1 EUR = X UAH)",
                   admin: {
-                    description: 'For automatic currency conversion',
+                    description: "For automatic currency conversion",
                   },
                 },
                 {
-                  name: 'exchangeRateUsd',
-                  type: 'number',
-                  label: 'Exchange Rate (1 USD = X UAH)',
+                  name: "exchangeRateUsd",
+                  type: "number",
+                  label: "Exchange Rate (1 USD = X UAH)",
                 },
               ],
             },
             {
-              name: 'payments',
-              type: 'group',
+              name: "payments",
+              type: "group",
               fields: [
                 {
-                  name: 'enableLiqPay',
-                  type: 'checkbox',
+                  name: "enableLiqPay",
+                  type: "checkbox",
                   defaultValue: true,
                   admin: {
-                    description: 'Enable LiqPay payment method',
+                    description: "Enable LiqPay payment method",
                   },
                 },
                 {
-                  name: 'enableStripe',
-                  type: 'checkbox',
+                  name: "enableStripe",
+                  type: "checkbox",
                   defaultValue: false,
                   admin: {
-                    description: 'Enable Stripe payment method',
+                    description: "Enable Stripe payment method",
                   },
                 },
                 {
-                  name: 'enableBankTransfer',
-                  type: 'checkbox',
+                  name: "enableBankTransfer",
+                  type: "checkbox",
                   defaultValue: true,
                   admin: {
-                    description: 'Enable bank transfer payment method',
+                    description: "Enable bank transfer payment method",
                   },
                 },
               ],
@@ -235,42 +241,44 @@ export const SiteSettings: GlobalConfig = {
           ],
         },
         {
-          label: 'Booking',
+          label: "Booking",
           fields: [
             {
-              name: 'booking',
-              type: 'group',
+              name: "booking",
+              type: "group",
               fields: [
                 {
-                  name: 'enabled',
-                  type: 'checkbox',
+                  name: "enabled",
+                  type: "checkbox",
                   defaultValue: true,
                   admin: {
-                    description: 'Enable online booking',
+                    description: "Enable online booking",
                   },
                 },
                 {
-                  name: 'leadTime',
-                  type: 'number',
+                  name: "leadTime",
+                  type: "number",
                   defaultValue: 24,
                   admin: {
-                    description: 'Minimum hours before appointment can be booked',
+                    description:
+                      "Minimum hours before appointment can be booked",
                   },
                 },
                 {
-                  name: 'maxAdvanceBooking',
-                  type: 'number',
+                  name: "maxAdvanceBooking",
+                  type: "number",
                   defaultValue: 30,
                   admin: {
-                    description: 'Maximum days in advance for booking',
+                    description: "Maximum days in advance for booking",
                   },
                 },
                 {
-                  name: 'confirmationEmail',
-                  type: 'textarea',
+                  name: "confirmationEmail",
+                  type: "textarea",
                   localized: true,
                   admin: {
-                    description: 'Custom message for booking confirmation email',
+                    description:
+                      "Custom message for booking confirmation email",
                   },
                 },
               ],
@@ -278,45 +286,46 @@ export const SiteSettings: GlobalConfig = {
           ],
         },
         {
-          label: 'SEO & Analytics',
+          label: "SEO & Analytics",
           fields: [
             {
-              name: 'seo',
-              type: 'group',
+              name: "seo",
+              type: "group",
               fields: [
                 {
-                  name: 'ogImage',
-                  type: 'upload',
-                  relationTo: 'media',
+                  name: "ogImage",
+                  type: "upload",
+                  relationTo: "media",
                   admin: {
-                    description: 'Default Open Graph image for social sharing',
+                    description: "Default Open Graph image for social sharing",
                   },
                 },
                 {
-                  name: 'googleSiteVerification',
-                  type: 'text',
+                  name: "googleSiteVerification",
+                  type: "text",
                   admin: {
-                    description: 'Google Search Console verification code',
+                    description: "Google Search Console verification code",
                   },
                 },
               ],
             },
             {
-              name: 'analytics',
-              type: 'group',
+              name: "analytics",
+              type: "group",
               fields: [
                 {
-                  name: 'googleAnalyticsId',
-                  type: 'text',
+                  name: "googleAnalyticsId",
+                  type: "text",
                   admin: {
-                    description: 'Google Analytics 4 Measurement ID (G-XXXXXXX)',
+                    description:
+                      "Google Analytics 4 Measurement ID (G-XXXXXXX)",
                   },
                 },
                 {
-                  name: 'facebookPixelId',
-                  type: 'text',
+                  name: "facebookPixelId",
+                  type: "text",
                   admin: {
-                    description: 'Facebook Pixel ID',
+                    description: "Facebook Pixel ID",
                   },
                 },
               ],
@@ -326,4 +335,4 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
   ],
-}
+};

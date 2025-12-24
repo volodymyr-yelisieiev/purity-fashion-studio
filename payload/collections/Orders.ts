@@ -1,47 +1,47 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig } from "payload";
 
 export const Orders: CollectionConfig = {
-  slug: 'orders',
+  slug: "orders",
   labels: {
-    singular: 'Order',
-    plural: 'Orders',
+    singular: "Order",
+    plural: "Orders",
   },
   admin: {
-    useAsTitle: 'orderNumber',
-    defaultColumns: ['orderNumber', 'status', 'total', 'createdAt'],
-    group: 'Commerce',
+    useAsTitle: "orderNumber",
+    defaultColumns: ["orderNumber", "status", "total", "createdAt"],
+    group: "Business",
   },
   access: {
     // Only admins can read/update orders in admin panel
     // Orders are created via API (webhooks) so create must allow unauthenticated
     read: ({ req: { user } }) => {
       // Admins can read all orders
-      if (user?.role === 'admin') return true
+      if (user?.role === "admin") return true;
       // No public access to orders
-      return false
+      return false;
     },
     create: ({ req }) => {
-      if (req?.payloadAPI === 'local') return true
+      if (req?.payloadAPI === "local") return true;
 
-      const secret = process.env.PAYLOAD_WEBHOOK_SECRET
-      const headerSecret = req?.headers?.get('x-internal-secret')
+      const secret = process.env.PAYLOAD_WEBHOOK_SECRET;
+      const headerSecret = req?.headers?.get("x-internal-secret");
 
       if (secret && headerSecret === secret) {
-        return true
+        return true;
       }
 
-      return false
+      return false;
     },
     update: ({ req: { user } }) => {
       // Only admins can update orders
-      return user?.role === 'admin'
+      return user?.role === "admin";
     },
     delete: () => false, // Never delete orders
   },
   fields: [
     {
-      name: 'orderNumber',
-      type: 'text',
+      name: "orderNumber",
+      type: "text",
       required: true,
       unique: true,
       admin: {
@@ -49,187 +49,187 @@ export const Orders: CollectionConfig = {
       },
     },
     {
-      name: 'status',
-      type: 'select',
+      name: "status",
+      type: "select",
       required: true,
-      defaultValue: 'pending',
+      defaultValue: "pending",
       index: true,
       options: [
-        { label: 'Pending', value: 'pending' },
-        { label: 'Processing', value: 'processing' },
-        { label: 'Paid', value: 'paid' },
-        { label: 'Failed', value: 'failed' },
-        { label: 'Cancelled', value: 'cancelled' },
-        { label: 'Completed', value: 'completed' },
-        { label: 'Refunded', value: 'refunded' },
+        { label: "Pending", value: "pending" },
+        { label: "Processing", value: "processing" },
+        { label: "Paid", value: "paid" },
+        { label: "Failed", value: "failed" },
+        { label: "Cancelled", value: "cancelled" },
+        { label: "Completed", value: "completed" },
+        { label: "Refunded", value: "refunded" },
       ],
       admin: {
-        position: 'sidebar',
+        position: "sidebar",
       },
     },
     {
-      type: 'tabs',
+      type: "tabs",
       tabs: [
         {
-          label: 'Order Details',
+          label: "Order Details",
           fields: [
             {
-              name: 'items',
-              type: 'array',
+              name: "items",
+              type: "array",
               required: true,
               fields: [
                 {
-                  name: 'type',
-                  type: 'select',
+                  name: "type",
+                  type: "select",
                   required: true,
                   options: [
-                    { label: 'Service', value: 'service' },
-                    { label: 'Product', value: 'product' },
+                    { label: "Service", value: "service" },
+                    { label: "Product", value: "product" },
                   ],
                 },
                 {
-                  name: 'name',
-                  type: 'text',
+                  name: "name",
+                  type: "text",
                   required: true,
                 },
                 {
-                  name: 'slug',
-                  type: 'text',
+                  name: "slug",
+                  type: "text",
                   required: true,
                 },
                 {
-                  name: 'price',
-                  type: 'number',
+                  name: "price",
+                  type: "number",
                   required: true,
                 },
                 {
-                  name: 'quantity',
-                  type: 'number',
+                  name: "quantity",
+                  type: "number",
                   required: true,
                   min: 1,
                 },
                 {
-                  name: 'bookingDate',
-                  type: 'text',
+                  name: "bookingDate",
+                  type: "text",
                 },
                 {
-                  name: 'bookingTime',
-                  type: 'text',
+                  name: "bookingTime",
+                  type: "text",
                 },
               ],
             },
             {
-              name: 'subtotal',
-              type: 'number',
+              name: "subtotal",
+              type: "number",
               required: true,
               admin: {
                 readOnly: true,
               },
             },
             {
-              name: 'total',
-              type: 'number',
+              name: "total",
+              type: "number",
               required: true,
               admin: {
                 readOnly: true,
               },
             },
             {
-              name: 'currency',
-              type: 'select',
+              name: "currency",
+              type: "select",
               required: true,
-              defaultValue: 'UAH',
+              defaultValue: "UAH",
               options: [
-                { label: 'Ukrainian Hryvnia (UAH)', value: 'UAH' },
-                { label: 'Euro (EUR)', value: 'EUR' },
+                { label: "Ukrainian Hryvnia (UAH)", value: "UAH" },
+                { label: "Euro (EUR)", value: "EUR" },
               ],
             },
           ],
         },
         {
-          label: 'Customer',
+          label: "Customer",
           fields: [
             {
-              name: 'customer',
-              type: 'group',
+              name: "customer",
+              type: "group",
               fields: [
                 {
-                  name: 'firstName',
-                  type: 'text',
+                  name: "firstName",
+                  type: "text",
                   required: true,
                 },
                 {
-                  name: 'lastName',
-                  type: 'text',
+                  name: "lastName",
+                  type: "text",
                   required: true,
                 },
                 {
-                  name: 'email',
-                  type: 'email',
+                  name: "email",
+                  type: "email",
                   required: true,
                 },
                 {
-                  name: 'phone',
-                  type: 'text',
+                  name: "phone",
+                  type: "text",
                   required: true,
                 },
                 {
-                  name: 'address',
-                  type: 'text',
+                  name: "address",
+                  type: "text",
                 },
                 {
-                  name: 'city',
-                  type: 'text',
+                  name: "city",
+                  type: "text",
                 },
                 {
-                  name: 'country',
-                  type: 'text',
-                  defaultValue: 'Ukraine',
+                  name: "country",
+                  type: "text",
+                  defaultValue: "Ukraine",
                 },
                 {
-                  name: 'postalCode',
-                  type: 'text',
+                  name: "postalCode",
+                  type: "text",
                 },
               ],
             },
             {
-              name: 'notes',
-              type: 'textarea',
+              name: "notes",
+              type: "textarea",
             },
           ],
         },
         {
-          label: 'Payment',
+          label: "Payment",
           fields: [
             {
-              name: 'paymentProvider',
-              type: 'select',
+              name: "paymentProvider",
+              type: "select",
               required: true,
               options: [
-                { label: 'Stripe', value: 'stripe' },
-                { label: 'LiqPay', value: 'liqpay' },
+                { label: "Stripe", value: "stripe" },
+                { label: "LiqPay", value: "liqpay" },
               ],
             },
             {
-              name: 'paymentIntentId',
-              type: 'text',
+              name: "paymentIntentId",
+              type: "text",
               admin: {
-                description: 'Stripe PaymentIntent ID or LiqPay order ID',
+                description: "Stripe PaymentIntent ID or LiqPay order ID",
               },
             },
             {
-              name: 'paymentStatus',
-              type: 'text',
+              name: "paymentStatus",
+              type: "text",
               admin: {
-                description: 'Raw status from payment provider',
+                description: "Raw status from payment provider",
               },
             },
             {
-              name: 'paidAt',
-              type: 'date',
+              name: "paidAt",
+              type: "date",
               admin: {
                 date: {
-                  displayFormat: 'MMMM d, yyyy HH:mm',
+                  displayFormat: "MMMM d, yyyy HH:mm",
                 },
               },
             },
@@ -242,13 +242,16 @@ export const Orders: CollectionConfig = {
     beforeChange: [
       ({ data, operation }) => {
         // Generate order number for new orders
-        if (operation === 'create' && !data.orderNumber) {
-          const timestamp = Date.now().toString(36).toUpperCase()
-          const random = Math.random().toString(36).substring(2, 6).toUpperCase()
-          data.orderNumber = `PUR-${timestamp}-${random}`
+        if (operation === "create" && !data.orderNumber) {
+          const timestamp = Date.now().toString(36).toUpperCase();
+          const random = Math.random()
+            .toString(36)
+            .substring(2, 6)
+            .toUpperCase();
+          data.orderNumber = `PUR-${timestamp}-${random}`;
         }
-        return data
+        return data;
       },
     ],
   },
-}
+};

@@ -1,24 +1,35 @@
-'use client'
+"use client";
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button, Input, Label, RadioGroup, RadioGroupItem } from '@/components/ui'
-import { checkoutSchema, type CheckoutFormData } from '@/lib/validation/checkoutSchema'
-import { useCart } from '@/hooks/useCart'
-import { formatPrice } from '@/lib/utils'
-import { features } from '@/config/env'
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Button,
+  Input,
+  Label,
+  RadioGroup,
+  RadioGroupItem,
+  Textarea,
+} from "@/components/ui";
+import {
+  checkoutSchema,
+  type CheckoutFormData,
+} from "@/lib/validation/checkoutSchema";
+import { useCart } from "@/hooks/useCart";
+import { formatPrice } from "@/lib/utils";
+import { features } from "@/config/env";
+import { logger } from "@/lib/logger";
 
 interface CheckoutFormProps {
-  locale: string
+  locale: string;
 }
 
 export function CheckoutForm({ locale }: CheckoutFormProps) {
-  const router = useRouter()
-  const { items, subtotal, currency, clearCart } = useCart()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const { items, subtotal, currency, clearCart } = useCart();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -29,31 +40,35 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
   } = useForm({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      country: 'Ukraine',
-      paymentMethod: features.liqpay ? 'liqpay' : features.stripe ? 'stripe' : undefined,
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      country: "Ukraine",
+      paymentMethod: features.liqpay
+        ? "liqpay"
+        : features.stripe
+        ? "stripe"
+        : undefined,
     } as CheckoutFormData,
-  })
+  });
 
-  const paymentMethod = watch('paymentMethod')
+  const paymentMethod = watch("paymentMethod");
 
   const onSubmit = async (data: CheckoutFormData) => {
     if (items.length === 0) {
-      setError('Your cart is empty')
-      return
+      setError("Your cart is empty");
+      return;
     }
 
-    setIsSubmitting(true)
-    setError(null)
+    setIsSubmitting(true);
+    setError(null);
 
     try {
       // 1. Create order in Payload
-      const orderResponse = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const orderResponse = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: items.map((item) => ({
             type: item.type,
@@ -80,79 +95,83 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
           notes: data.notes,
           paymentProvider: data.paymentMethod,
         }),
-      })
+      });
 
       if (!orderResponse.ok) {
-        throw new Error('Failed to create order')
+        throw new Error("Failed to create order");
       }
 
-      const order = await orderResponse.json()
+      const order = await orderResponse.json();
 
       // 2. Process payment based on selected method
-      if (data.paymentMethod === 'stripe') {
+      if (data.paymentMethod === "stripe") {
         // Redirect to Stripe checkout (or use embedded form)
-        const paymentResponse = await fetch('/api/payments/stripe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const paymentResponse = await fetch("/api/payments/stripe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ orderId: order.id }),
-        })
+        });
 
         if (!paymentResponse.ok) {
-          throw new Error('Failed to initialize Stripe payment')
+          throw new Error("Failed to initialize Stripe payment");
         }
 
         // Redirect to order confirmation pending payment
-        clearCart()
-        router.push(`/${locale}/order-confirmation/${order.id}?pending=true`)
-      } else if (data.paymentMethod === 'liqpay') {
+        clearCart();
+        router.push(`/${locale}/order-confirmation/${order.id}?pending=true`);
+      } else if (data.paymentMethod === "liqpay") {
         // Get LiqPay checkout data
-        const paymentResponse = await fetch('/api/payments/liqpay', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const paymentResponse = await fetch("/api/payments/liqpay", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ orderId: order.id, language: locale }),
-        })
+        });
 
         if (!paymentResponse.ok) {
-          throw new Error('Failed to initialize LiqPay payment')
+          throw new Error("Failed to initialize LiqPay payment");
         }
 
-        const liqpayData = await paymentResponse.json()
+        const liqpayData = await paymentResponse.json();
 
         // Clear cart before redirect
-        clearCart()
+        clearCart();
 
         // Create and submit LiqPay form
-        const form = document.createElement('form')
-        form.method = 'POST'
-        form.action = liqpayData.checkoutUrl
-        form.acceptCharset = 'utf-8'
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = liqpayData.checkoutUrl;
+        form.acceptCharset = "utf-8";
 
-        const dataInput = document.createElement('input')
-        dataInput.type = 'hidden'
-        dataInput.name = 'data'
-        dataInput.value = liqpayData.data
-        form.appendChild(dataInput)
+        const dataInput = document.createElement("input");
+        dataInput.type = "hidden";
+        dataInput.name = "data";
+        dataInput.value = liqpayData.data;
+        form.appendChild(dataInput);
 
-        const signatureInput = document.createElement('input')
-        signatureInput.type = 'hidden'
-        signatureInput.name = 'signature'
-        signatureInput.value = liqpayData.signature
-        form.appendChild(signatureInput)
+        const signatureInput = document.createElement("input");
+        signatureInput.type = "hidden";
+        signatureInput.name = "signature";
+        signatureInput.value = liqpayData.signature;
+        form.appendChild(signatureInput);
 
-        document.body.appendChild(form)
-        form.submit()
+        document.body.appendChild(form);
+        form.submit();
       }
     } catch (err) {
-      console.error('Checkout error:', err)
-      setError(err instanceof Error ? err.message : 'Checkout failed. Please try again.')
+      logger.error("Checkout error:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Checkout failed. Please try again."
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
-  const stripeAvailable = features.stripe
-  const liqpayAvailable = features.liqpay
-  const noPaymentMethods = !stripeAvailable && !liqpayAvailable
+  const stripeAvailable = features.stripe;
+  const liqpayAvailable = features.liqpay;
+  const noPaymentMethods = !stripeAvailable && !liqpayAvailable;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -165,29 +184,33 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
       {/* Customer Information */}
       <div className="space-y-4">
         <span className="block text-lg font-semibold">Contact Information</span>
-        
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="firstName">First Name *</Label>
             <Input
               id="firstName"
-              {...register('firstName')}
-              className={errors.firstName ? 'border-destructive' : ''}
+              {...register("firstName")}
+              className={errors.firstName ? "border-destructive" : ""}
             />
             {errors.firstName && (
-              <p className="text-sm text-destructive">{errors.firstName.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.firstName.message}
+              </p>
             )}
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="lastName">Last Name *</Label>
             <Input
               id="lastName"
-              {...register('lastName')}
-              className={errors.lastName ? 'border-destructive' : ''}
+              {...register("lastName")}
+              className={errors.lastName ? "border-destructive" : ""}
             />
             {errors.lastName && (
-              <p className="text-sm text-destructive">{errors.lastName.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.lastName.message}
+              </p>
             )}
           </div>
         </div>
@@ -197,8 +220,8 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
           <Input
             id="email"
             type="email"
-            {...register('email')}
-            className={errors.email ? 'border-destructive' : ''}
+            {...register("email")}
+            className={errors.email ? "border-destructive" : ""}
           />
           {errors.email && (
             <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -211,8 +234,8 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
             id="phone"
             type="tel"
             placeholder="+380"
-            {...register('phone')}
-            className={errors.phone ? 'border-destructive' : ''}
+            {...register("phone")}
+            className={errors.phone ? "border-destructive" : ""}
           />
           {errors.phone && (
             <p className="text-sm text-destructive">{errors.phone.message}</p>
@@ -223,21 +246,21 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
       {/* Shipping Address (Optional) */}
       <div className="space-y-4">
         <span className="block text-lg font-semibold">Address (Optional)</span>
-        
+
         <div className="space-y-2">
           <Label htmlFor="address">Street Address</Label>
-          <Input id="address" {...register('address')} />
+          <Input id="address" {...register("address")} />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
-            <Input id="city" {...register('city')} />
+            <Input id="city" {...register("city")} />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="postalCode">Postal Code</Label>
-            <Input id="postalCode" {...register('postalCode')} />
+            <Input id="postalCode" {...register("postalCode")} />
           </div>
         </div>
       </div>
@@ -247,7 +270,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
         <span className="block text-lg font-semibold">Payment Method</span>
 
         {noPaymentMethods ? (
-          <div className="bg-muted p-4">
+          <div className="bg-background p-4">
             <p className="text-sm text-muted-foreground">
               Payment methods are not configured yet. Please contact support.
             </p>
@@ -255,11 +278,13 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
         ) : (
           <RadioGroup
             value={paymentMethod}
-            onValueChange={(value) => setValue('paymentMethod', value as 'stripe' | 'liqpay')}
+            onValueChange={(value) =>
+              setValue("paymentMethod", value as "stripe" | "liqpay")
+            }
             className="space-y-3"
           >
             {liqpayAvailable && (
-              <div className="flex items-center space-x-3 border p-4 cursor-pointer hover:bg-muted/50">
+              <div className="flex items-center space-x-3 border p-4 cursor-pointer hover:bg-background/50">
                 <RadioGroupItem value="liqpay" id="liqpay" />
                 <Label htmlFor="liqpay" className="flex-1 cursor-pointer">
                   <span className="font-medium">LiqPay</span>
@@ -269,9 +294,9 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
                 </Label>
               </div>
             )}
-            
+
             {stripeAvailable && (
-              <div className="flex items-center space-x-3 border p-4 cursor-pointer hover:bg-muted/50">
+              <div className="flex items-center space-x-3 border p-4 cursor-pointer hover:bg-background/50">
                 <RadioGroupItem value="stripe" id="stripe" />
                 <Label htmlFor="stripe" className="flex-1 cursor-pointer">
                   <span className="font-medium">Credit Card (Stripe)</span>
@@ -285,17 +310,18 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
         )}
 
         {errors.paymentMethod && (
-          <p className="text-sm text-destructive">{errors.paymentMethod.message}</p>
+          <p className="text-sm text-destructive">
+            {errors.paymentMethod.message}
+          </p>
         )}
       </div>
 
       {/* Notes */}
       <div className="space-y-2">
         <Label htmlFor="notes">Order Notes (Optional)</Label>
-        <textarea
+        <Textarea
           id="notes"
-          {...register('notes')}
-          className="flex min-h-20 w-full border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          {...register("notes")}
           placeholder="Any special instructions or preferences..."
         />
       </div>
@@ -307,12 +333,15 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
         className="w-full"
         disabled={isSubmitting || noPaymentMethods || items.length === 0}
       >
-        {isSubmitting ? 'Processing...' : `Pay ${formatPrice(subtotal, currency)}`}
+        {isSubmitting
+          ? "Processing..."
+          : `Pay ${formatPrice(subtotal, currency)}`}
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">
-        By completing this purchase, you agree to our Terms of Service and Privacy Policy.
+        By completing this purchase, you agree to our Terms of Service and
+        Privacy Policy.
       </p>
     </form>
-  )
+  );
 }
