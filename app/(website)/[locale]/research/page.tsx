@@ -104,7 +104,7 @@ export default async function ResearchPage({
             {[1, 2, 3].map((step) => (
               <FadeInStagger key={step}>
                 <div className="text-center">
-                  <div className="mb-4 inline-flex h-12 w-12 items-center justify-center border border-border text-lg font-light">
+                  <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full border border-border text-lg font-light">
                     {String(step).padStart(2, "0")}
                   </div>
                   <H3 className="mb-2">{t(`process.step${step}.title`)}</H3>

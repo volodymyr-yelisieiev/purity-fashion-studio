@@ -52,7 +52,7 @@ export function Card({
           "p-8": padding === "lg",
 
           // Hover
-          "cursor-pointer hover:border-neutral-400": isHoverable,
+          "cursor-pointer hover:border-foreground/20": isHoverable,
         },
         className
       )}

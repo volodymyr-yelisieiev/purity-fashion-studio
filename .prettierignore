@@ -3,4 +3,4 @@ node_modules
 public
 .migrat* 
 coverage
-.github
+.githubpayload-types.ts

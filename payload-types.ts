@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | "Pacific/Midway"
-  | "Pacific/Niue"
-  | "Pacific/Honolulu"
-  | "Pacific/Rarotonga"
-  | "America/Anchorage"
-  | "Pacific/Gambier"
-  | "America/Los_Angeles"
-  | "America/Tijuana"
-  | "America/Denver"
-  | "America/Phoenix"
-  | "America/Chicago"
-  | "America/Guatemala"
-  | "America/New_York"
-  | "America/Bogota"
-  | "America/Caracas"
-  | "America/Santiago"
-  | "America/Buenos_Aires"
-  | "America/Sao_Paulo"
-  | "Atlantic/South_Georgia"
-  | "Atlantic/Azores"
-  | "Atlantic/Cape_Verde"
-  | "Europe/London"
-  | "Europe/Berlin"
-  | "Africa/Lagos"
-  | "Europe/Athens"
-  | "Africa/Cairo"
-  | "Europe/Moscow"
-  | "Asia/Riyadh"
-  | "Asia/Dubai"
-  | "Asia/Baku"
-  | "Asia/Karachi"
-  | "Asia/Tashkent"
-  | "Asia/Calcutta"
-  | "Asia/Dhaka"
-  | "Asia/Almaty"
-  | "Asia/Jakarta"
-  | "Asia/Bangkok"
-  | "Asia/Shanghai"
-  | "Asia/Singapore"
-  | "Asia/Tokyo"
-  | "Asia/Seoul"
-  | "Australia/Brisbane"
-  | "Australia/Sydney"
-  | "Pacific/Guam"
-  | "Pacific/Noumea"
-  | "Pacific/Auckland"
-  | "Pacific/Fiji";
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
 
 export interface Config {
   auth: {
@@ -75,10 +75,10 @@ export interface Config {
     lookbooks: Lookbook;
     orders: Order;
     courses: Course;
-    "payload-kv": PayloadKv;
-    "payload-locked-documents": PayloadLockedDocument;
-    "payload-preferences": PayloadPreference;
-    "payload-migrations": PayloadMigration;
+    'payload-kv': PayloadKv;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
@@ -90,35 +90,24 @@ export interface Config {
     lookbooks: LookbooksSelect<false> | LookbooksSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
-    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
-    "payload-locked-documents":
-      | PayloadLockedDocumentsSelect<false>
-      | PayloadLockedDocumentsSelect<true>;
-    "payload-preferences":
-      | PayloadPreferencesSelect<false>
-      | PayloadPreferencesSelect<true>;
-    "payload-migrations":
-      | PayloadMigrationsSelect<false>
-      | PayloadMigrationsSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
-  fallbackLocale:
-    | ("false" | "none" | "null")
-    | false
-    | null
-    | ("en" | "ru" | "uk")
-    | ("en" | "ru" | "uk")[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'ru' | 'uk') | ('en' | 'ru' | 'uk')[];
   globals: {
-    "site-settings": SiteSetting;
+    'site-settings': SiteSetting;
   };
   globalsSelect: {
-    "site-settings": SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
-  locale: "en" | "ru" | "uk";
+  locale: 'en' | 'ru' | 'uk';
   user: User & {
-    collection: "users";
+    collection: 'users';
   };
   jobs: {
     tasks: unknown;
@@ -152,7 +141,7 @@ export interface User {
   /**
    * User role for access control
    */
-  role: "admin" | "user";
+  role: 'admin' | 'user';
   firstName?: string | null;
   lastName?: string | null;
   updatedAt: string;
@@ -242,7 +231,7 @@ export interface Service {
   /**
    * Only published services are shown on the website
    */
-  status: "draft" | "published";
+  status: 'draft' | 'published';
   /**
    * Full service description with formatting
    */
@@ -255,18 +244,18 @@ export interface Service {
    * Service category for filtering
    */
   category:
-    | "research"
-    | "realisation"
-    | "transformation"
-    | "styling"
-    | "atelier"
-    | "consulting"
-    | "shopping"
-    | "events";
+    | 'research'
+    | 'realisation'
+    | 'transformation'
+    | 'styling'
+    | 'atelier'
+    | 'consulting'
+    | 'shopping'
+    | 'events';
   /**
    * How this service is delivered
    */
-  format?: ("online" | "studio" | "onsite" | "hybrid") | null;
+  format?: ('online' | 'studio' | 'onsite' | 'hybrid') | null;
   /**
    * Pricing information
    */
@@ -347,7 +336,7 @@ export interface Product {
    * URL-friendly identifier
    */
   slug: string;
-  status: "draft" | "published" | "out-of-stock" | "archived";
+  status: 'draft' | 'published' | 'out-of-stock' | 'archived';
   /**
    * Show in featured products section
    */
@@ -394,14 +383,7 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
-  category:
-    | "dresses"
-    | "tops"
-    | "bottoms"
-    | "outerwear"
-    | "accessories"
-    | "bags"
-    | "jewelry";
+  category: 'dresses' | 'tops' | 'bottoms' | 'outerwear' | 'accessories' | 'bags' | 'jewelry';
   /**
    * Product specifications
    */
@@ -411,7 +393,7 @@ export interface Product {
      * Care instructions
      */
     care?: string | null;
-    sizes?: ("xs" | "s" | "m" | "l" | "xl" | "one-size")[] | null;
+    sizes?: ('xs' | 's' | 'm' | 'l' | 'xl' | 'one-size')[] | null;
     colors?:
       | {
           name: string;
@@ -453,10 +435,8 @@ export interface Portfolio {
   /**
    * Only published items are visible on the site
    */
-  status: "draft" | "published";
-  category?:
-    | ("styling" | "wardrobe-audit" | "event" | "shopping" | "editorial")
-    | null;
+  status: 'draft' | 'published';
+  category?: ('styling' | 'wardrobe-audit' | 'event' | 'shopping' | 'editorial') | null;
   /**
    * Primary project image
    */
@@ -556,8 +536,8 @@ export interface Lookbook {
   /**
    * Only published collections are public
    */
-  status: "draft" | "published";
-  season?: ("spring" | "summer" | "autumn" | "winter" | "all-season") | null;
+  status: 'draft' | 'published';
+  season?: ('spring' | 'summer' | 'autumn' | 'winter' | 'all-season') | null;
   /**
    * Collection story and inspiration
    */
@@ -634,16 +614,9 @@ export interface Lookbook {
 export interface Order {
   id: number;
   orderNumber: string;
-  status:
-    | "pending"
-    | "processing"
-    | "paid"
-    | "failed"
-    | "cancelled"
-    | "completed"
-    | "refunded";
+  status: 'pending' | 'processing' | 'paid' | 'failed' | 'cancelled' | 'completed' | 'refunded';
   items: {
-    type: "service" | "product";
+    type: 'service' | 'product';
     name: string;
     slug: string;
     price: number;
@@ -654,7 +627,7 @@ export interface Order {
   }[];
   subtotal: number;
   total: number;
-  currency: "UAH" | "EUR";
+  currency: 'UAH' | 'EUR';
   customer: {
     firstName: string;
     lastName: string;
@@ -666,7 +639,7 @@ export interface Order {
     postalCode?: string | null;
   };
   notes?: string | null;
-  paymentProvider: "stripe" | "liqpay";
+  paymentProvider: 'stripe' | 'liqpay';
   /**
    * Stripe PaymentIntent ID or LiqPay order ID
    */
@@ -698,18 +671,12 @@ export interface Course {
   /**
    * Course category for filtering
    */
-  category:
-    | "personal-styling"
-    | "color-analysis"
-    | "wardrobe-audit"
-    | "shopping"
-    | "professional"
-    | "masterclass";
+  category: 'personal-styling' | 'color-analysis' | 'wardrobe-audit' | 'shopping' | 'professional' | 'masterclass';
   /**
    * Target audience experience level
    */
-  level: "beginner" | "intermediate" | "advanced" | "all";
-  status: "draft" | "published" | "coming-soon" | "archived";
+  level: 'beginner' | 'intermediate' | 'advanced' | 'all';
+  status: 'draft' | 'published' | 'coming-soon' | 'archived';
   /**
    * Brief description for cards and previews
    */
@@ -722,8 +689,8 @@ export interface Course {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -740,9 +707,9 @@ export interface Course {
   featuredImage?: (number | null) | Media;
   duration: {
     value: number;
-    unit: "hours" | "days" | "weeks" | "months";
+    unit: 'hours' | 'days' | 'weeks' | 'months';
   };
-  format: "online" | "in-person" | "hybrid";
+  format: 'online' | 'in-person' | 'hybrid';
   /**
    * Pricing information for this course
    */
@@ -844,40 +811,40 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: "users";
+        relationTo: 'users';
         value: number | User;
       } | null)
     | ({
-        relationTo: "media";
+        relationTo: 'media';
         value: number | Media;
       } | null)
     | ({
-        relationTo: "services";
+        relationTo: 'services';
         value: number | Service;
       } | null)
     | ({
-        relationTo: "products";
+        relationTo: 'products';
         value: number | Product;
       } | null)
     | ({
-        relationTo: "portfolio";
+        relationTo: 'portfolio';
         value: number | Portfolio;
       } | null)
     | ({
-        relationTo: "lookbooks";
+        relationTo: 'lookbooks';
         value: number | Lookbook;
       } | null)
     | ({
-        relationTo: "orders";
+        relationTo: 'orders';
         value: number | Order;
       } | null)
     | ({
-        relationTo: "courses";
+        relationTo: 'courses';
         value: number | Course;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   updatedAt: string;
@@ -890,7 +857,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   key?: string | null;
@@ -1431,7 +1398,7 @@ export interface SiteSetting {
     /**
      * Default currency for pricing display
      */
-    default?: ("UAH" | "EUR" | "USD") | null;
+    default?: ('UAH' | 'EUR' | 'USD') | null;
     /**
      * For automatic currency conversion
      */
@@ -1568,6 +1535,7 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-declare module "payload" {
+
+declare module 'payload' {
   export interface GeneratedTypes extends Config {}
 }

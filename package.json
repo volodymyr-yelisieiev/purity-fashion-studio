@@ -31,7 +31,16 @@
     "check": "pnpm typecheck && pnpm exec eslint \"./app/**/*.{ts,tsx}\" \"./components/**/*.{ts,tsx}\" --max-warnings=0 && pnpm format:check"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "payload-types.ts": [],
+    "app/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "components/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "lib/**/*.{ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ],

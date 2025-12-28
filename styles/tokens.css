@@ -89,7 +89,7 @@
   }
   
   .card-hover {
-    @apply hover:border-foreground;
+    @apply hover:border-foreground/20;
   }
   
   /* Link styles */

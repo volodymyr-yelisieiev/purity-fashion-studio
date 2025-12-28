@@ -99,7 +99,7 @@ export default async function RealisationPage({
       {/* 3. REALISATION SERVICES - Gray background */}
       <Section spacing="lg" background="gray">
         <Container>
-          <div className="mb-12">
+          <div className="mb-12 text-center">
             <H2 className="mb-4">{t("shopping.title")}</H2>
             <Lead>{t("shopping.subtitle")}</Lead>
           </div>
@@ -173,7 +173,7 @@ export default async function RealisationPage({
                       <Body>{t(`process.step${step}.description`)}</Body>
                     </div>
 
-                    <div className="relative z-10 flex h-10 w-10 items-center justify-center border border-border bg-background text-sm font-medium">
+                    <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-sm font-medium">
                       {String(step).padStart(2, "0")}
                     </div>
 
