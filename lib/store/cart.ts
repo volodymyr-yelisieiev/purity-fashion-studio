@@ -107,7 +107,15 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: "purity-cart",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() =>
+        typeof window !== "undefined"
+          ? localStorage
+          : {
+              getItem: (_name: string) => null,
+              setItem: (_name: string, _value: string) => {},
+              removeItem: (_name: string) => {},
+            },
+      ),
       // Only persist items and currency
       partialize: (state) => ({
         items: state.items,
