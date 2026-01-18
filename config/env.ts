@@ -31,7 +31,7 @@ function getRequiredEnv(key: string): string {
   if (!value) {
     throw new Error(
       `Missing required environment variable: ${key}\n` +
-        `Please add it to your .env.local file.`
+        `Please add it to your .env.local file.`,
     );
   }
   return value;
@@ -84,7 +84,7 @@ export function getEmailConfig() {
     apiKey: process.env.RESEND_API_KEY!,
     fromEmail: getOptionalEnv(
       "EMAIL_FROM",
-      "PURITY <noreply@purityfashion.studio>"
+      "PURITY <noreply@purityfashion.studio>",
     ),
   };
 }

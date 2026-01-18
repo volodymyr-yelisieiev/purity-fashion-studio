@@ -48,8 +48,8 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
       paymentMethod: features.liqpay
         ? "liqpay"
         : features.stripe
-        ? "stripe"
-        : undefined,
+          ? "stripe"
+          : undefined,
     } as CheckoutFormData,
   });
 
@@ -162,7 +162,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
       setError(
         err instanceof Error
           ? err.message
-          : "Checkout failed. Please try again."
+          : "Checkout failed. Please try again.",
       );
     } finally {
       setIsSubmitting(false);

@@ -61,7 +61,7 @@ export default async function TransformationPage({
   const { normalizeServices } = await import("@/lib/utils/safeData");
   const normalizedServices = normalizeServices(servicesResult?.docs || []);
   const transformationServices = normalizedServices.filter(
-    (service: Service) => service.category === "transformation"
+    (service: Service) => service.category === "transformation",
   );
 
   // Fetch courses for transformation section
@@ -88,7 +88,7 @@ export default async function TransformationPage({
 
   // Filter out items without content in current locale
   const filteredTransformations = transformations.filter((item) =>
-    hasContent(item.title)
+    hasContent(item.title),
   );
 
   return (

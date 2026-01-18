@@ -65,7 +65,7 @@ export default async function RealisationPage({
   const { normalizeServices } = await import("@/lib/utils/safeData");
   const normalized = normalizeServices(servicesResult.docs || []);
   const realisationServices = normalized.filter(
-    (service: Service) => service.category === "realisation"
+    (service: Service) => service.category === "realisation",
   );
 
   return (

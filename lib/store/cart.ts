@@ -81,7 +81,7 @@ export const useCartStore = create<CartStore>()(
 
         set((state) => ({
           items: state.items.map((item) =>
-            item.id === id ? { ...item, quantity } : item
+            item.id === id ? { ...item, quantity } : item,
           ),
         }));
       },
@@ -101,7 +101,7 @@ export const useCartStore = create<CartStore>()(
       getSubtotal: () => {
         return get().items.reduce(
           (acc, item) => acc + item.price * item.quantity,
-          0
+          0,
         );
       },
     }),
@@ -113,6 +113,6 @@ export const useCartStore = create<CartStore>()(
         items: state.items,
         currency: state.currency,
       }),
-    }
-  )
+    },
+  ),
 );

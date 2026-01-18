@@ -50,7 +50,7 @@ export async function generateStaticParams() {
       locales.map((locale) => ({
         locale,
         slug: service.slug,
-      }))
+      })),
     );
 }
 
@@ -66,7 +66,7 @@ export async function generateMetadata({
     const availableLocales = await getAvailableLocales(
       "services",
       slug,
-      isDraft
+      isDraft,
     );
     const title =
       availableLocales.length > 0 ? t("notAvailable") : t("serviceNotFound");
@@ -102,7 +102,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     const availableLocales = await getAvailableLocales(
       "services",
       slug,
-      isDraft
+      isDraft,
     );
     if (availableLocales.length > 0) {
       return (

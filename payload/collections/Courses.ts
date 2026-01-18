@@ -1,78 +1,30 @@
 import type { CollectionConfig } from "payload";
-import { slugify } from "@/lib/utils";
+import {
+  slugField,
+  statusField,
+  featuredField,
+  bookingFields,
+  publishedReadAccess,
+} from "../fields";
 
 export const Courses: CollectionConfig = {
   slug: "courses",
   admin: {
     useAsTitle: "title",
-    defaultColumns: [
-      "title",
-      "category",
-      "duration",
-      "price",
-      "status",
-      "updatedAt",
-    ],
+    defaultColumns: ["title", "category", "status", "updatedAt"],
     group: "Business",
     description: "Educational courses and workshops on styling and fashion",
   },
-  access: {
-    read: ({ req: { user } }) => {
-      if (user) return true;
-      return { status: { equals: "published" } };
-    },
-  },
+  access: publishedReadAccess(),
   fields: [
     {
       name: "title",
       type: "text",
       required: true,
       localized: true,
-      admin: {
-        description: "Course title in this language",
-      },
+      admin: { description: "Course title in this language" },
     },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      localized: true,
-      admin: {
-        position: "sidebar",
-        description: "URL-friendly identifier (auto-generated)",
-      },
-      hooks: {
-        beforeValidate: [
-          ({ value, data, req, originalDoc }) => {
-            if (value) return value;
-
-            const locale = req.locale;
-
-            const pickLocalizedText = (source: unknown): string | undefined => {
-              if (!source) return undefined;
-              if (typeof source === "string" && source) return source;
-              if (typeof source === "object" && source !== null) {
-                const record = source as Record<string, string | undefined>;
-                if (locale && record[locale]) return record[locale];
-                return (
-                  record.uk ||
-                  record.en ||
-                  record.ru ||
-                  Object.values(record).find(Boolean)
-                );
-              }
-              return undefined;
-            };
-
-            const title =
-              pickLocalizedText(data?.title) ||
-              pickLocalizedText(originalDoc?.title);
-            return title ? slugify(title) : value;
-          },
-        ],
-      },
-    },
+    slugField("title"),
     {
       name: "category",
       type: "select",
@@ -108,29 +60,17 @@ export const Courses: CollectionConfig = {
         description: "Target audience experience level",
       },
     },
-    {
-      name: "status",
-      type: "select",
-      required: true,
-      defaultValue: "draft",
-      index: true,
-      options: [
-        { label: "Draft", value: "draft" },
-        { label: "Published", value: "published" },
-        { label: "Coming Soon", value: "coming-soon" },
-        { label: "Archived", value: "archived" },
-      ],
-      admin: {
-        position: "sidebar",
-      },
-    },
+    statusField([
+      { label: "Draft", value: "draft" },
+      { label: "Published", value: "published" },
+      { label: "Coming Soon", value: "coming-soon" },
+      { label: "Archived", value: "archived" },
+    ]),
     {
       name: "excerpt",
       type: "textarea",
       localized: true,
-      admin: {
-        description: "Brief description for cards and previews",
-      },
+      admin: { description: "Brief description for cards and previews" },
     },
     {
       name: "description",
@@ -149,9 +89,7 @@ export const Courses: CollectionConfig = {
       name: "materials",
       type: "textarea",
       localized: true,
-      admin: {
-        description: "What students need to have for this course",
-      },
+      admin: { description: "What students need to have for this course" },
     },
     {
       name: "featuredImage",
@@ -162,12 +100,7 @@ export const Courses: CollectionConfig = {
       name: "duration",
       type: "group",
       fields: [
-        {
-          name: "value",
-          type: "number",
-          required: true,
-          min: 1,
-        },
+        { name: "value", type: "number", required: true, min: 1 },
         {
           name: "unit",
           type: "select",
@@ -196,57 +129,29 @@ export const Courses: CollectionConfig = {
     {
       name: "pricing",
       type: "group",
-      admin: {
-        description: "Pricing information for this course",
-      },
+      admin: { description: "Course pricing" },
       fields: [
-        {
-          name: "uah",
-          type: "number",
-          label: "UAH",
-          min: 0,
-        },
-        {
-          name: "eur",
-          type: "number",
-          label: "EUR",
-          min: 0,
-        },
+        { name: "uah", type: "number", label: "UAH", min: 0 },
+        { name: "eur", type: "number", label: "EUR", min: 0 },
         {
           name: "earlyBirdAmount",
           type: "number",
           min: 0,
-          admin: {
-            description: "Early bird discount price (optional)",
-          },
+          admin: { description: "Early bird discount price" },
         },
-        {
-          name: "priceNote",
-          type: "text",
-          localized: true,
-        },
+        { name: "priceNote", type: "text", localized: true },
       ],
     },
     {
       name: "curriculum",
       type: "array",
       fields: [
-        {
-          name: "module",
-          type: "text",
-          required: true,
-          localized: true,
-        },
+        { name: "module", type: "text", required: true, localized: true },
         {
           name: "topics",
           type: "array",
           fields: [
-            {
-              name: "topic",
-              type: "text",
-              required: true,
-              localized: true,
-            },
+            { name: "topic", type: "text", required: true, localized: true },
           ],
         },
       ],
@@ -255,115 +160,39 @@ export const Courses: CollectionConfig = {
       name: "instructor",
       type: "group",
       fields: [
-        {
-          name: "name",
-          type: "text",
-          required: true,
-        },
-        {
-          name: "title",
-          type: "text",
-          localized: true,
-        },
-        {
-          name: "bio",
-          type: "textarea",
-          localized: true,
-        },
-        {
-          name: "photo",
-          type: "upload",
-          relationTo: "media",
-        },
+        { name: "name", type: "text", required: true },
+        { name: "title", type: "text", localized: true },
+        { name: "bio", type: "textarea", localized: true },
+        { name: "photo", type: "upload", relationTo: "media" },
       ],
     },
     {
       name: "testimonials",
       type: "array",
       fields: [
-        {
-          name: "name",
-          type: "text",
-          required: true,
-        },
-        {
-          name: "quote",
-          type: "textarea",
-          required: true,
-          localized: true,
-        },
-        {
-          name: "photo",
-          type: "upload",
-          relationTo: "media",
-        },
+        { name: "name", type: "text", required: true },
+        { name: "quote", type: "textarea", required: true, localized: true },
+        { name: "photo", type: "upload", relationTo: "media" },
       ],
     },
     {
       name: "upcomingDates",
       type: "array",
       fields: [
-        {
-          name: "startDate",
-          type: "date",
-          required: true,
-        },
-        {
-          name: "endDate",
-          type: "date",
-        },
-        {
-          name: "spotsAvailable",
-          type: "number",
-          min: 0,
-        },
+        { name: "startDate", type: "date", required: true },
+        { name: "endDate", type: "date" },
+        { name: "spotsAvailable", type: "number", min: 0 },
       ],
     },
     {
       name: "faq",
       type: "array",
       fields: [
-        {
-          name: "question",
-          type: "text",
-          required: true,
-          localized: true,
-        },
-        {
-          name: "answer",
-          type: "textarea",
-          required: true,
-          localized: true,
-        },
+        { name: "question", type: "text", required: true, localized: true },
+        { name: "answer", type: "textarea", required: true, localized: true },
       ],
     },
-    {
-      name: "featured",
-      type: "checkbox",
-      defaultValue: false,
-      index: true,
-      admin: {
-        position: "sidebar",
-        description: "Show on homepage featured section",
-      },
-    },
-    {
-      name: "bookable",
-      type: "checkbox",
-      defaultValue: true,
-      admin: {
-        position: "sidebar",
-        description: "Allow online booking for this course",
-      },
-    },
-    {
-      name: "paymentEnabled",
-      type: "checkbox",
-      defaultValue: false,
-      admin: {
-        position: "sidebar",
-        description: "Enable online payment for this course",
-      },
-    },
+    featuredField(),
+    ...bookingFields(),
   ],
 };

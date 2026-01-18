@@ -1,24 +1,24 @@
 import type { CollectionConfig } from "payload";
-import { slugify } from "@/lib/utils";
 import { revalidateContent } from "../hooks/revalidate";
+import {
+  slugField,
+  statusField,
+  featuredField,
+  publishedReadAccess,
+} from "../fields";
 
 export const Products: CollectionConfig = {
   slug: "products",
   admin: {
     useAsTitle: "name",
-    defaultColumns: ["name", "category", "uah", "status", "featured"],
+    defaultColumns: ["name", "category", "status", "featured"],
     group: "Business",
     description: "Atelier products and clothing items",
   },
   hooks: {
     afterChange: [revalidateContent("products")],
   },
-  access: {
-    read: ({ req: { user } }) => {
-      if (user) return true;
-      return { status: { equals: "published" } };
-    },
-  },
+  access: publishedReadAccess(),
   fields: [
     {
       name: "name",
@@ -26,121 +26,49 @@ export const Products: CollectionConfig = {
       required: true,
       localized: true,
     },
-    {
-      name: "slug",
-      type: "text",
-      unique: true,
-      required: true,
-      localized: true,
-      admin: {
-        position: "sidebar",
-        description: "URL-friendly identifier",
-      },
-      hooks: {
-        beforeValidate: [
-          ({ value, data, req, originalDoc }) => {
-            if (value) return value;
-
-            const locale = req.locale;
-
-            const pickLocalizedText = (source: unknown): string | undefined => {
-              if (!source) return undefined;
-              if (typeof source === "string" && source) return source;
-              if (typeof source === "object" && source !== null) {
-                const record = source as Record<string, string | undefined>;
-                if (locale && record[locale]) return record[locale];
-                return (
-                  record.uk ||
-                  record.en ||
-                  record.ru ||
-                  Object.values(record).find(Boolean)
-                );
-              }
-              return undefined;
-            };
-
-            const name =
-              pickLocalizedText(data?.name) ||
-              pickLocalizedText(originalDoc?.name);
-            return name ? slugify(name) : value;
-          },
-        ],
-      },
-    },
-    {
-      name: "status",
-      type: "select",
-      required: true,
-      defaultValue: "draft",
-      index: true,
-      options: [
-        { label: "Draft", value: "draft" },
-        { label: "Published", value: "published" },
-        { label: "Out of Stock", value: "out-of-stock" },
-        { label: "Archived", value: "archived" },
-      ],
-      admin: {
-        position: "sidebar",
-      },
-    },
-    {
-      name: "featured",
-      type: "checkbox",
-      defaultValue: false,
-      index: true,
-      admin: {
-        position: "sidebar",
-        description: "Show in featured products section",
-      },
-    },
+    slugField("name"),
+    statusField([
+      { label: "Draft", value: "draft" },
+      { label: "Published", value: "published" },
+      { label: "Out of Stock", value: "out-of-stock" },
+      { label: "Archived", value: "archived" },
+    ]),
+    featuredField(),
     {
       name: "excerpt",
       type: "textarea",
       localized: true,
-      admin: {
-        description: "Brief description for cards and previews",
-      },
+      admin: { description: "Brief description for cards" },
     },
     {
       name: "description",
       type: "textarea",
       localized: true,
-      admin: {
-        description: "Full product description",
-      },
+      admin: { description: "Full product description" },
     },
     {
       name: "sku",
       type: "text",
       unique: true,
-      admin: {
-        position: "sidebar",
-        description: "Stock Keeping Unit",
-      },
+      admin: { position: "sidebar", description: "Stock Keeping Unit" },
     },
     {
       name: "pricing",
       type: "group",
-      admin: {
-        description: "Product pricing in multiple currencies",
-      },
+      admin: { description: "Product pricing" },
       fields: [
         {
           name: "uah",
           type: "number",
           required: true,
           min: 0,
-          admin: {
-            description: "Price in Ukrainian Hryvnia",
-          },
+          admin: { description: "Price in Ukrainian Hryvnia" },
         },
         {
           name: "eur",
           type: "number",
           min: 0,
-          admin: {
-            description: "Price in Euro (optional)",
-          },
+          admin: { description: "Price in Euro (optional)" },
         },
         {
           name: "salePrice",
@@ -156,23 +84,14 @@ export const Products: CollectionConfig = {
       name: "images",
       type: "array",
       minRows: 1,
-      admin: {
-        description: "Product images (first is main)",
-      },
+      admin: { description: "Product images (first is main)" },
       fields: [
-        {
-          name: "image",
-          type: "upload",
-          relationTo: "media",
-          required: true,
-        },
+        { name: "image", type: "upload", relationTo: "media", required: true },
         {
           name: "alt",
           type: "text",
           localized: true,
-          admin: {
-            description: "Alt text for accessibility",
-          },
+          admin: { description: "Alt text for accessibility" },
         },
       ],
     },
@@ -190,29 +109,19 @@ export const Products: CollectionConfig = {
         { label: "Bags", value: "bags" },
         { label: "Jewelry", value: "jewelry" },
       ],
-      admin: {
-        position: "sidebar",
-      },
+      admin: { position: "sidebar" },
     },
     {
       name: "details",
       type: "group",
-      admin: {
-        description: "Product specifications",
-      },
+      admin: { description: "Product specifications" },
       fields: [
-        {
-          name: "material",
-          type: "text",
-          localized: true,
-        },
+        { name: "material", type: "text", localized: true },
         {
           name: "care",
           type: "textarea",
           localized: true,
-          admin: {
-            description: "Care instructions",
-          },
+          admin: { description: "Care instructions" },
         },
         {
           name: "sizes",
@@ -231,18 +140,11 @@ export const Products: CollectionConfig = {
           name: "colors",
           type: "array",
           fields: [
-            {
-              name: "name",
-              type: "text",
-              required: true,
-              localized: true,
-            },
+            { name: "name", type: "text", required: true, localized: true },
             {
               name: "hex",
               type: "text",
-              admin: {
-                description: "Hex color code (e.g., #000000)",
-              },
+              admin: { description: "Hex color code (e.g., #000000)" },
             },
           ],
         },

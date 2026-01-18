@@ -225,23 +225,23 @@ export interface Service {
    */
   title: string;
   /**
-   * URL-friendly identifier (auto-generated from title)
+   * URL-friendly identifier (auto-generated)
    */
   slug: string;
   /**
-   * Only published services are shown on the website
+   * Only published items are visible on the site
    */
   status: 'draft' | 'published';
   /**
-   * Full service description with formatting
+   * Full service description
    */
   description?: string | null;
   /**
-   * Brief description for cards and previews (1-2 sentences)
+   * Brief description for cards (1-2 sentences)
    */
   excerpt?: string | null;
   /**
-   * Service category for filtering
+   * Service category
    */
   category:
     | 'research'
@@ -274,7 +274,7 @@ export interface Service {
     priceNote?: string | null;
   };
   /**
-   * Service duration (e.g., "2 hours", "1-2 days")
+   * Service duration (e.g., "2 hours")
    */
   duration?: string | null;
   /**
@@ -305,11 +305,11 @@ export interface Service {
    */
   featured?: boolean | null;
   /**
-   * Allow online booking for this service
+   * Allow online booking
    */
   bookable?: boolean | null;
   /**
-   * Enable online payment for this service
+   * Enable online payment
    */
   paymentEnabled?: boolean | null;
   meta?: {
@@ -333,16 +333,19 @@ export interface Product {
   id: number;
   name: string;
   /**
-   * URL-friendly identifier
+   * URL-friendly identifier (auto-generated)
    */
   slug: string;
+  /**
+   * Only published items are visible on the site
+   */
   status: 'draft' | 'published' | 'out-of-stock' | 'archived';
   /**
-   * Show in featured products section
+   * Show on homepage featured section
    */
   featured?: boolean | null;
   /**
-   * Brief description for cards and previews
+   * Brief description for cards
    */
   excerpt?: string | null;
   /**
@@ -354,7 +357,7 @@ export interface Product {
    */
   sku?: string | null;
   /**
-   * Product pricing in multiple currencies
+   * Product pricing
    */
   pricing: {
     /**
@@ -429,7 +432,7 @@ export interface Portfolio {
    */
   title: string;
   /**
-   * URL-friendly identifier
+   * URL-friendly identifier (auto-generated)
    */
   slug: string;
   /**
@@ -446,7 +449,7 @@ export interface Portfolio {
    */
   description?: string | null;
   /**
-   * The problem or starting point for the client
+   * The problem or starting point
    */
   challenge?: string | null;
   /**
@@ -483,7 +486,7 @@ export interface Portfolio {
     rating?: number | null;
   };
   /**
-   * Show on homepage
+   * Show on homepage featured section
    */
   featured?: boolean | null;
   /**
@@ -491,19 +494,28 @@ export interface Portfolio {
    */
   publishedAt?: string | null;
   /**
-   * Pricing information for this transformation package
+   * Pricing information
    */
   pricing?: {
+    /**
+     * Price in Ukrainian Hryvnia
+     */
     uah?: number | null;
+    /**
+     * Price in Euros
+     */
     eur?: number | null;
+    /**
+     * Optional note (e.g., "Starting from", "Per hour")
+     */
     priceNote?: string | null;
   };
   /**
-   * Allow booking a similar transformation
+   * Allow online booking
    */
   bookable?: boolean | null;
   /**
-   * Enable online payment for this transformation package
+   * Enable online payment
    */
   paymentEnabled?: boolean | null;
   meta?: {
@@ -530,11 +542,11 @@ export interface Lookbook {
    */
   name: string;
   /**
-   * URL-friendly identifier
+   * URL-friendly identifier (auto-generated)
    */
   slug: string;
   /**
-   * Only published collections are public
+   * Only published items are visible on the site
    */
   status: 'draft' | 'published';
   season?: ('spring' | 'summer' | 'autumn' | 'winter' | 'all-season') | null;
@@ -569,7 +581,7 @@ export interface Lookbook {
       }[]
     | null;
   /**
-   * Show on homepage
+   * Show on homepage featured section
    */
   featured?: boolean | null;
   /**
@@ -581,19 +593,28 @@ export interface Lookbook {
    */
   linkedProducts?: (number | Product)[] | null;
   /**
-   * Base pricing for items in this collection
+   * Pricing information
    */
   pricing?: {
+    /**
+     * Price in Ukrainian Hryvnia
+     */
     uah?: number | null;
+    /**
+     * Price in Euros
+     */
     eur?: number | null;
+    /**
+     * Optional note (e.g., "Starting from", "Per hour")
+     */
     priceNote?: string | null;
   };
   /**
-   * Allow booking a consultation for this collection
+   * Allow online booking
    */
   bookable?: boolean | null;
   /**
-   * Enable online payment for this collection
+   * Enable online payment
    */
   paymentEnabled?: boolean | null;
   meta?: {
@@ -676,6 +697,9 @@ export interface Course {
    * Target audience experience level
    */
   level: 'beginner' | 'intermediate' | 'advanced' | 'all';
+  /**
+   * Only published items are visible on the site
+   */
   status: 'draft' | 'published' | 'coming-soon' | 'archived';
   /**
    * Brief description for cards and previews
@@ -711,13 +735,13 @@ export interface Course {
   };
   format: 'online' | 'in-person' | 'hybrid';
   /**
-   * Pricing information for this course
+   * Course pricing
    */
   pricing?: {
     uah?: number | null;
     eur?: number | null;
     /**
-     * Early bird discount price (optional)
+     * Early bird discount price
      */
     earlyBirdAmount?: number | null;
     priceNote?: string | null;
@@ -768,11 +792,11 @@ export interface Course {
    */
   featured?: boolean | null;
   /**
-   * Allow online booking for this course
+   * Allow online booking
    */
   bookable?: boolean | null;
   /**
-   * Enable online payment for this course
+   * Enable online payment
    */
   paymentEnabled?: boolean | null;
   meta?: {

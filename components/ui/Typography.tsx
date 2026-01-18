@@ -13,7 +13,7 @@ export function H1({ children, className }: TypographyProps) {
         "text-3xl md:text-4xl lg:text-5xl xl:text-6xl",
         "font-light tracking-tight font-serif",
         "text-foreground",
-        className
+        className,
       )}
     >
       {children}
@@ -28,7 +28,7 @@ export function H2({ children, className }: TypographyProps) {
         "text-2xl md:text-3xl lg:text-4xl",
         "font-light tracking-tight font-serif",
         "text-foreground",
-        className
+        className,
       )}
     >
       {children}
@@ -43,7 +43,7 @@ export function H3({ children, className }: TypographyProps) {
         "text-xl md:text-2xl lg:text-3xl",
         "font-light tracking-tight font-serif",
         "text-foreground",
-        className
+        className,
       )}
     >
       {children}
@@ -58,7 +58,7 @@ export function Lead({ children, className }: TypographyProps) {
         "text-lg md:text-xl lg:text-2xl",
         "text-muted-foreground",
         "max-w-3xl mx-auto",
-        className
+        className,
       )}
     >
       {children}
@@ -73,7 +73,7 @@ export function Body({ children, className }: TypographyProps) {
         "text-base md:text-lg",
         "text-muted-foreground",
         "leading-relaxed",
-        className
+        className,
       )}
     >
       {children}

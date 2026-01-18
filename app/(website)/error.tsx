@@ -19,7 +19,7 @@ export default function Error({
   useEffect(() => {
     // Log error to console in development, and to error tracking service in production
     import("@/lib/logger").then(({ logger }) =>
-      logger.error("Error boundary caught:", error)
+      logger.error("Error boundary caught:", error),
     );
   }, [error]);
 

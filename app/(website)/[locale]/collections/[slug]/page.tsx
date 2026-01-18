@@ -61,7 +61,7 @@ export async function generateStaticParams() {
       locales.map((locale) => ({
         locale,
         slug: item.slug,
-      }))
+      })),
     );
 }
 
@@ -77,7 +77,7 @@ export async function generateMetadata({
     const availableLocales = await getAvailableLocales(
       "lookbooks",
       slug,
-      isDraft
+      isDraft,
     );
     const title =
       availableLocales.length > 0 ? t("notAvailable") : t("notFound");
@@ -115,7 +115,7 @@ export default async function CollectionDetailPage({
     const availableLocales = await getAvailableLocales(
       "lookbooks",
       slug,
-      isDraft
+      isDraft,
     );
     if (availableLocales.length > 0) {
       return (
@@ -140,7 +140,7 @@ export default async function CollectionDetailPage({
     const availableLocales = await getAvailableLocales(
       "lookbooks",
       slug,
-      isDraft
+      isDraft,
     );
     if (availableLocales.length > 0) {
       return (
@@ -165,7 +165,7 @@ export default async function CollectionDetailPage({
   ) as MediaType | null;
   const coverImage = coverImg || fallbackImage;
   const products = (collection.linkedProducts || []).filter(
-    (p) => typeof p === "object"
+    (p) => typeof p === "object",
   ) as Product[];
 
   return (

@@ -19,8 +19,8 @@ const check = async () => {
         result: d.result,
       })),
       null,
-      2
-    )
+      2,
+    ),
   );
 
   console.log("--- SERVICES (UK) ---");
@@ -36,8 +36,8 @@ const check = async () => {
         includes: d.includes,
       })),
       null,
-      2
-    )
+      2,
+    ),
   );
 
   console.log("--- LOOKBOOKS (UK) ---");
@@ -53,8 +53,8 @@ const check = async () => {
         priceEur: d.pricing?.eur,
       })),
       null,
-      2
-    )
+      2,
+    ),
   );
 
   console.log("--- COURSES (UK) ---");
@@ -68,8 +68,8 @@ const check = async () => {
         faq: d.faq,
       })),
       null,
-      2
-    )
+      2,
+    ),
   );
 
   console.log("--- COURSES (EN) ---");
@@ -83,8 +83,8 @@ const check = async () => {
         faq: d.faq,
       })),
       null,
-      2
-    )
+      2,
+    ),
   );
 
   process.exit(0);

@@ -25,13 +25,13 @@ export async function POST(request: NextRequest) {
     }
 
     if (tag) {
-      revalidateTag(tag);
+      revalidateTag(tag, "default");
       logger.info(`Revalidated tag: ${tag}`);
     }
 
     if (tags && Array.isArray(tags)) {
       tags.forEach((t) => {
-        revalidateTag(t);
+        revalidateTag(t, "default");
         logger.info(`Revalidated tag: ${t}`);
       });
     }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   } catch {
     return NextResponse.json(
       { message: "Error revalidating" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

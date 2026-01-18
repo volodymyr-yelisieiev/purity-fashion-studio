@@ -49,7 +49,7 @@ export async function generateStaticParams() {
       locales.map((locale) => ({
         locale,
         slug: item.slug,
-      }))
+      })),
     );
 }
 
@@ -65,7 +65,7 @@ export async function generateMetadata({
     const availableLocales = await getAvailableLocales(
       "portfolio",
       slug,
-      isDraft
+      isDraft,
     );
     const title =
       availableLocales.length > 0 ? t("notAvailable") : t("notFound");
@@ -103,7 +103,7 @@ export default async function PortfolioDetailPage({
     const availableLocales = await getAvailableLocales(
       "portfolio",
       slug,
-      isDraft
+      isDraft,
     );
     if (availableLocales.length > 0) {
       return (
@@ -124,7 +124,7 @@ export default async function PortfolioDetailPage({
     typeof portfolio.mainImage === "object" ? portfolio.mainImage : null
   ) as MediaType | null;
   const servicesUsed = (portfolio.servicesUsed || []).filter(
-    (s) => typeof s === "object"
+    (s) => typeof s === "object",
   ) as Service[];
 
   return (

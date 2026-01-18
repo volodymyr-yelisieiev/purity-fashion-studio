@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   if (!stripe || !stripeConfig?.webhookSecret) {
     return NextResponse.json(
       { error: "Stripe webhooks not configured" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     if (!signature) {
       return NextResponse.json(
         { error: "Missing stripe-signature header" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     const event = constructWebhookEvent(
       body,
       signature,
-      stripeConfig.webhookSecret
+      stripeConfig.webhookSecret,
     );
 
     const payload = await getPayload({ config: configPromise });
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
     logger.error("Stripe webhook error:", error);
     return NextResponse.json(
       { error: "Webhook handler failed" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

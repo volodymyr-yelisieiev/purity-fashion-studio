@@ -6,6 +6,29 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Picks a localized value from a potentially locale-keyed object.
+ * Used across Payload hooks, SEO plugin, Live Preview, and frontend.
+ */
+export function pickLocalized(
+  value: unknown,
+  locale?: string,
+): string | undefined {
+  if (!value) return undefined;
+  if (typeof value === "string") return value;
+  if (typeof value === "object") {
+    const record = value as Record<string, string | undefined>;
+    return (
+      (locale && record[locale]) ||
+      record.uk ||
+      record.en ||
+      record.ru ||
+      Object.values(record).find(Boolean)
+    );
+  }
+  return undefined;
+}
+
+/**
  * Convert a string to URL-friendly slug
  * Handles Latin, Cyrillic (Ukrainian/Russian), and other characters
  */
@@ -122,7 +145,7 @@ export function hasContent(value: unknown): boolean {
  */
 export function formatPrice(
   amount: number,
-  currency: "UAH" | "EUR" = "UAH"
+  currency: "UAH" | "EUR" = "UAH",
 ): string {
   const formatter = new Intl.NumberFormat(
     currency === "UAH" ? "uk-UA" : "en-EU",
@@ -131,7 +154,7 @@ export function formatPrice(
       currency: currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
-    }
+    },
   );
   return formatter.format(amount);
 }

@@ -28,7 +28,7 @@ export interface SendEmailParams {
 }
 
 export async function sendEmail(
-  params: SendEmailParams
+  params: SendEmailParams,
 ): Promise<{ success: boolean; error?: string }> {
   const resend = getResend();
 
@@ -82,7 +82,7 @@ export interface OrderConfirmationEmailParams {
 }
 
 export async function sendOrderConfirmationEmail(
-  params: OrderConfirmationEmailParams
+  params: OrderConfirmationEmailParams,
 ) {
   const siteConfig = getSiteConfig();
   const currencySymbol = params.currency === "UAH" ? "₴" : "€";
@@ -98,10 +98,10 @@ export async function sendOrderConfirmationEmail(
             item.quantity
           }</td>
           <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">${currencySymbol}${item.price.toFixed(
-        2
-      )}</td>
+            2,
+          )}</td>
         </tr>
-      `
+      `,
     )
     .join("");
 
@@ -147,8 +147,8 @@ export async function sendOrderConfirmationEmail(
           <tr>
             <td colspan="2" style="padding: 12px; font-weight: bold;">Total</td>
             <td style="padding: 12px; text-align: right; font-weight: bold; font-size: 18px;">${currencySymbol}${params.total.toFixed(
-    2
-  )}</td>
+              2,
+            )}</td>
           </tr>
         </tfoot>
       </table>
@@ -178,8 +178,8 @@ ${params.items
   .map(
     (item) =>
       `- ${item.name} x${item.quantity}: ${currencySymbol}${item.price.toFixed(
-        2
-      )}`
+        2,
+      )}`,
   )
   .join("\n")}
 

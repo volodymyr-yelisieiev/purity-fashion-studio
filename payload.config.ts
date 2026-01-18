@@ -1,7 +1,6 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "path";
-import fs from "fs";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
@@ -17,12 +16,7 @@ import { Collections } from "./payload/collections/Collections";
 import { Orders } from "./payload/collections/Orders";
 import { Courses } from "./payload/collections/Courses";
 import { SiteSettings } from "./payload/globals/SiteSettings";
-import {
-  fixMigrationIdempotency,
-  simplifyMigrationFilename,
-} from "./lib/payloadUtils";
-import { migrations } from "./migrations";
-import { extractPlainText } from "./lib/utils";
+import { pickLocalized, extractPlainText } from "./lib/utils";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -37,26 +31,12 @@ export default buildConfig({
       url: ({ data, collectionConfig, locale }) => {
         const baseUrl =
           process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
-        const pickLocalized = (value: unknown): string | undefined => {
-          if (!value) return undefined;
-          if (typeof value === "string") return value;
-          if (typeof value === "object") {
-            const record = value as Record<string, string | undefined>;
-            return (
-              (locale?.code && record[locale.code]) ||
-              record.uk ||
-              record.en ||
-              record.ru ||
-              Object.values(record).find(Boolean)
-            );
-          }
-          return undefined;
-        };
-
         const collectionSlug = collectionConfig?.slug || "preview";
         const slug =
-          pickLocalized((data as Record<string, unknown>)?.slug) || "preview";
+          pickLocalized(
+            (data as Record<string, unknown>)?.slug,
+            locale?.code,
+          ) || "preview";
         const localeCode = locale?.code || "uk";
 
         return `${baseUrl}/api/preview?collection=${collectionSlug}&slug=${slug}&locale=${localeCode}&secret=${process.env.PAYLOAD_SECRET}`;
@@ -70,7 +50,6 @@ export default buildConfig({
       ],
     },
   },
-  // CSRF protection - only allow requests from these origins
   csrf: [process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"],
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   collections: [
@@ -104,52 +83,12 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
-  db: (() => {
-    const adapter = postgresAdapter({
-      pool: {
-        connectionString: process.env.DATABASE_URL || "",
-      },
-      push: false, // Disable push to ensure migrations are the source of truth
-    });
-
-    // @ts-expect-error - migrations is not in the type but is used by the adapter
-    adapter.migrations = migrations;
-
-    const originalInit = adapter.init;
-
-    adapter.init = (args) => {
-      const instance = originalInit(args);
-      const originalCreateMigration = instance.createMigration;
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      instance.createMigration = async (migrationArgs: any) => {
-        await originalCreateMigration.call(instance, migrationArgs);
-
-        // After creation, find the latest file and fix it
-        const migrationsDir = instance.migrationDir;
-        if (!migrationsDir) return;
-
-        const files = fs
-          .readdirSync(migrationsDir)
-          .filter((f) => f.endsWith(".ts") && f !== "index.ts")
-          .map((f) => ({
-            name: f,
-            mtime: fs.statSync(path.join(migrationsDir, f)).mtime,
-          }))
-          .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
-
-        if (files.length > 0) {
-          const latestFile = path.join(migrationsDir, files[0].name);
-          fixMigrationIdempotency(latestFile);
-          simplifyMigrationFilename(latestFile, migrationsDir);
-        }
-      };
-
-      return instance;
-    };
-
-    return adapter;
-  })(),
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URL || "",
+    },
+    push: false,
+  }),
   sharp,
   plugins: [
     vercelBlobStorage({
@@ -160,7 +99,7 @@ export default buildConfig({
       token: process.env.BLOB_READ_WRITE_TOKEN || "",
       clientUploads: false,
       addRandomSuffix: true,
-      cacheControlMaxAge: 31536000, // 1 year
+      cacheControlMaxAge: 31536000,
     }),
     seoPlugin({
       collections: [
@@ -180,58 +119,23 @@ export default buildConfig({
           ) {
             return {
               ...field,
-              admin: {
-                ...(field.admin || {}),
-                hidden: true,
-              },
+              admin: { ...(field.admin || {}), hidden: true },
             };
           }
           return field;
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }) as any[];
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      generateTitle: ({ doc, locale }: any) => {
-        const pickLocalized = (value: unknown): string | undefined => {
-          if (!value) return undefined;
-          if (typeof value === "string") return value;
-          if (typeof value === "object") {
-            const record = value as Record<string, string | undefined>;
-            return (
-              record[locale] ||
-              record.uk ||
-              record.en ||
-              record.ru ||
-              Object.values(record).find(Boolean)
-            );
-          }
-          return undefined;
-        };
-
+      generateTitle: ({ doc, locale }) => {
         const title =
-          pickLocalized(doc?.title) || pickLocalized(doc?.name) || "PURITY";
+          pickLocalized(doc?.title, locale) ||
+          pickLocalized(doc?.name, locale) ||
+          "PURITY";
         return `${title} | PURITY Fashion Studio`;
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      generateDescription: ({ doc, locale }: any) => {
-        const pickLocalized = (value: unknown): string | undefined => {
-          if (!value) return undefined;
-          if (typeof value === "string") return value;
-          if (typeof value === "object") {
-            const record = value as Record<string, string | undefined>;
-            return (
-              record[locale] ||
-              record.uk ||
-              record.en ||
-              record.ru ||
-              Object.values(record).find(Boolean)
-            );
-          }
-          return undefined;
-        };
-
+      generateDescription: ({ doc, locale }) => {
         const rawDesc =
-          pickLocalized(doc?.excerpt) || pickLocalized(doc?.description);
+          pickLocalized(doc?.excerpt, locale) ||
+          pickLocalized(doc?.description, locale);
         let desc = "";
 
         if (typeof rawDesc === "string") {
@@ -247,11 +151,10 @@ export default buildConfig({
         return locale === "uk"
           ? "Професійний стайлінг та послуги ательє від PURITY Fashion Studio."
           : locale === "ru"
-          ? "Профессиональный стайлинг и услуги ателье от PURITY Fashion Studio."
-          : "Professional styling and atelier services by PURITY Fashion Studio.";
+            ? "Профессиональный стайлинг и услуги ателье от PURITY Fashion Studio."
+            : "Professional styling and atelier services by PURITY Fashion Studio.";
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      generateImage: ({ doc }: any) => {
+      generateImage: ({ doc }) => {
         const image =
           doc?.heroImage ||
           doc?.mainImage ||
@@ -262,27 +165,10 @@ export default buildConfig({
         if (typeof image === "object" && image?.url) return image.url;
         return undefined;
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      generateURL: ({ doc, collectionSlug, locale }: any) => {
-        const pickLocalized = (value: unknown): string | undefined => {
-          if (!value) return undefined;
-          if (typeof value === "string") return value;
-          if (typeof value === "object") {
-            const record = value as Record<string, string | undefined>;
-            return (
-              record[locale] ||
-              record.uk ||
-              record.en ||
-              record.ru ||
-              Object.values(record).find(Boolean)
-            );
-          }
-          return undefined;
-        };
-
+      generateURL: ({ doc, collectionSlug, locale }) => {
         const siteUrl =
           process.env.NEXT_PUBLIC_SITE_URL || "https://purity.studio";
-        const slug = pickLocalized(doc?.slug) || "unknown";
+        const slug = pickLocalized(doc?.slug, locale) || "unknown";
         return `${siteUrl}/${locale}/${collectionSlug}/${slug}`;
       },
     }),

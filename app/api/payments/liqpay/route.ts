@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   if (!features.liqpay) {
     return NextResponse.json(
       { error: "LiqPay payments are not configured. Please contact support." },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     if (!orderId) {
       return NextResponse.json(
         { error: "Order ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     if (!checkout) {
       return NextResponse.json(
         { error: "Failed to create LiqPay checkout" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     logger.error("LiqPay payment error:", error);
     return NextResponse.json(
       { error: "Failed to create LiqPay checkout" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

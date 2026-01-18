@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     if (!items || items.length === 0) {
       return NextResponse.json(
         { error: "Order must contain at least one item" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json(
         { error: "Customer information is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     logger.error("Order creation error:", error);
     return NextResponse.json(
       { error: "Failed to create order" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -79,7 +79,7 @@ export async function GET(request: Request) {
   if (!orderId) {
     return NextResponse.json(
       { error: "Order ID is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -110,7 +110,7 @@ export async function GET(request: Request) {
     logger.error("Order fetch error:", error);
     return NextResponse.json(
       { error: "Failed to fetch order" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

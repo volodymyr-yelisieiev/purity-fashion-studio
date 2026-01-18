@@ -57,7 +57,7 @@ export function generateSeoMetadata({
 
 export function generateServiceMetadata(
   service: { title: string; description?: string; slug: string },
-  locale: string
+  locale: string,
 ): Metadata {
   return generateSeoMetadata({
     title: `${service.title} | PURITY Fashion Studio`,

@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   if (!features.liqpay) {
     return NextResponse.json(
       { error: "LiqPay webhooks not configured" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     if (!data || !signature) {
       return NextResponse.json(
         { error: "Missing data or signature" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     logger.error("LiqPay webhook error:", error);
     return NextResponse.json(
       { error: "Webhook handler failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

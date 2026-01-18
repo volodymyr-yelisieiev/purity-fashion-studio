@@ -41,7 +41,7 @@ export function Grid({
           "gap-6 md:gap-8": gap === "md",
           "gap-8 md:gap-12": gap === "lg",
         },
-        className
+        className,
       )}
     >
       {children}

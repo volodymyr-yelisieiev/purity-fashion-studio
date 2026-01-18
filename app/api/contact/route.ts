@@ -37,7 +37,7 @@ export async function POST(request: Request) {
             "X-RateLimit-Reset": String(reset),
             "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)),
           },
-        }
+        },
       );
     }
 
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     if (!firstName || !lastName || !email) {
       return NextResponse.json(
         { error: "Name and email are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -176,7 +176,7 @@ export async function POST(request: Request) {
         preferredDate,
         preferredTime,
         course,
-      }
+      },
     );
 
     return NextResponse.json({
@@ -190,7 +190,7 @@ export async function POST(request: Request) {
     logger.error("Contact/Booking error:", error);
     return NextResponse.json(
       { error: "Failed to process request" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

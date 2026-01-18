@@ -47,7 +47,7 @@ export default async function ServicesPage({ params }: PageProps) {
   const { normalizeServices } = await import("@/lib/utils/safeData");
   // Filter out items without content in current locale
   const filteredServices = normalizeServices(services || []).filter((service) =>
-    hasContent(service.title)
+    hasContent(service.title),
   );
 
   // Helper function for price display

@@ -1,20 +1,22 @@
 import type { CollectionConfig } from "payload";
-import { slugify } from "@/lib/utils";
+import {
+  slugField,
+  statusField,
+  pricingField,
+  featuredField,
+  bookingFields,
+  publishedReadAccess,
+} from "../fields";
 
 export const Collections: CollectionConfig = {
-  slug: "lookbooks", // Fashion collections
+  slug: "lookbooks",
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "season", "featured", "releaseDate"],
     group: "Showcase",
     description: "Curated fashion collections and lookbooks",
   },
-  access: {
-    read: ({ req: { user } }) => {
-      if (user) return true;
-      return { status: { equals: "published" } };
-    },
-  },
+  access: publishedReadAccess(),
   fields: [
     {
       name: "name",
@@ -25,62 +27,8 @@ export const Collections: CollectionConfig = {
         description: 'Collection name (e.g., "Autumn Essentials 2024")',
       },
     },
-    {
-      name: "slug",
-      type: "text",
-      unique: true,
-      required: true,
-      localized: true,
-      admin: {
-        position: "sidebar",
-        description: "URL-friendly identifier",
-      },
-      hooks: {
-        beforeValidate: [
-          ({ value, data, req, originalDoc }) => {
-            if (value) return value;
-
-            const locale = req.locale;
-
-            const pickLocalizedText = (source: unknown): string | undefined => {
-              if (!source) return undefined;
-              if (typeof source === "string" && source) return source;
-              if (typeof source === "object" && source !== null) {
-                const record = source as Record<string, string | undefined>;
-                if (locale && record[locale]) return record[locale];
-                return (
-                  record.uk ||
-                  record.en ||
-                  record.ru ||
-                  Object.values(record).find(Boolean)
-                );
-              }
-              return undefined;
-            };
-
-            const name =
-              pickLocalizedText(data?.name) ||
-              pickLocalizedText(originalDoc?.name);
-            return name ? slugify(name) : value;
-          },
-        ],
-      },
-    },
-    {
-      name: "status",
-      type: "select",
-      required: true,
-      defaultValue: "draft",
-      index: true,
-      options: [
-        { label: "Draft", value: "draft" },
-        { label: "Published", value: "published" },
-      ],
-      admin: {
-        position: "sidebar",
-        description: "Only published collections are public",
-      },
-    },
+    slugField("name"),
+    statusField(),
     {
       name: "season",
       type: "select",
@@ -92,80 +40,48 @@ export const Collections: CollectionConfig = {
         { label: "All Season", value: "all-season" },
       ],
       index: true,
-      admin: {
-        position: "sidebar",
-      },
+      admin: { position: "sidebar" },
     },
     {
       name: "description",
       type: "textarea",
       localized: true,
-      admin: {
-        description: "Collection story and inspiration",
-      },
+      admin: { description: "Collection story and inspiration" },
     },
     {
       name: "materials",
       type: "textarea",
       localized: true,
-      admin: {
-        description: "Materials used in this collection",
-      },
+      admin: { description: "Materials used in this collection" },
     },
     {
       name: "careInstructions",
       type: "textarea",
       localized: true,
-      admin: {
-        description: "How to care for items in this collection",
-      },
+      admin: { description: "How to care for items in this collection" },
     },
     {
       name: "sizes",
       type: "text",
       localized: true,
-      admin: {
-        description: 'Available sizes (e.g., "XS-XL", "Custom")',
-      },
+      admin: { description: 'Available sizes (e.g., "XS-XL", "Custom")' },
     },
     {
       name: "coverImage",
       type: "upload",
       relationTo: "media",
-      admin: {
-        description: "Main collection image",
-      },
+      admin: { description: "Main collection image" },
     },
     {
       name: "images",
       type: "array",
-      admin: {
-        description: "Lookbook images",
-      },
+      admin: { description: "Lookbook images" },
       fields: [
-        {
-          name: "image",
-          type: "upload",
-          relationTo: "media",
-          required: true,
-        },
-        {
-          name: "caption",
-          type: "text",
-          localized: true,
-        },
+        { name: "image", type: "upload", relationTo: "media", required: true },
+        { name: "caption", type: "text", localized: true },
       ],
     },
-    {
-      name: "featured",
-      type: "checkbox",
-      defaultValue: false,
-      index: true,
-      admin: {
-        position: "sidebar",
-        description: "Show on homepage",
-      },
-    },
+    featuredField(),
     {
       name: "releaseDate",
       type: "date",
@@ -179,54 +95,9 @@ export const Collections: CollectionConfig = {
       type: "relationship",
       relationTo: "products",
       hasMany: true,
-      admin: {
-        description: "Products featured in this collection",
-      },
+      admin: { description: "Products featured in this collection" },
     },
-    {
-      name: "pricing",
-      type: "group",
-      admin: {
-        position: "sidebar",
-        description: "Base pricing for items in this collection",
-      },
-      fields: [
-        {
-          name: "uah",
-          type: "number",
-          label: "UAH",
-          min: 0,
-        },
-        {
-          name: "eur",
-          type: "number",
-          label: "EUR",
-          min: 0,
-        },
-        {
-          name: "priceNote",
-          type: "text",
-          localized: true,
-        },
-      ],
-    },
-    {
-      name: "bookable",
-      type: "checkbox",
-      defaultValue: false,
-      admin: {
-        position: "sidebar",
-        description: "Allow booking a consultation for this collection",
-      },
-    },
-    {
-      name: "paymentEnabled",
-      type: "checkbox",
-      defaultValue: false,
-      admin: {
-        position: "sidebar",
-        description: "Enable online payment for this collection",
-      },
-    },
+    pricingField(),
+    ...bookingFields(),
   ],
 };

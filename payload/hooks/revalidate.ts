@@ -38,7 +38,7 @@ export const revalidateContent =
           }),
         });
         req.payload.logger.info(
-          `Revalidated ${paths.length} paths for ${collectionSlug}`
+          `Revalidated ${paths.length} paths for ${collectionSlug}`,
         );
       } catch (err) {
         req.payload.logger.error(`Error revalidating paths: ${err}`);

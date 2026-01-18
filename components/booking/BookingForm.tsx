@@ -154,8 +154,8 @@ export function BookingForm({
         locale === "uk"
           ? "Помилка при відправці. Спробуйте ще раз."
           : locale === "ru"
-          ? "Ошибка при отправке. Попробуйте снова."
-          : "Failed to submit. Please try again."
+            ? "Ошибка при отправке. Попробуйте снова."
+            : "Failed to submit. Please try again.",
       );
     } finally {
       setIsSubmitting(false);

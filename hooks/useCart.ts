@@ -17,7 +17,7 @@ export function useCart() {
   const isHydrated = useSyncExternalStore(
     emptySubscribe,
     getSnapshot,
-    getServerSnapshot
+    getServerSnapshot,
   );
 
   // Return empty values during SSR to prevent hydration mismatch

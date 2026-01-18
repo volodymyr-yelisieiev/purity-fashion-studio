@@ -51,7 +51,7 @@ export default async function PortfolioPage({
 
   // Filter out items without content in current locale
   const filteredDocs = portfolioItems.docs.filter((doc) =>
-    hasContent(doc.title)
+    hasContent(doc.title),
   );
 
   if (filteredDocs.length === 0) {

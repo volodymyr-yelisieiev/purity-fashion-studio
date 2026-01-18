@@ -10,12 +10,12 @@ export default async function middleware(request: NextRequest) {
   // Redirect locale-prefixed admin paths (e.g. /en/admin, /uk/admin/collections)
   // to the canonical admin route (e.g. /admin, /admin/collections)
   const localeAdminRegex = new RegExp(
-    `^/(${routing.locales.join("|")})/admin(/|$)`
+    `^/(${routing.locales.join("|")})/admin(/|$)`,
   );
   if (localeAdminRegex.test(pathname)) {
     const newPath = pathname.replace(
       new RegExp(`^/(${routing.locales.join("|")})`),
-      ""
+      "",
     );
     return NextResponse.redirect(new URL(newPath, request.url));
   }

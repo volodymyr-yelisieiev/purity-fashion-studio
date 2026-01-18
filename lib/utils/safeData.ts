@@ -27,7 +27,7 @@ export function normalizeService(service: Partial<Service>): Service {
  * Normalizes an array of Service documents
  */
 export function normalizeServices(
-  services: Array<Partial<Service>>
+  services: Array<Partial<Service>>,
 ): Service[] {
   return services.map(normalizeService);
 }
@@ -53,7 +53,7 @@ export function normalizePortfolio(item: Partial<Portfolio>): Portfolio {
  * Normalizes an array of Portfolio documents
  */
 export function normalizePortfolios(
-  items: Array<Partial<Portfolio>>
+  items: Array<Partial<Portfolio>>,
 ): Portfolio[] {
   return items.map(normalizePortfolio);
 }
@@ -79,7 +79,7 @@ export function normalizeLookbook(item: Partial<Lookbook>): Lookbook {
  * Normalizes an array of Lookbook documents
  */
 export function normalizeLookbooks(
-  items: Array<Partial<Lookbook>>
+  items: Array<Partial<Lookbook>>,
 ): Lookbook[] {
   return items.map(normalizeLookbook);
 }

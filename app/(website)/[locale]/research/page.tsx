@@ -58,7 +58,7 @@ export default async function ResearchPage({
 
   // Filter for research-related services (Personal Lookbook, Wardrobe Audit)
   const researchServices = normalizedServices.filter(
-    (service: Service) => service.category === "research"
+    (service: Service) => service.category === "research",
   );
 
   return (

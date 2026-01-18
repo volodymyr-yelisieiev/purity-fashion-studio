@@ -37,7 +37,7 @@ const isUpstashConfigured = !!(
 if (!isUpstashConfigured && process.env.NODE_ENV === "development") {
   console.warn(
     "⚠️  Rate limiting using in-memory store. " +
-      "For production, configure UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN"
+      "For production, configure UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN",
   );
 }
 
@@ -77,7 +77,7 @@ interface RateLimitResult {
  */
 export function rateLimit(
   identifier: string,
-  options: RateLimitOptions = { limit: 5, windowMs: 60000 }
+  options: RateLimitOptions = { limit: 5, windowMs: 60000 },
 ): RateLimitResult {
   // TODO: When Upstash is installed, use this implementation instead:
   //

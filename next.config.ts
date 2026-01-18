@@ -4,13 +4,8 @@ import type { NextConfig } from "next";
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const config: NextConfig = {
-  typescript: {
-    ignoreBuildErrors: false,
-  },
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
   images: {
+    qualities: [75, 85],
     remotePatterns: [
       {
         protocol: "https",
@@ -40,7 +35,20 @@ const config: NextConfig = {
       bodySizeLimit: "10mb",
     },
   },
-  serverExternalPackages: ["sharp"],
+  serverExternalPackages: [
+    "sharp",
+    "payload",
+    "@payloadcms/db-postgres",
+    "drizzle-kit",
+    "drizzle-kit/api",
+    "esbuild",
+    "pg",
+    "postgres",
+  ],
+  transpilePackages: [
+    "@payloadcms/storage-vercel-blob",
+    "@payloadcms/plugin-seo",
+  ],
   headers: async () => {
     return [
       {

@@ -66,7 +66,7 @@ export function hasRichTextContent(content: RichTextContent): boolean {
  */
 export function truncateRichText(
   content: RichTextContent,
-  maxLength: number = 150
+  maxLength: number = 150,
 ): string {
   const text = extractTextFromRichText(content);
   if (text.length <= maxLength) return text;

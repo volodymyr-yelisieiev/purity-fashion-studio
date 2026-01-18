@@ -22,7 +22,7 @@ export async function getPayload(): Promise<Payload> {
 
 export async function getServices(
   locale: Locale = "uk",
-  category?: string
+  category?: string,
 ): Promise<PaginatedDocs<Service>> {
   const payload = await getPayload();
 
@@ -56,7 +56,7 @@ export async function getServices(
 }
 
 export async function getFeaturedServices(
-  locale: Locale = "uk"
+  locale: Locale = "uk",
 ): Promise<PaginatedDocs<Service>> {
   const payload = await getPayload();
 
@@ -91,7 +91,7 @@ export async function getFeaturedServices(
 export async function getServiceBySlug(
   slug: string,
   locale: Locale = "uk",
-  draft = false
+  draft = false,
 ): Promise<Service | null> {
   const payload = await getPayload();
 
@@ -114,7 +114,7 @@ export async function getServiceBySlug(
 export async function getPortfolioBySlug(
   slug: string,
   locale: Locale = "uk",
-  draft = false
+  draft = false,
 ): Promise<Portfolio | null> {
   const payload = await getPayload();
 
@@ -137,7 +137,7 @@ export async function getPortfolioBySlug(
 export async function getCollectionBySlug(
   slug: string,
   locale: Locale = "uk",
-  draft = false
+  draft = false,
 ): Promise<Lookbook | null> {
   const payload = await getPayload();
 
@@ -160,7 +160,7 @@ export async function getCollectionBySlug(
 export async function getCourseBySlug(
   slug: string,
   locale: Locale = "uk",
-  draft = false
+  draft = false,
 ): Promise<Course | null> {
   const payload = await getPayload();
 
@@ -183,7 +183,7 @@ export async function getCourseBySlug(
 export async function getAvailableLocales(
   collection: LocalizedCollection,
   slug: string,
-  draft = false
+  draft = false,
 ): Promise<Locale[]> {
   const payload = await getPayload();
 
@@ -200,12 +200,12 @@ export async function getAvailableLocales(
           select: {
             slug: true,
           },
-        })
-      )
+        }),
+      ),
     );
 
     return supportedLocales.filter(
-      (_, index) => results[index].docs.length > 0
+      (_, index) => results[index].docs.length > 0,
     );
   } catch (err) {
     logger.error("getAvailableLocales: payload.find failed:", err);
@@ -216,7 +216,7 @@ export async function getAvailableLocales(
 export async function getPortfolio(
   locale: Locale = "uk",
   page = 1,
-  limit = 6
+  limit = 6,
 ): Promise<PaginatedDocs<Portfolio>> {
   const payload = await getPayload();
 
@@ -247,7 +247,7 @@ export async function getPortfolio(
 }
 
 export async function getFeaturedPortfolio(
-  locale: Locale = "uk"
+  locale: Locale = "uk",
 ): Promise<PaginatedDocs<Portfolio>> {
   const payload = await getPayload();
 
@@ -280,7 +280,7 @@ export async function getFeaturedPortfolio(
 
 export async function getCollections(
   locale: Locale = "uk",
-  limit = 4
+  limit = 4,
 ): Promise<PaginatedDocs<Lookbook>> {
   const payload = await getPayload();
 
@@ -310,7 +310,7 @@ export async function getCollections(
 }
 
 export async function getSiteSettings(
-  locale: Locale = "uk"
+  locale: Locale = "uk",
 ): Promise<SiteSetting | null> {
   const payload = await getPayload();
 

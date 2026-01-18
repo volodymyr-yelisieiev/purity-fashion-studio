@@ -54,7 +54,7 @@ export function Card({
           // Hover
           "cursor-pointer hover:border-foreground/20": isHoverable,
         },
-        className
+        className,
       )}
       onClick={onClick}
       {...props}
@@ -180,7 +180,7 @@ export function CardImage({
       className={cn(
         "relative overflow-hidden bg-white rounded-none mb-4",
         aspectRatio ? `aspect-[${aspectRatio}]` : aspectRatios[aspect],
-        className
+        className,
       )}
       style={aspectRatio ? { aspectRatio } : undefined}
     >

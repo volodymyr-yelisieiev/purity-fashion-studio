@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   if (!features.stripe) {
     return NextResponse.json(
       { error: "Stripe payments are not configured. Please contact support." },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     if (!orderId) {
       return NextResponse.json(
         { error: "Order ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     logger.error("Stripe payment error:", error);
     return NextResponse.json(
       { error: "Failed to create payment intent" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

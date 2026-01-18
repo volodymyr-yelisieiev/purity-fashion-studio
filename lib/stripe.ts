@@ -14,7 +14,7 @@ export function getStripe(): Stripe | null {
     if (!config) return null;
 
     stripeInstance = new Stripe(config.secretKey, {
-      apiVersion: "2025-11-17.clover",
+      apiVersion: "2025-12-15.clover",
       typescript: true,
     });
   }
@@ -34,7 +34,7 @@ export async function createPaymentIntent(params: CreatePaymentIntentParams) {
   const stripe = getStripe();
   if (!stripe) {
     throw new Error(
-      "Stripe is not configured. Please add STRIPE_SECRET_KEY to your environment variables."
+      "Stripe is not configured. Please add STRIPE_SECRET_KEY to your environment variables.",
     );
   }
 
@@ -62,7 +62,7 @@ export async function createPaymentIntent(params: CreatePaymentIntentParams) {
 export function constructWebhookEvent(
   payload: string | Buffer,
   signature: string,
-  webhookSecret: string
+  webhookSecret: string,
 ): Stripe.Event {
   const stripe = getStripe();
   if (!stripe) {
@@ -81,7 +81,7 @@ const currencyDecimals: Record<"UAH" | "EUR", number> = {
 // Helper to convert amount to smallest currency unit
 export function toSmallestUnit(
   amount: number,
-  currency: "UAH" | "EUR"
+  currency: "UAH" | "EUR",
 ): number {
   const decimals = currencyDecimals[currency];
   return Math.round(amount * Math.pow(10, decimals));
@@ -90,7 +90,7 @@ export function toSmallestUnit(
 // Helper to convert from smallest unit to display amount
 export function fromSmallestUnit(
   amount: number,
-  currency: "UAH" | "EUR"
+  currency: "UAH" | "EUR",
 ): number {
   const decimals = currencyDecimals[currency];
   return amount / Math.pow(10, decimals);

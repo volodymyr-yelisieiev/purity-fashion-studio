@@ -29,7 +29,7 @@ export function PageHeader({
         "bg-background px-4 sm:px-6",
         fullHeight ? "min-h-[60vh] sm:min-h-[70vh]" : "py-12 sm:py-16 md:py-24",
         centered && "flex flex-col items-center justify-center text-center",
-        className
+        className,
       )}
       {...props}
     >

@@ -44,11 +44,11 @@ function generateSignature(data: string, privateKey: string): string {
 }
 
 export function createLiqPayCheckout(
-  params: LiqPayCheckoutParams
+  params: LiqPayCheckoutParams,
 ): LiqPayCheckoutData | null {
   if (!features.liqpay) {
     logger.warn(
-      "LiqPay is not configured. Please add LIQPAY_PUBLIC_KEY and LIQPAY_PRIVATE_KEY."
+      "LiqPay is not configured. Please add LIQPAY_PUBLIC_KEY and LIQPAY_PRIVATE_KEY.",
     );
     return null;
   }

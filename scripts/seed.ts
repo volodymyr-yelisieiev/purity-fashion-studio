@@ -178,7 +178,7 @@ const seed = async () => {
       limit: 1000,
     });
     await Promise.all(
-      docs.docs.map((doc) => payload.delete({ collection, id: doc.id }))
+      docs.docs.map((doc) => payload.delete({ collection, id: doc.id })),
     );
   }
 
@@ -272,7 +272,7 @@ const seed = async () => {
           item: i.uk,
         })),
       },
-    } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as any);
 
     await payload.update({
       collection: "services",
@@ -862,7 +862,7 @@ const seed = async () => {
         result: result.uk,
         mainImage: media.id,
       },
-    } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as any);
 
     await payload.update({
       collection: "portfolio",
@@ -1042,7 +1042,7 @@ const seed = async () => {
           },
         ],
       },
-    } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as any);
 
     await payload.update({
       collection: "products",
@@ -1142,7 +1142,7 @@ const seed = async () => {
         images: [{ image: media.id, caption: name.uk }],
         pricing: rest.pricing,
       },
-    } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as any);
 
     await payload.update({
       collection: "lookbooks",
@@ -1358,7 +1358,7 @@ const seed = async () => {
         featuredImage: media.id,
         pricing: rest.pricing,
       },
-    } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as any);
 
     await payload.update({
       collection: "courses",
