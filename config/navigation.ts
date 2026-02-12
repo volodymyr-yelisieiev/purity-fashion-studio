@@ -2,14 +2,17 @@
  * Navigation Configuration
  *
  * Main site navigation items following the PURITY brand philosophy:
- * RESEARCH → REALISATION → TRANSFORMATION
+ * @RESEARCH → @IMAGINE → @CREATE
  */
+import type { PhaseId } from "@/lib/brand";
+
 export const navItems = [
   { href: "/research", key: "research" },
-  { href: "/realisation", key: "realisation" },
-  { href: "/transformation", key: "transformation" },
+  { href: "/imagine", key: "imagine" },
+  { href: "/create", key: "create" },
   { href: "/collections", key: "collections" },
   { href: "/portfolio", key: "portfolio" },
+  { href: "/blog", key: "blog" },
   { href: "/school", key: "school" },
   { href: "/about", key: "about" },
   { href: "/contact", key: "contact" },
@@ -18,10 +21,10 @@ export const navItems = [
 /**
  * Service categories mapped to the PURITY methodology
  */
-export const serviceCategories = {
+export const serviceCategories: Record<PhaseId, readonly string[]> = {
   research: ["styling", "consulting"], // Color, cut, wardrobe review
-  realisation: ["shopping", "atelier"], // Shopping service, custom garments
-  transformation: ["events"], // Courses, retreats, photo meditation
+  imagine: ["shopping", "atelier"], // Shopping service, custom garments
+  create: ["events"], // Courses, retreats, photo meditation
 } as const;
 
 export type NavItem = (typeof navItems)[number];

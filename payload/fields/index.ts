@@ -1,28 +1,5 @@
 import type { Field, FieldHook } from "payload";
-import { slugify } from "@/lib/utils";
-
-/**
- * Picks a localized value from a potentially locale-keyed object.
- * Centralizes logic used across Payload hooks, SEO plugin, and Live Preview.
- */
-export function pickLocalized(
-  value: unknown,
-  locale?: string,
-): string | undefined {
-  if (!value) return undefined;
-  if (typeof value === "string") return value;
-  if (typeof value === "object") {
-    const record = value as Record<string, string | undefined>;
-    return (
-      (locale && record[locale]) ||
-      record.uk ||
-      record.en ||
-      record.ru ||
-      Object.values(record).find(Boolean)
-    );
-  }
-  return undefined;
-}
+import { slugify, pickLocalized } from "@/lib/utils";
 
 /**
  * Shared slug generation hook that uses pickLocalized
@@ -32,7 +9,10 @@ export const generateSlugHook =
   ({ value, data, req, originalDoc }) => {
     if (value) return value;
 
+    // Prefer English source, then current locale
     const source =
+      pickLocalized(data?.[sourceField], "en") ||
+      pickLocalized(originalDoc?.[sourceField], "en") ||
       pickLocalized(data?.[sourceField], req.locale) ||
       pickLocalized(originalDoc?.[sourceField], req.locale);
 
@@ -47,7 +27,7 @@ export const slugField = (sourceField: string = "title"): Field => ({
   type: "text",
   unique: true,
   required: true,
-  localized: true,
+  localized: false,
   admin: {
     position: "sidebar",
     description: "URL-friendly identifier (auto-generated)",
@@ -79,13 +59,16 @@ export const statusField = (
 });
 
 /**
- * Reusable pricing group field for UAH/EUR with optional note
+ * Reusable pricing group field for UAH/EUR with optional sale price and notes
  */
-export const pricingField = (options?: { required?: boolean }): Field => ({
+export const pricingField = (options?: {
+  required?: boolean;
+  includeSale?: boolean;
+}): Field => ({
   name: "pricing",
   type: "group",
   admin: {
-    description: "Pricing information",
+    description: "Pricing and commercial information",
   },
   fields: [
     {
@@ -94,15 +77,34 @@ export const pricingField = (options?: { required?: boolean }): Field => ({
       label: "UAH",
       min: 0,
       required: options?.required,
-      admin: { description: "Price in Ukrainian Hryvnia" },
+      admin: {
+        description: "Price in Ukrainian Hryvnia",
+        width: "50%",
+      },
     },
     {
       name: "eur",
       type: "number",
       label: "EUR",
       min: 0,
-      admin: { description: "Price in Euros" },
+      admin: {
+        description: "Price in Euros",
+        width: "50%",
+      },
     },
+    ...(options?.includeSale
+      ? ([
+          {
+            name: "salePrice",
+            type: "number",
+            min: 0,
+            admin: {
+              description: "Sale price in UAH (optional)",
+              width: "50%",
+            },
+          },
+        ] as Field[])
+      : []),
     {
       name: "priceNote",
       type: "text",

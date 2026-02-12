@@ -12,10 +12,11 @@ import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { generateSeoMetadata } from "@/lib/seo";
 import { logger } from "@/lib/logger";
-import { LanguageFallback, Button, H2, H3, Body } from "@/components/ui";
-import { Section, Container, Grid } from "@/components/layout";
+import { LanguageFallback, Button, H2, Body } from "@/components/ui";
+import { Section, Container, Grid, BlockRenderer } from "@/components/layout";
+import { getMediaUrl } from "@/lib/utils";
 import { draftMode } from "next/headers";
-import { HeroSection } from "@/components/sections";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import {
   FadeInStagger,
   FadeInStaggerContainer,
@@ -154,21 +155,22 @@ export default async function CourseDetailPage({
   const duration = course.duration as
     | { value: number; unit: string }
     | undefined;
-  const curriculum = (course.curriculum || []) as Array<{
-    module: string;
-    topics?: Array<{ topic: string }>;
-  }>;
   const instructor = course.instructor as
     | { name: string; title?: string; bio?: string; photo?: MediaType }
     | undefined;
+  const hasLayout = course.layout && course.layout.length > 0;
 
   return (
     <main className="min-h-screen bg-background">
       {/* Hero */}
-      <HeroSection
+      <EditorialHero
         title={course.title}
         subtitle={course.excerpt || ""}
-        backgroundImage={featuredImage?.url || ""}
+        media={{
+          url: featuredImage?.url || "",
+          alt: course.title,
+        }}
+        theme="light"
       />
 
       {/* Overview - White */}
@@ -180,9 +182,7 @@ export default async function CourseDetailPage({
             </FadeInStagger>
             <FadeInStagger>
               <Body className="text-xl font-light leading-relaxed">
-                {course.description && typeof course.description === "string"
-                  ? course.description
-                  : course.excerpt}
+                {course.excerpt}
               </Body>
             </FadeInStagger>
           </FadeInStaggerContainer>
@@ -232,75 +232,8 @@ export default async function CourseDetailPage({
         </Container>
       </Section>
 
-      {/* Prerequisites & Materials - White */}
-      {(course.prerequisites || course.materials) && (
-        <Section spacing="lg">
-          <Container size="sm">
-            <Grid cols={2} gap="lg">
-              {course.prerequisites && (
-                <FadeInStaggerContainer>
-                  <FadeInStagger>
-                    <H3 className="mb-6">{t("prerequisites")}</H3>
-                    <Body className="text-lg font-light leading-relaxed text-muted-foreground">
-                      {course.prerequisites}
-                    </Body>
-                  </FadeInStagger>
-                </FadeInStaggerContainer>
-              )}
-              {course.materials && (
-                <FadeInStaggerContainer>
-                  <FadeInStagger>
-                    <H3 className="mb-6">{t("materials")}</H3>
-                    <Body className="text-lg font-light leading-relaxed text-muted-foreground">
-                      {course.materials}
-                    </Body>
-                  </FadeInStagger>
-                </FadeInStaggerContainer>
-              )}
-            </Grid>
-          </Container>
-        </Section>
-      )}
-
-      {/* Curriculum - Gray */}
-      {curriculum.length > 0 && (
-        <Section spacing="lg" background="gray">
-          <Container size="sm">
-            <FadeInStaggerContainer>
-              <FadeInStagger>
-                <H2 className="mb-16 text-center">{t("curriculum")}</H2>
-              </FadeInStagger>
-              <div className="space-y-12">
-                {curriculum.map((module, index) => (
-                  <FadeInStagger key={index}>
-                    <div className="border-b border-border pb-8">
-                      <H3 className="mb-4">
-                        <span className="text-muted-foreground mr-4">
-                          0{index + 1}
-                        </span>
-                        {module.module}
-                      </H3>
-                      {module.topics && module.topics.length > 0 && (
-                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {module.topics.map((topic, tIndex) => (
-                            <li
-                              key={tIndex}
-                              className="text-muted-foreground font-light flex items-center gap-2"
-                            >
-                              <span className="w-1 h-1 bg-background-foreground/30" />
-                              <Body className="text-sm">{topic.topic}</Body>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </FadeInStagger>
-                ))}
-              </div>
-            </FadeInStaggerContainer>
-          </Container>
-        </Section>
-      )}
+      {/* Layout Blocks (if any) */}
+      {hasLayout && <BlockRenderer blocks={course.layout as any} />}
 
       {/* Instructor - White */}
       {instructor && (
@@ -312,7 +245,7 @@ export default async function CourseDetailPage({
                   <FadeInStagger>
                     <div className="w-48 h-48 relative overflow-hidden grayscale">
                       <Image
-                        src={instructor.photo.url || ""}
+                        src={getMediaUrl(instructor.photo.url || "")}
                         alt={instructor.name}
                         fill
                         className="object-cover"

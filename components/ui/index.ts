@@ -4,13 +4,15 @@ export { Textarea } from "./Textarea";
 export { Select } from "./Select";
 export { Label } from "./Label";
 export {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "./Sheet";
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
+  DrawerFooter,
+} from "./Drawer";
 export { H1, H2, H3, Lead, Body, Small } from "./Typography";
 export {
   Card,
@@ -21,6 +23,7 @@ export {
   CardPrice,
 } from "./Card";
 export { EmptyState } from "./EmptyState";
+export { SafeImage } from "./SafeImage";
 export { LanguageFallback } from "./LanguageFallback";
 export { LanguageSwitcher } from "./LanguageSwitcher";
 export { RadioGroup, RadioGroupItem } from "./RadioGroup";

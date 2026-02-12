@@ -1,7 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import {
@@ -10,12 +15,12 @@ import {
 } from "@/components/animations/FadeInStagger";
 import { H1, H2, Lead, Button } from "@/components/ui";
 import { Container, Section } from "@/components/layout";
-import { cn } from "@/lib/utils";
+import { cn, getMediaUrl } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export interface HeroStage {
-  key: "research" | "realisation" | "transformation";
+  key: "research" | "imagine" | "create";
   title: string;
   localizedTitle?: string;
   subtitle: string;
@@ -35,6 +40,73 @@ export interface ThreeStageHeroProps {
   className?: string;
 }
 
+/* ── Stage Section subcomponent ──────────────────────── */
+interface StageSectionProps {
+  stage: HeroStage;
+  sectionRef: React.RefObject<HTMLElement | null>;
+  opacity: MotionValue<number>;
+  y: MotionValue<number>;
+  priority?: boolean;
+  learnMoreLabel: string;
+}
+
+function StageSection({
+  stage,
+  sectionRef,
+  opacity,
+  y,
+  priority,
+  learnMoreLabel,
+}: StageSectionProps) {
+  return (
+    <section ref={sectionRef} className="h-[150vh] relative">
+      <div className="sticky top-(--header-height) h-usable flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src={getMediaUrl(stage.backgroundImage)}
+            alt={stage.title}
+            fill
+            sizes="100vw"
+            className="object-cover blur-sm"
+            quality={85}
+            priority={priority}
+          />
+        </div>
+        <div className="absolute inset-0 bg-background/60" />
+
+        <motion.div
+          className="relative z-10 container px-4 md:px-6 lg:px-8 text-center text-foreground"
+          style={{ opacity, y }}
+        >
+          <H2 className="text-foreground mb-4">
+            {stage.localizedTitle || stage.title}
+          </H2>
+          <p className="text-lg md:text-xl mb-2 text-foreground/80">
+            {stage.subtitle}
+          </p>
+          <Lead className="text-foreground/90 max-w-2xl mx-auto mb-8">
+            {stage.description}
+          </Lead>
+          <Button
+            asChild
+            variant="outline"
+            className="w-full sm:w-auto border-foreground text-foreground hover:bg-foreground hover:text-background"
+          >
+            <Link href={stage.href}>{learnMoreLabel}</Link>
+          </Button>
+        </motion.div>
+
+        <motion.div
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-foreground"
+          style={{ opacity }}
+        >
+          <ChevronDown className="w-6 h-6" />
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 export function ThreeStageHero({
   headline,
   subheadline,
@@ -46,37 +118,48 @@ export function ThreeStageHero({
   className,
 }: ThreeStageHeroProps) {
   const t = useTranslations("common");
-  const section2Ref = useRef<HTMLElement>(null);
-  const section3Ref = useRef<HTMLElement>(null);
-  const section4Ref = useRef<HTMLElement>(null);
 
-  const { scrollYProgress: progress2 } = useScroll({
-    target: section2Ref,
-    offset: ["start start", "end end"],
-  });
+  const sectionRefs = [
+    useRef<HTMLElement>(null),
+    useRef<HTMLElement>(null),
+    useRef<HTMLElement>(null),
+  ];
 
-  const { scrollYProgress: progress3 } = useScroll({
-    target: section3Ref,
-    offset: ["start start", "end end"],
-  });
+  const scrollConfigs = sectionRefs.map((ref) =>
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useScroll({ target: ref, offset: ["start start", "end end"] }),
+  );
 
-  const { scrollYProgress: progress4 } = useScroll({
-    target: section4Ref,
-    offset: ["start start", "end end"],
-  });
+  // Opacity: first two stages fade in and out, last stage stays visible
+  const opacityRanges: [number[], number[]][] = [
+    [
+      [0, 0.4, 0.6, 1],
+      [0, 1, 1, 0],
+    ],
+    [
+      [0, 0.4, 0.6, 1],
+      [0, 1, 1, 0],
+    ],
+    [
+      [0, 0.4, 1],
+      [0, 1, 1],
+    ],
+  ];
 
-  const opacity2 = useTransform(progress2, [0, 0.8], [0, 1]);
-  const opacity3 = useTransform(progress3, [0, 0.8], [0, 1]);
-  const opacity4 = useTransform(progress4, [0, 0.8], [0, 1]);
+  const opacities = scrollConfigs.map(({ scrollYProgress }, i) =>
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useTransform(scrollYProgress, opacityRanges[i][0], opacityRanges[i][1]),
+  );
 
-  const y2 = useTransform(progress2, [0, 0.8], [100, 0]);
-  const y3 = useTransform(progress3, [0, 0.8], [100, 0]);
-  const y4 = useTransform(progress4, [0, 0.8], [100, 0]);
+  const yValues = scrollConfigs.map(({ scrollYProgress }) =>
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useTransform(scrollYProgress, [0, 0.4], [50, 0]),
+  );
 
   return (
     <div className={cn("w-full", className)}>
       {/* Section 1 - Intro */}
-      <section className="h-screen flex items-center justify-center bg-background relative">
+      <section className="h-usable flex items-center justify-center bg-background relative">
         <Container className="text-center">
           <FadeInStaggerContainer>
             <FadeInStagger>
@@ -90,144 +173,23 @@ export function ThreeStageHero({
           </FadeInStaggerContainer>
         </Container>
 
-        {/* Scroll Indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-30">
           <ChevronDown className="w-6 h-6" />
         </div>
       </section>
 
-      {/* Section 2 - RESEARCH */}
-      <section ref={section2Ref} className="h-[150vh] relative">
-        <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0">
-            <Image
-              src={stages[0].backgroundImage}
-              alt={stages[0].title}
-              fill
-              className="object-cover blur-sm"
-              quality={85}
-              priority
-            />
-          </div>
-          <div className="absolute inset-0 bg-foreground/50" />
-
-          <motion.div
-            className="relative z-10 container px-4 md:px-6 lg:px-8 text-center text-background"
-            style={{ opacity: opacity2, y: y2 }}
-          >
-            <H2 className="text-background mb-4">
-              {stages[0].localizedTitle || stages[0].title}
-            </H2>
-            <p className="text-lg md:text-xl mb-2">{stages[0].subtitle}</p>
-            <Lead className="text-background/90 max-w-2xl mx-auto mb-8">
-              {stages[0].description}
-            </Lead>
-            <Button
-              asChild
-              variant="outline"
-              className="w-full sm:w-auto border-background text-background hover:bg-background hover:text-foreground"
-            >
-              <Link href={stages[0].href}>{t("learnMore")}</Link>
-            </Button>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-background"
-            style={{ opacity: opacity2 }}
-          >
-            <ChevronDown className="w-6 h-6" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Section 3 - REALISATION */}
-      <section ref={section3Ref} className="h-[150vh] relative">
-        <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0">
-            <Image
-              src={stages[1].backgroundImage}
-              alt={stages[1].title}
-              fill
-              className="object-cover blur-sm"
-              quality={85}
-            />
-          </div>
-          <div className="absolute inset-0 bg-foreground/50" />
-
-          <motion.div
-            className="relative z-10 container px-4 md:px-6 lg:px-8 text-center text-background"
-            style={{ opacity: opacity3, y: y3 }}
-          >
-            <H2 className="text-background mb-4">
-              {stages[1].localizedTitle || stages[1].title}
-            </H2>
-            <p className="text-lg md:text-xl mb-2">{stages[1].subtitle}</p>
-            <Lead className="text-background/90 max-w-2xl mx-auto mb-8">
-              {stages[1].description}
-            </Lead>
-            <Button
-              asChild
-              variant="outline"
-              className="w-full sm:w-auto border-background text-background hover:bg-background hover:text-foreground"
-            >
-              <Link href={stages[1].href}>{t("learnMore")}</Link>
-            </Button>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-background"
-            style={{ opacity: opacity3 }}
-          >
-            <ChevronDown className="w-6 h-6" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Section 4 - TRANSFORMATION */}
-      <section ref={section4Ref} className="h-[150vh] relative">
-        <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0">
-            <Image
-              src={stages[2].backgroundImage}
-              alt={stages[2].title}
-              fill
-              className="object-cover blur-sm"
-              quality={85}
-            />
-          </div>
-          <div className="absolute inset-0 bg-foreground/50" />
-
-          <motion.div
-            className="relative z-10 container px-4 md:px-6 lg:px-8 text-center text-background"
-            style={{ opacity: opacity4, y: y4 }}
-          >
-            <H2 className="text-background mb-4">
-              {stages[2].localizedTitle || stages[2].title}
-            </H2>
-            <p className="text-lg md:text-xl mb-2">{stages[2].subtitle}</p>
-            <Lead className="text-background/90 max-w-2xl mx-auto mb-8">
-              {stages[2].description}
-            </Lead>
-            <Button
-              asChild
-              variant="outline"
-              className="w-full sm:w-auto border-background text-background hover:bg-background hover:text-foreground"
-            >
-              <Link href={stages[2].href}>{t("learnMore")}</Link>
-            </Button>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-background"
-            style={{ opacity: opacity4 }}
-          >
-            <ChevronDown className="w-6 h-6" />
-          </motion.div>
-        </div>
-      </section>
+      {/* Stage Sections */}
+      {stages.map((stage, i) => (
+        <StageSection
+          key={stage.key}
+          stage={stage}
+          sectionRef={sectionRefs[i]}
+          opacity={opacities[i]}
+          y={yValues[i]}
+          priority={i === 0}
+          learnMoreLabel={t("learnMore")}
+        />
+      ))}
 
       {/* Section 5 - Final CTA */}
       <Section spacing="lg">

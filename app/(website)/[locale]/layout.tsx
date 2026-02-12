@@ -5,6 +5,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { RootLayout as AppRootLayout } from "@/components/layout";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { MethodologyProvider } from "@/lib/store/MethodologyContext";
+import { Suspense } from "react";
 import "@/styles/globals.css";
 
 // Elegant serif font for headings - fashion aesthetic
@@ -43,7 +45,11 @@ export default async function LocaleLayout({ children, params }: Props) {
         className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}
       >
         <NextIntlClientProvider messages={messages} locale={locale}>
-          <AppRootLayout>{children}</AppRootLayout>
+          <Suspense fallback={null}>
+            <MethodologyProvider>
+              <AppRootLayout>{children}</AppRootLayout>
+            </MethodologyProvider>
+          </Suspense>
         </NextIntlClientProvider>
       </body>
     </html>

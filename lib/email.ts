@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { getEmailConfig, features, getSiteConfig } from "@/config/env";
+import { getEmailConfig, features, getSiteConfig } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
 // Create a singleton Resend instance

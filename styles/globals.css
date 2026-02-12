@@ -48,9 +48,22 @@ a, button, [role="button"], .clickable {
   cursor: pointer;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 html, body {
   min-width: 320px;
-  overflow-x: hidden;
+}
+
+body {
+  overflow-x: clip;
+}
+
+body[data-adventure-menu-open="true"] {
+  height: 100vh;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 :root {
@@ -114,12 +127,27 @@ html, body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --header-height: 64px;
+  --header-height: 4rem; /* 64px */
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-height: 5rem; /* 80px */
+  }
+}
+
+@layer utilities {
+  .h-usable {
+    height: calc(100svh - var(--header-height));
+  }
+  .min-h-usable {
+    min-height: calc(100svh - var(--header-height));
+  }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
@@ -169,18 +197,19 @@ html, body {
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
 @layer components {
   .container {
     @apply mx-auto px-4 sm:px-6 lg:px-8;
     max-width: 1280px;
   }
+}
+
+/* Marquee infinite scroll animation */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  animation: marquee-scroll var(--marquee-duration, 60s) var(--marquee-direction, normal) linear infinite;
 }

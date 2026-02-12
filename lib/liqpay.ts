@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { getLiqPayConfig, features, getSiteConfig } from "@/config/env";
+import { getLiqPayConfig, features, getSiteConfig } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
 /**

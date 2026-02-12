@@ -6,18 +6,21 @@
   },
   "navigation": {
     "home": "Home",
-    "research": "I Am Research",
-    "realisation": "I Am Realisation",
+    "research": "@Research",
+    "imagine": "@Imagine",
     "services": "Services",
-    "transformation": "I Am Transformation",
+    "create": "@Create",
     "portfolio": "Portfolio",
     "collections": "Collections",
     "school": "School",
     "about": "About",
+    "blog": "Blog",
     "contact": "Contact",
     "language": "Language",
     "menu": "Menu",
-    "close": "Close"
+    "close": "Close",
+    "exploreStage": "Explore Stage",
+    "adventurePath": "The Adventure Path"
   },
   "common": {
     "bookConsultation": "Book a Consultation",
@@ -26,6 +29,8 @@
     "contactUs": "Contact Us",
     "viewAll": "View All",
     "viewAllServices": "View All Services",
+    "showAll": "Show All",
+    "showLess": "Show Less",
     "noContent": "No content yet",
     "checkBackSoon": "Please check back soon for updates.",
     "backToHome": "Back to Home",
@@ -34,6 +39,16 @@
     "collectionsIntro": "Each collection represents a unique vision of elegance, crafted with attention to detail and timeless design.",
     "portfolioIntro": "Discover the transformations of our clients. Each story represents a unique journey to authentic personal style.",
     "overview": "Overview",
+    "theJourney": "The Journey",
+    "partOfPhase": "Part of the {stage} phase of your style evolution.",
+    "stages": {
+      "research": "@Research",
+      "imagine": "@Imagine",
+      "create": "@Create",
+      "researchDescription": "Color palette, cut strategy, wardrobe review and wardrobe plan — the foundation of self-knowledge.",
+      "imagineDescription": "From vision to wardrobe — precision shopping and couture atelier construction.",
+      "createDescription": "Victory Dress workshop, photo meditation, and fashion retreats — become yourself."
+    },
     "whatsIncluded": "What's Included",
     "process": "Process",
     "readyToStart": "Ready to get started?",
@@ -47,8 +62,12 @@
       "online": "Online",
       "studio": "In Studio",
       "onsite": "At Client Location",
-      "hybrid": "Hybrid"
-    }
+      "hybrid": "Hybrid",
+      "retreat": "Retreat"
+    },
+    "challenge": "The Challenge",
+    "transformation": "The Transformation",
+    "solution": "The Result"
   },
   "pages": {
     "home": {
@@ -59,15 +78,15 @@
       }
     },
     "research": {
-      "title": "I Am Research",
-      "subtitle": "Know yourself. Find your style."
+      "title": "@Research",
+      "subtitle": "Feel color and touches. Feel form and movements."
     },
-    "realisation": {
-      "title": "I Am Realisation",
-      "subtitle": "From plan to reality."
+    "imagine": {
+      "title": "@Imagine",
+      "subtitle": "From vision to wardrobe."
     },
-    "transformation": {
-      "title": "I Am Transformation",
+    "create": {
+      "title": "@Create",
       "subtitle": "Become yourself."
     },
     "collections": {
@@ -99,16 +118,22 @@
     "description": "Premium fashion studio specializing in personal styling and wardrobe transformation",
     "navigation": "Navigation",
     "contact": "Contact",
+    "social": "Follow",
+    "studioHours": "Studio",
+    "weekdays": "Mon — Fri: 10:00 — 19:00",
+    "weekends": "Sat: 11:00 — 17:00",
+    "byAppointment": "By appointment only",
     "rights": "PURITY Fashion Studio. All rights reserved.",
     "links": {
       "home": "Home",
       "about": "About",
-      "research": "I Am Research",
-      "realisation": "I Am Realisation",
-      "transformation": "I Am Transformation",
+      "research": "@Research",
+      "imagine": "@Imagine",
+      "create": "@Create",
       "portfolio": "Portfolio",
       "collections": "Collections",
       "school": "School",
+      "blog": "Blog",
       "contact": "Contact"
     }
   },
@@ -152,6 +177,7 @@
     "readyToStart": "Ready to start your journey?",
     "formats": {
       "online": "Online",
+      "studio": "In Studio",
       "in-person": "In-Person",
       "hybrid": "Hybrid"
     },
@@ -173,18 +199,18 @@
     "stages": {
       "research": {
         "localizedTitle": "I Am Research",
-        "subtitle": "Feel color. Feel form.",
-        "description": "Discover your unique color palette and silhouette strategy. Through deep analysis, we reveal the colors and shapes that enhance your natural beauty."
+        "subtitle": "Feel color and touches. Feel form and movements.",
+        "description": "Discover your unique color palette and texture, define your cut strategy, review your wardrobe, and architect your dream style plan."
       },
-      "realisation": {
-        "localizedTitle": "I Am Realisation",
-        "subtitle": "Realize your style.",
-        "description": "Transform knowledge into wardrobe. From personal shopping to custom atelier pieces, we bring your style vision to life."
+      "imagine": {
+        "localizedTitle": "I Am Imagine",
+        "subtitle": "From vision to wardrobe.",
+        "description": "Precision shopping guided by your blueprints — and bespoke garments crafted in our couture atelier from your personal dossier."
       },
-      "transformation": {
-        "localizedTitle": "I Am Transformation",
+      "create": {
+        "localizedTitle": "I Am Create",
         "subtitle": "Become yourself.",
-        "description": "Experience complete metamorphosis. Courses, retreats, and photo meditations that unlock your authentic self."
+        "description": "Victory Dress workshop, Wholeness Photo Meditation through 5 Goddess archetypes, and immersive Fashion Retreats."
       }
     },
     "cta": {
@@ -207,7 +233,7 @@
   },
   "services": {
     "title": "Services",
-    "description": "Professional styling services for your unique style",
+    "description": "Three-stage methodology: Research your style, Imagine your wardrobe, Create your transformation",
     "backToServices": "Back to Services",
     "duration": "Duration",
     "price": "Price",
@@ -230,15 +256,16 @@
       "consulting": "Consulting",
       "shopping": "Shopping",
       "events": "Events",
-      "research": "Research",
-      "realisation": "Realisation",
-      "transformation": "Transformation"
+      "research": "@Research",
+      "imagine": "@Imagine",
+      "create": "@Create"
     },
     "formats": {
       "online": "Online",
       "studio": "In Studio",
       "onsite": "At Client Location",
-      "hybrid": "Hybrid"
+      "hybrid": "Hybrid",
+      "retreat": "Retreat"
     }
   },
   "portfolio": {
@@ -298,22 +325,22 @@
     },
     "methodology": {
       "title": "Our Methodology",
-      "subtitle": "Four steps to the perfect style",
+      "subtitle": "Three stages of transformation",
       "step1": {
-        "title": "Consultation",
-        "description": "We get to know you, your lifestyle, preferences, and style goals."
+        "title": "@Research",
+        "description": "Feel color and touches. Feel form and movements. Color palette, cut strategy, wardrobe review, and wardrobe plan."
       },
       "step2": {
-        "title": "Analysis",
-        "description": "We determine your color type, body type, and style direction."
+        "title": "@Imagine",
+        "description": "From vision to wardrobe. Precision shopping and couture atelier — bringing your blueprints to life."
       },
       "step3": {
-        "title": "Strategy",
-        "description": "We develop a personal wardrobe and shopping strategy."
+        "title": "@Create",
+        "description": "Become yourself. Victory Dress workshop, Wholeness Photo Meditation, and immersive Fashion Retreats."
       },
       "step4": {
-        "title": "Implementation",
-        "description": "We bring the plan to life: shopping, outfit selection, building a capsule wardrobe."
+        "title": "Integration",
+        "description": "Where all stages converge. Your new wardrobe, your new silhouette, your new confidence — fully integrated into everyday life."
       }
     },
     "values": {
@@ -443,7 +470,7 @@
     "hero": {
       "localizedTitle": "I Am Research",
       "title": "Research",
-      "subtitle": "Feel color. Feel form."
+      "subtitle": "Feel color and touches. Feel form and movements."
     },
     "intro": {
       "title": "Why Research?",
@@ -474,17 +501,17 @@
     "cta": {
       "title": "Ready to realize your style?",
       "description": "Take the next step and bring your style vision to life.",
-      "button": "Explore Realisation"
+      "button": "Explore @Imagine"
     }
   },
-  "realisation": {
+  "imagine": {
     "meta": {
-      "title": "Realisation - Bring Your Style to Life | PURITY Fashion Studio",
+      "title": "Imagine - Bring Your Style to Life | PURITY Fashion Studio",
       "description": "Transform knowledge into wardrobe. Personal shopping service and custom atelier garments."
     },
     "hero": {
-      "localizedTitle": "I Am Realisation",
-      "title": "Realisation",
+      "localizedTitle": "I Am Imagine",
+      "title": "Imagine",
       "subtitle": "Realize your style."
     },
     "intro": {
@@ -527,17 +554,17 @@
     "cta": {
       "title": "Ready for your transformation?",
       "description": "Experience a complete metamorphosis and unlock your authentic self.",
-      "button": "Explore Transformation"
+      "button": "Explore @Create"
     }
   },
-  "transformationPage": {
+  "createPage": {
     "meta": {
-      "title": "Transformation - Complete Style Metamorphosis | PURITY Fashion Studio",
+      "title": "Create - Complete Style Metamorphosis | PURITY Fashion Studio",
       "description": "Experience complete style transformation. Courses, retreats, and photo meditations for holistic change."
     },
     "hero": {
-      "localizedTitle": "I Am Transformation",
-      "title": "Transformation",
+      "localizedTitle": "I Am Create",
+      "title": "Create",
       "subtitle": "Become yourself."
     },
     "intro": {
@@ -546,7 +573,7 @@
       "paragraph1": "Transformation is more than changing clothes - it's about becoming who you truly are. Through immersive courses, retreats, and photo meditations, we guide you through a complete metamorphosis that touches every aspect of your life."
     },
     "programs": {
-      "title": "Transformation Programs",
+      "title": "Create Programs",
       "subtitle": "Immersive experiences for lasting change"
     },
     "portfolio": {
@@ -555,5 +582,24 @@
       "emptyTitle": "Coming Soon",
       "emptyDescription": "We're documenting transformation stories. Check back soon!"
     }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Insights, stories, and style guides from PURITY",
+    "readMore": "Read More",
+    "publishedOn": "Published on",
+    "by": "by",
+    "back": "Back to Blog",
+    "noPosts": "No posts yet",
+    "noPostsDescription": "We're preparing new editorial content. Check back soon!",
+    "categories": {
+      "editorial": "Editorial",
+      "behind-the-scenes": "Behind the Scenes",
+      "style-guide": "Style Guide",
+      "methodology": "Methodology"
+    },
+    "notFound": "Post Not Found",
+    "notFoundDescription": "The requested post could not be found.",
+    "notAvailable": "This post is not available in English yet."
   }
 }

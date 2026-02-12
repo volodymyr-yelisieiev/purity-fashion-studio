@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
 import { createLiqPayCheckout } from "@/lib/liqpay";
-import { features } from "@/config/env";
+import { features } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {

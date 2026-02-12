@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
-import { features, getSiteConfig } from "@/config/env";
+import { features, getSiteConfig } from "@/lib/env";
 import { rateLimit, getClientIp } from "@/lib/ratelimit";
 import { logger } from "@/lib/logger";
 

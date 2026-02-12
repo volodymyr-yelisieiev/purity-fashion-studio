@@ -23,7 +23,7 @@ import {
   Body,
 } from "@/components/ui";
 import { Section, Container, Grid } from "@/components/layout";
-import { HeroSection } from "@/components/sections";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import {
   FadeInStagger,
   FadeInStaggerContainer,
@@ -171,10 +171,14 @@ export default async function CollectionDetailPage({
   return (
     <main className="min-h-screen bg-background">
       {/* Hero */}
-      <HeroSection
+      <EditorialHero
         title={collection.name}
         subtitle={collection.season ? t(`seasons.${collection.season}`) : ""}
-        backgroundImage={coverImage?.url || ""}
+        media={{
+          url: coverImage?.url || "",
+          alt: collection.name,
+        }}
+        theme="light"
       />
 
       {/* Overview - White */}

@@ -1,11 +1,17 @@
 import createNextIntlPlugin from "next-intl/plugin";
+import { withPayload } from "@payloadcms/next/withPayload";
 import type { NextConfig } from "next";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const config: NextConfig = {
   images: {
+    unoptimized: process.env.NODE_ENV === "development",
     qualities: [75, 85],
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -18,10 +24,6 @@ const config: NextConfig = {
       {
         protocol: "https",
         hostname: "*.public.blob.vercel-storage.com",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
       },
       {
         protocol: "http",
@@ -81,7 +83,7 @@ const config: NextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.liqpay.ua; connect-src 'self' https://api.stripe.com https://*.vercel.app https://*.blob.vercel-storage.com; img-src 'self' data: blob: https://images.unsplash.com https://*.vercel-storage.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://js.stripe.com https://www.liqpay.ua;",
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.liqpay.ua; connect-src 'self' https://api.stripe.com https://*.vercel.app https://*.blob.vercel-storage.com; img-src 'self' data: blob: http://localhost:3000 https://*.vercel-storage.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://r2cdn.perplexity.ai data:; frame-src https://js.stripe.com https://www.liqpay.ua;",
           },
         ],
       },
@@ -89,4 +91,4 @@ const config: NextConfig = {
   },
 };
 
-export default withNextIntl(config);
+export default withPayload(withNextIntl(config));

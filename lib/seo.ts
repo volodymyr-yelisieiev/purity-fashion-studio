@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getSiteConfig } from "@/lib/env";
 
 interface SeoProps {
   title: string;
@@ -8,7 +9,7 @@ interface SeoProps {
   locale?: string;
 }
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://purity.studio";
+const siteUrl = getSiteConfig().url;
 const locales = ["en", "uk", "ru"] as const;
 
 export function generateSeoMetadata({

@@ -8,6 +8,7 @@ import {
   bookingFields,
   publishedReadAccess,
 } from "../fields";
+import { layoutBlocks } from "../blocks";
 
 export const Portfolio: CollectionConfig = {
   slug: "portfolio",
@@ -49,40 +50,54 @@ export const Portfolio: CollectionConfig = {
       type: "upload",
       relationTo: "media",
       required: true,
-      admin: { description: "Primary project image" },
+      admin: {
+        position: "sidebar",
+        description: "Primary project image (thumbnail)",
+      },
     },
     {
-      name: "description",
-      type: "textarea",
+      name: "layout",
+      type: "blocks",
+      blocks: layoutBlocks,
       localized: true,
-      admin: { description: "Story behind the project" },
+      admin: { description: "Build the portfolio page using editorial blocks" },
+    },
+    {
+      name: "excerpt",
+      type: "textarea",
+      required: true,
+      localized: true,
+      admin: {
+        position: "sidebar",
+        description: "Brief professional summary (Required)",
+      },
     },
     {
       name: "challenge",
       type: "textarea",
+      required: true,
       localized: true,
-      admin: { description: "The problem or starting point" },
+      admin: {
+        description: "The initial state or conflict (Required)",
+      },
+    },
+    {
+      name: "transformation",
+      type: "textarea",
+      required: true,
+      localized: true,
+      admin: {
+        description: "The core metamorphosis process (Required)",
+      },
     },
     {
       name: "solution",
       type: "textarea",
+      required: true,
       localized: true,
-      admin: { description: "What we did to address the challenge" },
-    },
-    {
-      name: "result",
-      type: "textarea",
-      localized: true,
-      admin: { description: "The final outcome and transformation" },
-    },
-    {
-      name: "gallery",
-      type: "array",
-      admin: { description: "Additional photos from the project" },
-      fields: [
-        { name: "image", type: "upload", relationTo: "media", required: true },
-        { name: "caption", type: "text", localized: true },
-      ],
+      admin: {
+        description: "The final result and impact (Required)",
+      },
     },
     {
       name: "servicesUsed",

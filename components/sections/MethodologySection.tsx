@@ -38,20 +38,21 @@ export function MethodologySection({
               </FadeInStagger>
             )}
           </div>
-          <div className="space-y-12">
-            {steps.map((step, index) => (
-              <FadeInStagger key={index}>
-                <div className="flex flex-col md:flex-row gap-4 md:gap-8 border-b border-border pb-12 last:border-0">
-                  <span className="font-serif text-3xl md:text-4xl font-light text-muted-foreground/30">
-                    {step.number}
-                  </span>
-                  <div>
-                    <H3>{step.title}</H3>
-                    <Body className="mt-3">{step.description}</Body>
+          <div className="relative mx-auto max-w-3xl">
+            <div className="absolute left-5 top-6 bottom-6 w-px bg-border" />
+            <div className="space-y-12">
+              {steps.map((step, index) => (
+                <FadeInStagger key={index}>
+                  <div className="relative pl-14">
+                    <div className="absolute left-0 top-1 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background font-serif text-sm font-light text-foreground">
+                      {step.number}
+                    </div>
+                    <H3 className="text-left">{step.title}</H3>
+                    <Body className="mt-3 text-left">{step.description}</Body>
                   </div>
-                </div>
-              </FadeInStagger>
-            ))}
+                </FadeInStagger>
+              ))}
+            </div>
           </div>
         </FadeInStaggerContainer>
       </Container>

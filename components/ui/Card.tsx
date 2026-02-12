@@ -1,5 +1,5 @@
 import { type ReactNode, type HTMLAttributes } from "react";
-import { cn } from "@/lib/utils";
+import { cn, getMediaUrl } from "@/lib/utils";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 
@@ -185,8 +185,8 @@ export function CardImage({
       style={aspectRatio ? { aspectRatio } : undefined}
     >
       <Image
-        src={src}
-        alt={alt}
+        src={getMediaUrl(src)}
+        alt={alt || "Card image"}
         fill
         priority={priority}
         className="object-cover"

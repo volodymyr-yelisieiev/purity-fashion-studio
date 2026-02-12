@@ -1,11 +1,14 @@
 import type { CollectionConfig } from "payload";
+import { revalidateContent } from "../hooks/revalidate";
 import {
   slugField,
   statusField,
   featuredField,
+  pricingField,
   bookingFields,
   publishedReadAccess,
 } from "../fields";
+import { layoutBlocks } from "../blocks";
 
 export const Courses: CollectionConfig = {
   slug: "courses",
@@ -14,6 +17,9 @@ export const Courses: CollectionConfig = {
     defaultColumns: ["title", "category", "status", "updatedAt"],
     group: "Business",
     description: "Educational courses and workshops on styling and fashion",
+  },
+  hooks: {
+    afterChange: [revalidateContent("courses")],
   },
   access: publishedReadAccess(),
   fields: [
@@ -25,6 +31,12 @@ export const Courses: CollectionConfig = {
       admin: { description: "Course title in this language" },
     },
     slugField("title"),
+    statusField([
+      { label: "Draft", value: "draft" },
+      { label: "Published", value: "published" },
+      { label: "Coming Soon", value: "coming-soon" },
+      { label: "Archived", value: "archived" },
+    ]),
     {
       name: "category",
       type: "select",
@@ -37,6 +49,7 @@ export const Courses: CollectionConfig = {
         { label: "Shopping Skills", value: "shopping" },
         { label: "Professional Development", value: "professional" },
         { label: "Masterclass", value: "masterclass" },
+        { label: "Construction & Tailoring", value: "construction" },
       ],
       admin: {
         position: "sidebar",
@@ -60,45 +73,26 @@ export const Courses: CollectionConfig = {
         description: "Target audience experience level",
       },
     },
-    statusField([
-      { label: "Draft", value: "draft" },
-      { label: "Published", value: "published" },
-      { label: "Coming Soon", value: "coming-soon" },
-      { label: "Archived", value: "archived" },
-    ]),
+    {
+      name: "layout",
+      type: "blocks",
+      blocks: layoutBlocks,
+      localized: true,
+      admin: { description: "Build the course page using editorial blocks" },
+    },
     {
       name: "excerpt",
       type: "textarea",
       localized: true,
-      admin: { description: "Brief description for cards and previews" },
-    },
-    {
-      name: "description",
-      type: "richText",
-      localized: true,
-    },
-    {
-      name: "prerequisites",
-      type: "textarea",
-      localized: true,
       admin: {
-        description: "What students should know before taking this course",
+        position: "sidebar",
+        description: "Brief description for cards and previews",
       },
-    },
-    {
-      name: "materials",
-      type: "textarea",
-      localized: true,
-      admin: { description: "What students need to have for this course" },
-    },
-    {
-      name: "featuredImage",
-      type: "upload",
-      relationTo: "media",
     },
     {
       name: "duration",
       type: "group",
+      admin: { position: "sidebar" },
       fields: [
         { name: "value", type: "number", required: true, min: 1 },
         {
@@ -122,40 +116,13 @@ export const Courses: CollectionConfig = {
       defaultValue: "online",
       options: [
         { label: "Online", value: "online" },
+        { label: "In Studio", value: "studio" },
         { label: "In-Person", value: "in-person" },
         { label: "Hybrid", value: "hybrid" },
       ],
+      admin: { position: "sidebar" },
     },
-    {
-      name: "pricing",
-      type: "group",
-      admin: { description: "Course pricing" },
-      fields: [
-        { name: "uah", type: "number", label: "UAH", min: 0 },
-        { name: "eur", type: "number", label: "EUR", min: 0 },
-        {
-          name: "earlyBirdAmount",
-          type: "number",
-          min: 0,
-          admin: { description: "Early bird discount price" },
-        },
-        { name: "priceNote", type: "text", localized: true },
-      ],
-    },
-    {
-      name: "curriculum",
-      type: "array",
-      fields: [
-        { name: "module", type: "text", required: true, localized: true },
-        {
-          name: "topics",
-          type: "array",
-          fields: [
-            { name: "topic", type: "text", required: true, localized: true },
-          ],
-        },
-      ],
-    },
+    pricingField({ includeSale: true }),
     {
       name: "instructor",
       type: "group",
@@ -163,15 +130,6 @@ export const Courses: CollectionConfig = {
         { name: "name", type: "text", required: true },
         { name: "title", type: "text", localized: true },
         { name: "bio", type: "textarea", localized: true },
-        { name: "photo", type: "upload", relationTo: "media" },
-      ],
-    },
-    {
-      name: "testimonials",
-      type: "array",
-      fields: [
-        { name: "name", type: "text", required: true },
-        { name: "quote", type: "textarea", required: true, localized: true },
         { name: "photo", type: "upload", relationTo: "media" },
       ],
     },
@@ -194,5 +152,11 @@ export const Courses: CollectionConfig = {
     },
     featuredField(),
     ...bookingFields(),
+    {
+      name: "featuredImage",
+      type: "upload",
+      relationTo: "media",
+      admin: { position: "sidebar" },
+    },
   ],
 };

@@ -6,15 +6,19 @@ import { fileURLToPath } from "url";
 import sharp from "sharp";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { seoPlugin } from "@payloadcms/plugin-seo";
+import { env } from "@/lib/env";
+import { logger } from "./lib/logger";
 
 import { Users } from "./payload/collections/Users";
 import { Media } from "./payload/collections/Media";
+// ... (omitting some imports for brevity in thought, but using full in tool call)
 import { Services } from "./payload/collections/Services";
 import { Products } from "./payload/collections/Products";
 import { Portfolio } from "./payload/collections/Portfolio";
 import { Collections } from "./payload/collections/Collections";
 import { Orders } from "./payload/collections/Orders";
 import { Courses } from "./payload/collections/Courses";
+import { Posts } from "./payload/collections/Posts";
 import { SiteSettings } from "./payload/globals/SiteSettings";
 import { pickLocalized, extractPlainText } from "./lib/utils";
 
@@ -47,11 +51,27 @@ export default buildConfig({
         "products",
         "lookbooks",
         "courses",
+        "posts",
       ],
     },
   },
-  csrf: [process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"],
-  serverURL: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  csrf: [env.NEXT_PUBLIC_SITE_URL],
+  serverURL: env.NEXT_PUBLIC_SITE_URL,
+  onInit: async (payload) => {
+    const poolCfg = {
+      max: 5,
+      connectionTimeoutMillis: 10_000,
+      idleTimeoutMillis: 30_000,
+    };
+    try {
+      const count = await payload.count({ collection: "users" });
+      logger.info(
+        `[DB] Pool connected (max=${poolCfg.max}, timeout=${poolCfg.connectionTimeoutMillis}ms). Users: ${count.totalDocs}`,
+      );
+    } catch (err) {
+      logger.error("[DB] Pool connection check failed:", err);
+    }
+  },
   collections: [
     Users,
     Media,
@@ -61,6 +81,7 @@ export default buildConfig({
     Collections,
     Orders,
     Courses,
+    Posts,
   ],
   globals: [SiteSettings],
   folders: {},
@@ -71,7 +92,7 @@ export default buildConfig({
   },
   editor: lexicalEditor({}),
   secret: (() => {
-    const secret = process.env.PAYLOAD_SECRET;
+    const secret = env.PAYLOAD_SECRET;
     if (!secret) {
       throw new Error("PAYLOAD_SECRET environment variable is required");
     }
@@ -85,18 +106,24 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || "",
+      connectionString: env.DATABASE_URL || "",
+      max: 5,
+      connectionTimeoutMillis: 10_000,
+      idleTimeoutMillis: 30_000,
+      allowExitOnIdle: true,
     },
     push: false,
   }),
   sharp,
   plugins: [
     vercelBlobStorage({
-      enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
+      enabled: !!env.BLOB_READ_WRITE_TOKEN,
       collections: {
-        media: true,
+        media: {
+          disablePayloadAccessControl: true,
+        },
       },
-      token: process.env.BLOB_READ_WRITE_TOKEN || "",
+      token: env.BLOB_READ_WRITE_TOKEN || "",
       clientUploads: false,
       addRandomSuffix: true,
       cacheControlMaxAge: 31536000,
@@ -108,6 +135,7 @@ export default buildConfig({
         "portfolio",
         "lookbooks",
         "courses",
+        "posts",
       ],
       uploadsCollection: "media",
       tabbedUI: false,

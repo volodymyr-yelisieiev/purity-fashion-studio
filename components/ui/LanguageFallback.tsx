@@ -34,7 +34,7 @@ export function LanguageFallback({
     : basePath;
 
   return (
-    <main className="min-h-[60vh] bg-background">
+    <div className="min-h-[60dvh] bg-background flex items-center justify-center">
       <Container size="md" className="py-16 text-center">
         <H1 className="mb-6 font-light">{title}</H1>
         <Body className="mb-10 text-base text-muted-foreground">
@@ -63,6 +63,6 @@ export function LanguageFallback({
           </Link>
         </div>
       </Container>
-    </main>
+    </div>
   );
 }

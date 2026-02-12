@@ -1,11 +1,12 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/logger";
+import { getPayloadConfig } from "@/lib/env";
 
 export async function POST(request: NextRequest) {
   const secret = request.nextUrl.searchParams.get("secret");
 
-  if (secret !== process.env.PAYLOAD_SECRET) {
+  if (secret !== getPayloadConfig().secret) {
     return NextResponse.json({ message: "Invalid token" }, { status: 401 });
   }
 

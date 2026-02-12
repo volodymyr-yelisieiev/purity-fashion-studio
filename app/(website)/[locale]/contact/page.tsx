@@ -6,7 +6,8 @@ import {
   FadeInStagger,
   FadeInStaggerContainer,
 } from "@/components/animations/FadeInStagger";
-import { HeroSection } from "@/components/sections";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
+import { getPageHeroMedia } from "@/lib/payload";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { ContactInfo } from "@/components/contact/ContactInfo";
 import type { Metadata } from "next";
@@ -33,13 +34,18 @@ export default async function ContactPage({ params }: PageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "contact" });
   const tPages = await getTranslations({ locale, namespace: "pages" });
+  const heroMedia = await getPageHeroMedia("contact");
 
   return (
-    <main>
-      <HeroSection
+    <>
+      <EditorialHero
         title={tPages("contact.title")}
         subtitle={tPages("contact.subtitle")}
-        backgroundImage="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=1920&h=1080&fit=crop&q=85"
+        media={{
+          url: heroMedia.url || "",
+          alt: tPages("contact.title"),
+        }}
+        theme="light"
       />
 
       <Section>
@@ -67,6 +73,6 @@ export default async function ContactPage({ params }: PageProps) {
           </div>
         </Container>
       </Section>
-    </main>
+    </>
   );
 }

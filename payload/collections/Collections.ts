@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { revalidateContent } from "../hooks/revalidate";
 import {
   slugField,
   statusField,
@@ -7,6 +8,7 @@ import {
   bookingFields,
   publishedReadAccess,
 } from "../fields";
+import { layoutBlocks } from "../blocks";
 
 export const Collections: CollectionConfig = {
   slug: "lookbooks",
@@ -15,6 +17,9 @@ export const Collections: CollectionConfig = {
     defaultColumns: ["name", "season", "featured", "releaseDate"],
     group: "Showcase",
     description: "Curated fashion collections and lookbooks",
+  },
+  hooks: {
+    afterChange: [revalidateContent("lookbooks")],
   },
   access: publishedReadAccess(),
   fields: [
@@ -47,6 +52,13 @@ export const Collections: CollectionConfig = {
       type: "textarea",
       localized: true,
       admin: { description: "Collection story and inspiration" },
+    },
+    {
+      name: "layout",
+      type: "blocks",
+      blocks: layoutBlocks,
+      localized: true,
+      admin: { description: "Build the lookbook page using editorial blocks" },
     },
     {
       name: "materials",

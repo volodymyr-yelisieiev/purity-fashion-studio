@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, type Variants } from "motion/react";
+import { motion, useInView, type Variants } from "framer-motion";
 import { createContext, useContext, useRef } from "react";
 
 const StaggerContext = createContext(false);
@@ -52,8 +52,8 @@ export function FadeInStagger({
 
   // CRITICAL: useInView with margin for early trigger and amount: 0 for immediate detection
   const isInView = useInView(ref, {
-    once: true,
-    margin: "0px 0px -10% 0px", // Trigger slightly before fully visible
+    once: false,
+    margin: "-80px 0px -10% 0px", // Trigger slightly before fully visible
     amount: 0, // Trigger as soon as 1 pixel is visible
   });
 
@@ -100,8 +100,8 @@ export function FadeInStaggerContainer({
 
   // Trigger container animation as soon as it enters viewport
   const isInView = useInView(ref, {
-    once: true,
-    margin: "0px 0px -10% 0px",
+    once: false,
+    margin: "-80px 0px -10% 0px",
     amount: 0,
   });
 

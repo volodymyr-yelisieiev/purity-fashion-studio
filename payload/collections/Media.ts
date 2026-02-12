@@ -1,4 +1,10 @@
 import type { CollectionConfig } from "payload";
+import path from "path";
+import { fileURLToPath } from "url";
+import { env } from "@/lib/env";
+
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 export const Media: CollectionConfig = {
   slug: "media",
@@ -21,9 +27,23 @@ export const Media: CollectionConfig = {
         description: "Localized alt text is required for accessibility and SEO",
       },
     },
+    {
+      name: "purpose",
+      type: "text",
+      index: true,
+      admin: {
+        hidden: true,
+        description:
+          "Machine-readable purpose identifier for programmatic media queries (e.g. hero-about, homepage-background)",
+      },
+    },
   ],
   upload: {
-    disableLocalStorage: !!process.env.BLOB_READ_WRITE_TOKEN,
+    staticDir: env.BLOB_READ_WRITE_TOKEN
+      ? undefined
+      : path.resolve(dirname, "../../media"),
+    staticURL: env.BLOB_READ_WRITE_TOKEN ? undefined : "/api/media/file",
+    disableLocalStorage: !!env.BLOB_READ_WRITE_TOKEN,
     adminThumbnail: "thumbnail",
     resizeOptions: {
       width: 2560,
@@ -52,5 +72,5 @@ export const Media: CollectionConfig = {
       },
     ],
     mimeTypes: ["image/*"],
-  },
+  } as any,
 };

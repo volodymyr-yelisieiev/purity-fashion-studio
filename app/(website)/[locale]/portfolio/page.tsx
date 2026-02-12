@@ -1,8 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import type { Portfolio as PortfolioType, Media } from "@/payload-types";
-import { getPayload } from "@/lib/payload";
+import { getPayload, getPageHeroMedia } from "@/lib/payload";
 import { hasContent } from "@/lib/utils";
-import { HeroSection } from "@/components/sections";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import { EmptyState, Lead, Card, CardImage, CardBody } from "@/components/ui";
 import { Section, Container, Grid } from "@/components/layout";
 import {
@@ -37,6 +37,8 @@ export default async function PortfolioPage({
   const tPortfolio = await getTranslations({ locale, namespace: "portfolio" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
 
+  const heroMedia = await getPageHeroMedia("portfolio");
+
   const payload = await getPayload();
   const portfolioItems = await payload.find({
     collection: "portfolio",
@@ -57,10 +59,14 @@ export default async function PortfolioPage({
   if (filteredDocs.length === 0) {
     return (
       <>
-        <HeroSection
+        <EditorialHero
           title={tPages("portfolio.title")}
           subtitle={tPages("portfolio.subtitle")}
-          backgroundImage="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop&q=85"
+          media={{
+            url: heroMedia.url || "",
+            alt: tPages("portfolio.title"),
+          }}
+          theme="light"
         />
         <EmptyState
           title={tCommon("noContent")}
@@ -73,10 +79,14 @@ export default async function PortfolioPage({
 
   return (
     <>
-      <HeroSection
+      <EditorialHero
         title={tPages("portfolio.title")}
         subtitle={tPages("portfolio.subtitle")}
-        backgroundImage="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop&q=85"
+        media={{
+          url: heroMedia.url || "",
+          alt: tPages("portfolio.title"),
+        }}
+        theme="light"
       />
 
       {/* Intro Section */}
@@ -124,7 +134,7 @@ export default async function PortfolioPage({
                           : undefined
                       }
                       title={portfolio.title}
-                      description={portfolio.description || ""}
+                      description={portfolio.excerpt || ""}
                     />
                   </Card>
                 </FadeInStagger>

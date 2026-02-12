@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { getSiteConfig } from "@/lib/env";
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://purity.studio";
+  const siteUrl = getSiteConfig().url;
 
   return {
     rules: [

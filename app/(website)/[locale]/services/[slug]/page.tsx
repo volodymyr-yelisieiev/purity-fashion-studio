@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { generateSeoMetadata } from "@/lib/seo";
 import { logger } from "@/lib/logger";
+import { normalizeService } from "@/lib/utils/safeData";
 import type { Metadata } from "next";
 import {
   getAvailableLocales,
@@ -12,8 +13,9 @@ import {
 } from "@/lib/payload";
 import { draftMode } from "next/headers";
 import { LanguageFallback, Button, H2, H3, Body } from "@/components/ui";
-import { Section, Container, Grid } from "@/components/layout";
-import { HeroSection } from "@/components/sections";
+import { Section, Container, Grid, BlockRenderer } from "@/components/layout";
+import { SetMethodologyMode } from "@/components/layout/SetMethodologyMode";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import {
   FadeInStagger,
   FadeInStaggerContainer,
@@ -119,7 +121,6 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const { normalizeService } = await import("@/lib/utils/safeData");
   service = normalizeService(service as Partial<Service>);
 
   // Format prices
@@ -134,168 +135,190 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   const priceDisplay =
     prices.length > 0 ? prices.join(" / ") : t("priceOnRequest");
 
+  const hasLayout = service.layout && service.layout.length > 0;
+
+  // Determine methodology stage for theming
+  const methodologyMode =
+    service.category === "research" ||
+    service.category === "imagine" ||
+    service.category === "create"
+      ? service.category
+      : null;
+
   return (
-    <main className="min-h-screen bg-background">
-      {/* Hero - Full Width */}
-      <HeroSection
-        title={service.title}
-        subtitle={service.excerpt || ""}
-        backgroundImage={
-          typeof service.heroImage === "object"
-            ? service.heroImage?.url || ""
-            : ""
-        }
-      />
+    <>
+      {/* Activate methodology theme for this service's category */}
+      <SetMethodologyMode mode={methodologyMode} />
 
-      {/* Overview Section - White BG - CENTERED */}
-      <Section spacing="lg">
-        <Container size="sm">
-          <FadeInStaggerContainer>
-            <FadeInStagger>
-              <H2 className="mb-8">{tCommon("overview")}</H2>
-            </FadeInStagger>
-            <FadeInStagger>
-              <Body className="text-xl font-light leading-relaxed whitespace-pre-wrap">
-                {service.description}
-              </Body>
-            </FadeInStagger>
-          </FadeInStaggerContainer>
-        </Container>
-      </Section>
+      {hasLayout ? (
+        <BlockRenderer blocks={service.layout as any} />
+      ) : (
+        <>
+          {/* Hero - Full Width */}
+          <EditorialHero
+            title={service.title}
+            subtitle={service.excerpt || ""}
+            media={{
+              url:
+                typeof service.heroImage === "object"
+                  ? service.heroImage?.url || ""
+                  : "",
+              alt: service.title,
+            }}
+            theme="light"
+          />
 
-      {/* Details Grid - Gray BG - CENTERED */}
-      <Section spacing="lg" background="gray">
-        <Container size="sm">
-          <Grid cols={2} gap="lg">
-            {/* Duration */}
-            {service.duration && (
+          {/* Overview Section - White BG - CENTERED */}
+          <Section spacing="lg">
+            <Container size="sm">
               <FadeInStaggerContainer>
                 <FadeInStagger>
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 block">
-                    {t("duration")}
-                  </span>
-                  <Body className="text-lg md:text-xl font-light">
-                    {service.duration}
+                  <H2 className="mb-8">{tCommon("overview")}</H2>
+                </FadeInStagger>
+                <FadeInStagger>
+                  <Body className="text-xl font-light leading-relaxed whitespace-pre-wrap">
+                    {service.description}
                   </Body>
                 </FadeInStagger>
               </FadeInStaggerContainer>
-            )}
+            </Container>
+          </Section>
 
-            {/* Format */}
-            {service.format && (
-              <FadeInStaggerContainer>
-                <FadeInStagger>
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 block">
-                    {t("format")}
-                  </span>
-                  <Body className="text-lg md:text-xl font-light">
-                    {t(`formats.${service.format}`)}
-                  </Body>
-                </FadeInStagger>
-              </FadeInStaggerContainer>
-            )}
-
-            {/* Price */}
-            {(priceUAH || priceEUR) && (
-              <FadeInStaggerContainer>
-                <FadeInStagger>
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 block">
-                    {t("price")}
-                  </span>
-                  <Body className="text-lg md:text-xl font-light">
-                    {priceDisplay}
-                  </Body>
-                  {priceNote && (
-                    <Body className="text-sm text-muted-foreground italic mt-1">
-                      {priceNote}
-                    </Body>
-                  )}
-                </FadeInStagger>
-              </FadeInStaggerContainer>
-            )}
-
-            {/* Category */}
-            {service.category && (
-              <FadeInStaggerContainer>
-                <FadeInStagger>
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 block">
-                    {t("category")}
-                  </span>
-                  <Body className="text-lg md:text-xl font-light capitalize">
-                    {t(`categories.${service.category}`)}
-                  </Body>
-                </FadeInStagger>
-              </FadeInStaggerContainer>
-            )}
-          </Grid>
-        </Container>
-      </Section>
-
-      {/* What's Included - White BG - CENTERED */}
-      {service.includes && service.includes.length > 0 && (
-        <Section spacing="lg">
-          <Container size="sm">
-            <FadeInStaggerContainer>
-              <FadeInStagger>
-                <H2 className="mb-12">{tCommon("whatsIncluded")}</H2>
-              </FadeInStagger>
-              <Grid cols={2} gap="md">
-                {service.includes.map((item, i) => (
-                  <FadeInStagger key={i}>
-                    <div className="flex items-start gap-4">
-                      <svg
-                        className="w-5 h-5 md:w-6 md:h-6 text-foreground shrink-0 mt-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <Body className="text-base md:text-lg font-light">
-                        {item.item}
+          {/* Details Grid - Gray BG - CENTERED */}
+          <Section spacing="lg" background="gray">
+            <Container size="sm">
+              <Grid cols={2} gap="lg">
+                {/* Duration */}
+                {service.duration && (
+                  <FadeInStaggerContainer>
+                    <FadeInStagger>
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 block">
+                        {t("duration")}
+                      </span>
+                      <Body className="text-lg md:text-xl font-light">
+                        {service.duration}
                       </Body>
-                    </div>
-                  </FadeInStagger>
-                ))}
-              </Grid>
-            </FadeInStaggerContainer>
-          </Container>
-        </Section>
-      )}
+                    </FadeInStagger>
+                  </FadeInStaggerContainer>
+                )}
 
-      {/* Process/Steps - Gray BG - CENTERED */}
-      {service.steps && service.steps.length > 0 && (
-        <Section spacing="lg" background="gray">
-          <Container size="sm">
-            <FadeInStaggerContainer>
-              <FadeInStagger>
-                <H2 className="mb-16">{tCommon("process")}</H2>
-              </FadeInStagger>
-              <div className="space-y-12 md:space-y-16">
-                {service.steps.map((step, i) => (
-                  <FadeInStagger key={i}>
-                    <div className="flex gap-6 md:gap-12">
-                      <div className="text-3xl md:text-4xl font-serif font-light text-muted shrink-0">
-                        {String(i + 1).padStart(2, "0")}
-                      </div>
-                      <div>
-                        <H3 className="mb-4">{step.title}</H3>
-                        <Body className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                          {step.description}
+                {/* Format */}
+                {service.format && (
+                  <FadeInStaggerContainer>
+                    <FadeInStagger>
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 block">
+                        {t("format")}
+                      </span>
+                      <Body className="text-lg md:text-xl font-light">
+                        {t(`formats.${service.format}`)}
+                      </Body>
+                    </FadeInStagger>
+                  </FadeInStaggerContainer>
+                )}
+
+                {/* Price */}
+                {(priceUAH || priceEUR) && (
+                  <FadeInStaggerContainer>
+                    <FadeInStagger>
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 block">
+                        {t("price")}
+                      </span>
+                      <Body className="text-lg md:text-xl font-light">
+                        {priceDisplay}
+                      </Body>
+                      {priceNote && (
+                        <Body className="text-sm text-muted-foreground italic mt-1">
+                          {priceNote}
                         </Body>
-                      </div>
-                    </div>
+                      )}
+                    </FadeInStagger>
+                  </FadeInStaggerContainer>
+                )}
+
+                {/* Category */}
+                {service.category && (
+                  <FadeInStaggerContainer>
+                    <FadeInStagger>
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 block">
+                        {t("category")}
+                      </span>
+                      <Body className="text-lg md:text-xl font-light capitalize">
+                        {t(`categories.${service.category}`)}
+                      </Body>
+                    </FadeInStagger>
+                  </FadeInStaggerContainer>
+                )}
+              </Grid>
+            </Container>
+          </Section>
+
+          {/* What's Included - White BG - CENTERED */}
+          {service.deliverables && service.deliverables.length > 0 && (
+            <Section spacing="lg">
+              <Container size="sm">
+                <FadeInStaggerContainer>
+                  <FadeInStagger>
+                    <H2 className="mb-12">{tCommon("whatsIncluded")}</H2>
                   </FadeInStagger>
-                ))}
-              </div>
-            </FadeInStaggerContainer>
-          </Container>
-        </Section>
+                  <Grid cols={2} gap="md">
+                    {service.deliverables.map((item, i) => (
+                      <FadeInStagger key={i}>
+                        <div className="flex items-start gap-4">
+                          <svg
+                            className="w-5 h-5 md:w-6 md:h-6 text-foreground shrink-0 mt-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          <Body className="text-base md:text-lg font-light">
+                            {item.item}
+                          </Body>
+                        </div>
+                      </FadeInStagger>
+                    ))}
+                  </Grid>
+                </FadeInStaggerContainer>
+              </Container>
+            </Section>
+          )}
+
+          {/* Process/Steps - Gray BG - CENTERED */}
+          {service.process && service.process.length > 0 && (
+            <Section spacing="lg" background="gray">
+              <Container size="sm">
+                <FadeInStaggerContainer>
+                  <FadeInStagger>
+                    <H2 className="mb-16">{tCommon("process")}</H2>
+                  </FadeInStagger>
+                  <div className="space-y-12 md:space-y-16">
+                    {service.process.map((step, i) => (
+                      <FadeInStagger key={i}>
+                        <div className="flex gap-6 md:gap-12">
+                          <div className="text-3xl md:text-4xl font-serif font-light text-muted shrink-0">
+                            {String(i + 1).padStart(2, "0")}
+                          </div>
+                          <div>
+                            <H3 className="mb-4">{step.title}</H3>
+                            <Body className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                              {step.description}
+                            </Body>
+                          </div>
+                        </div>
+                      </FadeInStagger>
+                    ))}
+                  </div>
+                </FadeInStaggerContainer>
+              </Container>
+            </Section>
+          )}
+        </>
       )}
 
       {/* CTA - White BG - CENTERED */}
@@ -319,6 +342,6 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           </FadeInStaggerContainer>
         </Container>
       </Section>
-    </main>
+    </>
   );
 }

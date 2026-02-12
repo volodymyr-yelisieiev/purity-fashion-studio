@@ -5,12 +5,12 @@ import { ShoppingBag } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import {
   Button,
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetDescription,
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  DrawerDescription,
 } from "@/components/ui";
 import { CartItem } from "./CartItem";
 import { CartSummary } from "./CartSummary";
@@ -23,8 +23,8 @@ export function MiniCart() {
   const t = useTranslations("cart");
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
         <Button
           variant="ghost"
           size="icon"
@@ -38,15 +38,15 @@ export function MiniCart() {
           )}
           <span className="sr-only">Shopping cart</span>
         </Button>
-      </SheetTrigger>
+      </DrawerTrigger>
 
-      <SheetContent className="flex flex-col z-110" overlayClassName="z-110">
-        <SheetHeader>
-          <SheetTitle>{t("title")}</SheetTitle>
-          <SheetDescription className="sr-only">
+      <DrawerContent className="flex flex-col" overlayClassName="">
+        <DrawerHeader>
+          <DrawerTitle>{t("title")}</DrawerTitle>
+          <DrawerDescription className="sr-only">
             Shopping cart with your selected items
-          </SheetDescription>
-        </SheetHeader>
+          </DrawerDescription>
+        </DrawerHeader>
 
         <div className="flex-1 overflow-auto py-4">
           {items.length === 0 ? (
@@ -73,7 +73,7 @@ export function MiniCart() {
             <CartSummary />
           </div>
         )}
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   );
 }

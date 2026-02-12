@@ -2,11 +2,12 @@ import type { MetadataRoute } from "next";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
 import { logger } from "@/lib/logger";
+import { getSiteConfig } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://purity.studio";
+  const siteUrl = getSiteConfig().url;
   const locales = ["uk", "ru", "en"] as const;
 
   // Static pages - always include these

@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { getStripeConfig, features } from "@/config/env";
+import { getStripeConfig, features } from "@/lib/env";
 
 // Create a singleton Stripe instance
 let stripeInstance: Stripe | null = null;

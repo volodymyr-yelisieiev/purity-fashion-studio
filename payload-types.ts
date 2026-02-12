@@ -75,6 +75,7 @@ export interface Config {
     lookbooks: Lookbook;
     orders: Order;
     courses: Course;
+    posts: Post;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -90,6 +91,7 @@ export interface Config {
     lookbooks: LookbooksSelect<false> | LookbooksSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -174,6 +176,10 @@ export interface Media {
    * Localized alt text is required for accessibility and SEO
    */
   alt: string;
+  /**
+   * Machine-readable purpose identifier for programmatic media queries (e.g. hero-about, homepage-background)
+   */
+  purpose?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -233,31 +239,180 @@ export interface Service {
    */
   status: 'draft' | 'published';
   /**
-   * Full service description
-   */
-  description?: string | null;
-  /**
-   * Brief description for cards (1-2 sentences)
-   */
-  excerpt?: string | null;
-  /**
    * Service category
    */
-  category:
-    | 'research'
-    | 'realisation'
-    | 'transformation'
-    | 'styling'
-    | 'atelier'
-    | 'consulting'
-    | 'shopping'
-    | 'events';
+  category: 'research' | 'imagine' | 'create' | 'styling' | 'atelier' | 'consulting' | 'shopping' | 'events';
+  /**
+   * Build the service page using editorial blocks
+   */
+  layout?:
+    | (
+        | {
+            /**
+             * Cinematic layout style
+             */
+            layout?: ('full' | 'split' | 'overlap') | null;
+            /**
+             * Main background media
+             */
+            media: number | Media;
+            /**
+             * Optional foreground/floating cinematic layer
+             */
+            overlayMedia?: (number | null) | Media;
+            /**
+             * Large editorial title
+             */
+            title: string;
+            /**
+             * Optional smaller description or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Specific theme override for this block
+             */
+            theme?: ('light' | 'dark' | 'parchment') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'editorialHero';
+          }
+        | {
+            /**
+             * Optional grid title
+             */
+            title?: string | null;
+            columns?: ('2' | '3' | '4' | 'masonry') | null;
+            items?:
+              | {
+                  media: number | Media;
+                  caption?: string | null;
+                  aspectRatio?: ('portrait' | 'square' | 'landscape') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaGrid';
+          }
+        | {
+            /**
+             * Keywords or phrases to scroll
+             */
+            items?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            speed?: ('slow' | 'normal' | 'fast') | null;
+            direction?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'horizontalMarquee';
+          }
+        | {
+            /**
+             * Main editorial headline
+             */
+            title: string;
+            /**
+             * Supporting narrative or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Deep background layer (often blurred or textured)
+             */
+            backgroundImage: number | Media;
+            /**
+             * Subject/Focus layer (revealed with liquid effect)
+             */
+            foregroundImage: number | Media;
+            /**
+             * Intensity of the liquid displacement effect
+             */
+            revealIntensity?: ('subtle' | 'medium' | 'bold') | null;
+            cta?: {
+              label?: string | null;
+              link?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'liquidCinematicHero';
+          }
+        | {
+            /**
+             * Section heading (e.g., 'The Adventure Path')
+             */
+            title: string;
+            /**
+             * @RESEARCH, @IMAGINE, @CREATE
+             */
+            steps: {
+              stage: 'research' | 'imagine' | 'create';
+              title: string;
+              description: string;
+              media: number | Media;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'methodologyTimeline';
+          }
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+      )[]
+    | null;
+  /**
+   * Brief professional summary (Required)
+   */
+  excerpt: string;
+  /**
+   * Deep narrative story of the service (Required for Editorial feel)
+   */
+  description: string;
+  /**
+   * The 3-stage journey for this service (Minimum 3 steps required)
+   */
+  process: {
+    title: string;
+    description: string;
+    id?: string | null;
+  }[];
+  /**
+   * What the client receives (e.g., Personal Lookbook, Custom Mannequin)
+   */
+  deliverables: {
+    item: string;
+    id?: string | null;
+  }[];
   /**
    * How this service is delivered
    */
-  format?: ('online' | 'studio' | 'onsite' | 'hybrid') | null;
+  format?: ('online' | 'studio' | 'onsite' | 'hybrid' | 'retreat') | null;
   /**
-   * Pricing information
+   * Service duration (e.g., "2 hours")
+   */
+  duration?: string | null;
+  /**
+   * Pricing and commercial information
    */
   pricing?: {
     /**
@@ -274,33 +429,6 @@ export interface Service {
     priceNote?: string | null;
   };
   /**
-   * Service duration (e.g., "2 hours")
-   */
-  duration?: string | null;
-  /**
-   * Main image for the service page
-   */
-  heroImage?: (number | null) | Media;
-  /**
-   * What is included in this service
-   */
-  includes?:
-    | {
-        item: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * How the service works (process steps)
-   */
-  steps?:
-    | {
-        title: string;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
    * Show on homepage featured section
    */
   featured?: boolean | null;
@@ -312,6 +440,10 @@ export interface Service {
    * Enable online payment
    */
   paymentEnabled?: boolean | null;
+  /**
+   * Thumbnail image for the service
+   */
+  heroImage?: (number | null) | Media;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -345,6 +477,31 @@ export interface Product {
    */
   featured?: boolean | null;
   /**
+   * Pricing and commercial information
+   */
+  pricing: {
+    /**
+     * Price in Ukrainian Hryvnia
+     */
+    uah: number;
+    /**
+     * Price in Euros
+     */
+    eur?: number | null;
+    /**
+     * Sale price in UAH (optional)
+     */
+    salePrice?: number | null;
+    /**
+     * Optional note (e.g., "Starting from", "Per hour")
+     */
+    priceNote?: string | null;
+  };
+  /**
+   * Stock Keeping Unit
+   */
+  sku?: string | null;
+  /**
    * Brief description for cards
    */
   excerpt?: string | null;
@@ -353,26 +510,143 @@ export interface Product {
    */
   description?: string | null;
   /**
-   * Stock Keeping Unit
+   * Build the product page using editorial blocks
    */
-  sku?: string | null;
-  /**
-   * Product pricing
-   */
-  pricing: {
-    /**
-     * Price in Ukrainian Hryvnia
-     */
-    uah: number;
-    /**
-     * Price in Euro (optional)
-     */
-    eur?: number | null;
-    /**
-     * Sale price in UAH (leave empty if not on sale)
-     */
-    salePrice?: number | null;
-  };
+  layout?:
+    | (
+        | {
+            /**
+             * Cinematic layout style
+             */
+            layout?: ('full' | 'split' | 'overlap') | null;
+            /**
+             * Main background media
+             */
+            media: number | Media;
+            /**
+             * Optional foreground/floating cinematic layer
+             */
+            overlayMedia?: (number | null) | Media;
+            /**
+             * Large editorial title
+             */
+            title: string;
+            /**
+             * Optional smaller description or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Specific theme override for this block
+             */
+            theme?: ('light' | 'dark' | 'parchment') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'editorialHero';
+          }
+        | {
+            /**
+             * Optional grid title
+             */
+            title?: string | null;
+            columns?: ('2' | '3' | '4' | 'masonry') | null;
+            items?:
+              | {
+                  media: number | Media;
+                  caption?: string | null;
+                  aspectRatio?: ('portrait' | 'square' | 'landscape') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaGrid';
+          }
+        | {
+            /**
+             * Keywords or phrases to scroll
+             */
+            items?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            speed?: ('slow' | 'normal' | 'fast') | null;
+            direction?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'horizontalMarquee';
+          }
+        | {
+            /**
+             * Main editorial headline
+             */
+            title: string;
+            /**
+             * Supporting narrative or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Deep background layer (often blurred or textured)
+             */
+            backgroundImage: number | Media;
+            /**
+             * Subject/Focus layer (revealed with liquid effect)
+             */
+            foregroundImage: number | Media;
+            /**
+             * Intensity of the liquid displacement effect
+             */
+            revealIntensity?: ('subtle' | 'medium' | 'bold') | null;
+            cta?: {
+              label?: string | null;
+              link?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'liquidCinematicHero';
+          }
+        | {
+            /**
+             * Section heading (e.g., 'The Adventure Path')
+             */
+            title: string;
+            /**
+             * @RESEARCH, @IMAGINE, @CREATE
+             */
+            steps: {
+              stage: 'research' | 'imagine' | 'create';
+              title: string;
+              description: string;
+              media: number | Media;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'methodologyTimeline';
+          }
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+      )[]
+    | null;
   /**
    * Product images (first is main)
    */
@@ -441,35 +715,163 @@ export interface Portfolio {
   status: 'draft' | 'published';
   category?: ('styling' | 'wardrobe-audit' | 'event' | 'shopping' | 'editorial') | null;
   /**
-   * Primary project image
+   * Primary project image (thumbnail)
    */
   mainImage: number | Media;
   /**
-   * Story behind the project
+   * Build the portfolio page using editorial blocks
    */
-  description?: string | null;
-  /**
-   * The problem or starting point
-   */
-  challenge?: string | null;
-  /**
-   * What we did to address the challenge
-   */
-  solution?: string | null;
-  /**
-   * The final outcome and transformation
-   */
-  result?: string | null;
-  /**
-   * Additional photos from the project
-   */
-  gallery?:
-    | {
-        image: number | Media;
-        caption?: string | null;
-        id?: string | null;
-      }[]
+  layout?:
+    | (
+        | {
+            /**
+             * Cinematic layout style
+             */
+            layout?: ('full' | 'split' | 'overlap') | null;
+            /**
+             * Main background media
+             */
+            media: number | Media;
+            /**
+             * Optional foreground/floating cinematic layer
+             */
+            overlayMedia?: (number | null) | Media;
+            /**
+             * Large editorial title
+             */
+            title: string;
+            /**
+             * Optional smaller description or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Specific theme override for this block
+             */
+            theme?: ('light' | 'dark' | 'parchment') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'editorialHero';
+          }
+        | {
+            /**
+             * Optional grid title
+             */
+            title?: string | null;
+            columns?: ('2' | '3' | '4' | 'masonry') | null;
+            items?:
+              | {
+                  media: number | Media;
+                  caption?: string | null;
+                  aspectRatio?: ('portrait' | 'square' | 'landscape') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaGrid';
+          }
+        | {
+            /**
+             * Keywords or phrases to scroll
+             */
+            items?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            speed?: ('slow' | 'normal' | 'fast') | null;
+            direction?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'horizontalMarquee';
+          }
+        | {
+            /**
+             * Main editorial headline
+             */
+            title: string;
+            /**
+             * Supporting narrative or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Deep background layer (often blurred or textured)
+             */
+            backgroundImage: number | Media;
+            /**
+             * Subject/Focus layer (revealed with liquid effect)
+             */
+            foregroundImage: number | Media;
+            /**
+             * Intensity of the liquid displacement effect
+             */
+            revealIntensity?: ('subtle' | 'medium' | 'bold') | null;
+            cta?: {
+              label?: string | null;
+              link?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'liquidCinematicHero';
+          }
+        | {
+            /**
+             * Section heading (e.g., 'The Adventure Path')
+             */
+            title: string;
+            /**
+             * @RESEARCH, @IMAGINE, @CREATE
+             */
+            steps: {
+              stage: 'research' | 'imagine' | 'create';
+              title: string;
+              description: string;
+              media: number | Media;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'methodologyTimeline';
+          }
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+      )[]
     | null;
+  /**
+   * Brief professional summary (Required)
+   */
+  excerpt: string;
+  /**
+   * The initial state or conflict (Required)
+   */
+  challenge: string;
+  /**
+   * The core metamorphosis process (Required)
+   */
+  transformation: string;
+  /**
+   * The final result and impact (Required)
+   */
+  solution: string;
   /**
    * Which services were used for this project
    */
@@ -494,7 +896,7 @@ export interface Portfolio {
    */
   publishedAt?: string | null;
   /**
-   * Pricing information
+   * Pricing and commercial information
    */
   pricing?: {
     /**
@@ -555,6 +957,144 @@ export interface Lookbook {
    */
   description?: string | null;
   /**
+   * Build the lookbook page using editorial blocks
+   */
+  layout?:
+    | (
+        | {
+            /**
+             * Cinematic layout style
+             */
+            layout?: ('full' | 'split' | 'overlap') | null;
+            /**
+             * Main background media
+             */
+            media: number | Media;
+            /**
+             * Optional foreground/floating cinematic layer
+             */
+            overlayMedia?: (number | null) | Media;
+            /**
+             * Large editorial title
+             */
+            title: string;
+            /**
+             * Optional smaller description or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Specific theme override for this block
+             */
+            theme?: ('light' | 'dark' | 'parchment') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'editorialHero';
+          }
+        | {
+            /**
+             * Optional grid title
+             */
+            title?: string | null;
+            columns?: ('2' | '3' | '4' | 'masonry') | null;
+            items?:
+              | {
+                  media: number | Media;
+                  caption?: string | null;
+                  aspectRatio?: ('portrait' | 'square' | 'landscape') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaGrid';
+          }
+        | {
+            /**
+             * Keywords or phrases to scroll
+             */
+            items?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            speed?: ('slow' | 'normal' | 'fast') | null;
+            direction?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'horizontalMarquee';
+          }
+        | {
+            /**
+             * Main editorial headline
+             */
+            title: string;
+            /**
+             * Supporting narrative or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Deep background layer (often blurred or textured)
+             */
+            backgroundImage: number | Media;
+            /**
+             * Subject/Focus layer (revealed with liquid effect)
+             */
+            foregroundImage: number | Media;
+            /**
+             * Intensity of the liquid displacement effect
+             */
+            revealIntensity?: ('subtle' | 'medium' | 'bold') | null;
+            cta?: {
+              label?: string | null;
+              link?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'liquidCinematicHero';
+          }
+        | {
+            /**
+             * Section heading (e.g., 'The Adventure Path')
+             */
+            title: string;
+            /**
+             * @RESEARCH, @IMAGINE, @CREATE
+             */
+            steps: {
+              stage: 'research' | 'imagine' | 'create';
+              title: string;
+              description: string;
+              media: number | Media;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'methodologyTimeline';
+          }
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+      )[]
+    | null;
+  /**
    * Materials used in this collection
    */
   materials?: string | null;
@@ -593,7 +1133,7 @@ export interface Lookbook {
    */
   linkedProducts?: (number | Product)[] | null;
   /**
-   * Pricing information
+   * Pricing and commercial information
    */
   pricing?: {
     /**
@@ -690,88 +1230,198 @@ export interface Course {
    */
   slug: string;
   /**
+   * Only published items are visible on the site
+   */
+  status: 'draft' | 'published' | 'coming-soon' | 'archived';
+  /**
    * Course category for filtering
    */
-  category: 'personal-styling' | 'color-analysis' | 'wardrobe-audit' | 'shopping' | 'professional' | 'masterclass';
+  category:
+    | 'personal-styling'
+    | 'color-analysis'
+    | 'wardrobe-audit'
+    | 'shopping'
+    | 'professional'
+    | 'masterclass'
+    | 'construction';
   /**
    * Target audience experience level
    */
   level: 'beginner' | 'intermediate' | 'advanced' | 'all';
   /**
-   * Only published items are visible on the site
+   * Build the course page using editorial blocks
    */
-  status: 'draft' | 'published' | 'coming-soon' | 'archived';
+  layout?:
+    | (
+        | {
+            /**
+             * Cinematic layout style
+             */
+            layout?: ('full' | 'split' | 'overlap') | null;
+            /**
+             * Main background media
+             */
+            media: number | Media;
+            /**
+             * Optional foreground/floating cinematic layer
+             */
+            overlayMedia?: (number | null) | Media;
+            /**
+             * Large editorial title
+             */
+            title: string;
+            /**
+             * Optional smaller description or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Specific theme override for this block
+             */
+            theme?: ('light' | 'dark' | 'parchment') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'editorialHero';
+          }
+        | {
+            /**
+             * Optional grid title
+             */
+            title?: string | null;
+            columns?: ('2' | '3' | '4' | 'masonry') | null;
+            items?:
+              | {
+                  media: number | Media;
+                  caption?: string | null;
+                  aspectRatio?: ('portrait' | 'square' | 'landscape') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaGrid';
+          }
+        | {
+            /**
+             * Keywords or phrases to scroll
+             */
+            items?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            speed?: ('slow' | 'normal' | 'fast') | null;
+            direction?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'horizontalMarquee';
+          }
+        | {
+            /**
+             * Main editorial headline
+             */
+            title: string;
+            /**
+             * Supporting narrative or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Deep background layer (often blurred or textured)
+             */
+            backgroundImage: number | Media;
+            /**
+             * Subject/Focus layer (revealed with liquid effect)
+             */
+            foregroundImage: number | Media;
+            /**
+             * Intensity of the liquid displacement effect
+             */
+            revealIntensity?: ('subtle' | 'medium' | 'bold') | null;
+            cta?: {
+              label?: string | null;
+              link?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'liquidCinematicHero';
+          }
+        | {
+            /**
+             * Section heading (e.g., 'The Adventure Path')
+             */
+            title: string;
+            /**
+             * @RESEARCH, @IMAGINE, @CREATE
+             */
+            steps: {
+              stage: 'research' | 'imagine' | 'create';
+              title: string;
+              description: string;
+              media: number | Media;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'methodologyTimeline';
+          }
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+      )[]
+    | null;
   /**
    * Brief description for cards and previews
    */
   excerpt?: string | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * What students should know before taking this course
-   */
-  prerequisites?: string | null;
-  /**
-   * What students need to have for this course
-   */
-  materials?: string | null;
-  featuredImage?: (number | null) | Media;
   duration: {
     value: number;
     unit: 'hours' | 'days' | 'weeks' | 'months';
   };
-  format: 'online' | 'in-person' | 'hybrid';
+  format: 'online' | 'studio' | 'in-person' | 'hybrid';
   /**
-   * Course pricing
+   * Pricing and commercial information
    */
   pricing?: {
+    /**
+     * Price in Ukrainian Hryvnia
+     */
     uah?: number | null;
+    /**
+     * Price in Euros
+     */
     eur?: number | null;
     /**
-     * Early bird discount price
+     * Sale price in UAH (optional)
      */
-    earlyBirdAmount?: number | null;
+    salePrice?: number | null;
+    /**
+     * Optional note (e.g., "Starting from", "Per hour")
+     */
     priceNote?: string | null;
   };
-  curriculum?:
-    | {
-        module: string;
-        topics?:
-          | {
-              topic: string;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
   instructor: {
     name: string;
     title?: string | null;
     bio?: string | null;
     photo?: (number | null) | Media;
   };
-  testimonials?:
-    | {
-        name: string;
-        quote: string;
-        photo?: (number | null) | Media;
-        id?: string | null;
-      }[]
-    | null;
   upcomingDates?:
     | {
         startDate: string;
@@ -799,6 +1449,222 @@ export interface Course {
    * Enable online payment
    */
   paymentEnabled?: boolean | null;
+  featuredImage?: (number | null) | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Blog posts and editorial content
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  /**
+   * Post title
+   */
+  title: string;
+  /**
+   * URL-friendly identifier (auto-generated)
+   */
+  slug: string;
+  /**
+   * Only published items are visible on the site
+   */
+  status: 'draft' | 'published';
+  /**
+   * Primary image for the post (required)
+   */
+  heroImage: number | Media;
+  /**
+   * Brief summary of the post (max 300 characters, required)
+   */
+  excerpt: string;
+  /**
+   * Author name
+   */
+  author: string;
+  /**
+   * Publication date
+   */
+  publishedAt: string;
+  /**
+   * Post category
+   */
+  category: 'editorial' | 'behind-the-scenes' | 'style-guide' | 'methodology';
+  /**
+   * Tags for flexible categorization
+   */
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Build the post content using editorial blocks
+   */
+  layout?:
+    | (
+        | {
+            /**
+             * Cinematic layout style
+             */
+            layout?: ('full' | 'split' | 'overlap') | null;
+            /**
+             * Main background media
+             */
+            media: number | Media;
+            /**
+             * Optional foreground/floating cinematic layer
+             */
+            overlayMedia?: (number | null) | Media;
+            /**
+             * Large editorial title
+             */
+            title: string;
+            /**
+             * Optional smaller description or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Specific theme override for this block
+             */
+            theme?: ('light' | 'dark' | 'parchment') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'editorialHero';
+          }
+        | {
+            /**
+             * Optional grid title
+             */
+            title?: string | null;
+            columns?: ('2' | '3' | '4' | 'masonry') | null;
+            items?:
+              | {
+                  media: number | Media;
+                  caption?: string | null;
+                  aspectRatio?: ('portrait' | 'square' | 'landscape') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaGrid';
+          }
+        | {
+            /**
+             * Keywords or phrases to scroll
+             */
+            items?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            speed?: ('slow' | 'normal' | 'fast') | null;
+            direction?: ('left' | 'right') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'horizontalMarquee';
+          }
+        | {
+            /**
+             * Main editorial headline
+             */
+            title: string;
+            /**
+             * Supporting narrative or quote
+             */
+            subtitle?: string | null;
+            /**
+             * Deep background layer (often blurred or textured)
+             */
+            backgroundImage: number | Media;
+            /**
+             * Subject/Focus layer (revealed with liquid effect)
+             */
+            foregroundImage: number | Media;
+            /**
+             * Intensity of the liquid displacement effect
+             */
+            revealIntensity?: ('subtle' | 'medium' | 'bold') | null;
+            cta?: {
+              label?: string | null;
+              link?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'liquidCinematicHero';
+          }
+        | {
+            /**
+             * Section heading (e.g., 'The Adventure Path')
+             */
+            title: string;
+            /**
+             * @RESEARCH, @IMAGINE, @CREATE
+             */
+            steps: {
+              stage: 'research' | 'imagine' | 'create';
+              title: string;
+              description: string;
+              media: number | Media;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'methodologyTimeline';
+          }
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+      )[]
+    | null;
+  /**
+   * SEO metadata overrides
+   */
+  seo?: {
+    /**
+     * Custom meta title (overrides post title)
+     */
+    metaTitle?: string | null;
+    /**
+     * Custom meta description (overrides excerpt)
+     */
+    metaDescription?: string | null;
+    /**
+     * Open Graph image (overrides hero image)
+     */
+    ogImage?: (number | null) | Media;
+  };
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -865,6 +1731,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'courses';
         value: number | Course;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -939,6 +1809,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  purpose?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -993,10 +1864,110 @@ export interface ServicesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   status?: T;
-  description?: T;
-  excerpt?: T;
   category?: T;
+  layout?:
+    | T
+    | {
+        editorialHero?:
+          | T
+          | {
+              layout?: T;
+              media?: T;
+              overlayMedia?: T;
+              title?: T;
+              subtitle?: T;
+              theme?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaGrid?:
+          | T
+          | {
+              title?: T;
+              columns?: T;
+              items?:
+                | T
+                | {
+                    media?: T;
+                    caption?: T;
+                    aspectRatio?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        horizontalMarquee?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              speed?: T;
+              direction?: T;
+              id?: T;
+              blockName?: T;
+            };
+        liquidCinematicHero?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              backgroundImage?: T;
+              foregroundImage?: T;
+              revealIntensity?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        methodologyTimeline?:
+          | T
+          | {
+              title?: T;
+              steps?:
+                | T
+                | {
+                    stage?: T;
+                    title?: T;
+                    description?: T;
+                    media?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  excerpt?: T;
+  description?: T;
+  process?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  deliverables?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
   format?: T;
+  duration?: T;
   pricing?:
     | T
     | {
@@ -1004,24 +1975,10 @@ export interface ServicesSelect<T extends boolean = true> {
         eur?: T;
         priceNote?: T;
       };
-  duration?: T;
-  heroImage?: T;
-  includes?:
-    | T
-    | {
-        item?: T;
-        id?: T;
-      };
-  steps?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        id?: T;
-      };
   featured?: T;
   bookable?: T;
   paymentEnabled?: T;
+  heroImage?: T;
   meta?:
     | T
     | {
@@ -1041,15 +1998,102 @@ export interface ProductsSelect<T extends boolean = true> {
   slug?: T;
   status?: T;
   featured?: T;
-  excerpt?: T;
-  description?: T;
-  sku?: T;
   pricing?:
     | T
     | {
         uah?: T;
         eur?: T;
         salePrice?: T;
+        priceNote?: T;
+      };
+  sku?: T;
+  excerpt?: T;
+  description?: T;
+  layout?:
+    | T
+    | {
+        editorialHero?:
+          | T
+          | {
+              layout?: T;
+              media?: T;
+              overlayMedia?: T;
+              title?: T;
+              subtitle?: T;
+              theme?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaGrid?:
+          | T
+          | {
+              title?: T;
+              columns?: T;
+              items?:
+                | T
+                | {
+                    media?: T;
+                    caption?: T;
+                    aspectRatio?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        horizontalMarquee?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              speed?: T;
+              direction?: T;
+              id?: T;
+              blockName?: T;
+            };
+        liquidCinematicHero?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              backgroundImage?: T;
+              foregroundImage?: T;
+              revealIntensity?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        methodologyTimeline?:
+          | T
+          | {
+              title?: T;
+              steps?:
+                | T
+                | {
+                    stage?: T;
+                    title?: T;
+                    description?: T;
+                    media?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   images?:
     | T
@@ -1093,17 +2137,96 @@ export interface PortfolioSelect<T extends boolean = true> {
   status?: T;
   category?: T;
   mainImage?: T;
-  description?: T;
-  challenge?: T;
-  solution?: T;
-  result?: T;
-  gallery?:
+  layout?:
     | T
     | {
-        image?: T;
-        caption?: T;
-        id?: T;
+        editorialHero?:
+          | T
+          | {
+              layout?: T;
+              media?: T;
+              overlayMedia?: T;
+              title?: T;
+              subtitle?: T;
+              theme?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaGrid?:
+          | T
+          | {
+              title?: T;
+              columns?: T;
+              items?:
+                | T
+                | {
+                    media?: T;
+                    caption?: T;
+                    aspectRatio?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        horizontalMarquee?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              speed?: T;
+              direction?: T;
+              id?: T;
+              blockName?: T;
+            };
+        liquidCinematicHero?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              backgroundImage?: T;
+              foregroundImage?: T;
+              revealIntensity?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        methodologyTimeline?:
+          | T
+          | {
+              title?: T;
+              steps?:
+                | T
+                | {
+                    stage?: T;
+                    title?: T;
+                    description?: T;
+                    media?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
+  excerpt?: T;
+  challenge?: T;
+  transformation?: T;
+  solution?: T;
   servicesUsed?: T;
   testimonial?:
     | T
@@ -1143,6 +2266,92 @@ export interface LookbooksSelect<T extends boolean = true> {
   status?: T;
   season?: T;
   description?: T;
+  layout?:
+    | T
+    | {
+        editorialHero?:
+          | T
+          | {
+              layout?: T;
+              media?: T;
+              overlayMedia?: T;
+              title?: T;
+              subtitle?: T;
+              theme?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaGrid?:
+          | T
+          | {
+              title?: T;
+              columns?: T;
+              items?:
+                | T
+                | {
+                    media?: T;
+                    caption?: T;
+                    aspectRatio?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        horizontalMarquee?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              speed?: T;
+              direction?: T;
+              id?: T;
+              blockName?: T;
+            };
+        liquidCinematicHero?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              backgroundImage?: T;
+              foregroundImage?: T;
+              revealIntensity?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        methodologyTimeline?:
+          | T
+          | {
+              title?: T;
+              steps?:
+                | T
+                | {
+                    stage?: T;
+                    title?: T;
+                    description?: T;
+                    media?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   materials?: T;
   careInstructions?: T;
   sizes?: T;
@@ -1225,14 +2434,96 @@ export interface OrdersSelect<T extends boolean = true> {
 export interface CoursesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  status?: T;
   category?: T;
   level?: T;
-  status?: T;
+  layout?:
+    | T
+    | {
+        editorialHero?:
+          | T
+          | {
+              layout?: T;
+              media?: T;
+              overlayMedia?: T;
+              title?: T;
+              subtitle?: T;
+              theme?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaGrid?:
+          | T
+          | {
+              title?: T;
+              columns?: T;
+              items?:
+                | T
+                | {
+                    media?: T;
+                    caption?: T;
+                    aspectRatio?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        horizontalMarquee?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              speed?: T;
+              direction?: T;
+              id?: T;
+              blockName?: T;
+            };
+        liquidCinematicHero?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              backgroundImage?: T;
+              foregroundImage?: T;
+              revealIntensity?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        methodologyTimeline?:
+          | T
+          | {
+              title?: T;
+              steps?:
+                | T
+                | {
+                    stage?: T;
+                    title?: T;
+                    description?: T;
+                    media?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   excerpt?: T;
-  description?: T;
-  prerequisites?: T;
-  materials?: T;
-  featuredImage?: T;
   duration?:
     | T
     | {
@@ -1245,20 +2536,8 @@ export interface CoursesSelect<T extends boolean = true> {
     | {
         uah?: T;
         eur?: T;
-        earlyBirdAmount?: T;
+        salePrice?: T;
         priceNote?: T;
-      };
-  curriculum?:
-    | T
-    | {
-        module?: T;
-        topics?:
-          | T
-          | {
-              topic?: T;
-              id?: T;
-            };
-        id?: T;
       };
   instructor?:
     | T
@@ -1267,14 +2546,6 @@ export interface CoursesSelect<T extends boolean = true> {
         title?: T;
         bio?: T;
         photo?: T;
-      };
-  testimonials?:
-    | T
-    | {
-        name?: T;
-        quote?: T;
-        photo?: T;
-        id?: T;
       };
   upcomingDates?:
     | T
@@ -1294,6 +2565,129 @@ export interface CoursesSelect<T extends boolean = true> {
   featured?: T;
   bookable?: T;
   paymentEnabled?: T;
+  featuredImage?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  status?: T;
+  heroImage?: T;
+  excerpt?: T;
+  author?: T;
+  publishedAt?: T;
+  category?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  layout?:
+    | T
+    | {
+        editorialHero?:
+          | T
+          | {
+              layout?: T;
+              media?: T;
+              overlayMedia?: T;
+              title?: T;
+              subtitle?: T;
+              theme?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaGrid?:
+          | T
+          | {
+              title?: T;
+              columns?: T;
+              items?:
+                | T
+                | {
+                    media?: T;
+                    caption?: T;
+                    aspectRatio?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        horizontalMarquee?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              speed?: T;
+              direction?: T;
+              id?: T;
+              blockName?: T;
+            };
+        liquidCinematicHero?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              backgroundImage?: T;
+              foregroundImage?: T;
+              revealIntensity?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    link?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        methodologyTimeline?:
+          | T
+          | {
+              title?: T;
+              steps?:
+                | T
+                | {
+                    stage?: T;
+                    title?: T;
+                    description?: T;
+                    media?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
   meta?:
     | T
     | {

@@ -12,9 +12,9 @@ import { Metadata } from "next";
 import { generateSeoMetadata } from "@/lib/seo";
 import { getTranslations } from "next-intl/server";
 import { logger } from "@/lib/logger";
-import { LanguageFallback, Button, H2, Body, CardImage } from "@/components/ui";
-import { Section, Container, Grid } from "@/components/layout";
-import { HeroSection } from "@/components/sections";
+import { LanguageFallback, Button, H2, Body } from "@/components/ui";
+import { Section, Container, BlockRenderer } from "@/components/layout";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import {
   FadeInStagger,
   FadeInStaggerContainer,
@@ -79,7 +79,7 @@ export async function generateMetadata({
   return generateSeoMetadata({
     title:
       portfolio.meta?.title || `${portfolio.title} | PURITY Fashion Studio`,
-    description: portfolio.meta?.description || portfolio.description || "",
+    description: portfolio.meta?.description || portfolio.excerpt || "",
     path: `/portfolio/${slug}`,
     image:
       typeof portfolio.mainImage === "object"
@@ -127,73 +127,74 @@ export default async function PortfolioDetailPage({
     (s) => typeof s === "object",
   ) as Service[];
 
+  const hasLayout = portfolio.layout && portfolio.layout.length > 0;
+
   return (
     <main className="min-h-screen bg-background">
-      {/* Hero */}
-      <HeroSection
-        title={portfolio.title}
-        subtitle={
-          portfolio.category ? t(`categories.${portfolio.category}`) : ""
-        }
-        backgroundImage={mainImage?.url || ""}
-      />
+      {hasLayout ? (
+        <BlockRenderer blocks={portfolio.layout as any} />
+      ) : (
+        <>
+          {/* Hero */}
+          <EditorialHero
+            title={portfolio.title}
+            subtitle={
+              portfolio.category ? t(`categories.${portfolio.category}`) : ""
+            }
+            media={{
+              url: mainImage?.url || "",
+              alt: portfolio.title,
+            }}
+            theme="light"
+          />
 
-      {/* Overview - White */}
-      <Section spacing="lg">
-        <Container size="sm">
-          <FadeInStaggerContainer>
-            <FadeInStagger>
-              <H2 className="mb-8">{tCommon("overview")}</H2>
-            </FadeInStagger>
-            <FadeInStagger>
-              <Body className="text-xl font-light leading-relaxed">
-                {portfolio.description}
-              </Body>
-            </FadeInStagger>
-          </FadeInStaggerContainer>
-        </Container>
-      </Section>
+          {/* Deep Narrative Sections - Net-a-Porter Style */}
+          <Section spacing="lg">
+            <Container size="sm">
+              <FadeInStaggerContainer>
+                <FadeInStagger>
+                  <span className="label text-muted-foreground mb-4 block">
+                    {t("challenge") || "The Challenge"}
+                  </span>
+                  <H2 className="editorial-title mb-8">Concept & Vision</H2>
+                </FadeInStagger>
+                <FadeInStagger>
+                  <Body className="text-xl font-light leading-relaxed mb-16">
+                    {portfolio.challenge}
+                  </Body>
+                </FadeInStagger>
 
-      {/* Gallery - Gray */}
-      {portfolio.gallery && portfolio.gallery.length > 0 && (
-        <Section spacing="lg">
-          <Container>
-            <FadeInStaggerContainer>
-              <FadeInStagger>
-                <H2 className="mb-16 text-center">{t("gallery")}</H2>
-              </FadeInStagger>
-              <Grid cols={2} gap="lg" className="max-w-6xl mx-auto">
-                {portfolio.gallery.map((item, index) => {
-                  const image =
-                    typeof item.image === "object"
-                      ? (item.image as MediaType)
-                      : null;
-                  if (!image?.url) return null;
+                <FadeInStagger>
+                  <span className="label text-muted-foreground mb-4 block">
+                    {t("transformation") || "The Transformation"}
+                  </span>
+                  <H2 className="editorial-title mb-8">
+                    Creative Metamorphosis
+                  </H2>
+                </FadeInStagger>
+                <FadeInStagger>
+                  <Body className="text-xl font-light leading-relaxed mb-16">
+                    {portfolio.transformation}
+                  </Body>
+                </FadeInStagger>
 
-                  return (
-                    <FadeInStagger key={item.id || index}>
-                      <div className="space-y-6">
-                        <CardImage
-                          src={image.url}
-                          alt={
-                            item.caption ||
-                            `${portfolio.title} image ${index + 1}`
-                          }
-                          aspect="portrait"
-                        />
-                        {item.caption && (
-                          <Body className="text-sm italic text-center">
-                            {item.caption}
-                          </Body>
-                        )}
-                      </div>
-                    </FadeInStagger>
-                  );
-                })}
-              </Grid>
-            </FadeInStaggerContainer>
-          </Container>
-        </Section>
+                <FadeInStagger>
+                  <span className="label text-muted-foreground mb-4 block">
+                    {t("solution") || "The Result"}
+                  </span>
+                  <H2 className="editorial-title mb-8">Final Realisation</H2>
+                </FadeInStagger>
+                <FadeInStagger>
+                  <Body className="text-xl font-light leading-relaxed">
+                    {portfolio.solution}
+                  </Body>
+                </FadeInStagger>
+              </FadeInStaggerContainer>
+            </Container>
+          </Section>
+
+          {/* Gallery rendered via layout blocks above */}
+        </>
       )}
 
       {/* Services Used - White */}

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { env } from "@/lib/env";
 
 export const Orders: CollectionConfig = {
   slug: "orders",
@@ -23,7 +24,7 @@ export const Orders: CollectionConfig = {
     create: ({ req }) => {
       if (req?.payloadAPI === "local") return true;
 
-      const secret = process.env.PAYLOAD_WEBHOOK_SECRET;
+      const secret = env.PAYLOAD_WEBHOOK_SECRET;
       const headerSecret = req?.headers?.get("x-internal-secret");
 
       if (secret && headerSecret === secret) {

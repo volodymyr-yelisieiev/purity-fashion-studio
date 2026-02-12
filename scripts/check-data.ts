@@ -11,12 +11,12 @@ const check = async () => {
   });
   console.log(
     JSON.stringify(
-      portfolioUk.docs.map((d) => ({
+      portfolioUk.docs.map((d: any) => ({
         title: d.title,
-        description: d.description,
+        excerpt: d.excerpt,
         challenge: d.challenge,
+        transformation: d.transformation,
         solution: d.solution,
-        result: d.result,
       })),
       null,
       2,
@@ -30,26 +30,26 @@ const check = async () => {
   });
   console.log(
     JSON.stringify(
-      servicesUk.docs.map((d) => ({
+      servicesUk.docs.map((d: any) => ({
         title: d.title,
-        steps: d.steps,
-        includes: d.includes,
+        process: d.process,
+        deliverables: d.deliverables,
       })),
       null,
       2,
     ),
   );
 
-  console.log("--- LOOKBOOKS (UK) ---");
-  const lookbooksUk = await payload.find({
-    collection: "lookbooks",
+  console.log("--- PRODUCTS (UK) ---");
+  const productsUk = await payload.find({
+    collection: "products",
     locale: "uk",
   });
   console.log(
     JSON.stringify(
-      lookbooksUk.docs.map((d) => ({
+      productsUk.docs.map((d: any) => ({
         name: d.name,
-        materials: d.materials,
+        material: d.details?.material,
         priceEur: d.pricing?.eur,
       })),
       null,
@@ -61,11 +61,28 @@ const check = async () => {
   const coursesUk = await payload.find({ collection: "courses", locale: "uk" });
   console.log(
     JSON.stringify(
-      coursesUk.docs.map((d) => ({
+      coursesUk.docs.map((d: any) => ({
         title: d.title,
-        curriculum: d.curriculum,
-        testimonials: d.testimonials,
         faq: d.faq,
+      })),
+      null,
+      2,
+    ),
+  );
+
+  console.log("--- PORTFOLIO (EN) ---");
+  const portfolioEn = await payload.find({
+    collection: "portfolio",
+    locale: "en",
+  });
+  console.log(
+    JSON.stringify(
+      portfolioEn.docs.map((d: any) => ({
+        title: d.title,
+        excerpt: d.excerpt,
+        challenge: d.challenge,
+        transformation: d.transformation,
+        solution: d.solution,
       })),
       null,
       2,
@@ -76,10 +93,8 @@ const check = async () => {
   const coursesEn = await payload.find({ collection: "courses", locale: "en" });
   console.log(
     JSON.stringify(
-      coursesEn.docs.map((d) => ({
+      coursesEn.docs.map((d: any) => ({
         title: d.title,
-        curriculum: d.curriculum,
-        testimonials: d.testimonials,
         faq: d.faq,
       })),
       null,

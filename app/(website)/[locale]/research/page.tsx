@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
-import { getServices, type Locale } from "@/lib/payload";
+import { getServices, getPageHeroMedia, type Locale } from "@/lib/payload";
 import { generateSeoMetadata } from "@/lib/seo";
+import { normalizeServices } from "@/lib/utils/safeData";
 import {
   H2,
   H3,
@@ -12,13 +13,15 @@ import {
   CardPrice,
 } from "@/components/ui";
 import { Section, Container, Grid } from "@/components/layout";
-import { HeroSection, CTASection } from "@/components/sections";
+import { CTASection } from "@/components/sections";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import {
   FadeInStagger,
   FadeInStaggerContainer,
 } from "@/components/animations/FadeInStagger";
 import type { Metadata } from "next";
 import type { Service, Media } from "@/payload-types";
+import { getMediaUrl } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -50,10 +53,10 @@ export default async function ResearchPage({
   const t = await getTranslations({ locale, namespace: "research" });
   const tPages = await getTranslations({ locale, namespace: "pages" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
+  const heroMedia = await getPageHeroMedia("research");
 
   // Fetch research-category services
   const servicesResult = await getServices(locale as Locale);
-  const { normalizeServices } = await import("@/lib/utils/safeData");
   const normalizedServices = normalizeServices(servicesResult.docs || []);
 
   // Filter for research-related services (Personal Lookbook, Wardrobe Audit)
@@ -62,12 +65,16 @@ export default async function ResearchPage({
   );
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full" data-hero-fullbleed>
       {/* 1. Hero Section */}
-      <HeroSection
+      <EditorialHero
         title={tPages("research.title")}
         subtitle={tPages("research.subtitle")}
-        backgroundImage="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=1920&h=1080&fit=crop&q=85"
+        media={{
+          url: heroMedia.url || "",
+          alt: tPages("research.title"),
+        }}
+        theme="light"
       />
 
       {/* 2. WHY SECTION - White background */}
@@ -81,10 +88,10 @@ export default async function ResearchPage({
               </div>
             </FadeInStagger>
             <FadeInStagger className="space-y-6">
-              <Body className="text-lg leading-relaxed">
+              <Body className="mx-auto max-w-3xl text-center text-lg leading-relaxed">
                 {t("intro.paragraph1")}
               </Body>
-              <Body className="text-lg leading-relaxed">
+              <Body className="mx-auto max-w-3xl text-center text-lg leading-relaxed">
                 {t("intro.paragraph2")}
               </Body>
             </FadeInStagger>
@@ -119,7 +126,7 @@ export default async function ResearchPage({
       {/* 4. RESEARCH SERVICES - White background */}
       <Section spacing="lg">
         <Container>
-          <div className="mb-12 text-center">
+          <div className="mx-auto max-w-2xl mb-12 text-center">
             <H2 className="mb-4">{t("services.title")}</H2>
             <Lead>{t("services.subtitle")}</Lead>
           </div>
@@ -136,7 +143,7 @@ export default async function ResearchPage({
                     <FadeInStagger key={service.id}>
                       <Card link={{ href: `/services/${service.slug}` }} hover>
                         <CardImage
-                          src={heroImage?.url || "/placeholder.jpg"}
+                          src={getMediaUrl(heroImage?.url)}
                           alt={heroImage?.alt || service.title}
                           aspect="video"
                         />
@@ -170,7 +177,7 @@ export default async function ResearchPage({
         title={t("cta.title")}
         description={t("cta.description")}
         ctaText={t("cta.button")}
-        ctaLink="/realisation"
+        ctaLink="/imagine"
         variant="muted"
       />
     </div>

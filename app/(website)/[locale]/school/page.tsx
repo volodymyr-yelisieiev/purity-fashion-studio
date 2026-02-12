@@ -1,5 +1,5 @@
-import { getPayload } from "@/lib/payload";
-import { HeroSection } from "@/components/sections";
+import { getPayload, getPageHeroMedia } from "@/lib/payload";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import {
   EmptyState,
   Lead,
@@ -25,6 +25,7 @@ export default async function SchoolPage({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "school" });
   const tPages = await getTranslations({ locale, namespace: "pages" });
+  const heroMedia = await getPageHeroMedia("school");
 
   const payload = await getPayload();
   const { docs: courses } = await payload.find({
@@ -41,10 +42,14 @@ export default async function SchoolPage({
 
   return (
     <>
-      <HeroSection
+      <EditorialHero
         title={tPages("school.title")}
         subtitle={tPages("school.subtitle")}
-        backgroundImage="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1920&h=1080&fit=crop&q=85"
+        media={{
+          url: heroMedia.url || "",
+          alt: tPages("school.title"),
+        }}
+        theme="light"
       />
 
       {/* Intro Section */}

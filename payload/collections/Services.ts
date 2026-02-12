@@ -8,6 +8,7 @@ import {
   bookingFields,
   publishedReadAccess,
 } from "../fields";
+import { layoutBlocks } from "../blocks";
 
 export const Services: CollectionConfig = {
   slug: "services",
@@ -32,24 +33,12 @@ export const Services: CollectionConfig = {
     slugField("title"),
     statusField(),
     {
-      name: "description",
-      type: "textarea",
-      localized: true,
-      admin: { description: "Full service description" },
-    },
-    {
-      name: "excerpt",
-      type: "textarea",
-      localized: true,
-      admin: { description: "Brief description for cards (1-2 sentences)" },
-    },
-    {
       name: "category",
       type: "select",
       options: [
         { label: "Research", value: "research" },
-        { label: "Realisation", value: "realisation" },
-        { label: "Transformation", value: "transformation" },
+        { label: "Imagine", value: "imagine" },
+        { label: "Create", value: "create" },
         { label: "Personal Styling", value: "styling" },
         { label: "Atelier & Tailoring", value: "atelier" },
         { label: "Consulting", value: "consulting" },
@@ -61,6 +50,74 @@ export const Services: CollectionConfig = {
       admin: { position: "sidebar", description: "Service category" },
     },
     {
+      name: "layout",
+      type: "blocks",
+      blocks: layoutBlocks,
+      localized: true,
+      admin: { description: "Build the service page using editorial blocks" },
+    },
+    {
+      name: "excerpt",
+      type: "textarea",
+      required: true,
+      localized: true,
+      admin: {
+        position: "sidebar",
+        description: "Brief professional summary (Required)",
+      },
+    },
+    {
+      name: "description",
+      type: "textarea",
+      required: true,
+      localized: true,
+      admin: {
+        description:
+          "Deep narrative story of the service (Required for Editorial feel)",
+      },
+    },
+    {
+      name: "process",
+      type: "array",
+      required: true,
+      minRows: 3,
+      localized: true,
+      admin: {
+        description:
+          "The 3-stage journey for this service (Minimum 3 steps required)",
+      },
+      fields: [
+        {
+          name: "title",
+          type: "text",
+          required: true,
+        },
+        {
+          name: "description",
+          type: "textarea",
+          required: true,
+        },
+      ],
+    },
+    {
+      name: "deliverables",
+      type: "array",
+      required: true,
+      minRows: 1,
+      localized: true,
+      admin: {
+        description:
+          "What the client receives (e.g., Personal Lookbook, Custom Mannequin)",
+      },
+      fields: [
+        {
+          name: "item",
+          type: "text",
+          required: true,
+        },
+      ],
+    },
+    {
       name: "format",
       type: "select",
       options: [
@@ -68,39 +125,33 @@ export const Services: CollectionConfig = {
         { label: "In Studio", value: "studio" },
         { label: "At Client Location", value: "onsite" },
         { label: "Hybrid", value: "hybrid" },
+        { label: "Retreat", value: "retreat" },
       ],
-      admin: { description: "How this service is delivered" },
+      admin: {
+        position: "sidebar",
+        description: "How this service is delivered",
+      },
     },
-    pricingField(),
     {
       name: "duration",
       type: "text",
       localized: true,
-      admin: { description: 'Service duration (e.g., "2 hours")' },
+      admin: {
+        position: "sidebar",
+        description: 'Service duration (e.g., "2 hours")',
+      },
     },
+    pricingField(),
+    featuredField(),
+    ...bookingFields(),
     {
       name: "heroImage",
       type: "upload",
       relationTo: "media",
-      admin: { description: "Main image for the service page" },
+      admin: {
+        position: "sidebar",
+        description: "Thumbnail image for the service",
+      },
     },
-    {
-      name: "includes",
-      type: "array",
-      localized: true,
-      admin: { description: "What is included in this service" },
-      fields: [{ name: "item", type: "text", required: true }],
-    },
-    {
-      name: "steps",
-      type: "array",
-      admin: { description: "How the service works (process steps)" },
-      fields: [
-        { name: "title", type: "text", localized: true, required: true },
-        { name: "description", type: "textarea", localized: true },
-      ],
-    },
-    featuredField(),
-    ...bookingFields(),
   ],
 };

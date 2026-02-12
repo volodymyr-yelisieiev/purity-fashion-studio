@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import configPromise from "@payload-config";
 import { constructWebhookEvent, getStripe } from "@/lib/stripe";
 import { sendOrderConfirmationEmail } from "@/lib/email";
-import { getStripeConfig } from "@/config/env";
+import { getStripeConfig } from "@/lib/env";
 import type { Order } from "@/payload-types";
 import { logger } from "@/lib/logger";
 

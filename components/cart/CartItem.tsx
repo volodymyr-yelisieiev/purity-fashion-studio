@@ -3,7 +3,7 @@
 import { Minus, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui";
 import { useCart } from "@/hooks/useCart";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getMediaUrl } from "@/lib/utils";
 import type { CartItem as CartItemType } from "@/lib/store/cart";
 import Image from "next/image";
 
@@ -20,7 +20,7 @@ export function CartItem({ item }: CartItemProps) {
       <div className="w-20 h-20 bg-background flex items-center justify-center shrink-0 relative overflow-hidden">
         {item.image ? (
           <Image
-            src={item.image}
+            src={getMediaUrl(item.image)}
             alt={item.name}
             fill
             className="object-cover"

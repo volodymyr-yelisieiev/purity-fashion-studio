@@ -4,8 +4,10 @@ import {
   slugField,
   statusField,
   featuredField,
+  pricingField,
   publishedReadAccess,
 } from "../fields";
+import { layoutBlocks } from "../blocks";
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -34,6 +36,13 @@ export const Products: CollectionConfig = {
       { label: "Archived", value: "archived" },
     ]),
     featuredField(),
+    pricingField({ required: true, includeSale: true }),
+    {
+      name: "sku",
+      type: "text",
+      unique: true,
+      admin: { position: "sidebar", description: "Stock Keeping Unit" },
+    },
     {
       name: "excerpt",
       type: "textarea",
@@ -47,38 +56,11 @@ export const Products: CollectionConfig = {
       admin: { description: "Full product description" },
     },
     {
-      name: "sku",
-      type: "text",
-      unique: true,
-      admin: { position: "sidebar", description: "Stock Keeping Unit" },
-    },
-    {
-      name: "pricing",
-      type: "group",
-      admin: { description: "Product pricing" },
-      fields: [
-        {
-          name: "uah",
-          type: "number",
-          required: true,
-          min: 0,
-          admin: { description: "Price in Ukrainian Hryvnia" },
-        },
-        {
-          name: "eur",
-          type: "number",
-          min: 0,
-          admin: { description: "Price in Euro (optional)" },
-        },
-        {
-          name: "salePrice",
-          type: "number",
-          min: 0,
-          admin: {
-            description: "Sale price in UAH (leave empty if not on sale)",
-          },
-        },
-      ],
+      name: "layout",
+      type: "blocks",
+      blocks: layoutBlocks,
+      localized: true,
+      admin: { description: "Build the product page using editorial blocks" },
     },
     {
       name: "images",

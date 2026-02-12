@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
-import { HeroSection, MethodologySection } from "@/components/sections";
+import { MethodologySection } from "@/components/sections";
 import { generateSeoMetadata } from "@/lib/seo";
+import { getPageHeroMedia } from "@/lib/payload";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import { H2, H3, Lead, Body } from "@/components/ui";
 import { Section, Container, Grid } from "@/components/layout";
 import {
@@ -31,6 +33,7 @@ export default async function AboutPage({ params }: PageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "about" });
   const tPages = await getTranslations({ locale, namespace: "pages" });
+  const heroMedia = await getPageHeroMedia("about");
 
   const methodologySteps = [
     {
@@ -48,19 +51,23 @@ export default async function AboutPage({ params }: PageProps) {
       title: t("methodology.step3.title"),
       description: t("methodology.step3.description"),
     },
-    {
-      number: "04",
-      title: t("methodology.step4.title"),
-      description: t("methodology.step4.description"),
-    },
   ];
 
+  const integrationStep = {
+    title: t("methodology.step4.title"),
+    description: t("methodology.step4.description"),
+  };
+
   return (
-    <main>
-      <HeroSection
+    <>
+      <EditorialHero
         title={tPages("about.title")}
         subtitle={tPages("about.subtitle")}
-        backgroundImage="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=1080&fit=crop&q=85"
+        media={{
+          url: heroMedia.url || "",
+          alt: tPages("about.title"),
+        }}
+        theme="light"
       />
 
       <Section spacing="md">
@@ -71,10 +78,14 @@ export default async function AboutPage({ params }: PageProps) {
             </FadeInStagger>
             <div className="space-y-6">
               <FadeInStagger>
-                <Lead className="mx-0">{t("philosophy.paragraph1")}</Lead>
+                <Lead className="mx-auto max-w-3xl text-center text-lg md:text-xl lg:text-2xl">
+                  {t("philosophy.paragraph1")}
+                </Lead>
               </FadeInStagger>
               <FadeInStagger>
-                <Lead className="mx-0">{t("philosophy.paragraph2")}</Lead>
+                <Lead className="mx-auto max-w-3xl text-center text-lg md:text-xl lg:text-2xl">
+                  {t("philosophy.paragraph2")}
+                </Lead>
               </FadeInStagger>
             </div>
           </FadeInStaggerContainer>
@@ -87,6 +98,21 @@ export default async function AboutPage({ params }: PageProps) {
         steps={methodologySteps}
         background="gray"
       />
+
+      <Section spacing="sm" background="gray">
+        <Container size="sm">
+          <FadeInStaggerContainer>
+            <FadeInStagger>
+              <div className="border-t border-border pt-10 text-center">
+                <H3 className="mb-3">{integrationStep.title}</H3>
+                <Body className="mx-auto max-w-3xl text-center">
+                  {integrationStep.description}
+                </Body>
+              </div>
+            </FadeInStagger>
+          </FadeInStaggerContainer>
+        </Container>
+      </Section>
 
       <Section spacing="md">
         <Container size="md" className="text-center">
@@ -123,6 +149,6 @@ export default async function AboutPage({ params }: PageProps) {
           </FadeInStaggerContainer>
         </Container>
       </Section>
-    </main>
+    </>
   );
 }

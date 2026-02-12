@@ -20,6 +20,8 @@
  * Each cold start creates a new Map, and concurrent instances don't share state.
  */
 
+import { env, isDev } from "@/lib/env";
+
 interface RateLimitEntry {
   count: number;
   resetTime: number;
@@ -30,11 +32,11 @@ const memoryStore = new Map<string, RateLimitEntry>();
 
 // Check if Upstash is configured
 const isUpstashConfigured = !!(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
 );
 
 // Log warning in development if using memory store (using logger would cause circular dependency)
-if (!isUpstashConfigured && process.env.NODE_ENV === "development") {
+if (!isUpstashConfigured && isDev) {
   console.warn(
     "⚠️  Rate limiting using in-memory store. " +
       "For production, configure UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN",

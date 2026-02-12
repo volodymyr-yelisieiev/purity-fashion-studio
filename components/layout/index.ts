@@ -4,4 +4,6 @@ export { RootLayout } from "./RootLayout";
 export { Section } from "./Section";
 export { Container } from "./Container";
 export { Grid } from "./Grid";
+export { ExpandableGrid } from "./ExpandableGrid";
 export { PageHeader } from "./PageHeader";
+export { BlockRenderer } from "./BlockRenderer";

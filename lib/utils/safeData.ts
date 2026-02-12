@@ -96,7 +96,7 @@ export function normalizeCourse(item: Partial<Course>): Course {
     pricing: {
       uah: item.pricing?.uah ?? null,
       eur: item.pricing?.eur ?? null,
-      earlyBirdAmount: item.pricing?.earlyBirdAmount ?? null,
+      salePrice: item.pricing?.salePrice ?? null,
       priceNote: item.pricing?.priceNote ?? undefined,
     },
   } as Course;

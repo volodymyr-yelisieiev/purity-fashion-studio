@@ -1,8 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import type { Lookbook as CollectionType, Media } from "@/payload-types";
-import { getPayload } from "@/lib/payload";
-import { hasContent } from "@/lib/utils";
-import { HeroSection } from "@/components/sections";
+import { getPayload, getPageHeroMedia } from "@/lib/payload";
+import { hasContent, getMediaUrl } from "@/lib/utils";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import { EmptyState, Lead, Card, CardImage, CardBody } from "@/components/ui";
 import { Section, Container, Grid } from "@/components/layout";
 import {
@@ -18,6 +18,8 @@ export default async function CollectionsPage({
   const { locale } = await params;
   const tPages = await getTranslations({ locale, namespace: "pages" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
+
+  const heroMedia = await getPageHeroMedia("collections");
 
   const payload = await getPayload();
   const collections = await payload.find({
@@ -37,10 +39,14 @@ export default async function CollectionsPage({
   if (filteredDocs.length === 0) {
     return (
       <>
-        <HeroSection
+        <EditorialHero
           title={tPages("collections.title")}
           subtitle={tPages("collections.subtitle")}
-          backgroundImage="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop&q=85"
+          media={{
+            url: heroMedia.url || "",
+            alt: tPages("collections.title"),
+          }}
+          theme="light"
         />
         <EmptyState
           title={tCommon("noContent")}
@@ -53,10 +59,14 @@ export default async function CollectionsPage({
 
   return (
     <>
-      <HeroSection
+      <EditorialHero
         title={tPages("collections.title")}
         subtitle={tPages("collections.subtitle")}
-        backgroundImage="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop&q=85"
+        media={{
+          url: heroMedia.url || "",
+          alt: tPages("collections.title"),
+        }}
+        theme="light"
       />
 
       {/* Intro Section */}
@@ -90,7 +100,7 @@ export default async function CollectionsPage({
                   hover
                 >
                   <CardImage
-                    src={coverImage?.url || "/placeholder.jpg"}
+                    src={getMediaUrl(coverImage?.url)}
                     alt={coverImage?.alt || collection.name}
                     aspect="video"
                   />

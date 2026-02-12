@@ -1,4 +1,3 @@
-export { HeroSection } from "./HeroSection";
 export { ServicesPreview } from "./ServicesPreview";
 export { MethodologySection } from "./MethodologySection";
 export {

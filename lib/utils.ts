@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { isDev } from "@/lib/env";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -157,4 +158,28 @@ export function formatPrice(
     },
   );
   return formatter.format(amount);
+}
+
+/**
+ * Sanitize media URLs to prevent Next.js "private IP" resolution errors
+ * on localhost. Strips the domain if it matches the current origin.
+ */
+export const PLACEHOLDER_IMAGE = "/placeholder.svg";
+
+export function getMediaUrl(url: string | undefined | null): string {
+  if (!url) return PLACEHOLDER_IMAGE;
+
+  // If we are on localhost, strip the domain from local URLs to avoid private IP resolution issues
+  if (isDev && url.includes("localhost:")) {
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname === "localhost") {
+        return parsed.pathname + parsed.search;
+      }
+    } catch {
+      // If URL parsing fails, return as is (might already be a relative path)
+    }
+  }
+
+  return url;
 }

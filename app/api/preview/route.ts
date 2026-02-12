@@ -1,6 +1,7 @@
 import { draftMode } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
+import { getPayloadConfig } from "@/lib/env";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -9,7 +10,7 @@ export async function GET(req: NextRequest) {
   const collection = searchParams.get("collection");
   const locale = searchParams.get("locale") || "uk";
 
-  if (secret !== process.env.PAYLOAD_SECRET) {
+  if (secret !== getPayloadConfig().secret) {
     return new Response("Invalid token", { status: 401 });
   }
 

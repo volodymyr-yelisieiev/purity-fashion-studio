@@ -1,9 +1,11 @@
 import { getTranslations } from "next-intl/server";
-import { HeroSection, ServicesPreview } from "@/components/sections";
+import { ServicesPreview } from "@/components/sections";
 import { generateSeoMetadata } from "@/lib/seo";
 import { getPayload } from "@/lib/payload";
+import { EditorialHero } from "@/components/blocks/EditorialHero";
 import { EmptyState } from "@/components/ui";
 import { hasContent, formatPrice } from "@/lib/utils";
+import { normalizeServices } from "@/lib/utils/safeData";
 import type { Service, Media } from "@/payload-types";
 import type { Metadata } from "next";
 
@@ -44,8 +46,6 @@ export default async function ServicesPage({ params }: PageProps) {
     },
   });
 
-  const { normalizeServices } = await import("@/lib/utils/safeData");
-  // Filter out items without content in current locale
   const filteredServices = normalizeServices(services || []).filter((service) =>
     hasContent(service.title),
   );
@@ -90,9 +90,14 @@ export default async function ServicesPage({ params }: PageProps) {
   if (formattedServices.length === 0) {
     return (
       <main>
-        <HeroSection
+        <EditorialHero
           title={tPages("services.title")}
           subtitle={tPages("services.subtitle")}
+          media={{
+            url: "",
+            alt: tPages("services.title"),
+          }}
+          theme="light"
         />
         <EmptyState
           title={tCommon("noContent")}
@@ -105,9 +110,14 @@ export default async function ServicesPage({ params }: PageProps) {
 
   return (
     <main>
-      <HeroSection
+      <EditorialHero
         title={tPages("services.title")}
         subtitle={tPages("services.subtitle")}
+        media={{
+          url: "",
+          alt: tPages("services.title"),
+        }}
+        theme="light"
       />
       <ServicesPreview services={formattedServices} viewAllLink={undefined} />
     </main>

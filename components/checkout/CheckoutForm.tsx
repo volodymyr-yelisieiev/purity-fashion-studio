@@ -18,7 +18,7 @@ import {
 } from "@/lib/validation/checkoutSchema";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
-import { features } from "@/config/env";
+import { features } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
 interface CheckoutFormProps {

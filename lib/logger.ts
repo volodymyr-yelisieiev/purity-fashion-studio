@@ -1,4 +1,4 @@
-export const isDev = process.env.NODE_ENV !== "production";
+import { isDev } from "@/lib/env";
 
 export const logger = {
   info: (message: string, ...args: unknown[]) => {

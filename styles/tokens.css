@@ -35,77 +35,114 @@
   
   /* Container sizes */
   .container-sm {
-    @apply mx-auto max-w-3xl px-4 md:px-6 lg:px-8;
+    @apply mx-auto max-w-4xl px-6 md:px-12 lg:px-24;
   }
   
   .container-md {
-    @apply mx-auto max-w-4xl px-4 md:px-6 lg:px-8;
+    @apply mx-auto max-w-5xl px-6 md:px-12 lg:px-24;
   }
   
   .container-lg {
-    @apply mx-auto max-w-6xl px-4 md:px-6 lg:px-8;
+    @apply mx-auto max-w-7xl px-6 md:px-12 lg:px-24;
   }
   
   .container-xl {
-    @apply mx-auto max-w-7xl px-4 md:px-6 lg:px-8;
+    @apply mx-auto max-w-360 px-6 md:px-12 lg:px-24;
   }
+
+  /* Asymmetrical Editorial Spacing */
+  .editorial-grid {
+    @apply grid grid-cols-12 gap-6 md:gap-8;
+  }
+
+  .editorial-offset-right {
+    @apply col-start-1 col-end-12 md:col-start-2 md:col-end-11 lg:col-start-3 lg:col-end-10;
+  }
+
+  .editorial-offset-left {
+    @apply col-start-2 col-end-13 md:col-start-3 md:col-end-12 lg:col-start-4 lg:col-end-11;
+  }
+
+  .asymmetric-spacer-sm { @apply h-12 md:h-24; }
+  .asymmetric-spacer-md { @apply h-24 md:h-48; }
+  .asymmetric-spacer-lg { @apply h-32 md:h-64; }
   
-  /* Typography presets */
+  /* Typography presets - Net-a-Porter Style */
   .heading-1 {
-    @apply font-serif text-4xl font-light tracking-tight text-foreground md:text-5xl lg:text-6xl;
+    @apply font-serif font-extralight tracking-tight text-foreground text-center;
+    font-size: clamp(2.25rem, 7vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
   }
   
   .heading-2 {
-    @apply font-serif text-3xl font-light tracking-tight text-foreground md:text-4xl;
+    @apply font-serif text-3xl font-extralight tracking-tight text-foreground md:text-5xl lg:text-6xl text-center;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
   }
   
   .heading-3 {
-    @apply font-serif text-2xl font-light tracking-tight text-foreground md:text-3xl;
+    @apply font-serif text-xl font-normal tracking-tight text-foreground md:text-2xl lg:text-3xl text-center;
+    line-height: 1.2;
+    text-wrap: balance;
   }
-  
+
   .heading-4 {
-    @apply font-serif text-xl font-light text-foreground md:text-2xl;
+    @apply font-serif text-lg font-normal text-foreground md:text-xl text-center;
+    text-wrap: balance;
+  }
+
+  .editorial-title {
+    @apply font-serif italic font-extralight tracking-tighter text-foreground text-center;
+    font-size: clamp(2.75rem, 11vw, 9rem);
+    line-height: 0.85;
+    text-wrap: balance;
   }
   
   .body-lead {
-    @apply text-lg leading-relaxed text-muted-foreground md:text-xl;
+    @apply text-xl font-light leading-relaxed tracking-wide text-muted-foreground md:text-2xl lg:text-3xl text-center mx-auto;
+    max-width: 42rem;
   }
   
   .body-base {
-    @apply text-base leading-relaxed text-muted-foreground;
+    @apply text-base font-light leading-relaxed tracking-normal text-muted-foreground md:text-lg;
+    max-width: 65ch;
   }
   
   .body-small {
-    @apply text-sm text-muted-foreground;
+    @apply text-xs font-light tracking-wider text-muted-foreground md:text-sm;
   }
   
   .label {
-    @apply text-xs font-medium uppercase tracking-widest text-muted-foreground;
+    @apply text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground text-center mx-auto;
   }
-  
-  /* Card styles */
-  .card-base {
-    @apply border border-border bg-background p-6 transition-colors;
-  }
-  
-  .card-hover {
-    @apply hover:border-foreground/20;
+
+  .text-center .body-base,
+  .text-center .body-lead,
+  .text-center .label {
+    @apply mx-auto text-center;
   }
   
   /* Link styles */
-  .link-underline {
-    @apply underline-offset-4 hover:underline;
-  }
-  
-  .link-subtle {
-    @apply transition-colors hover:text-muted-foreground;
+  .link-editorial {
+    @apply relative inline-block transition-colors hover:opacity-70 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:origin-left hover:after:scale-x-100 font-medium;
   }
 }
 
 /* ============================================
-   ANIMATION TOKENS
+   METHODOLOGY THEMES & ANIMATION TOKENS
    ============================================ */
 @layer base {
+  [data-methodology] {
+    --background: #1A1A1A;
+    --foreground: #FFFFFF;
+    --muted-foreground: #A1A1A1;
+    --border: rgba(255, 255, 255, 0.1);
+    --accent: #D4AF37;
+  }
+
   :root {
     /* Transition durations */
     --duration-fast: 150ms;

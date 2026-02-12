@@ -1,4 +1,5 @@
 import type { CollectionAfterChangeHook } from "payload";
+import { getPayloadConfig, getSiteConfig } from "@/lib/env";
 
 export const revalidateContent =
   (collectionSlug: string): CollectionAfterChangeHook =>
@@ -9,9 +10,8 @@ export const revalidateContent =
     }
 
     try {
-      const siteUrl =
-        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-      const secret = process.env.PAYLOAD_SECRET;
+      const siteUrl = getSiteConfig().url;
+      const secret = getPayloadConfig().secret;
 
       // Construct paths to revalidate
       // 1. The specific item page

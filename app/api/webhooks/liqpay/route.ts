@@ -7,7 +7,7 @@ import {
   mapLiqPayStatus,
 } from "@/lib/liqpay";
 import { sendOrderConfirmationEmail } from "@/lib/email";
-import { features } from "@/config/env";
+import { features } from "@/lib/env";
 import type { Order } from "@/payload-types";
 import { logger } from "@/lib/logger";
 

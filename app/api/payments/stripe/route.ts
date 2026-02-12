@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
 import { createPaymentIntent, toSmallestUnit } from "@/lib/stripe";
-import { features } from "@/config/env";
+import { features } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
