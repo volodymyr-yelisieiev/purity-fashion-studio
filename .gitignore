@@ -4,10 +4,12 @@ node_modules/
 # Build output
 dist/
 build/
+.output/
 .worktrees/
 
 # Framework/tool caches
 .tanstack/
+.vercel/
 
 # Package manager caches
 .pnpm-store/
