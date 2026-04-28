@@ -1,0 +1,4516 @@
+{
+  "version": 1,
+  "source": "src/lib/content.ts",
+  "generatedAt": "2026-04-28T00:00:00.000Z",
+  "locales": {
+    "uk": {
+      "services": [
+        {
+          "kind": "service",
+          "id": "service:personal-lookbook",
+          "slug": "personal-lookbook",
+          "area": "research",
+          "title": "Personal Lookbook",
+          "eyebrow": "Color Palette + Cut Strategy",
+          "summary": "Персональна карта силуету та кольору, яка збирає вас в одну чітку гардеробну систему.",
+          "price": {
+            "eur": "€290",
+            "uah": "₴12 500"
+          },
+          "duration": "2 сесії + PDF lookbook",
+          "leadTime": "7-10 днів",
+          "formats": [
+            {
+              "id": "online",
+              "label": "Онлайн",
+              "detail": "Zoom + цифровий lookbook"
+            },
+            {
+              "id": "studio",
+              "label": "Студія",
+              "detail": "Київська сесія з матеріальними референсами"
+            }
+          ],
+          "deliverables": [
+            "Індивідуальна палітра",
+            "Стратегія крою",
+            "Мінікапсула покупок"
+          ],
+          "process": [
+            "Діагностика стилю та контексту життя",
+            "Колірний та силуетний аналіз",
+            "Підготовка PDF lookbook"
+          ],
+          "notes": [
+            "Підходить як перший крок перед shopping-service або atelier",
+            "Формат студії доступний у Києві"
+          ],
+          "visualMood": "Тонкі модулі кольору, лінійний силует і сторінки lookbook у ритмі editorial-каталогу.",
+          "heroLabel": "Початок нової гардеробної архітектури",
+          "media": {
+            "src": "/images/purity_2.webp",
+            "alt": "Personal lookbook spread",
+            "caption": "Початок нової гардеробної архітектури"
+          },
+          "seo": {
+            "title": "PURITY | Personal Lookbook",
+            "description": "Персональна карта силуету та кольору, яка збирає вас в одну чітку гардеробну систему.",
+            "image": {
+              "src": "/images/purity_2.webp",
+              "alt": "Personal lookbook spread",
+              "caption": "Початок нової гардеробної архітектури"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:personal-lookbook",
+            "kind": "service",
+            "slug": "personal-lookbook",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:personal-lookbook:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-personal-lookbook-preview"
+          }
+        },
+        {
+          "kind": "service",
+          "id": "service:wardrobe-review",
+          "slug": "wardrobe-review",
+          "area": "research",
+          "title": "Wardrobe Review",
+          "eyebrow": "Capsule Revision",
+          "summary": "Ревізія гардероба з чітким рішенням: що лишити, що перешити, що докупити, а що відпустити.",
+          "price": {
+            "eur": "€240",
+            "uah": "₴10 300"
+          },
+          "duration": "3-4 години",
+          "leadTime": "48 годин до звіту",
+          "formats": [
+            {
+              "id": "home",
+              "label": "На місці",
+              "detail": "Виїзд стиліста до клієнта"
+            },
+            {
+              "id": "hybrid",
+              "label": "Гібрид",
+              "detail": "Фотоархів + follow-up call"
+            }
+          ],
+          "deliverables": [
+            "Список keep / alter / buy",
+            "Капсульні прогалини",
+            "Пріоритети наступної покупки"
+          ],
+          "process": [
+            "Сканування гардеробу",
+            "Сортування по ролях і силуетах",
+            "Післясесійний memo-звіт"
+          ],
+          "notes": [
+            "Добре поєднується з Personal Lookbook",
+            "Можна додати shopping-plan як другий етап"
+          ],
+          "visualMood": "Таксономія шафи, картки-стани й чиста капсульна карта після редагування.",
+          "heroLabel": "Редактура існуючого гардероба",
+          "media": {
+            "src": "/images/purity_1.webp",
+            "alt": "Wardrobe review frame",
+            "caption": "Редактура існуючого гардероба"
+          },
+          "seo": {
+            "title": "PURITY | Wardrobe Review",
+            "description": "Ревізія гардероба з чітким рішенням: що лишити, що перешити, що докупити, а що відпустити.",
+            "image": {
+              "src": "/images/purity_1.webp",
+              "alt": "Wardrobe review frame",
+              "caption": "Редактура існуючого гардероба"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:wardrobe-review",
+            "kind": "service",
+            "slug": "wardrobe-review",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:wardrobe-review:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-wardrobe-review-preview"
+          }
+        },
+        {
+          "kind": "service",
+          "id": "service:shopping-service",
+          "slug": "shopping-service",
+          "area": "realisation",
+          "title": "Shopping Service",
+          "eyebrow": "Remote plan or live accompaniment",
+          "summary": "Точний shopping-маршрут: від онлайн-підбору до живого супроводу в магазинах.",
+          "price": {
+            "eur": "€320",
+            "uah": "₴13 800"
+          },
+          "duration": "1 день або 1 онлайн-план",
+          "leadTime": "3-5 днів підготовки",
+          "formats": [
+            {
+              "id": "remote",
+              "label": "Онлайн-план",
+              "detail": "Посилання, заміни, фінальний кошик"
+            },
+            {
+              "id": "live",
+              "label": "Live-супровід",
+              "detail": "Супровід у магазинах протягом дня"
+            }
+          ],
+          "deliverables": [
+            "Маршрут брендів",
+            "Шопінг-лист з пріоритетами",
+            "Фоллоуап після сесії"
+          ],
+          "process": [
+            "Погодження бюджету",
+            "Підбір маршрутів і речей",
+            "Фіналізація покупки"
+          ],
+          "notes": [
+            "Бюджет на речі не входить у сервіс",
+            "Може працювати як другий етап після Wardrobe Review"
+          ],
+          "visualMood": "Динамічні маршрути, шопінг-листи й тактильні матеріальні маркери.",
+          "heroLabel": "Втілення lookbook-а в реальні покупки",
+          "media": {
+            "src": "/images/purity_4.webp",
+            "alt": "Shopping route",
+            "caption": "Втілення lookbook-а в реальні покупки"
+          },
+          "seo": {
+            "title": "PURITY | Shopping Service",
+            "description": "Точний shopping-маршрут: від онлайн-підбору до живого супроводу в магазинах.",
+            "image": {
+              "src": "/images/purity_4.webp",
+              "alt": "Shopping route",
+              "caption": "Втілення lookbook-а в реальні покупки"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:shopping-service",
+            "kind": "service",
+            "slug": "shopping-service",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:shopping-service:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-shopping-service-preview"
+          }
+        },
+        {
+          "kind": "service",
+          "id": "service:atelier-service",
+          "slug": "atelier-service",
+          "area": "realisation",
+          "title": "Atelier Service",
+          "eyebrow": "Dossier / couture production",
+          "summary": "Dossier як особистий манекен, примірки та couture-пошив під ваш рух, тканину й сценарій життя.",
+          "price": {
+            "eur": "від €500",
+            "uah": "від ₴21 500"
+          },
+          "duration": "від 2 тижнів",
+          "leadTime": "2-6 тижнів",
+          "formats": [
+            {
+              "id": "dossier",
+              "label": "Dossier session",
+              "detail": "Персональний манекен як база крою"
+            },
+            {
+              "id": "couture",
+              "label": "Couture production",
+              "detail": "Сукні, жакети, special pieces"
+            }
+          ],
+          "deliverables": [
+            "Dossier",
+            "Карта матеріалів",
+            "План примірок і фінальна видача"
+          ],
+          "process": [
+            "Знайомство та бриф",
+            "Створення dossier",
+            "Примірки та фінальна корекція"
+          ],
+          "notes": [
+            "Приклади вартості: сукня €500-700, жакет €600-800, atelier rate €25/год",
+            "Точний кошторис формується після dossier"
+          ],
+          "visualMood": "Матеріальні зразки, couture-архів, спокійна розкіш і тонкий ритм примірок.",
+          "heroLabel": "Пошив, який починається з dossier",
+          "media": {
+            "src": "/images/purity_6.webp",
+            "alt": "Dossier fittings",
+            "caption": "Пошив, який починається з dossier"
+          },
+          "seo": {
+            "title": "PURITY | Atelier Service",
+            "description": "Dossier як особистий манекен, примірки та couture-пошив під ваш рух, тканину й сценарій життя.",
+            "image": {
+              "src": "/images/purity_6.webp",
+              "alt": "Dossier fittings",
+              "caption": "Пошив, який починається з dossier"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:atelier-service",
+            "kind": "service",
+            "slug": "atelier-service",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:atelier-service:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-atelier-service-preview"
+          }
+        }
+      ],
+      "courses": [
+        {
+          "kind": "course",
+          "slug": "dress-for-victory-course",
+          "title": "Create Your Dress of Victory",
+          "summary": "Курс зі створення власної сукні-перемоги разом із дизайнеркою.",
+          "price": {
+            "eur": "€480",
+            "uah": "₴20 700"
+          },
+          "sessions": "6 сесій",
+          "format": "Онлайн / студія",
+          "details": [
+            "Концепт сукні",
+            "Матеріали та draping",
+            "Фінальний atelier-виріб"
+          ],
+          "id": "course:dress-for-victory-course",
+          "media": {
+            "cover": {
+              "id": "course-victory-cover",
+              "asset": {
+                "id": "course-victory-cover",
+                "kind": "image",
+                "title": "Dress for Victory course cover",
+                "alt": "Course cover",
+                "src": "/images/purity_3.webp",
+                "mimeType": "image/webp",
+                "width": 1600,
+                "height": 2200,
+                "focalPoint": {
+                  "x": 0.5,
+                  "y": 0.4
+                }
+              },
+              "caption": "Course cover",
+              "purpose": "cover"
+            },
+            "items": [
+              {
+                "id": "course-victory-cover",
+                "asset": {
+                  "id": "course-victory-cover",
+                  "kind": "image",
+                  "title": "Dress for Victory course cover",
+                  "alt": "Course cover",
+                  "src": "/images/purity_3.webp",
+                  "mimeType": "image/webp",
+                  "width": 1600,
+                  "height": 2200,
+                  "focalPoint": {
+                    "x": 0.5,
+                    "y": 0.4
+                  }
+                },
+                "caption": "Course cover",
+                "purpose": "cover"
+              }
+            ]
+          },
+          "meta": {
+            "id": "course:dress-for-victory-course",
+            "kind": "course",
+            "slug": "dress-for-victory-course",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "course:dress-for-victory-course:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "course-dress-for-victory-course-preview"
+          }
+        },
+        {
+          "kind": "course",
+          "slug": "draping-moulage",
+          "title": "Draping / Macetirovanie",
+          "summary": "Практика об’ємного моделювання для дизайнерів і стилістів.",
+          "price": {
+            "eur": "€540",
+            "uah": "₴23 300"
+          },
+          "sessions": "8 сесій",
+          "format": "Студія",
+          "details": [
+            "Манекен та об’єм",
+            "Побудова форми тканиною",
+            "Фінальна мінікапсула"
+          ],
+          "id": "course:draping-moulage",
+          "media": {
+            "cover": {
+              "id": "course-draping-cover",
+              "asset": {
+                "id": "course-draping-cover",
+                "kind": "image",
+                "title": "Draping course cover",
+                "alt": "Draping cover",
+                "src": "/images/purity_4.webp",
+                "mimeType": "image/webp",
+                "width": 1600,
+                "height": 2200,
+                "focalPoint": {
+                  "x": 0.5,
+                  "y": 0.4
+                }
+              },
+              "caption": "Draping cover",
+              "purpose": "cover"
+            },
+            "items": [
+              {
+                "id": "course-draping-cover",
+                "asset": {
+                  "id": "course-draping-cover",
+                  "kind": "image",
+                  "title": "Draping course cover",
+                  "alt": "Draping cover",
+                  "src": "/images/purity_4.webp",
+                  "mimeType": "image/webp",
+                  "width": 1600,
+                  "height": 2200,
+                  "focalPoint": {
+                    "x": 0.5,
+                    "y": 0.4
+                  }
+                },
+                "caption": "Draping cover",
+                "purpose": "cover"
+              }
+            ]
+          },
+          "meta": {
+            "id": "course:draping-moulage",
+            "kind": "course",
+            "slug": "draping-moulage",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "course:draping-moulage:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "course-draping-moulage-preview"
+          }
+        },
+        {
+          "kind": "course",
+          "slug": "wardrobe-management",
+          "title": "Wardrobe Management",
+          "summary": "Система керування гардеробом для приватних клієнтів і персональних стилістів.",
+          "price": {
+            "eur": "€220",
+            "uah": "₴9 400"
+          },
+          "sessions": "4 сесії",
+          "format": "Онлайн",
+          "details": [
+            "Структура гардероба",
+            "Капсульне мислення",
+            "Календар покупок"
+          ],
+          "id": "course:wardrobe-management",
+          "media": {
+            "cover": {
+              "id": "course-wardrobe-cover",
+              "asset": {
+                "id": "course-wardrobe-cover",
+                "kind": "image",
+                "title": "Wardrobe management cover",
+                "alt": "Wardrobe system cover",
+                "src": "/images/purity_2.webp",
+                "mimeType": "image/webp",
+                "width": 1600,
+                "height": 2200,
+                "focalPoint": {
+                  "x": 0.5,
+                  "y": 0.4
+                }
+              },
+              "caption": "Wardrobe system cover",
+              "purpose": "cover"
+            },
+            "items": [
+              {
+                "id": "course-wardrobe-cover",
+                "asset": {
+                  "id": "course-wardrobe-cover",
+                  "kind": "image",
+                  "title": "Wardrobe management cover",
+                  "alt": "Wardrobe system cover",
+                  "src": "/images/purity_2.webp",
+                  "mimeType": "image/webp",
+                  "width": 1600,
+                  "height": 2200,
+                  "focalPoint": {
+                    "x": 0.5,
+                    "y": 0.4
+                  }
+                },
+                "caption": "Wardrobe system cover",
+                "purpose": "cover"
+              }
+            ]
+          },
+          "meta": {
+            "id": "course:wardrobe-management",
+            "kind": "course",
+            "slug": "wardrobe-management",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "course:wardrobe-management:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "course-wardrobe-management-preview"
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "kind": "transformation",
+          "slug": "dress-of-victory",
+          "title": "Create Your Dress of Victory",
+          "summary": "Інтенсив, де символічна сукня стає особистим жестом сили.",
+          "format": "Курс / studio lab",
+          "cta": "Приєднатися",
+          "media": {
+            "src": "/images/purity_5.webp",
+            "alt": "Create Your Dress of Victory"
+          },
+          "id": "transformation:dress-of-victory",
+          "meta": {
+            "id": "transformation:dress-of-victory",
+            "kind": "transformation",
+            "slug": "dress-of-victory",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "transformation:dress-of-victory:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "transformation-dress-of-victory-preview"
+          }
+        },
+        {
+          "kind": "transformation",
+          "slug": "wholeness-photomeditation",
+          "title": "Wholeness Photomeditation",
+          "summary": "Фотодосвід на базі п’яти архетипів старослов’янських богинь.",
+          "format": "Авторська сесія",
+          "cta": "Запросити деталі",
+          "media": {
+            "src": "/images/purity_4.webp",
+            "alt": "Wholeness Photomeditation"
+          },
+          "id": "transformation:wholeness-photomeditation",
+          "meta": {
+            "id": "transformation:wholeness-photomeditation",
+            "kind": "transformation",
+            "slug": "wholeness-photomeditation",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "transformation:wholeness-photomeditation:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "transformation-wholeness-photomeditation-preview"
+          }
+        },
+        {
+          "kind": "transformation",
+          "slug": "fashion-retreat",
+          "title": "Fashion Retreat",
+          "summary": "Ретритний формат для тіла, стилю, тиші й нового гардеробного стану.",
+          "format": "Лист очікування / residency",
+          "cta": "Приєднатися до листа",
+          "media": {
+            "src": "/images/purity_3.webp",
+            "alt": "Fashion Retreat"
+          },
+          "id": "transformation:fashion-retreat",
+          "meta": {
+            "id": "transformation:fashion-retreat",
+            "kind": "transformation",
+            "slug": "fashion-retreat",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "transformation:fashion-retreat:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": true,
+            "previewKey": "transformation-fashion-retreat-preview"
+          }
+        }
+      ],
+      "collections": [
+        {
+          "kind": "collection",
+          "id": "collection:dress-for-victory",
+          "slug": "dress-for-victory",
+          "title": "Dress for Victory",
+          "summary": "Символічні сукні для зйомок, подій і приватних моментів сили.",
+          "story": "Колекція працює з чистою лінією плеча, м’яким блиском та образом внутрішньої перемоги.",
+          "priceNote": "Індивідуальний запит / couture",
+          "palette": [
+            "Ivory",
+            "Molten pearl",
+            "Victory black"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_5.webp",
+            "alt": "Dress for Victory editorial portrait",
+            "caption": "Dress for Victory / editorial fitting"
+          },
+          "editorialNotes": [
+            "Сукні розраховані на подієвий кадр і подальше приватне життя після нього.",
+            "Кожен look збирається навколо жесту спини, плеча та довгого вертикального руху."
+          ],
+          "materials": [
+            "Шовк",
+            "Сатин",
+            "М’який блиск"
+          ],
+          "silhouettes": [
+            "Подовжена колона",
+            "Чітке плече",
+            "Пластичний шлейф"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_5.webp",
+              "alt": "Dress for Victory fitting look",
+              "caption": "Editorial fitting"
+            },
+            {
+              "src": "/images/purity_3.webp",
+              "alt": "Dress for Victory event silhouette",
+              "caption": "Event silhouette"
+            },
+            {
+              "src": "/images/purity_1.webp",
+              "alt": "Dress for Victory gesture portrait",
+              "caption": "Victory gesture"
+            }
+          ],
+          "requestCta": "Запросити консультацію",
+          "seo": {
+            "title": "PURITY | Dress for Victory collection",
+            "description": "Символічна couture-колекція PURITY для подій, editorial-зйомок і приватних моментів сили.",
+            "image": {
+              "src": "/images/purity_5.webp",
+              "alt": "Dress for Victory editorial portrait",
+              "caption": "Dress for Victory / editorial fitting"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:dress-for-victory",
+            "kind": "collection",
+            "slug": "dress-for-victory",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:dress-for-victory:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-dress-for-victory-preview"
+          }
+        },
+        {
+          "kind": "collection",
+          "id": "collection:retreat-wear",
+          "slug": "retreat-wear",
+          "title": "Retreat Wear",
+          "summary": "Одяг для йоги, дому, відпочинку й тихого тілесного комфорту.",
+          "story": "М’які пласкі об’єми, природна палітра й речі, які не конфліктують із тілом.",
+          "priceNote": "Капсули від €390 / ₴16 700",
+          "palette": [
+            "Cloud",
+            "Sand",
+            "Olive milk"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_7.webp",
+            "alt": "Retreat Wear editorial portrait",
+            "caption": "Retreat Wear / morning layer"
+          },
+          "editorialNotes": [
+            "Колекція мислиться як повільний гардероб для дому, retreat-резиденцій і ранкової практики.",
+            "Образи можна збирати навколо одного шару без відчуття перевантаження."
+          ],
+          "materials": [
+            "Трикотаж",
+            "Бавовна",
+            "Soft jersey"
+          ],
+          "silhouettes": [
+            "М’який халат",
+            "Плаский шар",
+            "Тілесна капсула"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_7.webp",
+              "alt": "Retreat Wear morning layer",
+              "caption": "Morning layer"
+            },
+            {
+              "src": "/images/purity_2.webp",
+              "alt": "Retreat Wear soft robe",
+              "caption": "Soft robe"
+            },
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Retreat Wear jersey set",
+              "caption": "Stretch jersey set"
+            }
+          ],
+          "requestCta": "Почати консультацію",
+          "seo": {
+            "title": "PURITY | Retreat Wear collection",
+            "description": "Retreat Wear від PURITY: капсула для йоги, дому, відпочинку та тихого тілесного комфорту.",
+            "image": {
+              "src": "/images/purity_7.webp",
+              "alt": "Retreat Wear editorial portrait",
+              "caption": "Retreat Wear / morning layer"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:retreat-wear",
+            "kind": "collection",
+            "slug": "retreat-wear",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:retreat-wear:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-retreat-wear-preview"
+          }
+        },
+        {
+          "kind": "collection",
+          "id": "collection:travel-capsule",
+          "slug": "travel-capsule",
+          "title": "Travel Capsule x Vika Veda",
+          "summary": "П’ять шовкових одиниць для руху між містами, подіями та кліматами.",
+          "story": "Колекція побудована навколо легкого пакування, повторних стилізацій і високого тактильного комфорту.",
+          "priceNote": "Капсула: €1 000 / ₴43 000",
+          "palette": [
+            "Raw silk",
+            "Ink navy",
+            "Aegean dusk"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_4.webp",
+            "alt": "Travel Capsule editorial portrait",
+            "caption": "Travel Capsule / airport drape"
+          },
+          "editorialNotes": [
+            "П’ять одиниць працюють у діловому, курортному та вечірньому сценарії без окремого переупакування.",
+            "Шовк ідеться першою тканиною для транзиту: легко, тихо, статусно."
+          ],
+          "materials": [
+            "Шовк",
+            "Креп",
+            "Легкий підклад"
+          ],
+          "silhouettes": [
+            "П’ятиелементна капсула",
+            "Дорожній драп",
+            "Вечірній reset"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Travel Capsule five-piece edit",
+              "caption": "Five-piece edit"
+            },
+            {
+              "src": "/images/purity_6.webp",
+              "alt": "Travel Capsule airport drape",
+              "caption": "Airport drape"
+            },
+            {
+              "src": "/images/purity_3.webp",
+              "alt": "Travel Capsule evening reset",
+              "caption": "Evening reset"
+            }
+          ],
+          "requestCta": "Запитати про капсулу",
+          "seo": {
+            "title": "PURITY | Travel Capsule x Vika Veda",
+            "description": "П’ятиелементна travel-capsule PURITY і Vika Veda з шовковою основою для подій та транзиту.",
+            "image": {
+              "src": "/images/purity_4.webp",
+              "alt": "Travel Capsule editorial portrait",
+              "caption": "Travel Capsule / airport drape"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:travel-capsule",
+            "kind": "collection",
+            "slug": "travel-capsule",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:travel-capsule:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-travel-capsule-preview"
+          }
+        },
+        {
+          "kind": "collection",
+          "id": "collection:silky-touches",
+          "slug": "silky-touches",
+          "title": "Silky Touches",
+          "summary": "Круїзні й шифонові образи для яхти, йоги, подорожей і м’якого гламура.",
+          "story": "Шовк і шифон працюють як рухома світлова поверхня, яка збирає тіло в один потік.",
+          "priceNote": "Індивідуальний запит",
+          "palette": [
+            "Sea pearl",
+            "Blue mist",
+            "Sunset quartz"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_2.webp",
+            "alt": "Silky Touches editorial portrait",
+            "caption": "Silky Touches / cruise layer"
+          },
+          "editorialNotes": [
+            "Колекція балансує між cruise-гардеробом, resort-рухом і прозорою вечірньою пластикою.",
+            "Речі мають працювати в кадрі на вітрі так само добре, як у close-up на тілі."
+          ],
+          "materials": [
+            "Шифон",
+            "Шовк",
+            "Напівпрозорі шари"
+          ],
+          "silhouettes": [
+            "Cruise layer",
+            "Йога в русі",
+            "Шифонова колона"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_2.webp",
+              "alt": "Silky Touches cruise look",
+              "caption": "Cruise layer"
+            },
+            {
+              "src": "/images/purity_7.webp",
+              "alt": "Silky Touches yoga everywhere look",
+              "caption": "Yoga everywhere"
+            },
+            {
+              "src": "/images/purity_5.webp",
+              "alt": "Silky Touches chiffon column look",
+              "caption": "Chiffon column"
+            }
+          ],
+          "requestCta": "Надіслати запит",
+          "seo": {
+            "title": "PURITY | Silky Touches collection",
+            "description": "Шовкові та шифонові образи PURITY для яхти, подорожей, йоги та м’якого glamour.",
+            "image": {
+              "src": "/images/purity_2.webp",
+              "alt": "Silky Touches editorial portrait",
+              "caption": "Silky Touches / cruise layer"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:silky-touches",
+            "kind": "collection",
+            "slug": "silky-touches",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:silky-touches:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-silky-touches-preview"
+          }
+        }
+      ],
+      "portfolio": [
+        {
+          "kind": "portfolio",
+          "slug": "soft-power-capsule",
+          "title": "Soft Power Capsule",
+          "category": "Before / After",
+          "summary": "Трансформація клієнтки з хаотичного casual у спокійний виразний wardrobe-language.",
+          "heroMedia": {
+            "src": "/images/purity_1.webp",
+            "alt": "Soft Power Capsule portrait",
+            "caption": "Soft Power Capsule / before-after"
+          },
+          "client": "Приватна клієнтка / executive wardrobe reset",
+          "context": "Wardrobe review + color strategy + capsule build для щоденного керівного ритму.",
+          "challenge": "Прибрати випадковість з гардероба без втрати м’якості та індивідуального тону.",
+          "approach": "Ми зібрали нову кольорову логіку, 14 look-формул та чіткий перелік покупок і доробок.",
+          "outcome": "14 look-формул, нова кольорова стратегія, зменшення імпульсивних покупок.",
+          "deliverables": [
+            "Wardrobe review",
+            "Color palette",
+            "Capsule formulas",
+            "Shopping map"
+          ],
+          "metrics": [
+            {
+              "label": "Looks",
+              "value": "14"
+            },
+            {
+              "label": "Shopping edits",
+              "value": "9"
+            },
+            {
+              "label": "Focus",
+              "value": "Executive ease"
+            }
+          ],
+          "accents": [
+            "Capsule",
+            "Color",
+            "Executive ease"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_1.webp",
+              "alt": "Soft Power Capsule portrait",
+              "caption": "Reset portrait"
+            },
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Soft Power Capsule movement",
+              "caption": "Capsule movement"
+            },
+            {
+              "src": "/images/purity_6.webp",
+              "alt": "Soft Power Capsule after styling",
+              "caption": "After styling"
+            }
+          ],
+          "video": {
+            "title": "Soft Power Capsule field note",
+            "url": "https://vimeo.com/76979871",
+            "provider": "vimeo"
+          },
+          "requestCta": "Запитати про подібний кейс",
+          "seo": {
+            "title": "PURITY | Soft Power Capsule case",
+            "description": "Before/after кейс PURITY з wardrobe review, color strategy та executive capsule build.",
+            "image": {
+              "src": "/images/purity_1.webp",
+              "alt": "Soft Power Capsule portrait",
+              "caption": "Soft Power Capsule / before-after"
+            },
+            "type": "article"
+          },
+          "id": "portfolio:soft-power-capsule",
+          "meta": {
+            "id": "portfolio:soft-power-capsule",
+            "kind": "portfolio",
+            "slug": "soft-power-capsule",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "portfolio:soft-power-capsule:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "portfolio-soft-power-capsule-preview"
+          }
+        },
+        {
+          "kind": "portfolio",
+          "slug": "editorial-corporate-shoot",
+          "title": "Editorial Corporate Shoot",
+          "category": "Corporate",
+          "summary": "Стилізація брендової зйомки з нейтральною luxury-оптикою та тканинним акцентом.",
+          "heroMedia": {
+            "src": "/images/purity_3.webp",
+            "alt": "Editorial Corporate Shoot portrait",
+            "caption": "Editorial Corporate Shoot / campaign frame"
+          },
+          "client": "Корпоративний fashion / lifestyle клієнт",
+          "context": "Кампанійна зйомка з потребою в цілісній luxury-мові для digital і event-комунікації.",
+          "challenge": "Поєднати корпоративну ясність із fashion-настроєм без рекламної жорсткості.",
+          "approach": "Фокус зміщено на тканину, рух і нейтральну палітру, яка тримає бренд без перевантаження.",
+          "outcome": "Узгоджена візуальна мова для кампанії та подієвого контенту.",
+          "deliverables": [
+            "Styling direction",
+            "Shot list rhythm",
+            "Wardrobe edit",
+            "Fabric accents"
+          ],
+          "metrics": [
+            {
+              "label": "Frames",
+              "value": "26"
+            },
+            {
+              "label": "Looks",
+              "value": "8"
+            },
+            {
+              "label": "Usage",
+              "value": "Campaign + events"
+            }
+          ],
+          "accents": [
+            "Corporate",
+            "Shoot",
+            "Brand styling"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_3.webp",
+              "alt": "Editorial Corporate Shoot frame",
+              "caption": "Campaign frame"
+            },
+            {
+              "src": "/images/purity_5.webp",
+              "alt": "Editorial Corporate Shoot fabric detail",
+              "caption": "Fabric detail"
+            },
+            {
+              "src": "/images/purity_2.webp",
+              "alt": "Editorial Corporate Shoot event look",
+              "caption": "Event look"
+            }
+          ],
+          "requestCta": "Обговорити корпоративну стилізацію",
+          "seo": {
+            "title": "PURITY | Editorial Corporate Shoot case",
+            "description": "Корпоративний editorial-кейс PURITY з brand styling, luxury-палітрою та fabric-first артдирекшном.",
+            "image": {
+              "src": "/images/purity_3.webp",
+              "alt": "Editorial Corporate Shoot portrait",
+              "caption": "Editorial Corporate Shoot / campaign frame"
+            },
+            "type": "article"
+          },
+          "id": "portfolio:editorial-corporate-shoot",
+          "meta": {
+            "id": "portfolio:editorial-corporate-shoot",
+            "kind": "portfolio",
+            "slug": "editorial-corporate-shoot",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "portfolio:editorial-corporate-shoot:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "portfolio-editorial-corporate-shoot-preview"
+          }
+        },
+        {
+          "kind": "portfolio",
+          "slug": "bridal-reset",
+          "title": "Bridal Reset",
+          "category": "Atelier",
+          "summary": "Dossier + couture-плаття для приватної церемонії та післяподієвого wardrobe reuse.",
+          "heroMedia": {
+            "src": "/images/purity_6.webp",
+            "alt": "Bridal Reset portrait",
+            "caption": "Bridal Reset / atelier fitting"
+          },
+          "client": "Приватна церемонія / atelier client",
+          "context": "Клієнтка потребувала весільний look, який не завершувався б після події.",
+          "challenge": "Зробити couture-плаття символічним і придатним до повторного носіння.",
+          "approach": "Через dossier та atelier fittings ми побудували одну базову форму з трьома майбутніми сценаріями носіння.",
+          "outcome": "Одна сукня, три сценарії носіння після події.",
+          "deliverables": [
+            "Dossier session",
+            "Atelier fittings",
+            "Couture dress",
+            "Post-event styling map"
+          ],
+          "metrics": [
+            {
+              "label": "Fittings",
+              "value": "5"
+            },
+            {
+              "label": "Rewear looks",
+              "value": "3"
+            },
+            {
+              "label": "Format",
+              "value": "Atelier"
+            }
+          ],
+          "accents": [
+            "Couture",
+            "Dossier",
+            "Rewear"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_6.webp",
+              "alt": "Bridal Reset atelier fitting",
+              "caption": "Atelier fitting"
+            },
+            {
+              "src": "/images/purity_1.webp",
+              "alt": "Bridal Reset event silhouette",
+              "caption": "Event silhouette"
+            },
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Bridal Reset after-event look",
+              "caption": "After-event look"
+            }
+          ],
+          "requestCta": "Почати atelier-консультацію",
+          "seo": {
+            "title": "PURITY | Bridal Reset case",
+            "description": "Atelier-кейс PURITY: dossier, couture-плаття та три post-event сценарії повторного носіння.",
+            "image": {
+              "src": "/images/purity_6.webp",
+              "alt": "Bridal Reset portrait",
+              "caption": "Bridal Reset / atelier fitting"
+            },
+            "type": "article"
+          },
+          "id": "portfolio:bridal-reset",
+          "meta": {
+            "id": "portfolio:bridal-reset",
+            "kind": "portfolio",
+            "slug": "bridal-reset",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "portfolio:bridal-reset:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "portfolio-bridal-reset-preview"
+          }
+        }
+      ]
+    },
+    "en": {
+      "services": [
+        {
+          "kind": "service",
+          "id": "service:personal-lookbook",
+          "slug": "personal-lookbook",
+          "area": "research",
+          "title": "Personal Lookbook",
+          "eyebrow": "Color Palette + Cut Strategy",
+          "summary": "A personal map of silhouette and color that assembles you into a single wardrobe system.",
+          "price": {
+            "eur": "€290",
+            "uah": "₴12 500"
+          },
+          "duration": "2 sessions + PDF lookbook",
+          "leadTime": "7-10 days",
+          "formats": [
+            {
+              "id": "online",
+              "label": "Online",
+              "detail": "Zoom session + digital lookbook"
+            },
+            {
+              "id": "studio",
+              "label": "Studio",
+              "detail": "Kyiv session with tactile references"
+            }
+          ],
+          "deliverables": [
+            "Personal palette",
+            "Cut strategy",
+            "Mini purchase capsule"
+          ],
+          "process": [
+            "Style and lifestyle diagnostic",
+            "Color and silhouette analysis",
+            "PDF lookbook preparation"
+          ],
+          "notes": [
+            "Ideal as the first step before shopping service or atelier work",
+            "Studio format is available in Kyiv"
+          ],
+          "visualMood": "Thin color modules, linear silhouettes, and lookbook pages paced like an editorial catalogue.",
+          "heroLabel": "The start of a new wardrobe architecture",
+          "media": {
+            "src": "/images/purity_2.webp",
+            "alt": "Personal lookbook spread",
+            "caption": "The start of a new wardrobe architecture"
+          },
+          "seo": {
+            "title": "PURITY | Personal Lookbook",
+            "description": "A personal map of silhouette and color that assembles you into a single wardrobe system.",
+            "image": {
+              "src": "/images/purity_2.webp",
+              "alt": "Personal lookbook spread",
+              "caption": "The start of a new wardrobe architecture"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:personal-lookbook",
+            "kind": "service",
+            "slug": "personal-lookbook",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:personal-lookbook:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-personal-lookbook-preview"
+          }
+        },
+        {
+          "kind": "service",
+          "id": "service:wardrobe-review",
+          "slug": "wardrobe-review",
+          "area": "research",
+          "title": "Wardrobe Review",
+          "eyebrow": "Capsule Revision",
+          "summary": "A wardrobe revision with precise decisions on what to keep, tailor, buy, and release.",
+          "price": {
+            "eur": "€240",
+            "uah": "₴10 300"
+          },
+          "duration": "3-4 hours",
+          "leadTime": "48 hours to report",
+          "formats": [
+            {
+              "id": "home",
+              "label": "On-site",
+              "detail": "Stylist visit to the client"
+            },
+            {
+              "id": "hybrid",
+              "label": "Hybrid",
+              "detail": "Photo archive + follow-up call"
+            }
+          ],
+          "deliverables": [
+            "Keep / alter / buy list",
+            "Capsule gaps",
+            "Priority purchase direction"
+          ],
+          "process": [
+            "Wardrobe scan",
+            "Sorting by roles and silhouettes",
+            "Post-session memo report"
+          ],
+          "notes": [
+            "Pairs well with the Personal Lookbook",
+            "A shopping plan can be added as the second stage"
+          ],
+          "visualMood": "Closet taxonomy, state cards, and a clean capsule map after editing.",
+          "heroLabel": "An edit of the wardrobe you already own",
+          "media": {
+            "src": "/images/purity_1.webp",
+            "alt": "Wardrobe review frame",
+            "caption": "An edit of the wardrobe you already own"
+          },
+          "seo": {
+            "title": "PURITY | Wardrobe Review",
+            "description": "A wardrobe revision with precise decisions on what to keep, tailor, buy, and release.",
+            "image": {
+              "src": "/images/purity_1.webp",
+              "alt": "Wardrobe review frame",
+              "caption": "An edit of the wardrobe you already own"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:wardrobe-review",
+            "kind": "service",
+            "slug": "wardrobe-review",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:wardrobe-review:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-wardrobe-review-preview"
+          }
+        },
+        {
+          "kind": "service",
+          "id": "service:shopping-service",
+          "slug": "shopping-service",
+          "area": "realisation",
+          "title": "Shopping Service",
+          "eyebrow": "Remote plan or live accompaniment",
+          "summary": "A precise shopping route from remote edit boards to in-store accompaniment.",
+          "price": {
+            "eur": "€320",
+            "uah": "₴13 800"
+          },
+          "duration": "1 day or 1 remote plan",
+          "leadTime": "3-5 days of preparation",
+          "formats": [
+            {
+              "id": "remote",
+              "label": "Online plan",
+              "detail": "Links, substitutions, and final selection"
+            },
+            {
+              "id": "live",
+              "label": "Live accompaniment",
+              "detail": "In-store accompaniment during the day"
+            }
+          ],
+          "deliverables": [
+            "Brand route",
+            "Priority shopping list",
+            "Post-session follow-up"
+          ],
+          "process": [
+            "Budget alignment",
+            "Route and item curation",
+            "Purchase finalisation"
+          ],
+          "notes": [
+            "Garment budget is separate from the service",
+            "Works well as the second phase after Wardrobe Review"
+          ],
+          "visualMood": "Dynamic routes, shopping lists, and tactile material markers.",
+          "heroLabel": "Turning the lookbook into real purchases",
+          "media": {
+            "src": "/images/purity_4.webp",
+            "alt": "Shopping route",
+            "caption": "Turning the lookbook into real purchases"
+          },
+          "seo": {
+            "title": "PURITY | Shopping Service",
+            "description": "A precise shopping route from remote edit boards to in-store accompaniment.",
+            "image": {
+              "src": "/images/purity_4.webp",
+              "alt": "Shopping route",
+              "caption": "Turning the lookbook into real purchases"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:shopping-service",
+            "kind": "service",
+            "slug": "shopping-service",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:shopping-service:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-shopping-service-preview"
+          }
+        },
+        {
+          "kind": "service",
+          "id": "service:atelier-service",
+          "slug": "atelier-service",
+          "area": "realisation",
+          "title": "Atelier Service",
+          "eyebrow": "Dossier / couture production",
+          "summary": "Dossier as a personal mannequin, fittings, and couture production calibrated to your movement, fabric, and lifestyle scenario.",
+          "price": {
+            "eur": "from €500",
+            "uah": "from ₴21 500"
+          },
+          "duration": "from 2 weeks",
+          "leadTime": "2-6 weeks",
+          "formats": [
+            {
+              "id": "dossier",
+              "label": "Dossier session",
+              "detail": "Personal mannequin as the cut foundation"
+            },
+            {
+              "id": "couture",
+              "label": "Couture production",
+              "detail": "Dresses, jackets, special pieces"
+            }
+          ],
+          "deliverables": [
+            "Dossier",
+            "Material map",
+            "Fitting plan and final handoff"
+          ],
+          "process": [
+            "Introduction and brief",
+            "Dossier creation",
+            "Fittings and final correction"
+          ],
+          "notes": [
+            "Indicative pricing: dress €500-700, jacket €600-800, atelier rate €25/hour",
+            "The final estimate is confirmed after dossier"
+          ],
+          "visualMood": "Material swatches, couture archives, quiet luxury, and a measured fitting rhythm.",
+          "heroLabel": "Tailoring that begins with dossier",
+          "media": {
+            "src": "/images/purity_6.webp",
+            "alt": "Dossier fittings",
+            "caption": "Tailoring that begins with dossier"
+          },
+          "seo": {
+            "title": "PURITY | Atelier Service",
+            "description": "Dossier as a personal mannequin, fittings, and couture production calibrated to your movement, fabric, and lifestyle scenario.",
+            "image": {
+              "src": "/images/purity_6.webp",
+              "alt": "Dossier fittings",
+              "caption": "Tailoring that begins with dossier"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:atelier-service",
+            "kind": "service",
+            "slug": "atelier-service",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:atelier-service:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-atelier-service-preview"
+          }
+        }
+      ],
+      "courses": [
+        {
+          "kind": "course",
+          "slug": "dress-for-victory-course",
+          "title": "Create Your Dress of Victory",
+          "summary": "A guided course to create your symbolic victory dress with the designer.",
+          "price": {
+            "eur": "€480",
+            "uah": "₴20 700"
+          },
+          "sessions": "6 sessions",
+          "format": "Online / studio",
+          "details": [
+            "Dress concept",
+            "Materials and draping",
+            "Final atelier piece"
+          ],
+          "id": "course:dress-for-victory-course",
+          "media": {
+            "cover": {
+              "id": "course-victory-cover",
+              "asset": {
+                "id": "course-victory-cover",
+                "kind": "image",
+                "title": "Dress for Victory course cover",
+                "alt": "Course cover",
+                "src": "/images/purity_3.webp",
+                "mimeType": "image/webp",
+                "width": 1600,
+                "height": 2200,
+                "focalPoint": {
+                  "x": 0.5,
+                  "y": 0.4
+                }
+              },
+              "caption": "Course cover",
+              "purpose": "cover"
+            },
+            "items": [
+              {
+                "id": "course-victory-cover",
+                "asset": {
+                  "id": "course-victory-cover",
+                  "kind": "image",
+                  "title": "Dress for Victory course cover",
+                  "alt": "Course cover",
+                  "src": "/images/purity_3.webp",
+                  "mimeType": "image/webp",
+                  "width": 1600,
+                  "height": 2200,
+                  "focalPoint": {
+                    "x": 0.5,
+                    "y": 0.4
+                  }
+                },
+                "caption": "Course cover",
+                "purpose": "cover"
+              }
+            ]
+          },
+          "meta": {
+            "id": "course:dress-for-victory-course",
+            "kind": "course",
+            "slug": "dress-for-victory-course",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "course:dress-for-victory-course:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "course-dress-for-victory-course-preview"
+          }
+        },
+        {
+          "kind": "course",
+          "slug": "draping-moulage",
+          "title": "Draping / Moulage",
+          "summary": "Volumetric draping practice for designers and stylists.",
+          "price": {
+            "eur": "€540",
+            "uah": "₴23 300"
+          },
+          "sessions": "8 sessions",
+          "format": "Studio",
+          "details": [
+            "Mannequin and volume",
+            "Building form through fabric",
+            "Final mini capsule"
+          ],
+          "id": "course:draping-moulage",
+          "media": {
+            "cover": {
+              "id": "course-draping-cover",
+              "asset": {
+                "id": "course-draping-cover",
+                "kind": "image",
+                "title": "Draping course cover",
+                "alt": "Draping cover",
+                "src": "/images/purity_4.webp",
+                "mimeType": "image/webp",
+                "width": 1600,
+                "height": 2200,
+                "focalPoint": {
+                  "x": 0.5,
+                  "y": 0.4
+                }
+              },
+              "caption": "Draping cover",
+              "purpose": "cover"
+            },
+            "items": [
+              {
+                "id": "course-draping-cover",
+                "asset": {
+                  "id": "course-draping-cover",
+                  "kind": "image",
+                  "title": "Draping course cover",
+                  "alt": "Draping cover",
+                  "src": "/images/purity_4.webp",
+                  "mimeType": "image/webp",
+                  "width": 1600,
+                  "height": 2200,
+                  "focalPoint": {
+                    "x": 0.5,
+                    "y": 0.4
+                  }
+                },
+                "caption": "Draping cover",
+                "purpose": "cover"
+              }
+            ]
+          },
+          "meta": {
+            "id": "course:draping-moulage",
+            "kind": "course",
+            "slug": "draping-moulage",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "course:draping-moulage:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "course-draping-moulage-preview"
+          }
+        },
+        {
+          "kind": "course",
+          "slug": "wardrobe-management",
+          "title": "Wardrobe Management",
+          "summary": "A wardrobe operating system for private clients and personal stylists.",
+          "price": {
+            "eur": "€220",
+            "uah": "₴9 400"
+          },
+          "sessions": "4 sessions",
+          "format": "Online",
+          "details": [
+            "Wardrobe structure",
+            "Capsule thinking",
+            "Purchase calendar"
+          ],
+          "id": "course:wardrobe-management",
+          "media": {
+            "cover": {
+              "id": "course-wardrobe-cover",
+              "asset": {
+                "id": "course-wardrobe-cover",
+                "kind": "image",
+                "title": "Wardrobe management cover",
+                "alt": "Wardrobe system cover",
+                "src": "/images/purity_2.webp",
+                "mimeType": "image/webp",
+                "width": 1600,
+                "height": 2200,
+                "focalPoint": {
+                  "x": 0.5,
+                  "y": 0.4
+                }
+              },
+              "caption": "Wardrobe system cover",
+              "purpose": "cover"
+            },
+            "items": [
+              {
+                "id": "course-wardrobe-cover",
+                "asset": {
+                  "id": "course-wardrobe-cover",
+                  "kind": "image",
+                  "title": "Wardrobe management cover",
+                  "alt": "Wardrobe system cover",
+                  "src": "/images/purity_2.webp",
+                  "mimeType": "image/webp",
+                  "width": 1600,
+                  "height": 2200,
+                  "focalPoint": {
+                    "x": 0.5,
+                    "y": 0.4
+                  }
+                },
+                "caption": "Wardrobe system cover",
+                "purpose": "cover"
+              }
+            ]
+          },
+          "meta": {
+            "id": "course:wardrobe-management",
+            "kind": "course",
+            "slug": "wardrobe-management",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "course:wardrobe-management:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "course-wardrobe-management-preview"
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "kind": "transformation",
+          "slug": "dress-of-victory",
+          "title": "Create Your Dress of Victory",
+          "summary": "An intensive where a symbolic dress becomes a personal gesture of strength.",
+          "format": "Course / studio lab",
+          "cta": "Join",
+          "media": {
+            "src": "/images/purity_5.webp",
+            "alt": "Create Your Dress of Victory"
+          },
+          "id": "transformation:dress-of-victory",
+          "meta": {
+            "id": "transformation:dress-of-victory",
+            "kind": "transformation",
+            "slug": "dress-of-victory",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "transformation:dress-of-victory:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "transformation-dress-of-victory-preview"
+          }
+        },
+        {
+          "kind": "transformation",
+          "slug": "wholeness-photomeditation",
+          "title": "Wholeness Photomeditation",
+          "summary": "A photo experience built around five Old Slavic goddess archetypes.",
+          "format": "Signature session",
+          "cta": "Request details",
+          "media": {
+            "src": "/images/purity_4.webp",
+            "alt": "Wholeness Photomeditation"
+          },
+          "id": "transformation:wholeness-photomeditation",
+          "meta": {
+            "id": "transformation:wholeness-photomeditation",
+            "kind": "transformation",
+            "slug": "wholeness-photomeditation",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "transformation:wholeness-photomeditation:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "transformation-wholeness-photomeditation-preview"
+          }
+        },
+        {
+          "kind": "transformation",
+          "slug": "fashion-retreat",
+          "title": "Fashion Retreat",
+          "summary": "A retreat format for body, style, stillness, and a new wardrobe state.",
+          "format": "Waitlist / residency",
+          "cta": "Join waitlist",
+          "media": {
+            "src": "/images/purity_3.webp",
+            "alt": "Fashion Retreat"
+          },
+          "id": "transformation:fashion-retreat",
+          "meta": {
+            "id": "transformation:fashion-retreat",
+            "kind": "transformation",
+            "slug": "fashion-retreat",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "transformation:fashion-retreat:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": true,
+            "previewKey": "transformation-fashion-retreat-preview"
+          }
+        }
+      ],
+      "collections": [
+        {
+          "kind": "collection",
+          "id": "collection:dress-for-victory",
+          "slug": "dress-for-victory",
+          "title": "Dress for Victory",
+          "summary": "Symbolic dresses for shoots, events, and intimate moments of strength.",
+          "story": "The collection works with clean shoulder lines, soft shine, and the image of inner victory.",
+          "priceNote": "Custom request / couture",
+          "palette": [
+            "Ivory",
+            "Molten pearl",
+            "Victory black"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_5.webp",
+            "alt": "Dress for Victory editorial portrait",
+            "caption": "Dress for Victory / Editorial fitting"
+          },
+          "editorialNotes": [
+            "The pieces are designed for event imagery and for a private life after the event itself.",
+            "Each look is built around the gesture of the back, shoulder, and one long vertical line."
+          ],
+          "materials": [
+            "Silk",
+            "Satin",
+            "Soft shine"
+          ],
+          "silhouettes": [
+            "Lengthened column",
+            "Structured shoulder",
+            "Fluid train"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_5.webp",
+              "alt": "Dress for Victory fitting look",
+              "caption": "Editorial fitting"
+            },
+            {
+              "src": "/images/purity_3.webp",
+              "alt": "Dress for Victory event silhouette",
+              "caption": "Event silhouette"
+            },
+            {
+              "src": "/images/purity_1.webp",
+              "alt": "Dress for Victory gesture portrait",
+              "caption": "Victory gesture"
+            }
+          ],
+          "requestCta": "Request consultation",
+          "seo": {
+            "title": "PURITY | Dress for Victory collection",
+            "description": "A symbolic PURITY couture collection for events, editorial shoots, and intimate moments of strength.",
+            "image": {
+              "src": "/images/purity_5.webp",
+              "alt": "Dress for Victory editorial portrait",
+              "caption": "Dress for Victory / Editorial fitting"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:dress-for-victory",
+            "kind": "collection",
+            "slug": "dress-for-victory",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:dress-for-victory:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-dress-for-victory-preview"
+          }
+        },
+        {
+          "kind": "collection",
+          "id": "collection:retreat-wear",
+          "slug": "retreat-wear",
+          "title": "Retreat Wear",
+          "summary": "Garments for yoga, home, rest, and quiet physical ease.",
+          "story": "Soft flat volumes, a natural palette, and pieces that never fight the body.",
+          "priceNote": "Capsules from €390 / ₴16 700",
+          "palette": [
+            "Cloud",
+            "Sand",
+            "Olive milk"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_7.webp",
+            "alt": "Retreat Wear editorial portrait",
+            "caption": "Retreat Wear / Morning layer"
+          },
+          "editorialNotes": [
+            "The collection is conceived as a slow wardrobe for home, retreat residencies, and morning practice.",
+            "Looks can be built around a single layer without visual overload."
+          ],
+          "materials": [
+            "Jersey",
+            "Cotton",
+            "Soft stretch"
+          ],
+          "silhouettes": [
+            "Soft robe",
+            "Flat layer",
+            "Body-ease set"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_7.webp",
+              "alt": "Retreat Wear morning layer",
+              "caption": "Morning layer"
+            },
+            {
+              "src": "/images/purity_2.webp",
+              "alt": "Retreat Wear soft robe",
+              "caption": "Soft robe"
+            },
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Retreat Wear jersey set",
+              "caption": "Stretch jersey set"
+            }
+          ],
+          "requestCta": "Start consultation",
+          "seo": {
+            "title": "PURITY | Retreat Wear collection",
+            "description": "PURITY Retreat Wear: a capsule for yoga, home, rest, and quiet bodily ease.",
+            "image": {
+              "src": "/images/purity_7.webp",
+              "alt": "Retreat Wear editorial portrait",
+              "caption": "Retreat Wear / Morning layer"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:retreat-wear",
+            "kind": "collection",
+            "slug": "retreat-wear",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:retreat-wear:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-retreat-wear-preview"
+          }
+        },
+        {
+          "kind": "collection",
+          "id": "collection:travel-capsule",
+          "slug": "travel-capsule",
+          "title": "Travel Capsule x Vika Veda",
+          "summary": "Five silk pieces designed for movement across cities, events, and climates.",
+          "story": "The collection is built around light packing, restyling, and high tactile comfort.",
+          "priceNote": "Capsule: €1,000 / ₴43,000",
+          "palette": [
+            "Raw silk",
+            "Ink navy",
+            "Aegean dusk"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_4.webp",
+            "alt": "Travel Capsule editorial portrait",
+            "caption": "Travel Capsule / Airport drape"
+          },
+          "editorialNotes": [
+            "Five pieces are expected to carry business, resort, and evening scenarios without repacking.",
+            "Silk is treated as the first fabric of transit: light, quiet, and status-conscious."
+          ],
+          "materials": [
+            "Silk",
+            "Crepe",
+            "Light lining"
+          ],
+          "silhouettes": [
+            "Five-piece edit",
+            "Airport drape",
+            "Evening reset"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Travel Capsule five-piece edit",
+              "caption": "Five-piece edit"
+            },
+            {
+              "src": "/images/purity_6.webp",
+              "alt": "Travel Capsule airport drape",
+              "caption": "Airport drape"
+            },
+            {
+              "src": "/images/purity_3.webp",
+              "alt": "Travel Capsule evening reset",
+              "caption": "Evening reset"
+            }
+          ],
+          "requestCta": "Ask about the capsule",
+          "seo": {
+            "title": "PURITY | Travel Capsule x Vika Veda",
+            "description": "A five-piece PURITY and Vika Veda silk travel capsule for transit, events, and flexible styling.",
+            "image": {
+              "src": "/images/purity_4.webp",
+              "alt": "Travel Capsule editorial portrait",
+              "caption": "Travel Capsule / Airport drape"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:travel-capsule",
+            "kind": "collection",
+            "slug": "travel-capsule",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:travel-capsule:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-travel-capsule-preview"
+          }
+        },
+        {
+          "kind": "collection",
+          "id": "collection:silky-touches",
+          "slug": "silky-touches",
+          "title": "Silky Touches",
+          "summary": "Cruise and chiffon looks for yacht days, yoga, travel, and soft glamour.",
+          "story": "Silk and chiffon operate like moving light surfaces that collect the body into one flow.",
+          "priceNote": "Custom request",
+          "palette": [
+            "Sea pearl",
+            "Blue mist",
+            "Sunset quartz"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_2.webp",
+            "alt": "Silky Touches editorial portrait",
+            "caption": "Silky Touches / Cruise layer"
+          },
+          "editorialNotes": [
+            "The collection balances cruise dressing, resort movement, and transparent evening softness.",
+            "Pieces are meant to work in wind-driven wide shots and in close body framing alike."
+          ],
+          "materials": [
+            "Chiffon",
+            "Silk",
+            "Sheer layers"
+          ],
+          "silhouettes": [
+            "Cruise layer",
+            "Yoga movement",
+            "Chiffon column"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_2.webp",
+              "alt": "Silky Touches cruise look",
+              "caption": "Cruise layer"
+            },
+            {
+              "src": "/images/purity_7.webp",
+              "alt": "Silky Touches yoga look",
+              "caption": "Yoga everywhere"
+            },
+            {
+              "src": "/images/purity_5.webp",
+              "alt": "Silky Touches chiffon column",
+              "caption": "Chiffon column"
+            }
+          ],
+          "requestCta": "Send request",
+          "seo": {
+            "title": "PURITY | Silky Touches collection",
+            "description": "Silk and chiffon PURITY looks for yacht days, travel, yoga, and soft glamour wardrobes.",
+            "image": {
+              "src": "/images/purity_2.webp",
+              "alt": "Silky Touches editorial portrait",
+              "caption": "Silky Touches / Cruise layer"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:silky-touches",
+            "kind": "collection",
+            "slug": "silky-touches",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:silky-touches:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-silky-touches-preview"
+          }
+        }
+      ],
+      "portfolio": [
+        {
+          "kind": "portfolio",
+          "slug": "soft-power-capsule",
+          "title": "Soft Power Capsule",
+          "category": "Before / After",
+          "summary": "A client transformation from chaotic casual dressing into a calm, articulate wardrobe language.",
+          "heroMedia": {
+            "src": "/images/purity_1.webp",
+            "alt": "Soft Power Capsule portrait",
+            "caption": "Soft Power Capsule / before-after"
+          },
+          "client": "Private client / executive wardrobe reset",
+          "context": "Wardrobe review, color strategy, and capsule build for an everyday leadership rhythm.",
+          "challenge": "Remove randomness from the wardrobe without losing softness or personal tone.",
+          "approach": "We built a sharper color logic, 14 look formulas, and a strict list of purchases and alterations.",
+          "outcome": "14 look formulas, a new color strategy, and fewer impulsive purchases.",
+          "deliverables": [
+            "Wardrobe review",
+            "Color palette",
+            "Capsule formulas",
+            "Shopping map"
+          ],
+          "metrics": [
+            {
+              "label": "Looks",
+              "value": "14"
+            },
+            {
+              "label": "Shopping edits",
+              "value": "9"
+            },
+            {
+              "label": "Focus",
+              "value": "Executive ease"
+            }
+          ],
+          "accents": [
+            "Capsule",
+            "Color",
+            "Executive ease"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_1.webp",
+              "alt": "Soft Power Capsule portrait",
+              "caption": "Reset portrait"
+            },
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Soft Power Capsule movement",
+              "caption": "Capsule movement"
+            },
+            {
+              "src": "/images/purity_6.webp",
+              "alt": "Soft Power Capsule after styling",
+              "caption": "After styling"
+            }
+          ],
+          "video": {
+            "title": "Soft Power Capsule field note",
+            "url": "https://vimeo.com/76979871",
+            "provider": "vimeo"
+          },
+          "requestCta": "Request a similar case study",
+          "seo": {
+            "title": "PURITY | Soft Power Capsule case",
+            "description": "A PURITY before/after case featuring wardrobe review, color strategy, and an executive capsule build.",
+            "image": {
+              "src": "/images/purity_1.webp",
+              "alt": "Soft Power Capsule portrait",
+              "caption": "Soft Power Capsule / before-after"
+            },
+            "type": "article"
+          },
+          "id": "portfolio:soft-power-capsule",
+          "meta": {
+            "id": "portfolio:soft-power-capsule",
+            "kind": "portfolio",
+            "slug": "soft-power-capsule",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "portfolio:soft-power-capsule:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "portfolio-soft-power-capsule-preview"
+          }
+        },
+        {
+          "kind": "portfolio",
+          "slug": "editorial-corporate-shoot",
+          "title": "Editorial Corporate Shoot",
+          "category": "Corporate",
+          "summary": "Brand shoot styling with a neutral luxury lens and a fabric-first accent.",
+          "heroMedia": {
+            "src": "/images/purity_3.webp",
+            "alt": "Editorial Corporate Shoot portrait",
+            "caption": "Editorial Corporate Shoot / campaign frame"
+          },
+          "client": "Corporate fashion / lifestyle client",
+          "context": "A campaign shoot needed one coherent luxury language for digital and event-facing communication.",
+          "challenge": "Hold corporate clarity and fashion atmosphere together without commercial stiffness.",
+          "approach": "The styling centered on fabric, movement, and a neutral palette capable of carrying the brand without excess.",
+          "outcome": "A cohesive visual language for campaign and event-facing content.",
+          "deliverables": [
+            "Styling direction",
+            "Shot-list rhythm",
+            "Wardrobe edit",
+            "Fabric accents"
+          ],
+          "metrics": [
+            {
+              "label": "Frames",
+              "value": "26"
+            },
+            {
+              "label": "Looks",
+              "value": "8"
+            },
+            {
+              "label": "Usage",
+              "value": "Campaign + events"
+            }
+          ],
+          "accents": [
+            "Corporate",
+            "Shoot",
+            "Brand styling"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_3.webp",
+              "alt": "Editorial Corporate Shoot frame",
+              "caption": "Campaign frame"
+            },
+            {
+              "src": "/images/purity_5.webp",
+              "alt": "Editorial Corporate Shoot fabric detail",
+              "caption": "Fabric detail"
+            },
+            {
+              "src": "/images/purity_2.webp",
+              "alt": "Editorial Corporate Shoot event look",
+              "caption": "Event look"
+            }
+          ],
+          "requestCta": "Discuss corporate styling",
+          "seo": {
+            "title": "PURITY | Editorial Corporate Shoot case",
+            "description": "A PURITY corporate editorial case combining brand styling, a luxury palette, and fabric-first art direction.",
+            "image": {
+              "src": "/images/purity_3.webp",
+              "alt": "Editorial Corporate Shoot portrait",
+              "caption": "Editorial Corporate Shoot / campaign frame"
+            },
+            "type": "article"
+          },
+          "id": "portfolio:editorial-corporate-shoot",
+          "meta": {
+            "id": "portfolio:editorial-corporate-shoot",
+            "kind": "portfolio",
+            "slug": "editorial-corporate-shoot",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "portfolio:editorial-corporate-shoot:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "portfolio-editorial-corporate-shoot-preview"
+          }
+        },
+        {
+          "kind": "portfolio",
+          "slug": "bridal-reset",
+          "title": "Bridal Reset",
+          "category": "Atelier",
+          "summary": "Dossier and couture dress development for a private ceremony with after-event wardrobe reuse.",
+          "heroMedia": {
+            "src": "/images/purity_6.webp",
+            "alt": "Bridal Reset portrait",
+            "caption": "Bridal Reset / atelier fitting"
+          },
+          "client": "Private ceremony / atelier client",
+          "context": "The client needed a wedding look that would continue beyond the event itself.",
+          "challenge": "Create a symbolic couture dress that could also live on in future wear.",
+          "approach": "Through dossier work and atelier fittings, one base form was developed with three later styling scenarios.",
+          "outcome": "One dress, three future wearing scenarios.",
+          "deliverables": [
+            "Dossier session",
+            "Atelier fittings",
+            "Couture dress",
+            "Post-event styling map"
+          ],
+          "metrics": [
+            {
+              "label": "Fittings",
+              "value": "5"
+            },
+            {
+              "label": "Rewear looks",
+              "value": "3"
+            },
+            {
+              "label": "Format",
+              "value": "Atelier"
+            }
+          ],
+          "accents": [
+            "Couture",
+            "Dossier",
+            "Rewear"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_6.webp",
+              "alt": "Bridal Reset atelier fitting",
+              "caption": "Atelier fitting"
+            },
+            {
+              "src": "/images/purity_1.webp",
+              "alt": "Bridal Reset event silhouette",
+              "caption": "Event silhouette"
+            },
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Bridal Reset after-event look",
+              "caption": "After-event look"
+            }
+          ],
+          "requestCta": "Begin an atelier consultation",
+          "seo": {
+            "title": "PURITY | Bridal Reset case",
+            "description": "A PURITY atelier case covering dossier work, a couture bridal dress, and three post-event rewear scenarios.",
+            "image": {
+              "src": "/images/purity_6.webp",
+              "alt": "Bridal Reset portrait",
+              "caption": "Bridal Reset / atelier fitting"
+            },
+            "type": "article"
+          },
+          "id": "portfolio:bridal-reset",
+          "meta": {
+            "id": "portfolio:bridal-reset",
+            "kind": "portfolio",
+            "slug": "bridal-reset",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "portfolio:bridal-reset:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "portfolio-bridal-reset-preview"
+          }
+        }
+      ]
+    },
+    "ru": {
+      "services": [
+        {
+          "kind": "service",
+          "id": "service:personal-lookbook",
+          "slug": "personal-lookbook",
+          "area": "research",
+          "title": "Personal Lookbook",
+          "eyebrow": "Color Palette + Cut Strategy",
+          "summary": "Персональная карта силуэта и цвета, которая собирает вас в одну ясную гардеробную систему.",
+          "price": {
+            "eur": "€290",
+            "uah": "₴12 500"
+          },
+          "duration": "2 сессии + PDF lookbook",
+          "leadTime": "7-10 дней",
+          "formats": [
+            {
+              "id": "online",
+              "label": "Онлайн",
+              "detail": "Zoom + цифровой lookbook"
+            },
+            {
+              "id": "studio",
+              "label": "Студия",
+              "detail": "Киевская сессия с материальными референсами"
+            }
+          ],
+          "deliverables": [
+            "Индивидуальная палитра",
+            "Стратегия кроя",
+            "Мини-капсула покупок"
+          ],
+          "process": [
+            "Диагностика стиля и контекста жизни",
+            "Цветовой и силуэтный анализ",
+            "Подготовка PDF lookbook"
+          ],
+          "notes": [
+            "Идеально как первый шаг перед shopping-service или atelier",
+            "Студийный формат доступен в Киеве"
+          ],
+          "visualMood": "Тонкие цветовые модули, линейный силуэт и страницы lookbook в ритме editorial-каталога.",
+          "heroLabel": "Начало новой гардеробной архитектуры",
+          "media": {
+            "src": "/images/purity_2.webp",
+            "alt": "Personal lookbook spread",
+            "caption": "Начало новой гардеробной архитектуры"
+          },
+          "seo": {
+            "title": "PURITY | Personal Lookbook",
+            "description": "Персональная карта силуэта и цвета, которая собирает вас в одну ясную гардеробную систему.",
+            "image": {
+              "src": "/images/purity_2.webp",
+              "alt": "Personal lookbook spread",
+              "caption": "Начало новой гардеробной архитектуры"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:personal-lookbook",
+            "kind": "service",
+            "slug": "personal-lookbook",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:personal-lookbook:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-personal-lookbook-preview"
+          }
+        },
+        {
+          "kind": "service",
+          "id": "service:wardrobe-review",
+          "slug": "wardrobe-review",
+          "area": "research",
+          "title": "Wardrobe Review",
+          "eyebrow": "Capsule Revision",
+          "summary": "Ревизия гардероба с точным решением: что оставить, что перешить, что докупить, а что отпустить.",
+          "price": {
+            "eur": "€240",
+            "uah": "₴10 300"
+          },
+          "duration": "3-4 часа",
+          "leadTime": "48 часов до отчёта",
+          "formats": [
+            {
+              "id": "home",
+              "label": "На месте",
+              "detail": "Выезд стилиста к клиенту"
+            },
+            {
+              "id": "hybrid",
+              "label": "Гибрид",
+              "detail": "Фотоархив + follow-up call"
+            }
+          ],
+          "deliverables": [
+            "Список keep / alter / buy",
+            "Капсульные пробелы",
+            "Приоритет следующей покупки"
+          ],
+          "process": [
+            "Сканирование гардероба",
+            "Сортировка по ролям и силуэтам",
+            "Постсессионный memo-отчёт"
+          ],
+          "notes": [
+            "Хорошо сочетается с Personal Lookbook",
+            "Shopping-plan можно добавить вторым этапом"
+          ],
+          "visualMood": "Таксономия шкафа, карточки-состояния и чистая капсульная карта после редактирования.",
+          "heroLabel": "Редактура существующего гардероба",
+          "media": {
+            "src": "/images/purity_1.webp",
+            "alt": "Wardrobe review frame",
+            "caption": "Редактура существующего гардероба"
+          },
+          "seo": {
+            "title": "PURITY | Wardrobe Review",
+            "description": "Ревизия гардероба с точным решением: что оставить, что перешить, что докупить, а что отпустить.",
+            "image": {
+              "src": "/images/purity_1.webp",
+              "alt": "Wardrobe review frame",
+              "caption": "Редактура существующего гардероба"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:wardrobe-review",
+            "kind": "service",
+            "slug": "wardrobe-review",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:wardrobe-review:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-wardrobe-review-preview"
+          }
+        },
+        {
+          "kind": "service",
+          "id": "service:shopping-service",
+          "slug": "shopping-service",
+          "area": "realisation",
+          "title": "Shopping Service",
+          "eyebrow": "Remote plan or live accompaniment",
+          "summary": "Точный shopping-маршрут: от онлайн-подбора до живого сопровождения в магазинах.",
+          "price": {
+            "eur": "€320",
+            "uah": "₴13 800"
+          },
+          "duration": "1 день или 1 онлайн-план",
+          "leadTime": "3-5 дней подготовки",
+          "formats": [
+            {
+              "id": "remote",
+              "label": "Онлайн-план",
+              "detail": "Ссылки, замены и финальная подборка"
+            },
+            {
+              "id": "live",
+              "label": "Live-сопровождение",
+              "detail": "Сопровождение в магазинах в течение дня"
+            }
+          ],
+          "deliverables": [
+            "Маршрут брендов",
+            "Шопинг-лист с приоритетами",
+            "Фоллоуап после сессии"
+          ],
+          "process": [
+            "Согласование бюджета",
+            "Подбор маршрутов и вещей",
+            "Финализация покупки"
+          ],
+          "notes": [
+            "Бюджет на вещи не входит в сервис",
+            "Хорошо работает как второй этап после Wardrobe Review"
+          ],
+          "visualMood": "Динамичные маршруты, shopping-листы и тактильные материальные маркеры.",
+          "heroLabel": "Воплощение lookbook-а в реальные покупки",
+          "media": {
+            "src": "/images/purity_4.webp",
+            "alt": "Shopping route",
+            "caption": "Воплощение lookbook-а в реальные покупки"
+          },
+          "seo": {
+            "title": "PURITY | Shopping Service",
+            "description": "Точный shopping-маршрут: от онлайн-подбора до живого сопровождения в магазинах.",
+            "image": {
+              "src": "/images/purity_4.webp",
+              "alt": "Shopping route",
+              "caption": "Воплощение lookbook-а в реальные покупки"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:shopping-service",
+            "kind": "service",
+            "slug": "shopping-service",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:shopping-service:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-shopping-service-preview"
+          }
+        },
+        {
+          "kind": "service",
+          "id": "service:atelier-service",
+          "slug": "atelier-service",
+          "area": "realisation",
+          "title": "Atelier Service",
+          "eyebrow": "Dossier / couture production",
+          "summary": "Dossier как личный манекен, примерки и couture-пошив под ваше движение, ткань и сценарий жизни.",
+          "price": {
+            "eur": "от €500",
+            "uah": "от ₴21 500"
+          },
+          "duration": "от 2 недель",
+          "leadTime": "2-6 недель",
+          "formats": [
+            {
+              "id": "dossier",
+              "label": "Dossier session",
+              "detail": "Личный манекен как база кроя"
+            },
+            {
+              "id": "couture",
+              "label": "Couture production",
+              "detail": "Платья, жакеты, special pieces"
+            }
+          ],
+          "deliverables": [
+            "Dossier",
+            "Карта материалов",
+            "План примерок и финальная выдача"
+          ],
+          "process": [
+            "Знакомство и бриф",
+            "Создание dossier",
+            "Примерки и финальная коррекция"
+          ],
+          "notes": [
+            "Примеры стоимости: платье €500-700, жакет €600-800, atelier rate €25/час",
+            "Финальная смета формируется после dossier"
+          ],
+          "visualMood": "Материальные образцы, couture-архив, тихая роскошь и тонкий ритм примерок.",
+          "heroLabel": "Пошив, который начинается с dossier",
+          "media": {
+            "src": "/images/purity_6.webp",
+            "alt": "Dossier fittings",
+            "caption": "Пошив, который начинается с dossier"
+          },
+          "seo": {
+            "title": "PURITY | Atelier Service",
+            "description": "Dossier как личный манекен, примерки и couture-пошив под ваше движение, ткань и сценарий жизни.",
+            "image": {
+              "src": "/images/purity_6.webp",
+              "alt": "Dossier fittings",
+              "caption": "Пошив, который начинается с dossier"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "service:atelier-service",
+            "kind": "service",
+            "slug": "atelier-service",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "service:atelier-service:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "service-atelier-service-preview"
+          }
+        }
+      ],
+      "courses": [
+        {
+          "kind": "course",
+          "slug": "dress-for-victory-course",
+          "title": "Create Your Dress of Victory",
+          "summary": "Курс по созданию собственного платья-победы вместе с дизайнером.",
+          "price": {
+            "eur": "€480",
+            "uah": "₴20 700"
+          },
+          "sessions": "6 сессий",
+          "format": "Онлайн / студия",
+          "details": [
+            "Концепт платья",
+            "Материалы и draping",
+            "Финальное atelier-изделие"
+          ],
+          "id": "course:dress-for-victory-course",
+          "media": {
+            "cover": {
+              "id": "course-victory-cover",
+              "asset": {
+                "id": "course-victory-cover",
+                "kind": "image",
+                "title": "Dress for Victory course cover",
+                "alt": "Course cover",
+                "src": "/images/purity_3.webp",
+                "mimeType": "image/webp",
+                "width": 1600,
+                "height": 2200,
+                "focalPoint": {
+                  "x": 0.5,
+                  "y": 0.4
+                }
+              },
+              "caption": "Course cover",
+              "purpose": "cover"
+            },
+            "items": [
+              {
+                "id": "course-victory-cover",
+                "asset": {
+                  "id": "course-victory-cover",
+                  "kind": "image",
+                  "title": "Dress for Victory course cover",
+                  "alt": "Course cover",
+                  "src": "/images/purity_3.webp",
+                  "mimeType": "image/webp",
+                  "width": 1600,
+                  "height": 2200,
+                  "focalPoint": {
+                    "x": 0.5,
+                    "y": 0.4
+                  }
+                },
+                "caption": "Course cover",
+                "purpose": "cover"
+              }
+            ]
+          },
+          "meta": {
+            "id": "course:dress-for-victory-course",
+            "kind": "course",
+            "slug": "dress-for-victory-course",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "course:dress-for-victory-course:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "course-dress-for-victory-course-preview"
+          }
+        },
+        {
+          "kind": "course",
+          "slug": "draping-moulage",
+          "title": "Draping / Macetirovanie",
+          "summary": "Практика объёмного моделирования для дизайнеров и стилистов.",
+          "price": {
+            "eur": "€540",
+            "uah": "₴23 300"
+          },
+          "sessions": "8 сессий",
+          "format": "Студия",
+          "details": [
+            "Манекен и объём",
+            "Построение формы тканью",
+            "Финальная мини-капсула"
+          ],
+          "id": "course:draping-moulage",
+          "media": {
+            "cover": {
+              "id": "course-draping-cover",
+              "asset": {
+                "id": "course-draping-cover",
+                "kind": "image",
+                "title": "Draping course cover",
+                "alt": "Draping cover",
+                "src": "/images/purity_4.webp",
+                "mimeType": "image/webp",
+                "width": 1600,
+                "height": 2200,
+                "focalPoint": {
+                  "x": 0.5,
+                  "y": 0.4
+                }
+              },
+              "caption": "Draping cover",
+              "purpose": "cover"
+            },
+            "items": [
+              {
+                "id": "course-draping-cover",
+                "asset": {
+                  "id": "course-draping-cover",
+                  "kind": "image",
+                  "title": "Draping course cover",
+                  "alt": "Draping cover",
+                  "src": "/images/purity_4.webp",
+                  "mimeType": "image/webp",
+                  "width": 1600,
+                  "height": 2200,
+                  "focalPoint": {
+                    "x": 0.5,
+                    "y": 0.4
+                  }
+                },
+                "caption": "Draping cover",
+                "purpose": "cover"
+              }
+            ]
+          },
+          "meta": {
+            "id": "course:draping-moulage",
+            "kind": "course",
+            "slug": "draping-moulage",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "course:draping-moulage:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "course-draping-moulage-preview"
+          }
+        },
+        {
+          "kind": "course",
+          "slug": "wardrobe-management",
+          "title": "Wardrobe Management",
+          "summary": "Система управления гардеробом для частных клиентов и персональных стилистов.",
+          "price": {
+            "eur": "€220",
+            "uah": "₴9 400"
+          },
+          "sessions": "4 сессии",
+          "format": "Онлайн",
+          "details": [
+            "Структура гардероба",
+            "Капсульное мышление",
+            "Календарь покупок"
+          ],
+          "id": "course:wardrobe-management",
+          "media": {
+            "cover": {
+              "id": "course-wardrobe-cover",
+              "asset": {
+                "id": "course-wardrobe-cover",
+                "kind": "image",
+                "title": "Wardrobe management cover",
+                "alt": "Wardrobe system cover",
+                "src": "/images/purity_2.webp",
+                "mimeType": "image/webp",
+                "width": 1600,
+                "height": 2200,
+                "focalPoint": {
+                  "x": 0.5,
+                  "y": 0.4
+                }
+              },
+              "caption": "Wardrobe system cover",
+              "purpose": "cover"
+            },
+            "items": [
+              {
+                "id": "course-wardrobe-cover",
+                "asset": {
+                  "id": "course-wardrobe-cover",
+                  "kind": "image",
+                  "title": "Wardrobe management cover",
+                  "alt": "Wardrobe system cover",
+                  "src": "/images/purity_2.webp",
+                  "mimeType": "image/webp",
+                  "width": 1600,
+                  "height": 2200,
+                  "focalPoint": {
+                    "x": 0.5,
+                    "y": 0.4
+                  }
+                },
+                "caption": "Wardrobe system cover",
+                "purpose": "cover"
+              }
+            ]
+          },
+          "meta": {
+            "id": "course:wardrobe-management",
+            "kind": "course",
+            "slug": "wardrobe-management",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "course:wardrobe-management:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "course-wardrobe-management-preview"
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "kind": "transformation",
+          "slug": "dress-of-victory",
+          "title": "Create Your Dress of Victory",
+          "summary": "Интенсив, где символическое платье становится личным жестом силы.",
+          "format": "Курс / studio lab",
+          "cta": "Присоединиться",
+          "media": {
+            "src": "/images/purity_5.webp",
+            "alt": "Create Your Dress of Victory"
+          },
+          "id": "transformation:dress-of-victory",
+          "meta": {
+            "id": "transformation:dress-of-victory",
+            "kind": "transformation",
+            "slug": "dress-of-victory",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "transformation:dress-of-victory:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "transformation-dress-of-victory-preview"
+          }
+        },
+        {
+          "kind": "transformation",
+          "slug": "wholeness-photomeditation",
+          "title": "Wholeness Photomeditation",
+          "summary": "Фотоопыт на базе пяти архетипов древнеславянских богинь.",
+          "format": "Авторская сессия",
+          "cta": "Запросить детали",
+          "media": {
+            "src": "/images/purity_4.webp",
+            "alt": "Wholeness Photomeditation"
+          },
+          "id": "transformation:wholeness-photomeditation",
+          "meta": {
+            "id": "transformation:wholeness-photomeditation",
+            "kind": "transformation",
+            "slug": "wholeness-photomeditation",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "transformation:wholeness-photomeditation:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "transformation-wholeness-photomeditation-preview"
+          }
+        },
+        {
+          "kind": "transformation",
+          "slug": "fashion-retreat",
+          "title": "Fashion Retreat",
+          "summary": "Ретритный формат для тела, стиля, тишины и нового гардеробного состояния.",
+          "format": "Лист ожидания / residency",
+          "cta": "Встать в лист ожидания",
+          "media": {
+            "src": "/images/purity_3.webp",
+            "alt": "Fashion Retreat"
+          },
+          "id": "transformation:fashion-retreat",
+          "meta": {
+            "id": "transformation:fashion-retreat",
+            "kind": "transformation",
+            "slug": "fashion-retreat",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "transformation:fashion-retreat:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": true,
+            "previewKey": "transformation-fashion-retreat-preview"
+          }
+        }
+      ],
+      "collections": [
+        {
+          "kind": "collection",
+          "id": "collection:dress-for-victory",
+          "slug": "dress-for-victory",
+          "title": "Dress for Victory",
+          "summary": "Символические платья для съёмок, событий и личных моментов силы.",
+          "story": "Коллекция работает с чистой линией плеча, мягким блеском и образом внутренней победы.",
+          "priceNote": "Индивидуальный запрос / couture",
+          "palette": [
+            "Ivory",
+            "Molten pearl",
+            "Victory black"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_5.webp",
+            "alt": "Dress for Victory editorial portrait",
+            "caption": "Dress for Victory / editorial fitting"
+          },
+          "editorialNotes": [
+            "Платья рассчитаны на событийный кадр и на частную жизнь после него.",
+            "Каждый образ строится вокруг жеста спины, плеча и длинной вертикали."
+          ],
+          "materials": [
+            "Шёлк",
+            "Сатин",
+            "Мягкий блеск"
+          ],
+          "silhouettes": [
+            "Удлинённая колонна",
+            "Структурное плечо",
+            "Пластичный шлейф"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_5.webp",
+              "alt": "Dress for Victory fitting look",
+              "caption": "Editorial fitting"
+            },
+            {
+              "src": "/images/purity_3.webp",
+              "alt": "Dress for Victory event silhouette",
+              "caption": "Event silhouette"
+            },
+            {
+              "src": "/images/purity_1.webp",
+              "alt": "Dress for Victory gesture portrait",
+              "caption": "Victory gesture"
+            }
+          ],
+          "requestCta": "Запросить консультацию",
+          "seo": {
+            "title": "PURITY | Dress for Victory collection",
+            "description": "Символическая couture-коллекция PURITY для событий, editorial-съёмок и личных моментов силы.",
+            "image": {
+              "src": "/images/purity_5.webp",
+              "alt": "Dress for Victory editorial portrait",
+              "caption": "Dress for Victory / editorial fitting"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:dress-for-victory",
+            "kind": "collection",
+            "slug": "dress-for-victory",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:dress-for-victory:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-dress-for-victory-preview"
+          }
+        },
+        {
+          "kind": "collection",
+          "id": "collection:retreat-wear",
+          "slug": "retreat-wear",
+          "title": "Retreat Wear",
+          "summary": "Одежда для йоги, дома, отдыха и тихого телесного комфорта.",
+          "story": "Мягкие плоские объёмы, природная палитра и вещи, которые не конфликтуют с телом.",
+          "priceNote": "Капсулы от €390 / ₴16 700",
+          "palette": [
+            "Cloud",
+            "Sand",
+            "Olive milk"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_7.webp",
+            "alt": "Retreat Wear editorial portrait",
+            "caption": "Retreat Wear / morning layer"
+          },
+          "editorialNotes": [
+            "Коллекция мыслится как медленный гардероб для дома, retreat-резиденций и утренней практики.",
+            "Образы можно строить вокруг одного слоя без ощущения перегруза."
+          ],
+          "materials": [
+            "Трикотаж",
+            "Хлопок",
+            "Soft jersey"
+          ],
+          "silhouettes": [
+            "Мягкий халат",
+            "Плоский слой",
+            "Телесная капсула"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_7.webp",
+              "alt": "Retreat Wear morning layer",
+              "caption": "Morning layer"
+            },
+            {
+              "src": "/images/purity_2.webp",
+              "alt": "Retreat Wear soft robe",
+              "caption": "Soft robe"
+            },
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Retreat Wear jersey set",
+              "caption": "Stretch jersey set"
+            }
+          ],
+          "requestCta": "Начать консультацию",
+          "seo": {
+            "title": "PURITY | Retreat Wear collection",
+            "description": "Retreat Wear от PURITY: капсула для йоги, дома, отдыха и тихого телесного комфорта.",
+            "image": {
+              "src": "/images/purity_7.webp",
+              "alt": "Retreat Wear editorial portrait",
+              "caption": "Retreat Wear / morning layer"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:retreat-wear",
+            "kind": "collection",
+            "slug": "retreat-wear",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:retreat-wear:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-retreat-wear-preview"
+          }
+        },
+        {
+          "kind": "collection",
+          "id": "collection:travel-capsule",
+          "slug": "travel-capsule",
+          "title": "Travel Capsule x Vika Veda",
+          "summary": "Пять шёлковых единиц для движения между городами, событиями и климатами.",
+          "story": "Коллекция построена вокруг лёгкой упаковки, повторных стилизаций и высокого тактильного комфорта.",
+          "priceNote": "Капсула: €1 000 / ₴43 000",
+          "palette": [
+            "Raw silk",
+            "Ink navy",
+            "Aegean dusk"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_4.webp",
+            "alt": "Travel Capsule editorial portrait",
+            "caption": "Travel Capsule / airport drape"
+          },
+          "editorialNotes": [
+            "Пять единиц закрывают деловой, курортный и вечерний сценарий без отдельной переупаковки.",
+            "Шёлк здесь работает как главная ткань транзита: легко, тихо и статусно."
+          ],
+          "materials": [
+            "Шёлк",
+            "Креп",
+            "Лёгкий подклад"
+          ],
+          "silhouettes": [
+            "Пятиэлементная капсула",
+            "Airport drape",
+            "Evening reset"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Travel Capsule five-piece edit",
+              "caption": "Five-piece edit"
+            },
+            {
+              "src": "/images/purity_6.webp",
+              "alt": "Travel Capsule airport drape",
+              "caption": "Airport drape"
+            },
+            {
+              "src": "/images/purity_3.webp",
+              "alt": "Travel Capsule evening reset",
+              "caption": "Evening reset"
+            }
+          ],
+          "requestCta": "Спросить о капсуле",
+          "seo": {
+            "title": "PURITY | Travel Capsule x Vika Veda",
+            "description": "Пятиэлементная travel-capsule PURITY и Vika Veda с шёлковой основой для событий и транзита.",
+            "image": {
+              "src": "/images/purity_4.webp",
+              "alt": "Travel Capsule editorial portrait",
+              "caption": "Travel Capsule / airport drape"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:travel-capsule",
+            "kind": "collection",
+            "slug": "travel-capsule",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:travel-capsule:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-travel-capsule-preview"
+          }
+        },
+        {
+          "kind": "collection",
+          "id": "collection:silky-touches",
+          "slug": "silky-touches",
+          "title": "Silky Touches",
+          "summary": "Круизные и шифоновые образы для яхты, йоги, путешествий и мягкого гламура.",
+          "story": "Шёлк и шифон работают как движущаяся световая поверхность, собирающая тело в единый поток.",
+          "priceNote": "Индивидуальный запрос",
+          "palette": [
+            "Sea pearl",
+            "Blue mist",
+            "Sunset quartz"
+          ],
+          "heroMedia": {
+            "src": "/images/purity_2.webp",
+            "alt": "Silky Touches editorial portrait",
+            "caption": "Silky Touches / cruise layer"
+          },
+          "editorialNotes": [
+            "Коллекция балансирует между cruise-гардеробом, resort-движением и прозрачной вечерней пластикой.",
+            "Вещи должны работать и в кадре на ветру, и в close-up на теле."
+          ],
+          "materials": [
+            "Шифон",
+            "Шёлк",
+            "Полупрозрачные слои"
+          ],
+          "silhouettes": [
+            "Cruise layer",
+            "Yoga movement",
+            "Chiffon column"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_2.webp",
+              "alt": "Silky Touches cruise look",
+              "caption": "Cruise layer"
+            },
+            {
+              "src": "/images/purity_7.webp",
+              "alt": "Silky Touches yoga look",
+              "caption": "Yoga everywhere"
+            },
+            {
+              "src": "/images/purity_5.webp",
+              "alt": "Silky Touches chiffon column",
+              "caption": "Chiffon column"
+            }
+          ],
+          "requestCta": "Отправить запрос",
+          "seo": {
+            "title": "PURITY | Silky Touches collection",
+            "description": "Шёлковые и шифоновые образы PURITY для яхты, путешествий, йоги и мягкого glamour.",
+            "image": {
+              "src": "/images/purity_2.webp",
+              "alt": "Silky Touches editorial portrait",
+              "caption": "Silky Touches / cruise layer"
+            },
+            "type": "article"
+          },
+          "meta": {
+            "id": "collection:silky-touches",
+            "kind": "collection",
+            "slug": "silky-touches",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "collection:silky-touches:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "collection-silky-touches-preview"
+          }
+        }
+      ],
+      "portfolio": [
+        {
+          "kind": "portfolio",
+          "slug": "soft-power-capsule",
+          "title": "Soft Power Capsule",
+          "category": "Before / After",
+          "summary": "Трансформация клиентки из хаотичного casual в спокойный и выразительный wardrobe-language.",
+          "heroMedia": {
+            "src": "/images/purity_1.webp",
+            "alt": "Soft Power Capsule portrait",
+            "caption": "Soft Power Capsule / before-after"
+          },
+          "client": "Частная клиентка / executive wardrobe reset",
+          "context": "Wardrobe review, color strategy и capsule build для повседневного руководящего ритма.",
+          "challenge": "Убрать случайность из гардероба без потери мягкости и личного тона.",
+          "approach": "Мы собрали новую цветовую логику, 14 look-формул и точный список покупок и доработок.",
+          "outcome": "14 look-формул, новая цветовая стратегия и меньше импульсивных покупок.",
+          "deliverables": [
+            "Wardrobe review",
+            "Color palette",
+            "Capsule formulas",
+            "Shopping map"
+          ],
+          "metrics": [
+            {
+              "label": "Looks",
+              "value": "14"
+            },
+            {
+              "label": "Shopping edits",
+              "value": "9"
+            },
+            {
+              "label": "Focus",
+              "value": "Executive ease"
+            }
+          ],
+          "accents": [
+            "Capsule",
+            "Color",
+            "Executive ease"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_1.webp",
+              "alt": "Soft Power Capsule portrait",
+              "caption": "Reset portrait"
+            },
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Soft Power Capsule movement",
+              "caption": "Capsule movement"
+            },
+            {
+              "src": "/images/purity_6.webp",
+              "alt": "Soft Power Capsule after styling",
+              "caption": "After styling"
+            }
+          ],
+          "video": {
+            "title": "Soft Power Capsule field note",
+            "url": "https://vimeo.com/76979871",
+            "provider": "vimeo"
+          },
+          "requestCta": "Запросить похожий кейс",
+          "seo": {
+            "title": "PURITY | Soft Power Capsule case",
+            "description": "Before/after кейс PURITY с wardrobe review, color strategy и executive capsule build.",
+            "image": {
+              "src": "/images/purity_1.webp",
+              "alt": "Soft Power Capsule portrait",
+              "caption": "Soft Power Capsule / before-after"
+            },
+            "type": "article"
+          },
+          "id": "portfolio:soft-power-capsule",
+          "meta": {
+            "id": "portfolio:soft-power-capsule",
+            "kind": "portfolio",
+            "slug": "soft-power-capsule",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "portfolio:soft-power-capsule:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "portfolio-soft-power-capsule-preview"
+          }
+        },
+        {
+          "kind": "portfolio",
+          "slug": "editorial-corporate-shoot",
+          "title": "Editorial Corporate Shoot",
+          "category": "Corporate",
+          "summary": "Стилизация брендовой съёмки с нейтральной luxury-оптикой и акцентом на ткань.",
+          "heroMedia": {
+            "src": "/images/purity_3.webp",
+            "alt": "Editorial Corporate Shoot portrait",
+            "caption": "Editorial Corporate Shoot / campaign frame"
+          },
+          "client": "Корпоративный fashion / lifestyle клиент",
+          "context": "Кампанийная съёмка требовала единого luxury-языка для digital и event-коммуникации.",
+          "challenge": "Соединить корпоративную ясность и fashion-настроение без рекламной жёсткости.",
+          "approach": "Стилизация собрана вокруг ткани, движения и нейтральной палитры, которая удерживает бренд без перегруза.",
+          "outcome": "Согласованный визуальный язык для кампании и событийного контента.",
+          "deliverables": [
+            "Styling direction",
+            "Shot-list rhythm",
+            "Wardrobe edit",
+            "Fabric accents"
+          ],
+          "metrics": [
+            {
+              "label": "Frames",
+              "value": "26"
+            },
+            {
+              "label": "Looks",
+              "value": "8"
+            },
+            {
+              "label": "Usage",
+              "value": "Campaign + events"
+            }
+          ],
+          "accents": [
+            "Corporate",
+            "Shoot",
+            "Brand styling"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_3.webp",
+              "alt": "Editorial Corporate Shoot frame",
+              "caption": "Campaign frame"
+            },
+            {
+              "src": "/images/purity_5.webp",
+              "alt": "Editorial Corporate Shoot fabric detail",
+              "caption": "Fabric detail"
+            },
+            {
+              "src": "/images/purity_2.webp",
+              "alt": "Editorial Corporate Shoot event look",
+              "caption": "Event look"
+            }
+          ],
+          "requestCta": "Обсудить корпоративную стилизацию",
+          "seo": {
+            "title": "PURITY | Editorial Corporate Shoot case",
+            "description": "Корпоративный editorial-кейс PURITY с brand styling, luxury-палитрой и fabric-first артдирекшном.",
+            "image": {
+              "src": "/images/purity_3.webp",
+              "alt": "Editorial Corporate Shoot portrait",
+              "caption": "Editorial Corporate Shoot / campaign frame"
+            },
+            "type": "article"
+          },
+          "id": "portfolio:editorial-corporate-shoot",
+          "meta": {
+            "id": "portfolio:editorial-corporate-shoot",
+            "kind": "portfolio",
+            "slug": "editorial-corporate-shoot",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "portfolio:editorial-corporate-shoot:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "portfolio-editorial-corporate-shoot-preview"
+          }
+        },
+        {
+          "kind": "portfolio",
+          "slug": "bridal-reset",
+          "title": "Bridal Reset",
+          "category": "Atelier",
+          "summary": "Dossier + couture-платье для частной церемонии и дальнейшего wardrobe reuse.",
+          "heroMedia": {
+            "src": "/images/purity_6.webp",
+            "alt": "Bridal Reset portrait",
+            "caption": "Bridal Reset / atelier fitting"
+          },
+          "client": "Частная церемония / atelier client",
+          "context": "Клиентке нужен был свадебный look, который продолжал бы жить после события.",
+          "challenge": "Сделать couture-платье символичным и пригодным для повторной носки.",
+          "approach": "Через dossier и atelier fittings была построена одна базовая форма с тремя будущими сценариями стилизации.",
+          "outcome": "Одно платье, три сценария носки после события.",
+          "deliverables": [
+            "Dossier session",
+            "Atelier fittings",
+            "Couture dress",
+            "Post-event styling map"
+          ],
+          "metrics": [
+            {
+              "label": "Fittings",
+              "value": "5"
+            },
+            {
+              "label": "Rewear looks",
+              "value": "3"
+            },
+            {
+              "label": "Format",
+              "value": "Atelier"
+            }
+          ],
+          "accents": [
+            "Couture",
+            "Dossier",
+            "Rewear"
+          ],
+          "gallery": [
+            {
+              "src": "/images/purity_6.webp",
+              "alt": "Bridal Reset atelier fitting",
+              "caption": "Atelier fitting"
+            },
+            {
+              "src": "/images/purity_1.webp",
+              "alt": "Bridal Reset event silhouette",
+              "caption": "Event silhouette"
+            },
+            {
+              "src": "/images/purity_4.webp",
+              "alt": "Bridal Reset after-event look",
+              "caption": "After-event look"
+            }
+          ],
+          "requestCta": "Начать atelier-консультацию",
+          "seo": {
+            "title": "PURITY | Bridal Reset case",
+            "description": "Atelier-кейс PURITY: dossier, couture-платье и три post-event сценария повторной носки.",
+            "image": {
+              "src": "/images/purity_6.webp",
+              "alt": "Bridal Reset portrait",
+              "caption": "Bridal Reset / atelier fitting"
+            },
+            "type": "article"
+          },
+          "id": "portfolio:bridal-reset",
+          "meta": {
+            "id": "portfolio:bridal-reset",
+            "kind": "portfolio",
+            "slug": "bridal-reset",
+            "owner": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "lastEditedBy": {
+              "id": "owner-editorial",
+              "name": "PURITY Content Team",
+              "role": "editor"
+            },
+            "createdAt": "2026-04-20T09:00:00.000Z",
+            "updatedAt": "2026-04-20T14:00:00.000Z",
+            "lifecycle": {
+              "state": "published",
+              "publishedAt": "2026-04-20T15:00:00.000Z"
+            },
+            "currentRevision": {
+              "id": "portfolio:bridal-reset:rev-4",
+              "version": 4,
+              "note": "Ready for repository-backed publishing and preview.",
+              "createdAt": "2026-04-20T14:00:00.000Z",
+              "createdBy": {
+                "id": "owner-editorial",
+                "name": "PURITY Content Team",
+                "role": "editor"
+              }
+            },
+            "hasUnpublishedChanges": false,
+            "previewKey": "portfolio-bridal-reset-preview"
+          }
+        }
+      ]
+    }
+  }
+}
