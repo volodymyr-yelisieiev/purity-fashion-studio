@@ -89,7 +89,7 @@ export function parsePublicEnv(source: EnvSource): PublicEnv {
   return {
     mode,
     appEnv,
-    showRouterDevtools: readBoolean(source, 'VITE_ENABLE_ROUTER_DEVTOOLS', mode !== 'production'),
+    showRouterDevtools: readBoolean(source, 'VITE_ENABLE_ROUTER_DEVTOOLS', false),
     enableAdmin: readBoolean(source, 'VITE_ENABLE_ADMIN', appEnv !== 'production'),
     enablePrototypeFlows: readBoolean(source, 'VITE_ENABLE_PROTOTYPE_FLOWS', appEnv !== 'production'),
     enableForcedMockFailures: readBoolean(source, 'VITE_ENABLE_FORCE_MOCK_FAILURES', false),

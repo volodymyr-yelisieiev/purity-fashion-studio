@@ -5,6 +5,8 @@ import { buildSubmissionSignature } from './mock-submission'
 import type { BookingRequest, ContactInquiry, LeadSubmission, SubmissionResult } from './types'
 
 const leadDeduplicationWindowMs = 10 * 60 * 1000
+const leadRateLimitWindowMs = 10 * 60 * 1000
+const leadRateLimitMax = 3
 const webhookTimeoutMs = 10_000
 const locales = ['uk', 'en', 'ru'] as const
 const bookingKinds = ['service', 'course', 'collection', 'portfolio', 'transformation'] as const
@@ -16,6 +18,7 @@ type LeadCacheEntry = {
 }
 
 const leadCache = new Map<string, LeadCacheEntry>()
+const leadRateCache = new Map<string, { expiresAt: number; count: number }>()
 
 function nowReference(prefix: string) {
   return `${prefix}-${Date.now()}`
@@ -27,6 +30,12 @@ function pruneLeadCache(now: number) {
       leadCache.delete(key)
     }
   }
+
+  for (const [key, entry] of leadRateCache) {
+    if (entry.expiresAt <= now) {
+      leadRateCache.delete(key)
+    }
+  }
 }
 
 function leadSignature(submission: LeadSubmission) {
@@ -36,6 +45,37 @@ function leadSignature(submission: LeadSubmission) {
     locale: submission.locale,
     ...payload,
   })
+}
+
+function leadRateLimitKey(submission: LeadSubmission) {
+  const payload = submission.payload
+  return buildSubmissionSignature({
+    channel: submission.channel,
+    locale: submission.locale,
+    email: payload.email,
+    phone: payload.phone,
+  })
+}
+
+function reserveLeadRateLimit(submission: LeadSubmission, now: number) {
+  const key = leadRateLimitKey(submission)
+  const current = leadRateCache.get(key)
+
+  if (current && current.expiresAt > now) {
+    if (current.count >= leadRateLimitMax) {
+      return false
+    }
+
+    leadRateCache.set(key, { ...current, count: current.count + 1 })
+    return true
+  }
+
+  leadRateCache.set(key, {
+    expiresAt: now + leadRateLimitWindowMs,
+    count: 1,
+  })
+
+  return true
 }
 
 async function deliverLead(submission: LeadSubmission, reference: string): Promise<SubmissionResult> {
@@ -112,6 +152,15 @@ async function postLeadToWebhook(submission: LeadSubmission): Promise<Submission
 
     if (cached.promise) {
       return cached.promise
+    }
+  }
+
+  if (!reserveLeadRateLimit(submission, now)) {
+    return {
+      status: 'failure',
+      reference,
+      message: 'rate-limited',
+      source: 'guard',
     }
   }
 

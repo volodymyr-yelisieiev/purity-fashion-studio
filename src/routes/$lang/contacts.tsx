@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CompactIntro, ContactsLayout } from '~/components/site-shell'
 import { buildLocalePath } from '~/lib/i18n'
+import { pageMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -42,8 +43,8 @@ function ContactsPage() {
           ui.labels.privateInquiries,
           ui.labels.corporateBriefs,
         ]}
-        imageSrc="/images/purity_2.jpg"
-        imageAlt={page.title}
+        imageSrc={pageMedia.contactsIntro.src}
+        imageAlt={pageMedia.contactsIntro.alt}
       />
       <ContactsLayout page={page} settings={settings} locale={locale} ui={ui} />
     </>

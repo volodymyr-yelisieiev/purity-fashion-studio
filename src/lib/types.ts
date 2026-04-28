@@ -279,6 +279,7 @@ export interface ContactsPageData {
   corporateTitle: string
   corporateText: string
   scheduleNote: string
+  addressText: string
   mapLabel: string
   seo: SeoMetadata
   meta: ManagedContentMeta
@@ -465,7 +466,7 @@ export interface SubmissionResult {
   status: 'success' | 'failure'
   reference: string
   message?: string
-  source?: 'mock' | 'webhook'
+  source?: 'mock' | 'webhook' | 'guard'
 }
 
 export interface LeadSubmission {

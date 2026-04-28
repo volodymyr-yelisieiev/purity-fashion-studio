@@ -5,13 +5,13 @@ import {
   Outlet,
   useLocation,
   useNavigate,
-  useRouterState,
 } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 import { analytics } from '~/lib/analytics'
 import { publicEnv } from '~/lib/env'
 import { buildLocalePath, segmentLocale } from '~/lib/i18n'
-import { courseCoverAsset } from '~/lib/media-refs'
+import { courseCoverAsset, optimizedImageSrc } from '~/lib/media-refs'
+import { homeMedia, pageMedia } from '~/lib/media-plan'
 import { MOTION, usePrefersReducedMotion } from '~/lib/motion'
 import { isDuplicateSubmission } from '~/lib/mock-submission'
 import { submitBookingLead, submitContactLead } from '~/lib/submissions'
@@ -39,17 +39,17 @@ function clamp01(value: number) {
   return Math.min(Math.max(value, 0), 1)
 }
 
-function optimizedImageSrc(src: string) {
-  return src.startsWith('/images/') && src.endsWith('.jpg') ? src.replace(/\.jpg$/, '.webp') : src
-}
-
 type BookingIntentKind = 'service' | 'course' | 'collection' | 'portfolio' | 'transformation'
 
-type BookingSearchParams = {
-  kind: BookingIntentKind
-  slug: string
-  area?: 'research' | 'realisation'
-}
+type BookingSearchParams =
+  | {
+      kind: BookingIntentKind
+      slug: string
+      area?: 'research' | 'realisation'
+    }
+  | {
+      intent: string
+    }
 
 function bookingSearchFromPath(pathname: string): BookingSearchParams | undefined {
   const [, section, slug] = pathname.split('/').filter(Boolean)
@@ -71,6 +71,32 @@ function bookingSearchFromPath(pathname: string): BookingSearchParams | undefine
   }
 
   return undefined
+}
+
+function bookingSearchFromSearch(search: unknown): BookingSearchParams | undefined {
+  if (!search || typeof search !== 'object') {
+    return undefined
+  }
+
+  const params = search as Record<string, unknown>
+
+  if (typeof params.intent === 'string') {
+    return { intent: params.intent }
+  }
+
+  if (typeof params.kind !== 'string' || typeof params.slug !== 'string') {
+    return undefined
+  }
+
+  if (!['service', 'course', 'collection', 'portfolio', 'transformation'].includes(params.kind)) {
+    return undefined
+  }
+
+  return {
+    kind: params.kind as BookingIntentKind,
+    slug: params.slug,
+    area: params.area === 'research' || params.area === 'realisation' ? params.area : undefined,
+  }
 }
 
 export function Section({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -110,9 +136,8 @@ export function SiteShell({
   ui: UiCopy
   settings?: StudioSettings
 }) {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  })
+  const location = useLocation()
+  const pathname = location.pathname
   const currentLocale = segmentLocale(pathname)
   const homePath = buildLocalePath(locale)
   const isHome = pathname === homePath
@@ -128,15 +153,19 @@ export function SiteShell({
   const dockThresholdRef = React.useRef(220)
   const headerDocked = !isHome || open || isHeaderDocked
   const safeSettings = settings ?? {
-    contactEmail: 'hello@purity-fashion-studio.ua',
+    contactEmail: 'voronina@purity-fashion.com',
     corporateEmail: undefined,
-    phone: undefined,
+    phone: '+38 067 656 19 12',
     socialLinks: [],
-    mapHref: undefined,
-    mapLabel: undefined,
+    mapHref:
+      'https://www.google.com/maps/search/?api=1&query=Kyiv%2003150%2C%20Predslavynska%20Street%2044%2C%20office%201%2C%20floor%202%2C%20French%20Quarter%202',
+    mapLabel: 'PURITY studio on map',
   }
   const bookingPath = buildLocalePath(locale, '/book')
-  const bookingSearch = React.useMemo(() => bookingSearchFromPath(pathname), [pathname])
+  const bookingSearch = React.useMemo(
+    () => bookingSearchFromPath(pathname) ?? bookingSearchFromSearch(location.search),
+    [location.search, pathname],
+  )
 
   React.useEffect(() => {
     setOpen(false)
@@ -182,9 +211,13 @@ export function SiteShell({
       target.setAttribute('aria-hidden', 'true')
     })
 
+    const getFocusableElements = () => [
+      ...(toggle ? [toggle] : []),
+      ...Array.from(sheet?.querySelectorAll<HTMLElement>(focusableSelector) ?? []),
+    ].filter((element) => !element.hasAttribute('disabled'))
+
     const focusFirstElement = () => {
-      const focusable = sheet?.querySelectorAll<HTMLElement>(focusableSelector)
-      focusable?.[0]?.focus()
+      toggle?.focus()
     }
 
     const handlePointerDown = (event: PointerEvent) => {
@@ -211,8 +244,7 @@ export function SiteShell({
         return
       }
 
-      const focusable = Array.from(sheet.querySelectorAll<HTMLElement>(focusableSelector))
-        .filter((element) => !element.hasAttribute('disabled'))
+      const focusable = getFocusableElements()
 
       if (!focusable.length) {
         event.preventDefault()
@@ -433,8 +465,10 @@ export function SiteShell({
             <Link
               ref={headerBrandRef}
               to={buildLocalePath(locale)}
-              className="header-brand"
+              className={cn('header-brand', !headerDocked && 'header-brand-hidden')}
               aria-label={ui.brand}
+              aria-hidden={!headerDocked}
+              tabIndex={headerDocked ? undefined : -1}
             >
               <BrandLogo variant="extended" className="header-logo" alt={ui.brand} />
             </Link>
@@ -462,7 +496,13 @@ export function SiteShell({
         >
           <div className="site-container site-container-wide nav-sheet-grid">
             {shellColumns.map((group) => (
-              <div key={group.title} className="footer-column nav-sheet-animate">
+              <div
+                key={group.title}
+                className={cn(
+                  'footer-column nav-sheet-animate',
+                  group.title === ui.navigation.contact && 'nav-sheet-contact-column',
+                )}
+              >
                 <p className="eyebrow">{group.title}</p>
                 {group.items.map((item) =>
                   'kind' in item ? (
@@ -528,6 +568,45 @@ export function SiteShell({
       <footer className="site-footer">
         <div className="footer-logo-band">
           <img src="/main_black.svg" alt={ui.brand} className="footer-logo-band-image" />
+        </div>
+        <div className="site-container site-container-wide footer-nav-grid">
+          {shellColumns.map((group) => (
+            <div key={group.title} className="footer-column">
+              <p className="eyebrow">{group.title}</p>
+              {group.items.map((item) =>
+                'kind' in item ? (
+                  item.kind === 'internal' ? (
+                    <Link
+                      key={item.label}
+                      to={item.to}
+                      search={'search' in item ? item.search : undefined}
+                      className="footer-link"
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={item.label}
+                      className="footer-link"
+                      href={item.to}
+                      target={item.to.startsWith('http') ? '_blank' : undefined}
+                      rel={item.to.startsWith('http') ? 'noreferrer' : undefined}
+                    >
+                      {item.label}
+                    </a>
+                  )
+                ) : (
+                  <HeaderLink
+                    key={item.key}
+                    itemKey={item.key}
+                    to={item.to}
+                    label={item.label}
+                    className="footer-link"
+                  />
+                ),
+              )}
+            </div>
+          ))}
         </div>
         <div className="site-container site-container-wide footer-legal">
           <p className="footer-legal-copy">© {currentYear} {ui.labels.allRightsReserved}</p>
@@ -644,9 +723,15 @@ const HOME_SLOGANS: Record<Locale, [string, string, string]> = {
 }
 
 const HOME_VERTICAL_LABEL: Record<Locale, string> = {
-  uk: 'Personal wardrobe designer',
+  uk: 'Персональний дизайнер гардероба',
   en: 'Personal wardrobe designer',
-  ru: 'Personal wardrobe designer',
+  ru: 'Персональный дизайнер гардероба',
+}
+
+const HOME_SCROLL_LABEL: Record<Locale, string> = {
+  uk: 'Гортати',
+  en: 'Scroll',
+  ru: 'Листать',
 }
 
 export function HomeEditorialHero({
@@ -669,7 +754,7 @@ export function HomeEditorialHero({
 
         <div className="home-editorial-art home-editorial-art-left">
           <img
-            src="/images/purity_3.webp"
+            src={homeMedia.heroLeft.src}
             alt=""
             className="home-editorial-image"
             loading="eager"
@@ -693,12 +778,12 @@ export function HomeEditorialHero({
           <Link to={buildLocalePath(locale, '/book')} className="button-primary home-editorial-cta">
             {home.heroPrimaryCta}
           </Link>
-          <span className="home-editorial-scroll">Scroll</span>
+          <span className="home-editorial-scroll">{HOME_SCROLL_LABEL[locale]}</span>
         </div>
 
         <div className="home-editorial-art home-editorial-art-right">
           <img
-            src="/images/purity_5.webp"
+            src={homeMedia.heroRight.src}
             alt=""
             className="home-editorial-image"
             loading="eager"
@@ -892,21 +977,24 @@ export function ServiceCard({
   cta,
   pricingLabel,
   imageSrc: imageOverride,
+  imageAlt: imageAltOverride,
 }: {
   item: ServiceEntity
   locale: Locale
   cta: string
   pricingLabel: string
   imageSrc?: string
+  imageAlt?: string
 }) {
   const detailTo = buildLocalePath(locale, `/${item.area}/${item.slug}`)
   const imageSrc = imageOverride ?? item.media.src
+  const imageAlt = imageAltOverride ?? item.media.alt
 
   return (
     <ProductPreviewCard
       to={detailTo}
       imageSrc={imageSrc}
-      imageAlt={item.media.alt}
+      imageAlt={imageAlt}
       eyebrow={item.eyebrow}
       title={item.title}
       summary={item.summary}
@@ -1411,6 +1499,8 @@ export function CollectionGallery({
   locale: Locale
   ui: UiCopy
 }) {
+  const gallery = galleryWithoutHero(collection.heroMedia, collection.gallery)
+
   return (
     <>
       <ProductDetailHero
@@ -1465,7 +1555,7 @@ export function CollectionGallery({
         </div>
 
         <div className="collection-gallery-grid product-gallery-grid">
-          {collection.gallery.map((asset, index) => (
+          {gallery.map((asset, index) => (
             <figure key={asset.src} className={cn('collection-frame', index === 0 && 'collection-frame-large')}>
               <img src={optimizedImageSrc(asset.src)} alt={asset.alt} className="collection-frame-image" loading="lazy" decoding="async" />
               <figcaption className="collection-frame-caption">{asset.caption}</figcaption>
@@ -1475,6 +1565,10 @@ export function CollectionGallery({
       </Section>
     </>
   )
+}
+
+function galleryWithoutHero<T extends { src: string }>(hero: { src: string }, gallery: T[]) {
+  return gallery.filter((asset) => asset.src !== hero.src)
 }
 
 function TagCluster({ items }: { items: string[] }) {
@@ -1535,6 +1629,8 @@ export function PortfolioCaseStory({
   locale: Locale
   ui: UiCopy
 }) {
+  const gallery = galleryWithoutHero(entry.heroMedia, entry.gallery)
+
   return (
     <>
       <ProductDetailHero
@@ -1588,7 +1684,7 @@ export function PortfolioCaseStory({
 
       <Section className="product-detail-section">
         <div className="collection-gallery-grid product-gallery-grid">
-          {entry.gallery.map((asset, index) => (
+          {gallery.map((asset, index) => (
             <figure key={asset.src} className={cn('collection-frame', index === 0 && 'collection-frame-large')}>
               <img src={optimizedImageSrc(asset.src)} alt={asset.alt} className="collection-frame-image" loading="lazy" decoding="async" />
               <figcaption className="collection-frame-caption">{asset.caption}</figcaption>
@@ -1659,7 +1755,7 @@ export function ContactsLayout({
 
         <aside className="editorial-side-stack">
           <div className="editorial-photo-panel">
-            <img src="/images/purity_1.webp" alt={page.title} className="editorial-photo-image" loading="lazy" decoding="async" />
+            <img src={pageMedia.contactsAside.src} alt={pageMedia.contactsAside.alt} className="editorial-photo-image" loading="lazy" decoding="async" />
           </div>
 
           <article className="editorial-panel editorial-panel-compact">
@@ -1687,7 +1783,7 @@ export function ContactsLayout({
                 </>
               ) : null}
               <br />
-              {settings.locationLabel}
+              {page.addressText}
             </p>
             <div className="micro-tag-row">
               {settings.socialLinks.map((link) => (
@@ -1726,7 +1822,7 @@ function ContactForm({
     canRetry?: boolean
   }>({ state: 'idle' })
   const pending = submission.state === 'pending'
-  const submitDisabled = pending || !isEnhanced
+  const submitDisabled = pending
 
   React.useEffect(() => {
     setIsEnhanced(true)
@@ -1888,7 +1984,7 @@ export function BookingLayout({
     canRetry?: boolean
   }>({ state: 'idle' })
   const pending = submission.state === 'pending'
-  const submitDisabled = pending || !isEnhanced
+  const submitDisabled = pending
   const minBookingDate = React.useMemo(() => new Date().toISOString().slice(0, 10), [])
 
   React.useEffect(() => {

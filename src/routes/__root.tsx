@@ -175,7 +175,7 @@ function RouteCurtain() {
     setPhase('idle')
     gsap.set(curtain, { display: 'none', y: 0, yPercent: -110, autoAlpha: 0, pointerEvents: 'none' })
     gsap.set(logo, { autoAlpha: 0, y: -18, scale: 0.94 })
-    gsap.set(rule, { autoAlpha: 0, scaleX: 0 })
+    gsap.set(rule, { autoAlpha: 0, xPercent: -50, scaleX: 0 })
   }, [setPhase])
 
   const revealCurtain = React.useCallback(() => {
@@ -202,13 +202,25 @@ function RouteCurtain() {
       },
     })
     timelineRef.current = timeline
-    timeline.to([logo, rule], {
+    timeline.to(logo, {
       autoAlpha: 0,
       y: 16,
       scale: 0.98,
       duration: MOTION.fast,
       ease: 'power2.out',
     })
+    timeline.to(
+      rule,
+      {
+        autoAlpha: 0,
+        y: 16,
+        xPercent: -50,
+        scaleX: 0.98,
+        duration: MOTION.fast,
+        ease: 'power2.out',
+      },
+      0,
+    )
     timeline.to(
       curtain,
       {
@@ -274,7 +286,7 @@ function RouteCurtain() {
     if (prefersReducedMotion) {
       gsap.set(curtain, { display: 'grid', y: 0, yPercent: 0, autoAlpha: 1, pointerEvents: 'auto' })
       gsap.set(logo, { autoAlpha: 1, y: 0, scale: 1 })
-      gsap.set(rule, { autoAlpha: 1, scaleX: 1 })
+      gsap.set(rule, { autoAlpha: 1, xPercent: -50, scaleX: 1 })
       proceedNavigation()
       return
     }
@@ -289,7 +301,7 @@ function RouteCurtain() {
     timelineRef.current = timeline
     timeline.set(curtain, { display: 'grid', y: 0, yPercent: -110, autoAlpha: 1, pointerEvents: 'auto' })
     timeline.set(logo, { autoAlpha: 0, y: -18, scale: 0.94 })
-    timeline.set(rule, { autoAlpha: 0, scaleX: 0 })
+    timeline.set(rule, { autoAlpha: 0, xPercent: -50, scaleX: 0 })
     timeline.to(curtain, {
       y: 0,
       yPercent: 0,
@@ -311,6 +323,7 @@ function RouteCurtain() {
       rule,
       {
         autoAlpha: 1,
+        xPercent: -50,
         scaleX: 1,
         duration: MOTION.base,
         ease: MOTION.ease,

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { OfferGrid, ServiceCard, StandardListingPage } from '~/components/site-shell'
 import { buildLocalePath } from '~/lib/i18n'
-import { processImageRefs } from '~/lib/media-refs'
+import { listingProcessMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -28,7 +28,7 @@ export const Route = createFileRoute('/$lang/research/')({
 
 function ResearchIndexPage() {
   const { locale, page, services, ui } = Route.useLoaderData()
-  const heroImage = services[0]?.media ?? page.seo.image
+  const heroImage = page.seo.image
 
   return (
     <StandardListingPage
@@ -48,7 +48,7 @@ function ResearchIndexPage() {
         title: page.pullQuote,
         text: page.intro,
         items: services.flatMap((service) => service.process).slice(0, 3),
-        images: processImageRefs(page.seo.image, ...services.map((service) => service.media)).slice(0, 3),
+        images: listingProcessMedia.research,
       }}
     >
       <OfferGrid title={page.title} subtitle={page.intro}>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600" role="img" aria-label="Abstract PURITY editorial image">
+    <defs>
+      <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="4" seed="11"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 0.14"/></feComponentTransfer></filter>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8f6f1"/><stop offset="0.58" stop-color="#c7bbb0"/><stop offset="1" stop-color="#0f0f0f"/></linearGradient>
+      <radialGradient id="r" cx="68%" cy="24%" r="72%"><stop offset="0" stop-color="#ffffff" stop-opacity="0.62"/><stop offset="0.48" stop-color="#c7bbb0" stop-opacity="0.34"/><stop offset="1" stop-color="#0f0f0f" stop-opacity="0.24"/></radialGradient>
+    </defs>
+    <rect width="1200" height="1600" fill="url(#g)"/>
+    <rect width="1200" height="1600" fill="url(#r)"/>
+    <rect width="1200" height="1600" filter="url(#grain)" opacity="0.55"/>
+  <g opacity="0.72"><rect x="120" y="160" width="340" height="460" fill="#fff" opacity="0.18" stroke="#0f0f0f" stroke-opacity="0.22"/><rect x="560" y="380" width="340" height="460" fill="#fff" opacity="0.21" stroke="#0f0f0f" stroke-opacity="0.22"/><rect x="120" y="600" width="340" height="460" fill="#fff" opacity="0.24" stroke="#0f0f0f" stroke-opacity="0.22"/><rect x="560" y="820" width="340" height="460" fill="#fff" opacity="0.27" stroke="#0f0f0f" stroke-opacity="0.22"/><rect x="120" y="1040" width="340" height="460" fill="#fff" opacity="0.3" stroke="#0f0f0f" stroke-opacity="0.22"/></g><path d="M118 1138 H1010" stroke="#0f0f0f" stroke-width="5" stroke-opacity="0.5"/><path d="M220 1210 H840" stroke="#fff" stroke-width="3" stroke-opacity="0.5"/></svg>

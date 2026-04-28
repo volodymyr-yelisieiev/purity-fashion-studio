@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CourseGrid, StandardListingPage } from '~/components/site-shell'
 import { buildLocalePath } from '~/lib/i18n'
-import { courseCoverAsset, processImageRefs } from '~/lib/media-refs'
+import { listingProcessMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -28,7 +28,7 @@ export const Route = createFileRoute('/$lang/school')({
 
 function SchoolPage() {
   const { locale, page, courses, ui } = Route.useLoaderData()
-  const heroImage = courseCoverAsset(courses[0]) ?? page.seo.image
+  const heroImage = page.seo.image
 
   return (
     <StandardListingPage
@@ -48,7 +48,7 @@ function SchoolPage() {
         title: page.pullQuote,
         text: page.intro,
         items: courses.flatMap((course) => course.details).slice(0, 3),
-        images: processImageRefs(page.seo.image, ...courses.map((course) => courseCoverAsset(course))).slice(0, 3),
+        images: listingProcessMedia.school,
       }}
     >
       <CourseGrid courses={courses} locale={locale} cta={ui.actions.bookNow} />

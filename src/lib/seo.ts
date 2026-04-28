@@ -1,4 +1,5 @@
 import { buildLocalePath } from './i18n'
+import { pageMedia } from './media-plan'
 import type { Locale, SeoMetadata } from './types'
 
 const SITE_URL = 'https://purity-fashion-studio.com'
@@ -82,7 +83,7 @@ export function buildDefaultSeoHead() {
           'Premium multilingual fashion studio website for styling, atelier services, collections, portfolio, and transformational experiences.',
       },
       { property: 'og:url', content: SITE_URL },
-      { property: 'og:image', content: absoluteUrl('/images/purity_4.jpg') },
+      { property: 'og:image', content: absoluteUrl(pageMedia.home.src) },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: 'PURITY Fashion Studio' },
       {
@@ -90,8 +91,8 @@ export function buildDefaultSeoHead() {
         content:
           'Premium multilingual fashion studio website for styling, atelier services, collections, portfolio, and transformational experiences.',
       },
-      { name: 'twitter:image', content: absoluteUrl('/images/purity_4.jpg') },
+      { name: 'twitter:image', content: absoluteUrl(pageMedia.home.src) },
     ],
-    links: [{ rel: 'canonical', href: SITE_URL }],
+    links: [],
   }
 }

@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CollectionCard, OfferGrid, StandardListingPage } from '~/components/site-shell'
 import { buildLocalePath } from '~/lib/i18n'
+import { listingPreviewMedia, plannedImageAt } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -27,7 +28,7 @@ export const Route = createFileRoute('/$lang/collections/')({
 
 function CollectionsPage() {
   const { locale, page, collections, ui } = Route.useLoaderData()
-  const heroImage = collections[0]?.heroMedia ?? page.seo.image
+  const heroImage = page.seo.image
 
   return (
     <StandardListingPage
@@ -45,13 +46,17 @@ function CollectionsPage() {
       preview={{
         eyebrow: ui.labels.collectionStory,
         title: page.pullQuote,
-        items: collections.slice(0, 3).map((collection) => ({
-          title: collection.title,
-          subtitle: collection.priceNote,
-          imageSrc: collection.heroMedia.src,
-          imageAlt: collection.heroMedia.alt,
-          to: buildLocalePath(locale, `/collections/${collection.slug}`),
-        })),
+        items: collections.slice(0, 3).map((collection, index) => {
+          const media = plannedImageAt(listingPreviewMedia.collections, index, collection.heroMedia)
+
+          return {
+            title: collection.title,
+            subtitle: collection.priceNote,
+            imageSrc: media.src,
+            imageAlt: media.alt,
+            to: buildLocalePath(locale, `/collections/${collection.slug}`),
+          }
+        }),
       }}
     >
       <OfferGrid title={page.title} subtitle={page.intro}>

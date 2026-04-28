@@ -1,6 +1,8 @@
-import { Link, Outlet, createFileRoute, notFound, redirect } from '@tanstack/react-router'
+import { Link, Outlet, createFileRoute, notFound, redirect, useNavigate, useRouterState } from '@tanstack/react-router'
+import { useServerFn } from '@tanstack/react-start'
+import * as React from 'react'
 import { adminDefaultLocale } from '~/lib/admin'
-import { getAdminAuthState } from '~/lib/admin-auth'
+import { getAdminAuthState, logoutAdmin } from '~/lib/admin-auth'
 import { publicEnv } from '~/lib/env'
 import { contentQueries } from '~/lib/query'
 
@@ -20,8 +22,13 @@ export const Route = createFileRoute('/admin')({
       throw redirect({ to: '/admin/login' })
     }
   },
-  loader: async ({ context }) => {
+  loader: async ({ context, location }) => {
     const locale = adminDefaultLocale
+
+    if (location.pathname === '/admin/login') {
+      return { locale, navigation: [] }
+    }
+
     const [navigation] = await Promise.all([
       context.queryClient.ensureQueryData(contentQueries.adminNavigation(locale)),
     ])
@@ -33,6 +40,29 @@ export const Route = createFileRoute('/admin')({
 
 function AdminLayout() {
   const { navigation } = Route.useLoaderData()
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
+  const navigate = useNavigate()
+  const logout = useServerFn(logoutAdmin)
+  const [pendingLogout, setPendingLogout] = React.useState(false)
+
+  if (pathname === '/admin/login') {
+    return (
+      <main className="site-container section-space">
+        <Outlet />
+      </main>
+    )
+  }
+
+  async function onLogout() {
+    setPendingLogout(true)
+
+    try {
+      await logout()
+      await navigate({ to: '/admin/login' })
+    } finally {
+      setPendingLogout(false)
+    }
+  }
 
   return (
     <main className="site-container section-space">
@@ -50,10 +80,13 @@ function AdminLayout() {
           All content
         </Link>
         {navigation.map((item: (typeof navigation)[number]) => (
-          <a key={item.kind} href={item.to} className="micro-tag">
+          <Link key={item.kind} to={item.to} className="micro-tag">
             {item.label}
-          </a>
+          </Link>
         ))}
+        <button className="micro-tag" type="button" onClick={onLogout} disabled={pendingLogout}>
+          {pendingLogout ? 'Signing out' : 'Sign out'}
+        </button>
       </nav>
 
       <Outlet />

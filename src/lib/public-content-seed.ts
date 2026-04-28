@@ -10,6 +10,13 @@ import type {
   ServiceEntity,
   TransformationOfferEntity,
 } from './types'
+import {
+  entityMediaOverrides,
+  galleryMediaOverrides,
+  isReservedMediaForDifferentOwner,
+  localizedCopyOverrides,
+  type PlannedImage,
+} from './media-plan'
 
 interface PublicPostSeedLocale {
   services: ServiceEntity[]
@@ -67,12 +74,123 @@ function localizedDraft(record: ManagedContentRecord | undefined, locale: Locale
   return record?.localizations.find((entry) => entry.locale === locale)
 }
 
-function withImagePatch(image: { src: string; alt: string; caption?: string }, fields: ManagedOfferDraftFields) {
+function withImagePatch(
+  image: { src: string; alt: string; caption?: string },
+  fields: ManagedOfferDraftFields,
+  owner: string,
+) {
+  const nextSrc = fields.mediaSrc && !isReservedMediaForDifferentOwner(fields.mediaSrc, owner)
+    ? fields.mediaSrc
+    : image.src
+
   return {
     ...image,
-    src: fields.mediaSrc || image.src,
+    src: nextSrc,
     alt: fields.mediaAlt || image.alt,
   }
+}
+
+function withImageOverride(image: { src: string; alt: string; caption?: string }, override?: PlannedImage) {
+  return override ? { ...image, ...override } : image
+}
+
+function withGalleryOverrides<T extends { src: string; alt: string; caption?: string }>(
+  gallery: T[],
+  overrides?: PlannedImage[],
+) {
+  if (!overrides?.length) {
+    return gallery
+  }
+
+  return gallery.map((asset, index) => withImageOverride(asset, overrides[index]) as T)
+}
+
+function applyMediaOverride<T extends PublicPostEntity>(entity: T): T {
+  if (entity.kind === 'service') {
+    return {
+      ...entity,
+      media: withImageOverride(entity.media, entityMediaOverrides.service[entity.slug]),
+    } as T
+  }
+
+  if (entity.kind === 'course') {
+    const override = entityMediaOverrides.course[entity.slug]
+    const cover = entity.media.cover ?? entity.media.items[0]
+    const nextCover = cover && override
+      ? {
+          ...cover,
+          asset: withImageOverride(cover.asset, override),
+        }
+      : cover
+
+    return {
+      ...entity,
+      media: {
+        ...entity.media,
+        cover: nextCover ?? entity.media.cover,
+        items: nextCover
+          ? entity.media.items.map((item, index) => (index === 0 || item.id === nextCover.id ? nextCover : item))
+          : entity.media.items,
+      },
+    } as T
+  }
+
+  if (entity.kind === 'collection') {
+    const override = entityMediaOverrides.collection[entity.slug]
+    const galleryOverrides = galleryMediaOverrides.collection[entity.slug]
+    const heroMedia = withImageOverride(entity.heroMedia, override)
+
+    return {
+      ...entity,
+      heroMedia,
+      gallery: withGalleryOverrides(entity.gallery, galleryOverrides),
+      seo: {
+        ...entity.seo,
+        image: withImageOverride(entity.seo.image, override),
+      },
+    } as T
+  }
+
+  if (entity.kind === 'portfolio') {
+    const override = entityMediaOverrides.portfolio[entity.slug]
+    const galleryOverrides = galleryMediaOverrides.portfolio[entity.slug]
+    const heroMedia = withImageOverride(entity.heroMedia, override)
+
+    return {
+      ...entity,
+      heroMedia,
+      gallery: withGalleryOverrides(entity.gallery, galleryOverrides),
+      seo: {
+        ...entity.seo,
+        image: withImageOverride(entity.seo.image, override),
+      },
+    } as T
+  }
+
+  if (entity.kind === 'transformation') {
+    return {
+      ...entity,
+      media: withImageOverride(entity.media, entityMediaOverrides.transformation[entity.slug]),
+    } as T
+  }
+
+  return entity
+}
+
+function applyLocalizedCopyOverride<T extends PublicPostEntity>(entity: T, locale: Locale): T {
+  if (entity.kind !== 'service' || locale === 'en') {
+    return entity
+  }
+
+  const override = localizedCopyOverrides[locale]?.service[entity.slug]
+
+  return override
+    ? {
+        ...entity,
+        title: override.title ?? entity.title,
+        eyebrow: override.eyebrow ?? entity.eyebrow,
+      } as T
+    : entity
 }
 
 function applyTextPatch<T extends PublicPostEntity>(
@@ -133,7 +251,7 @@ function applyRecordPatch<T extends PublicPostEntity>(
         eur: fields.priceEur || patched.price.eur,
         uah: fields.priceUah || patched.price.uah,
       },
-      media: withImagePatch(patched.media, fields),
+      media: withImagePatch(patched.media, fields, `service:${patched.slug}`),
     } as T
   }
 
@@ -144,7 +262,9 @@ function applyRecordPatch<T extends PublicPostEntity>(
           ...cover,
           asset: {
             ...cover.asset,
-            src: fields.mediaSrc || cover.asset.src,
+            src: fields.mediaSrc && !isReservedMediaForDifferentOwner(fields.mediaSrc, `course:${patched.slug}`)
+              ? fields.mediaSrc
+              : cover.asset.src,
             alt: fields.mediaAlt || cover.asset.alt,
           },
         }
@@ -172,10 +292,10 @@ function applyRecordPatch<T extends PublicPostEntity>(
       ...patched,
       priceNote: fields.priceNote || patched.priceNote,
       requestCta: fields.requestCta || patched.requestCta,
-      heroMedia: withImagePatch(patched.heroMedia, fields),
+      heroMedia: withImagePatch(patched.heroMedia, fields, `collection:${patched.slug}`),
       seo: {
         ...patched.seo,
-        image: withImagePatch(patched.seo.image, fields),
+        image: withImagePatch(patched.seo.image, fields, `collection:${patched.slug}`),
       },
     } as T
   }
@@ -185,10 +305,10 @@ function applyRecordPatch<T extends PublicPostEntity>(
       ...patched,
       category: fields.category || patched.category,
       requestCta: fields.requestCta || patched.requestCta,
-      heroMedia: withImagePatch(patched.heroMedia, fields),
+      heroMedia: withImagePatch(patched.heroMedia, fields, `portfolio:${patched.slug}`),
       seo: {
         ...patched.seo,
-        image: withImagePatch(patched.seo.image, fields),
+        image: withImagePatch(patched.seo.image, fields, `portfolio:${patched.slug}`),
       },
     } as T
   }
@@ -198,7 +318,7 @@ function applyRecordPatch<T extends PublicPostEntity>(
       ...patched,
       format: fields.format || patched.format,
       cta: fields.cta || patched.cta,
-      media: withImagePatch(patched.media, fields),
+      media: withImagePatch(patched.media, fields, `transformation:${patched.slug}`),
     } as T
   }
 
@@ -211,6 +331,8 @@ function applyOverlay<T extends PublicPostEntity>(
   overlayRecords: ManagedContentRecord[],
 ) {
   return entities
+    .map((entity) => applyLocalizedCopyOverride(entity, locale))
+    .map((entity) => applyMediaOverride(entity))
     .map((entity) => applyRecordPatch(entity, overlayRecord(overlayRecords, entity), locale))
     .filter((entity): entity is T => Boolean(entity))
 }

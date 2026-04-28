@@ -23,7 +23,7 @@ test('parsePublicEnv keeps non-production analytics and prototype flows enabled 
   })
 
   assert.equal(env.appEnv, 'development')
-  assert.equal(env.showRouterDevtools, true)
+  assert.equal(env.showRouterDevtools, false)
   assert.equal(env.enableAdmin, true)
   assert.equal(env.enablePrototypeFlows, true)
   assert.equal(env.analyticsMode, 'console')

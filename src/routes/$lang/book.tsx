@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { BookingLayout } from '~/components/site-shell'
+import { pageMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import type { ImageAsset, Price } from '~/lib/types'
 
@@ -7,6 +8,7 @@ type BookingSearch = {
   kind?: string
   slug?: string
   area?: string
+  intent?: string
 }
 
 const defaultPrice: Price = {
@@ -15,8 +17,8 @@ const defaultPrice: Price = {
 }
 
 const defaultMedia: ImageAsset = {
-  src: '/images/purity_4.jpg',
-  alt: 'PURITY booking request',
+  src: pageMedia.bookingDefault.src,
+  alt: pageMedia.bookingDefault.alt,
 }
 
 function coverToImageAsset(asset?: { src: string; alt: string }): ImageAsset | undefined {
@@ -35,6 +37,7 @@ export const Route = createFileRoute('/$lang/book')({
     kind: typeof search.kind === 'string' ? search.kind : undefined,
     slug: typeof search.slug === 'string' ? search.slug : undefined,
     area: typeof search.area === 'string' ? search.area : undefined,
+    intent: typeof search.intent === 'string' ? search.intent : undefined,
   }),
   loader: async ({ context, params }) => {
     const locale = params.lang as 'uk' | 'en' | 'ru'
@@ -71,11 +74,13 @@ function BookingPage() {
   ]
   let intentKind: 'service' | 'course' | 'collection' | 'portfolio' | 'transformation' = 'service'
   let intentSlug = 'consultation'
+  const legacyIntentSlug = !search.kind && !search.slug ? search.intent : undefined
+  const serviceSlug = search.kind === 'service' ? search.slug : legacyIntentSlug
 
-  if (search.kind === 'service' && search.slug) {
+  if ((search.kind === 'service' || legacyIntentSlug) && serviceSlug) {
     const service = [...researchServices, ...realisationServices].find(
       (entry) =>
-        entry.slug === search.slug &&
+        entry.slug === serviceSlug &&
         (!search.area || entry.area === search.area),
     )
     if (service) {

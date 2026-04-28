@@ -33,6 +33,8 @@ import {
   getSeedServices,
   getSeedTransformations,
 } from './public-content-seed'
+import { optimizedImageSrc } from './media-refs'
+import { pageMedia } from './media-plan'
 
 type Localized<T> = Record<Locale, T>
 
@@ -63,10 +65,6 @@ type BaseService = {
   notes: Localized<string[]>
   media?: Localized<ImageAsset>
   seo?: Localized<SeoMetadata>
-}
-
-function optimizedImageSrc(src: string): string {
-  return src.startsWith('/images/') && src.endsWith('.jpg') ? src.replace(/\.jpg$/, '.webp') : src
 }
 
 function image(src: string, alt: string, caption?: string): ImageAsset {
@@ -112,6 +110,13 @@ const defaultTimeline = {
   updatedAt: '2026-04-20T14:00:00.000Z',
   publishedAt: '2026-04-20T15:00:00.000Z',
 } as const
+
+const studioContactEmail = 'voronina@purity-fashion.com'
+const studioPhone = '+38 067 656 19 12'
+const studioLocation =
+  '03150 Kyiv, Predslavynska Street 44, office 1, floor 2 (French Quarter 2). Daily 11:00-20:00'
+const studioMapHref =
+  'https://www.google.com/maps/search/?api=1&query=Kyiv%2003150%2C%20Predslavynska%20Street%2044%2C%20office%201%2C%20floor%202%2C%20French%20Quarter%202'
 
 function createMeta(
   kind: ManagedContentMeta['kind'],
@@ -346,7 +351,7 @@ const ui: Localized<UiCopy> = {
       conciergeFollowUp: 'Concierge follow-up',
       privateInquiries: 'Приватні запити',
       corporateBriefs: 'Корпоративні брифи',
-      socialFollowUp: 'Instagram / Telegram / приватний concierge follow-up',
+      socialFollowUp: 'Instagram / YouTube / Facebook / приватний concierge follow-up',
       sending: 'Надсилання...',
       processing: 'Обробка...',
     },
@@ -481,7 +486,7 @@ const ui: Localized<UiCopy> = {
       conciergeFollowUp: 'Concierge follow-up',
       privateInquiries: 'Private inquiries',
       corporateBriefs: 'Corporate briefs',
-      socialFollowUp: 'Instagram / Telegram / private concierge follow-up',
+      socialFollowUp: 'Instagram / YouTube / Facebook / private concierge follow-up',
       sending: 'Sending...',
       processing: 'Processing...',
     },
@@ -616,7 +621,7 @@ const ui: Localized<UiCopy> = {
       conciergeFollowUp: 'Concierge follow-up',
       privateInquiries: 'Частные запросы',
       corporateBriefs: 'Корпоративные брифы',
-      socialFollowUp: 'Instagram / Telegram / private concierge follow-up',
+      socialFollowUp: 'Instagram / YouTube / Facebook / private concierge follow-up',
       sending: 'Отправка...',
       processing: 'Обработка...',
     },
@@ -669,14 +674,14 @@ const ui: Localized<UiCopy> = {
 
 const homePages: Localized<PageSeed> = {
   uk: {
-    heroKicker: '@RESEARCH @IMAGINE @CREATE',
+    heroKicker: '@ДОСЛІДЖУЙ @УЯВЛЯЙ @СТВОРЮЙ',
     heroTitle: 'Студія, що моделює майбутній гардероб через відчуття форми, тканини та руху.',
     heroDescription:
       'PURITY створює персональні lookbook-напрями, couture-рішення й трансформаційні fashion-досвіди для приватних та корпоративних клієнтів в Україні й міжнародно.',
     heroPrimaryCta: 'Надіслати запит',
     heroSecondaryCta: 'Дивитися колекції',
     philosophy: 'Ощути форму. Ощути тканину. Ощути своє майбутнє.',
-    methodologyTitle: 'Research / Realisation / Transformation',
+    methodologyTitle: 'Дослідження / Втілення / Трансформація',
     methodologySteps: [
       'Research читає силует, колір та гардероб як особисту архітектуру.',
       'Realisation переводить інсайти в shopping-супровід, dossier та atelier-виробництво.',
@@ -686,24 +691,24 @@ const homePages: Localized<PageSeed> = {
     privateClientsText: 'Гардеробні стратегії, капсули, персональні lookbook-и та couture-рішення.',
     corporateClientsTitle: 'Для брендів та команд',
     corporateClientsText: 'Стилізація зйомок, подій, командних гардеробів та делікатних luxury-колаборацій.',
-    transformationNote: 'Трансформація працює як side chapter для тих, хто шукає не лише одяг, а нову роль.',
+    transformationNote: 'Трансформація працює як окремий напрям для тих, хто шукає не лише одяг, а нову роль.',
     seo: seoEntry({
       title: 'PURITY Fashion Studio | Дослідження, atelier і колекції',
       description:
         'Трилінгвальна fashion-студія з персональними lookbook-напрямами, atelier-сервісами, колекціями та портфоліо PURITY.',
-      image: image('/images/purity_4.jpg', 'PURITY home editorial in Kyiv', 'Київський editorial-напрям'),
+      image: image(pageMedia.home.src, pageMedia.home.alt, 'Київський editorial-напрям'),
       keywords: ['PURITY Fashion Studio', 'персональний стиліст', 'atelier Київ', 'fashion studio Ukraine'],
     }),
   },
   en: {
-    heroKicker: '@RESEARCH @IMAGINE @CREATE',
+    heroKicker: '@ИССЛЕДУЙ @ПРЕДСТАВЛЯЙ @СОЗДАВАЙ',
     heroTitle: 'A studio shaping the future wardrobe through form, fabric, and movement.',
     heroDescription:
       'PURITY designs personal lookbook directions, couture services, and transformational fashion experiences for private and corporate clients in Ukraine and beyond.',
     heroPrimaryCta: 'Request service',
     heroSecondaryCta: 'View collections',
     philosophy: 'Feel the form. Feel the fabric. Feel your future.',
-    methodologyTitle: 'Research / Realisation / Transformation',
+    methodologyTitle: 'Исследование / Воплощение / Трансформация',
     methodologySteps: [
       'Research reads silhouette, color, and wardrobe as a personal architecture.',
       'Realisation turns insight into shopping support, dossier sessions, and atelier production.',
@@ -718,7 +723,7 @@ const homePages: Localized<PageSeed> = {
       title: 'PURITY Fashion Studio | Research, atelier, collections, portfolio',
       description:
         'Premium multilingual fashion studio with personal styling, atelier services, collections, portfolio cases, and transformational editorial experiences.',
-      image: image('/images/purity_4.jpg', 'PURITY home editorial in Kyiv', 'Kyiv editorial direction'),
+      image: image(pageMedia.home.src, pageMedia.home.alt, 'Kyiv editorial direction'),
       keywords: ['PURITY Fashion Studio', 'personal stylist', 'atelier Kyiv', 'fashion studio Ukraine'],
     }),
   },
@@ -740,12 +745,12 @@ const homePages: Localized<PageSeed> = {
     privateClientsText: 'Гардеробные стратегии, капсулы, персональные lookbook-и и couture-решения.',
     corporateClientsTitle: 'Для брендов и команд',
     corporateClientsText: 'Стилизация съёмок, мероприятий, командных гардеробов и деликатных luxury-коллабораций.',
-    transformationNote: 'Трансформация работает как side chapter для тех, кто ищет не только одежду, но и новую роль.',
+    transformationNote: 'Трансформация работает как отдельное направление для тех, кто ищет не только одежду, но и новую роль.',
     seo: seoEntry({
       title: 'PURITY Fashion Studio | Исследование, atelier и коллекции',
       description:
         'Трилингвальная fashion-студия с персональными lookbook-направлениями, atelier-сервисами, коллекциями и портфолио PURITY.',
-      image: image('/images/purity_4.jpg', 'PURITY home editorial in Kyiv', 'Киевское editorial-направление'),
+      image: image(pageMedia.home.src, pageMedia.home.alt, 'Киевское editorial-направление'),
       keywords: ['PURITY Fashion Studio', 'персональный стилист', 'atelier Киев', 'fashion studio Ukraine'],
     }),
   },
@@ -763,7 +768,7 @@ const listingPages: Record<
       seo: seoEntry({
         title: 'PURITY | Дослідження',
         description: 'Персональний lookbook, color palette, cut strategy та wardrobe review від студії PURITY.',
-        image: image('/images/purity_3.jpg', 'Research editorial portrait', 'Research / форма / силует'),
+        image: image(pageMedia.research.src, pageMedia.research.alt, 'Research / форма / силует'),
       }),
     },
     en: {
@@ -773,7 +778,7 @@ const listingPages: Record<
       seo: seoEntry({
         title: 'PURITY | Research',
         description: 'Personal lookbook, color palette, cut strategy, and wardrobe review services by PURITY.',
-        image: image('/images/purity_3.jpg', 'Research editorial portrait', 'Research / Form / Silhouette'),
+        image: image(pageMedia.research.src, pageMedia.research.alt, 'Research / Form / Silhouette'),
       }),
     },
     ru: {
@@ -783,7 +788,7 @@ const listingPages: Record<
       seo: seoEntry({
         title: 'PURITY | Исследование',
         description: 'Personal lookbook, color palette, cut strategy и wardrobe review от студии PURITY.',
-        image: image('/images/purity_3.jpg', 'Research editorial portrait', 'Research / форма / силуэт'),
+        image: image(pageMedia.research.src, pageMedia.research.alt, 'Research / форма / силуэт'),
       }),
     },
   },
@@ -795,7 +800,7 @@ const listingPages: Record<
       seo: seoEntry({
         title: 'PURITY | Втілення',
         description: 'Shopping-супровід і atelier-сервіси PURITY для індивідуального гардероба та couture-пошиву.',
-        image: image('/images/purity_6.jpg', 'Atelier editorial portrait', 'Atelier / fitting / couture'),
+        image: image(pageMedia.realisation.src, pageMedia.realisation.alt, 'Atelier / fitting / couture'),
       }),
     },
     en: {
@@ -805,7 +810,7 @@ const listingPages: Record<
       seo: seoEntry({
         title: 'PURITY | Realisation',
         description: 'Shopping accompaniment and atelier services by PURITY for wardrobe implementation and couture production.',
-        image: image('/images/purity_6.jpg', 'Atelier editorial portrait', 'Atelier / fitting / couture'),
+        image: image(pageMedia.realisation.src, pageMedia.realisation.alt, 'Atelier / fitting / couture'),
       }),
     },
     ru: {
@@ -815,7 +820,7 @@ const listingPages: Record<
       seo: seoEntry({
         title: 'PURITY | Воплощение',
         description: 'Shopping-сопровождение и atelier-сервисы PURITY для гардеробной реализации и couture-пошива.',
-        image: image('/images/purity_6.jpg', 'Atelier editorial portrait', 'Atelier / fitting / couture'),
+        image: image(pageMedia.realisation.src, pageMedia.realisation.alt, 'Atelier / fitting / couture'),
       }),
     },
   },
@@ -827,7 +832,7 @@ const listingPages: Record<
       seo: seoEntry({
         title: 'PURITY | Трансформація',
         description: 'Курси, fashion-retreat формати та фотомедитації як трансформаційний блок PURITY.',
-        image: image('/images/purity_7.jpg', 'Transformation editorial portrait', 'Transformation / ritual / styling'),
+        image: image(pageMedia.transformation.src, pageMedia.transformation.alt, 'Transformation / ritual / styling'),
       }),
     },
     en: {
@@ -837,7 +842,7 @@ const listingPages: Record<
       seo: seoEntry({
         title: 'PURITY | Transformation',
         description: 'Courses, fashion retreat formats, and photo meditations inside the transformational chapter of PURITY.',
-        image: image('/images/purity_7.jpg', 'Transformation editorial portrait', 'Transformation / ritual / styling'),
+        image: image(pageMedia.transformation.src, pageMedia.transformation.alt, 'Transformation / ritual / styling'),
       }),
     },
     ru: {
@@ -847,7 +852,7 @@ const listingPages: Record<
       seo: seoEntry({
         title: 'PURITY | Трансформация',
         description: 'Курсы, fashion-retreat форматы и фотомедитации как трансформационный блок PURITY.',
-        image: image('/images/purity_7.jpg', 'Transformation editorial portrait', 'Transformation / ritual / styling'),
+        image: image(pageMedia.transformation.src, pageMedia.transformation.alt, 'Transformation / ritual / styling'),
       }),
     },
   },
@@ -858,8 +863,8 @@ const listingPages: Record<
       pullQuote: 'Кожна колекція працює як сценарій руху, а не просто як асортимент.',
       seo: seoEntry({
         title: 'PURITY | Колекції',
-        description: 'Asset-backed колекції PURITY для подій, ретритів, travel-capsule сценаріїв і м’якого glamour.',
-        image: image('/images/purity_5.jpg', 'Collection editorial portrait', 'Collections / editorial pieces'),
+        description: 'Колекції PURITY для подій, ретритів, travel-capsule сценаріїв і м’якого glamour.',
+        image: image(pageMedia.collections.src, pageMedia.collections.alt, 'Collections / editorial pieces'),
       }),
     },
     en: {
@@ -868,8 +873,8 @@ const listingPages: Record<
       pullQuote: 'Each collection is built as a movement script, not a product list.',
       seo: seoEntry({
         title: 'PURITY | Collections',
-        description: 'Asset-backed PURITY collections for events, retreats, travel capsules, and soft glamour wardrobes.',
-        image: image('/images/purity_5.jpg', 'Collection editorial portrait', 'Collections / Editorial pieces'),
+        description: 'PURITY collections for events, retreats, travel capsules, and soft glamour wardrobes.',
+        image: image(pageMedia.collections.src, pageMedia.collections.alt, 'Collections / Editorial pieces'),
       }),
     },
     ru: {
@@ -878,8 +883,8 @@ const listingPages: Record<
       pullQuote: 'Каждая коллекция работает как сценарий движения, а не просто как ассортимент.',
       seo: seoEntry({
         title: 'PURITY | Коллекции',
-        description: 'Asset-backed коллекции PURITY для событий, ретритов, travel-capsule сценариев и мягкого glamour.',
-        image: image('/images/purity_5.jpg', 'Collection editorial portrait', 'Collections / editorial pieces'),
+        description: 'Коллекции PURITY для событий, ретритов, travel-capsule сценариев и мягкого glamour.',
+        image: image(pageMedia.collections.src, pageMedia.collections.alt, 'Collections / editorial pieces'),
       }),
     },
   },
@@ -890,33 +895,33 @@ const schoolPages: Localized<SchoolPageSeed> = {
     title: 'Школа PURITY',
     intro: 'Освітні формати для тих, хто хоче опанувати draping, wardrobe management та дизайнерське мислення.',
     pullQuote: 'Школа мислить одягом як пластикою, а не схемою.',
-    note: 'Окремий school-site з’явиться пізніше; зараз курси інтегровані в головний простір PURITY.',
+    note: 'Практика побудована навколо форми, тканини, макетування та роботи з гардеробом у реальному клієнтському контексті.',
     seo: seoEntry({
       title: 'PURITY | Школа',
       description: 'Освітні курси PURITY зі draping, wardrobe management і дизайнерського мислення.',
-      image: image('/images/purity_6.jpg', 'School editorial portrait', 'School / study / transformation'),
+      image: image(pageMedia.school.src, pageMedia.school.alt, 'School / study / transformation'),
     }),
   },
   en: {
     title: 'PURITY School',
     intro: 'Educational formats for those who want to study draping, wardrobe management, and designer thinking.',
     pullQuote: 'The school treats garments as plastic movement, not flat pattern logic.',
-    note: 'A standalone school site will follow later; the courses live inside the main PURITY site for now.',
+    note: 'The practice is built around form, fabric, draping, and wardrobe work in a real client context.',
     seo: seoEntry({
       title: 'PURITY | School',
       description: 'Educational courses by PURITY covering draping, wardrobe management, and designer thinking.',
-      image: image('/images/purity_6.jpg', 'School editorial portrait', 'School / Study / Transformation'),
+      image: image(pageMedia.school.src, pageMedia.school.alt, 'School / Study / Transformation'),
     }),
   },
   ru: {
     title: 'Школа PURITY',
     intro: 'Образовательные форматы для тех, кто хочет освоить draping, wardrobe management и дизайнерское мышление.',
     pullQuote: 'Школа рассматривает одежду как пластику движения, а не как плоскую схему.',
-    note: 'Отдельный school-site появится позже; сейчас курсы интегрированы в основной сайт PURITY.',
+    note: 'Практика построена вокруг формы, ткани, макетирования и работы с гардеробом в реальном клиентском контексте.',
     seo: seoEntry({
       title: 'PURITY | Школа',
       description: 'Образовательные курсы PURITY по draping, wardrobe management и дизайнерскому мышлению.',
-      image: image('/images/purity_6.jpg', 'School editorial portrait', 'School / study / transformation'),
+      image: image(pageMedia.school.src, pageMedia.school.alt, 'School / study / transformation'),
     }),
   },
 }
@@ -926,33 +931,33 @@ const portfolioPages: Localized<PortfolioPageSeed> = {
     title: 'Портфоліо',
     intro: 'Lookbook-и, до/після, артдирекшн і стилістичні трансформації, зафіксовані як кейси.',
     pullQuote: 'Кейс повинен показувати не лише красивий кадр, а і точку зміни.',
-    highlight: 'Портфоліо підтримує фото, текст і відео-вбудовування в майбутньому CMS-адаптері.',
+    highlight: 'Портфоліо збирає стилістичні рішення, atelier-процес і фінальний образ в один доказовий кейс.',
     seo: seoEntry({
       title: 'PURITY | Портфоліо',
       description: 'Детальні fashion-кейси PURITY: before/after, corporate editorial, atelier і couture-проєкти.',
-      image: image('/images/purity_1.jpg', 'Portfolio editorial portrait', 'Portfolio / selected cases'),
+      image: image(pageMedia.portfolio.src, pageMedia.portfolio.alt, 'Portfolio / selected cases'),
     }),
   },
   en: {
     title: 'Portfolio',
     intro: 'Lookbooks, before/after edits, art direction, and stylistic transformations documented as cases.',
     pullQuote: 'A case should reveal not only the image, but the pivot point that made it inevitable.',
-    highlight: 'The future CMS adapter is prepared for image, text, and video-driven portfolio cases.',
+    highlight: 'The portfolio connects styling decisions, atelier process, and the final image into one case story.',
     seo: seoEntry({
       title: 'PURITY | Portfolio',
       description: 'Detailed PURITY fashion cases spanning before/after work, corporate editorials, atelier, and couture outcomes.',
-      image: image('/images/purity_1.jpg', 'Portfolio editorial portrait', 'Portfolio / Selected cases'),
+      image: image(pageMedia.portfolio.src, pageMedia.portfolio.alt, 'Portfolio / Selected cases'),
     }),
   },
   ru: {
     title: 'Портфолио',
     intro: 'Lookbook-и, до/после, артдирекшн и стилистические трансформации, оформленные как кейсы.',
     pullQuote: 'Кейс должен показывать не только красивый кадр, но и точку изменения.',
-    highlight: 'Будущий CMS-адаптер уже предусмотрен для фото, текста и видеокейсов.',
+    highlight: 'Портфолио соединяет стилистическое решение, atelier-процесс и финальный образ в один кейс.',
     seo: seoEntry({
       title: 'PURITY | Портфолио',
       description: 'Детальные fashion-кейсы PURITY: before/after, corporate editorial, atelier и couture-проекты.',
-      image: image('/images/purity_1.jpg', 'Portfolio editorial portrait', 'Portfolio / selected cases'),
+      image: image(pageMedia.portfolio.src, pageMedia.portfolio.alt, 'Portfolio / selected cases'),
     }),
   },
 }
@@ -960,44 +965,50 @@ const portfolioPages: Localized<PortfolioPageSeed> = {
 const contactsPages: Localized<ContactsPageSeed> = {
   uk: {
     title: 'Контакти',
-    intro: 'Напишіть, якщо вам потрібен персональний lookbook, atelier-замовлення, корпоративний дрескод або трансформаційний досвід.',
+    intro: 'Напишіть у київську студію PURITY щодо персонального гардероба, atelier-замовлення, корпоративного іміджу або міжнародного онлайн-формату.',
     inquiryTitle: 'Надіслати запит',
     corporateTitle: 'Корпоративні клієнти',
-    corporateText: 'PURITY працює з брендами, командами, подіями та editorial-зйомками в делікатному luxury-тоні.',
-    scheduleNote: 'Для live-сесій далі передбачений підбір дати та часу в booking-flow.',
-    mapLabel: 'Київська студія / міжнародний онлайн-формат',
+    corporateText: 'PURITY працює з командами, брендами, подіями та editorial-зйомками: від дрескоду до повного візуального сценарію.',
+    scheduleNote: 'Студія працює щодня 11:00-20:00; live-сесії та виїзний сервіс погоджуються після запиту.',
+    addressText: 'Київ 03150, вул. Предславинська 44, офіс 1, поверх 2 (ЖК Французький квартал 2). Щодня 11:00-20:00',
+    mapLabel: 'Київська студія на Предславинській',
     seo: seoEntry({
       title: 'PURITY | Контакти',
-      description: 'Контактна сторінка PURITY для приватних, корпоративних і atelier-запитів з міжнародним онлайн-форматом.',
-      image: image('/images/purity_1.jpg', 'Contact editorial portrait', 'Kyiv studio / international online format'),
+      description:
+        'Контакти PURITY Fashion Studio: Київ, Предславинська 44, телефон +38 067 656 19 12, email voronina@purity-fashion.com.',
+      image: image(pageMedia.contactsIntro.src, pageMedia.contactsIntro.alt, 'Kyiv studio on Predslavynska Street'),
     }),
   },
   en: {
     title: 'Contacts',
-    intro: 'Write to PURITY for personal lookbooks, atelier commissions, corporate wardrobes, or transformational experiences.',
+    intro: 'Contact the Kyiv PURITY studio for personal wardrobes, atelier commissions, corporate image work, or international online service.',
     inquiryTitle: 'Send inquiry',
     corporateTitle: 'Corporate clients',
-    corporateText: 'PURITY works with brands, teams, events, and editorial productions in a refined luxury register.',
-    scheduleNote: 'Live sessions will later connect to a calendar-aware booking layer.',
-    mapLabel: 'Kyiv studio / international online format',
+    corporateText: 'PURITY works with teams, brands, events, and editorial productions: from dress-code direction to a complete visual scenario.',
+    scheduleNote: 'The studio is open daily 11:00-20:00; live sessions and on-site service are confirmed after inquiry.',
+    addressText: '03150 Kyiv, Predslavynska Street 44, office 1, floor 2 (French Quarter 2). Daily 11:00-20:00',
+    mapLabel: 'Kyiv studio on Predslavynska Street',
     seo: seoEntry({
       title: 'PURITY | Contacts',
-      description: 'Contact PURITY for private styling, atelier commissions, corporate wardrobe work, and international online sessions.',
-      image: image('/images/purity_1.jpg', 'Contact editorial portrait', 'Kyiv studio / international online format'),
+      description:
+        'Contact PURITY Fashion Studio: Kyiv, Predslavynska Street 44, phone +38 067 656 19 12, email voronina@purity-fashion.com.',
+      image: image(pageMedia.contactsIntro.src, pageMedia.contactsIntro.alt, 'Kyiv studio on Predslavynska Street'),
     }),
   },
   ru: {
     title: 'Контакты',
-    intro: 'Напишите, если вам нужен персональный lookbook, atelier-заказ, корпоративный дресс-код или трансформационный опыт.',
+    intro: 'Напишите в киевскую студию PURITY по поводу персонального гардероба, atelier-заказа, корпоративного имиджа или международного онлайн-формата.',
     inquiryTitle: 'Отправить запрос',
     corporateTitle: 'Корпоративные клиенты',
-    corporateText: 'PURITY работает с брендами, командами, событиями и editorial-съёмками в деликатном luxury-регистре.',
-    scheduleNote: 'Для live-сессий далее предусмотрен подбор даты и времени в booking-flow.',
-    mapLabel: 'Киевская студия / международный онлайн-формат',
+    corporateText: 'PURITY работает с командами, брендами, событиями и editorial-съёмками: от дресс-кода до полного визуального сценария.',
+    scheduleNote: 'Студия работает каждый день 11:00-20:00; live-сессии и выездной сервис согласуются после запроса.',
+    addressText: 'Киев 03150, ул. Предславинская 44, офис 1, этаж 2 (ЖК Французский квартал 2). Каждый день 11:00-20:00',
+    mapLabel: 'Киевская студия на Предславинской',
     seo: seoEntry({
       title: 'PURITY | Контакты',
-      description: 'Свяжитесь с PURITY по частным, корпоративным и atelier-запросам, включая международный онлайн-формат.',
-      image: image('/images/purity_1.jpg', 'Contact editorial portrait', 'Kyiv studio / international online format'),
+      description:
+        'Контакты PURITY Fashion Studio: Киев, Предславинская 44, телефон +38 067 656 19 12, email voronina@purity-fashion.com.',
+      image: image(pageMedia.contactsIntro.src, pageMedia.contactsIntro.alt, 'Kyiv studio on Predslavynska Street'),
     }),
   },
 }
@@ -2143,13 +2154,16 @@ const studioSettings: StudioSettings = {
   kind: 'settings',
   slug: 'studio-settings',
   id: 'settings:studio-settings',
-  contactEmail: 'hello@purity-fashion-studio.ua',
-  locationLabel: 'Kyiv studio address shared after inquiry / international online format',
+  contactEmail: studioContactEmail,
+  phone: studioPhone,
+  locationLabel: studioLocation,
+  mapHref: studioMapHref,
   socialLinks: [
-    { label: 'Instagram', href: 'https://instagram.com/purity.fashion.studio' },
-    { label: 'Telegram', href: 'https://t.me/purityfashionstudio' },
+    { label: 'Instagram', href: 'https://www.instagram.com/purity_fashion_studio/' },
+    { label: 'YouTube', href: 'https://www.youtube.com/channel/UCVTLImOTCrlad07TufNaJYw' },
+    { label: 'Facebook', href: 'https://www.facebook.com/puritypersonalstylist/' },
   ],
-  mapLabel: 'Kyiv studio / concierge contact',
+  mapLabel: 'PURITY studio on map',
   adminNote: 'Keep public contacts and social links synchronized with backend-managed settings.',
   meta: createMeta('settings', 'studio-settings', {
     owner: systemOwner,

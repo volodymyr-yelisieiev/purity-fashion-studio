@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { PortfolioGrid, StandardListingPage } from '~/components/site-shell'
 import { buildLocalePath } from '~/lib/i18n'
+import { listingPreviewMedia, plannedImageAt } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -28,7 +29,7 @@ export const Route = createFileRoute('/$lang/portfolio/')({
 
 function PortfolioPage() {
   const { locale, page, portfolio, ui } = Route.useLoaderData()
-  const heroImage = portfolio[0]?.heroMedia ?? page.seo.image
+  const heroImage = page.seo.image
 
   return (
     <StandardListingPage
@@ -46,13 +47,17 @@ function PortfolioPage() {
       preview={{
         eyebrow: ui.labels.result,
         title: page.pullQuote,
-        items: portfolio.slice(0, 3).map((entry) => ({
-          title: entry.title,
-          subtitle: entry.outcome,
-          imageSrc: entry.heroMedia.src,
-          imageAlt: entry.heroMedia.alt,
-          to: buildLocalePath(locale, `/portfolio/${entry.slug}`),
-        })),
+        items: portfolio.slice(0, 3).map((entry, index) => {
+          const media = plannedImageAt(listingPreviewMedia.portfolio, index, entry.heroMedia)
+
+          return {
+            title: entry.title,
+            subtitle: entry.outcome,
+            imageSrc: media.src,
+            imageAlt: media.alt,
+            to: buildLocalePath(locale, `/portfolio/${entry.slug}`),
+          }
+        }),
       }}
     >
       <PortfolioGrid cases={portfolio} locale={locale} cta={ui.actions.viewCase} />

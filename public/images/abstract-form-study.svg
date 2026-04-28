@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600" role="img" aria-label="Abstract PURITY editorial image">
+    <defs>
+      <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="4" seed="11"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 0.14"/></feComponentTransfer></filter>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1eee9"/><stop offset="0.58" stop-color="#d5c2ad"/><stop offset="1" stop-color="#25211d"/></linearGradient>
+      <radialGradient id="r" cx="68%" cy="24%" r="72%"><stop offset="0" stop-color="#ffffff" stop-opacity="0.62"/><stop offset="0.48" stop-color="#d5c2ad" stop-opacity="0.34"/><stop offset="1" stop-color="#25211d" stop-opacity="0.24"/></radialGradient>
+    </defs>
+    <rect width="1200" height="1600" fill="url(#g)"/>
+    <rect width="1200" height="1600" fill="url(#r)"/>
+    <rect width="1200" height="1600" filter="url(#grain)" opacity="0.55"/>
+  <path d="M170 1600 C260 1110 502 1025 438 700 C398 498 452 276 710 0 H1200 V1600 Z" fill="#fff" opacity="0.28"/><path d="M410 1600 C498 1202 664 1010 610 712 C570 488 660 250 930 0" fill="none" stroke="#25211d" stroke-width="11" stroke-opacity="0.34"/><path d="M180 1260 C414 1188 560 1260 818 1116" fill="none" stroke="#fff" stroke-width="3" opacity="0.52"/></svg>

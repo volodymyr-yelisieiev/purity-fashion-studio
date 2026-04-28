@@ -3,6 +3,10 @@ import assert from 'node:assert/strict'
 
 import publicPostsSeed from '~/content/seed/public-posts.seed.json'
 import { courseCoverAsset } from './media-refs'
+import { photoKey } from './media-refs'
+import {
+  plannedMediaRefs,
+} from './media-plan'
 import { getPublicPostSeedMeta, getSeedServices } from './public-content-seed'
 import { contentRepository } from './repository'
 import type { EntityKind, Locale, ManagedContentRecord } from './types'
@@ -58,7 +62,7 @@ test('transformation cards use explicit managed media references', async () => {
   const offers = await contentRepository.getTransformationOffers('en')
 
   for (const offer of offers) {
-    assert.match(offer.media.src, /^\/images\/.+\.(webp|jpg)$/)
+    assert.match(offer.media.src, /^\/images\/.+\.(webp|jpe?g|svg)$/)
     assert.ok(offer.media.alt, `missing media alt: ${offer.slug}`)
   }
 })
@@ -83,7 +87,23 @@ test('public offer media comes from managed seed records', async () => {
   for (const image of imageRefs) {
     assert.ok(image?.src, 'missing public post image src')
     assert.ok(image.alt, `missing alt text for ${image.src}`)
-    assert.match(image.src, /^\/images\/.+\.(webp|jpg)$/)
+    assert.match(image.src, /^\/images\/.+\.(webp|jpe?g|svg)$/)
+  }
+})
+
+test('planned public media uses each visual asset once', () => {
+  const byKey = new Map<string, string>()
+
+  for (const { owner, image } of plannedMediaRefs()) {
+    const key = photoKey(image.src)
+    const existingOwner = byKey.get(key)
+
+    assert.equal(
+      existingOwner,
+      undefined,
+      `planned image ${image.src} is reused by ${existingOwner} and ${owner}`,
+    )
+    byKey.set(key, owner)
   }
 })
 
@@ -174,7 +194,7 @@ test('public post seed applies editable admin overlay fields', () => {
   assert.equal(service.summary, 'Edited summary')
   assert.equal(service.price.eur, '€999')
   assert.equal(service.price.uah, '₴40 000')
-  assert.equal(service.media.src, '/images/purity_7.webp')
+  assert.equal(service.media.src, '/images/stylist-lookbook.jpeg')
   assert.equal(service.media.alt, 'Edited cover')
 
   const review = {

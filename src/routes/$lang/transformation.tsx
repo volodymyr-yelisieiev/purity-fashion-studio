@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { StandardListingPage, TransformationGrid } from '~/components/site-shell'
 import { buildLocalePath } from '~/lib/i18n'
-import { processImageRefs } from '~/lib/media-refs'
+import { listingProcessMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -28,7 +28,7 @@ export const Route = createFileRoute('/$lang/transformation')({
 
 function TransformationPage() {
   const { locale, page, offers, ui } = Route.useLoaderData()
-  const heroImage = offers[0]?.media ?? page.seo.image
+  const heroImage = page.seo.image
 
   return (
     <StandardListingPage
@@ -48,7 +48,7 @@ function TransformationPage() {
         title: page.pullQuote,
         text: page.intro,
         items: offers.map((offer) => `${offer.format}: ${offer.summary}`).slice(0, 3),
-        images: processImageRefs(page.seo.image, ...offers.map((offer) => offer.media)).slice(0, 3),
+        images: listingProcessMedia.transformation,
       }}
     >
       <TransformationGrid offers={offers} locale={locale} />

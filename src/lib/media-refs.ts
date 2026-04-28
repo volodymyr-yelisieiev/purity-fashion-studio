@@ -5,6 +5,16 @@ export interface RenderableImageRef {
   alt: string
 }
 
+export function optimizedImageSrc(src: string) {
+  return src.startsWith('/images/') && src.endsWith('.jpg') ? src.replace(/\.jpg$/, '.webp') : src
+}
+
+export function photoKey(src: string) {
+  return optimizedImageSrc(src)
+    .replace(/\.(webp|jpe?g|png|svg)$/i, '')
+    .replace(/^\//, '')
+}
+
 export function courseCoverAsset(course?: Pick<CourseEntity, 'media'>): RenderableImageRef | undefined {
   return course?.media.cover?.asset ?? course?.media.items[0]?.asset
 }

@@ -9,7 +9,7 @@ import {
   ServiceCard,
 } from '~/components/site-shell'
 import { buildLocalePath } from '~/lib/i18n'
-import { courseCoverAsset } from '~/lib/media-refs'
+import { homeMedia, plannedImageAt } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -41,8 +41,8 @@ export const Route = createFileRoute('/$lang/')({
 
 const atelierHeadings = {
   en: 'Atelier, school, and collection work held inside one editorial rhythm.',
-  ru: 'Atelier, школа и коллекции в одном editorial-ритме.',
-  uk: 'Atelier, школа й колекції в одному editorial-ритмі.',
+  ru: 'Ателье, школа и коллекции в едином визуальном ритме.',
+  uk: 'Ательє, школа й колекції в єдиному візуальному ритмі.',
 } as const
 
 function HomePage() {
@@ -50,7 +50,6 @@ function HomePage() {
   const atelier = realisation.find((item) => item.slug === 'atelier-service') ?? realisation[0]
   const school = courses[0]
   const collectionSpotlight = collections[0]
-  const schoolCover = school ? courseCoverAsset(school) : undefined
   const directionItems = [
     ...(atelier
       ? [{
@@ -58,8 +57,8 @@ function HomePage() {
           title: atelier.title,
           text: atelier.summary,
           linkLabel: ui.actions.bookNow,
-          imageSrc: atelier.media.src,
-          imageAlt: atelier.media.alt,
+          imageSrc: homeMedia.direction.atelier.src,
+          imageAlt: homeMedia.direction.atelier.alt,
           to: buildLocalePath(locale, `/realisation/${atelier.slug}`),
         }]
       : []),
@@ -69,8 +68,8 @@ function HomePage() {
           title: collectionSpotlight.title,
           text: collectionSpotlight.summary,
           linkLabel: ui.actions.viewCollection,
-          imageSrc: collectionSpotlight.heroMedia.src,
-          imageAlt: collectionSpotlight.heroMedia.alt,
+          imageSrc: homeMedia.direction.collection.src,
+          imageAlt: homeMedia.direction.collection.alt,
           to: buildLocalePath(locale, '/collections'),
         }]
       : []),
@@ -80,8 +79,8 @@ function HomePage() {
           title: school.title,
           text: school.summary,
           linkLabel: ui.nav.school,
-          imageSrc: schoolCover?.src ?? school.media.items[0]?.asset.src ?? '/images/purity_1.webp',
-          imageAlt: schoolCover?.alt ?? school.title,
+          imageSrc: homeMedia.direction.school.src,
+          imageAlt: homeMedia.direction.school.alt,
           to: buildLocalePath(locale, '/school'),
         }]
       : []),
@@ -98,15 +97,21 @@ function HomePage() {
           title={ui.nav.research}
           subtitle={home.privateClientsText}
         >
-          {research.map((item) => (
-            <ServiceCard
-              key={item.slug}
-              item={item}
-              locale={locale}
-              cta={ui.actions.buyService}
-              pricingLabel={ui.labels.pricing}
-            />
-          ))}
+          {research.map((item, index) => {
+            const media = plannedImageAt(homeMedia.servicePreview.research, index, item.media)
+
+            return (
+              <ServiceCard
+                key={item.slug}
+                item={item}
+                locale={locale}
+                cta={ui.actions.buyService}
+                pricingLabel={ui.labels.pricing}
+                imageSrc={media.src}
+                imageAlt={media.alt}
+              />
+            )
+          })}
         </OfferGrid>
       ) : null}
 
@@ -115,15 +120,21 @@ function HomePage() {
           title={ui.nav.realisation}
           subtitle={home.corporateClientsText}
         >
-          {realisation.map((item) => (
-            <ServiceCard
-              key={item.slug}
-              item={item}
-              locale={locale}
-              cta={ui.actions.bookNow}
-              pricingLabel={ui.labels.pricing}
-            />
-          ))}
+          {realisation.map((item, index) => {
+            const media = plannedImageAt(homeMedia.servicePreview.realisation, index, item.media)
+
+            return (
+              <ServiceCard
+                key={item.slug}
+                item={item}
+                locale={locale}
+                cta={ui.actions.bookNow}
+                pricingLabel={ui.labels.pricing}
+                imageSrc={media.src}
+                imageAlt={media.alt}
+              />
+            )
+          })}
         </OfferGrid>
       ) : null}
 
@@ -136,8 +147,8 @@ function HomePage() {
           <div className="atelier-feature">
             <div className="atelier-feature-image">
               <img
-                src={atelier.media.src}
-                alt={atelier.media.alt}
+                src={homeMedia.atelierFeature.src}
+                alt={homeMedia.atelierFeature.alt}
                 className="editorial-photo-image"
                 loading="lazy"
                 decoding="async"
@@ -206,13 +217,17 @@ function HomePage() {
         <EditorialPreviewStrip
           eyebrow={ui.nav.collections}
           title={home.transformationNote}
-          items={collections.slice(0, 3).map((item) => ({
-            title: item.title,
-            subtitle: ui.actions.viewCollection,
-            imageSrc: item.heroMedia.src,
-            imageAlt: item.heroMedia.alt,
-            to: buildLocalePath(locale, `/collections/${item.slug}`),
-          }))}
+          items={collections.slice(0, 3).map((item, index) => {
+            const media = plannedImageAt(homeMedia.collectionPreview, index, item.heroMedia)
+
+            return {
+              title: item.title,
+              subtitle: ui.actions.viewCollection,
+              imageSrc: media.src,
+              imageAlt: media.alt,
+              to: buildLocalePath(locale, `/collections/${item.slug}`),
+            }
+          })}
         />
       ) : null}
 
@@ -220,13 +235,17 @@ function HomePage() {
         <EditorialPreviewStrip
           eyebrow={ui.labels.portfolio}
           title={ui.labels.selectedCases}
-          items={portfolio.slice(0, 4).map((item) => ({
-            title: item.title,
-            subtitle: item.category,
-            imageSrc: item.heroMedia.src,
-            imageAlt: item.heroMedia.alt,
-            to: buildLocalePath(locale, `/portfolio/${item.slug}`),
-          }))}
+          items={portfolio.slice(0, 4).map((item, index) => {
+            const media = plannedImageAt(homeMedia.portfolioPreview, index, item.heroMedia)
+
+            return {
+              title: item.title,
+              subtitle: item.category,
+              imageSrc: media.src,
+              imageAlt: media.alt,
+              to: buildLocalePath(locale, `/portfolio/${item.slug}`),
+            }
+          })}
         />
       ) : null}
 
