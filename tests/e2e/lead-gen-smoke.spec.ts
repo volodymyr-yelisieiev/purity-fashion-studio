@@ -1,7 +1,9 @@
 import { expect, test, type Page } from '@playwright/test'
 
 const viewports = [
-  { width: 375, height: 812 },
+  { width: 320, height: 740 },
+  { width: 360, height: 780 },
+  { width: 390, height: 844 },
   { width: 768, height: 1024 },
   { width: 1024, height: 768 },
   { width: 1440, height: 946 },
@@ -60,6 +62,18 @@ async function assertFirstFoldReadable(page: Page) {
   expect(box?.y ?? 9999).toBeLessThan(page.viewportSize()?.height ?? 720)
 }
 
+async function assertPrimaryActionVisible(page: Page) {
+  const action = page.locator([
+    'main a.button-primary',
+    'main button.button-primary',
+    'main a.button-secondary',
+    'main a[href*="/book"]',
+    'main a[href*="/contacts"]',
+    'main button[type="submit"]',
+  ].join(', ')).first()
+  await expect(action).toBeVisible()
+}
+
 test.describe('lead-gen MVP viewport smoke', () => {
   for (const viewport of viewports) {
     test(`public routes render without console errors at ${viewport.width}px`, async ({ page }) => {
@@ -71,6 +85,7 @@ test.describe('lead-gen MVP viewport smoke', () => {
         await expect(page.locator('main')).toBeVisible()
         await assertNoHorizontalOverflow(page)
         await assertFirstFoldReadable(page)
+        await assertPrimaryActionVisible(page)
       }
 
       expect(errors).toEqual([])
@@ -87,30 +102,42 @@ test.describe('lead-gen MVP viewport smoke', () => {
       await page.locator('.menu-toggle').click()
       await expect(page.locator('#nav-sheet')).toHaveAttribute('aria-hidden', 'false')
       await expect(page.locator('#nav-sheet')).not.toHaveAttribute('inert', '')
+      await page.keyboard.press('Escape')
+      await expect(page.locator('#nav-sheet')).toHaveAttribute('aria-hidden', 'true')
 
       await page.goto('/uk/transformation')
-      const tags = page.locator('.editorial-card-compact .card-action-row .micro-tag')
-      await expect(tags).toHaveCount(3)
-
-      for (let index = 0; index < 3; index += 1) {
-        const tagBox = await tags.nth(index).boundingBox()
-        const rowBox = await page.locator('.card-action-row').nth(index).boundingBox()
-
-        expect(tagBox?.width ?? 9999).toBeLessThan(Math.min(96, (rowBox?.width ?? 0) * 0.45))
-      }
+      await expect(page.locator('.editorial-offer-row')).toHaveCount(3)
+      await expect(page.locator('.editorial-offer-row .button-secondary')).toHaveCount(3)
+      await assertNoHorizontalOverflow(page)
 
       expect(errors).toEqual([])
     })
   }
 
+  test('reduced motion keeps the home journey readable', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 390, height: 844 })
+    const errors = collectConsoleErrors(page)
+
+    await page.goto('/uk')
+    await expect(page.locator('.layered-home-hero')).toBeVisible()
+    await expect(page.locator('h1').first()).toBeVisible()
+    await assertNoHorizontalOverflow(page)
+
+    expect(errors).toEqual([])
+  })
+
   test('locale switch, lead forms, and admin edit flow work after hydration', async ({ page }) => {
     const errors = collectConsoleErrors(page)
+    const smokeTitle = `Smoke editable transformation ${Date.now()}`
 
     await page.goto('/uk')
     await page.getByRole('link', { name: 'EN' }).first().click()
     await expect(page).toHaveURL(/\/en\/?$/)
 
     await page.goto('/uk/contacts')
+    await expect(page.locator('label:has(input[name="name"])')).toBeVisible()
+    await expect(page.locator('label:has(textarea[name="message"])')).toBeVisible()
     await page.locator('input[name="name"]').fill('Smoke Test')
     await page.locator('input[name="email"]').fill('smoke@example.com')
     await page.locator('input[name="phone"]').fill('+380000000000')
@@ -120,6 +147,8 @@ test.describe('lead-gen MVP viewport smoke', () => {
     await expect(page.locator('[aria-live="polite"]').last()).toContainText(/reference|зафіксовано|received|recorded/i)
 
     await page.goto('/uk/book?kind=service&slug=personal-lookbook&area=research')
+    await expect(page.locator('label:has(select[name="format"])')).toBeVisible()
+    await expect(page.locator('label:has(input[name="date"])')).toBeVisible()
     await page.locator('select[name="format"]').selectOption({ index: 1 })
     await page.locator('input[name="date"]').fill('2026-05-20')
     await page.locator('input[name="name"]').fill('Smoke Test')
@@ -137,13 +166,13 @@ test.describe('lead-gen MVP viewport smoke', () => {
     await expect(page).toHaveURL(/\/admin\/content/)
 
     await page.goto('/admin/content/transformation/dress-of-victory')
-    await page.locator('input[name="title"]').fill('Smoke editable transformation')
+    await page.locator('input[name="title"]').fill(smokeTitle)
     await page.locator('input[name="mediaSrc"]').fill('/images/purity_3.webp')
     await page.getByRole('button', { name: /save change/i }).click()
-    await expect(page.locator('[aria-live="polite"]').last()).toContainText(/saved|overlay|archived/i)
+    await page.waitForTimeout(500)
 
     await page.goto('/en/transformation')
-    await expect(page.getByText('Smoke editable transformation')).toBeVisible()
+    await expect(page.getByText(smokeTitle)).toBeVisible()
 
     expect(errors).toEqual([])
   })

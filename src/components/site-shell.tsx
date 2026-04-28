@@ -14,6 +14,7 @@ import { courseCoverAsset, optimizedImageSrc } from '~/lib/media-refs'
 import { homeMedia, pageMedia } from '~/lib/media-plan'
 import { MOTION, usePrefersReducedMotion } from '~/lib/motion'
 import { isDuplicateSubmission } from '~/lib/mock-submission'
+import { SITE_NAV_GROUPS, siteNavGroupTitle } from '~/lib/site-map'
 import { submitBookingLead, submitContactLead } from '~/lib/submissions'
 import { cn } from '~/lib/utils'
 import type {
@@ -29,11 +30,6 @@ import type {
   TransformationOfferEntity,
   UiCopy,
 } from '~/lib/types'
-
-const NAV_GROUPS = [
-  ['research', 'realisation', 'transformation'] as const,
-  ['collections', 'portfolio', 'school'] as const,
-] as const
 
 function clamp01(value: number) {
   return Math.min(Math.max(value, 0), 1)
@@ -386,9 +382,9 @@ export function SiteShell({
     gsap.set(sheet, { display: 'none', height: 0, autoAlpha: 0, pointerEvents: 'none' })
   }, [open])
 
-  const navEntries = NAV_GROUPS.map((group) => ({
-    title: group[0] === 'research' ? ui.navigation.studio : ui.navigation.works,
-    items: group.map((key) => ({
+  const navEntries = SITE_NAV_GROUPS.map((group) => ({
+    title: siteNavGroupTitle(group.id, ui),
+    items: group.items.map((key) => ({
       key,
       to: buildLocalePath(locale, `/${key}`),
       label: ui.nav[key],

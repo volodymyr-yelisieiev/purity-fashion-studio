@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { CollectionCard, OfferGrid, StandardListingPage } from '~/components/site-shell'
+import { CollectionLookbookRows, ListingRhythm } from '~/components/editorial'
 import { buildLocalePath } from '~/lib/i18n'
-import { listingPreviewMedia, plannedImageAt } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -31,45 +30,15 @@ function CollectionsPage() {
   const heroImage = page.seo.image
 
   return (
-    <StandardListingPage
-      hero={{
-        eyebrow: `PURITY / ${ui.nav.collections}`,
-        title: page.title,
-        text: page.intro,
-        emphasis: 'grand',
-        imageSrc: heroImage.src,
-        imageAlt: heroImage.alt,
-        caption: page.seo.image.caption,
-      }}
-      quoteTitle={ui.labels.collections}
-      quoteText={page.pullQuote}
-      preview={{
-        eyebrow: ui.labels.collectionStory,
-        title: page.pullQuote,
-        items: collections.slice(0, 3).map((collection, index) => {
-          const media = plannedImageAt(listingPreviewMedia.collections, index, collection.heroMedia)
-
-          return {
-            title: collection.title,
-            subtitle: collection.priceNote,
-            imageSrc: media.src,
-            imageAlt: media.alt,
-            to: buildLocalePath(locale, `/collections/${collection.slug}`),
-          }
-        }),
-      }}
+    <ListingRhythm
+      page={page}
+      locale={locale}
+      ui={ui}
+      navLabel={ui.nav.collections}
+      image={heroImage}
+      processItems={collections.map((collection) => `${collection.title}: ${collection.priceNote}`)}
     >
-      <OfferGrid title={page.title} subtitle={page.intro}>
-        {collections.map((collection) => (
-          <CollectionCard
-            key={collection.slug}
-            item={collection}
-            locale={locale}
-            cta={ui.actions.viewCollection}
-            label={ui.labels.collection}
-          />
-        ))}
-      </OfferGrid>
-    </StandardListingPage>
+      <CollectionLookbookRows collections={collections} locale={locale} ui={ui} />
+    </ListingRhythm>
   )
 }

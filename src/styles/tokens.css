@@ -1,0 +1,33 @@
+:root {
+  --color-canvas: #ffffff;
+  --color-ink: #090909;
+  --color-muted: rgba(9, 9, 9, 0.62);
+  --color-faint: rgba(9, 9, 9, 0.38);
+  --color-hairline: rgba(9, 9, 9, 0.12);
+  --color-strong-line: rgba(9, 9, 9, 0.22);
+  --color-inverse: #090909;
+  --color-inverse-ink: #ffffff;
+
+  --space-page: clamp(1rem, 4vw, 4.5rem);
+  --space-grid: clamp(1rem, 2vw, 2rem);
+  --space-section-sm: clamp(3.5rem, 7vw, 6rem);
+  --space-section-md: clamp(5rem, 10vw, 9rem);
+  --space-section-lg: clamp(7rem, 14vw, 12rem);
+
+  --container-editorial: 1680px;
+  --measure-text: 38.75rem;
+  --measure-lead: 47.5rem;
+
+  --text-micro: 0.6875rem;
+  --text-ui: 0.8125rem;
+  --text-body-fluid: clamp(0.9375rem, 1.05vw, 1.0625rem);
+  --text-lead-fluid: clamp(1.125rem, 1.55vw, 1.5rem);
+  --text-h3-fluid: clamp(1.75rem, 3vw, 3rem);
+  --text-h2-fluid: clamp(2.75rem, 6vw, 6rem);
+  --text-h1-fluid: clamp(4rem, 10vw, 9.25rem);
+
+  --motion-fast: 180ms;
+  --motion-base: 320ms;
+  --motion-slow: 560ms;
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+}

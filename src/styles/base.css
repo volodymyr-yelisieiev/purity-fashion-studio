@@ -1,0 +1,20 @@
+html {
+  scroll-padding-top: 6rem;
+}
+
+body {
+  color: var(--color-ink);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-canvas);
+}

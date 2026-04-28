@@ -2,9 +2,18 @@ import type { Locale } from './types'
 import { photoKey } from './media-refs'
 
 export type PlannedImage = {
+  id?: string
+  owner?: string
   src: string
   alt: string
   caption?: string
+  aspect?: 'landscape' | 'portrait' | 'square' | 'wide'
+  focalPoint?: { x: number; y: number }
+  generated?: {
+    model: string
+    promptId: string
+    reviewed: boolean
+  }
 }
 
 export type MediaOverrideGroup = 'service' | 'course' | 'collection' | 'portfolio' | 'transformation'
@@ -305,6 +314,49 @@ export const homeMedia = {
   collectionPreview: PlannedImage[]
   portfolioPreview: PlannedImage[]
 }
+
+export const homeLayerMedia = {
+  bgStudio: {
+    id: 'home-hero-bg-studio',
+    owner: 'home:layered-hero:bg',
+    src: '/images/atelier-workshop.jpeg',
+    alt: 'White PURITY atelier space with tailoring work',
+    aspect: 'wide',
+    focalPoint: { x: 48, y: 42 },
+  },
+  patternPaper: {
+    id: 'home-hero-pattern-paper',
+    owner: 'home:layered-hero:pattern-paper',
+    src: '/images/wardrobe-system.jpeg',
+    alt: 'Wardrobe planning board and pattern system',
+    aspect: 'landscape',
+    focalPoint: { x: 44, y: 48 },
+  },
+  silkFold: {
+    id: 'home-hero-silk-fold',
+    owner: 'home:layered-hero:silk-fold',
+    src: '/images/atelier-detail.jpeg',
+    alt: 'Ivory fabric fold and atelier detail',
+    aspect: 'square',
+    focalPoint: { x: 50, y: 42 },
+  },
+  mannequinDrape: {
+    id: 'home-hero-mannequin-drape',
+    owner: 'home:layered-hero:mannequin-drape',
+    src: '/images/portfolio-black-look.jpeg',
+    alt: 'Editorial sculptural fashion silhouette',
+    aspect: 'portrait',
+    focalPoint: { x: 52, y: 34 },
+  },
+  threadDetail: {
+    id: 'home-hero-detail-thread',
+    owner: 'home:layered-hero:thread-detail',
+    src: '/images/stylist-lookbook.jpeg',
+    alt: 'Lookbook and atelier detail for PURITY',
+    aspect: 'landscape',
+    focalPoint: { x: 50, y: 50 },
+  },
+} satisfies Record<string, PlannedImage>
 
 export const listingProcessMedia = {
   research: [

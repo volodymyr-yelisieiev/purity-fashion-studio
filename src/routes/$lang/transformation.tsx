@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { StandardListingPage, TransformationGrid } from '~/components/site-shell'
+import { ListingRhythm, TransformationRows } from '~/components/editorial'
 import { buildLocalePath } from '~/lib/i18n'
-import { listingProcessMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -31,27 +30,15 @@ function TransformationPage() {
   const heroImage = page.seo.image
 
   return (
-    <StandardListingPage
-      hero={{
-        eyebrow: `PURITY / ${ui.nav.transformation}`,
-        title: page.title,
-        text: page.intro,
-        emphasis: 'grand',
-        imageSrc: heroImage.src,
-        imageAlt: heroImage.alt,
-        caption: page.seo.image.caption,
-      }}
-      quoteTitle={page.title}
-      quoteText={page.pullQuote}
-      process={{
-        eyebrow: ui.labels.approach,
-        title: page.pullQuote,
-        text: page.intro,
-        items: offers.map((offer) => `${offer.format}: ${offer.summary}`).slice(0, 3),
-        images: listingProcessMedia.transformation,
-      }}
+    <ListingRhythm
+      page={page}
+      locale={locale}
+      ui={ui}
+      navLabel={ui.nav.transformation}
+      image={heroImage}
+      processItems={offers.map((offer) => `${offer.format}: ${offer.summary}`)}
     >
-      <TransformationGrid offers={offers} locale={locale} />
-    </StandardListingPage>
+      <TransformationRows offers={offers} locale={locale} />
+    </ListingRhythm>
   )
 }

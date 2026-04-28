@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { CourseGrid, StandardListingPage } from '~/components/site-shell'
+import { CourseRows, ListingRhythm } from '~/components/editorial'
 import { buildLocalePath } from '~/lib/i18n'
-import { listingProcessMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -31,27 +30,15 @@ function SchoolPage() {
   const heroImage = page.seo.image
 
   return (
-    <StandardListingPage
-      hero={{
-        eyebrow: `PURITY / ${ui.nav.school}`,
-        title: page.title,
-        text: page.intro,
-        emphasis: 'grand',
-        imageSrc: heroImage.src,
-        imageAlt: heroImage.alt,
-        caption: page.seo.image.caption,
-      }}
-      quoteTitle={ui.labels.schoolNote}
-      quoteText={page.note}
-      process={{
-        eyebrow: ui.labels.schoolNote,
-        title: page.pullQuote,
-        text: page.intro,
-        items: courses.flatMap((course) => course.details).slice(0, 3),
-        images: listingProcessMedia.school,
-      }}
+    <ListingRhythm
+      page={{ ...page, pullQuote: page.note }}
+      locale={locale}
+      ui={ui}
+      navLabel={ui.nav.school}
+      image={heroImage}
+      processItems={courses.flatMap((course) => course.details)}
     >
-      <CourseGrid courses={courses} locale={locale} cta={ui.actions.bookNow} />
-    </StandardListingPage>
+      <CourseRows courses={courses} locale={locale} ui={ui} />
+    </ListingRhythm>
   )
 }

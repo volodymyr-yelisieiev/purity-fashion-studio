@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { PortfolioGrid, StandardListingPage } from '~/components/site-shell'
+import { ListingRhythm, PortfolioCaseRows } from '~/components/editorial'
 import { buildLocalePath } from '~/lib/i18n'
-import { listingPreviewMedia, plannedImageAt } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -32,35 +31,15 @@ function PortfolioPage() {
   const heroImage = page.seo.image
 
   return (
-    <StandardListingPage
-      hero={{
-        eyebrow: `PURITY / ${ui.labels.portfolio}`,
-        title: page.title,
-        text: page.intro,
-        emphasis: 'grand',
-        imageSrc: heroImage.src,
-        imageAlt: heroImage.alt,
-        caption: page.seo.image.caption,
-      }}
-      quoteTitle={ui.labels.selectedCases}
-      quoteText={page.highlight}
-      preview={{
-        eyebrow: ui.labels.result,
-        title: page.pullQuote,
-        items: portfolio.slice(0, 3).map((entry, index) => {
-          const media = plannedImageAt(listingPreviewMedia.portfolio, index, entry.heroMedia)
-
-          return {
-            title: entry.title,
-            subtitle: entry.outcome,
-            imageSrc: media.src,
-            imageAlt: media.alt,
-            to: buildLocalePath(locale, `/portfolio/${entry.slug}`),
-          }
-        }),
-      }}
+    <ListingRhythm
+      page={{ ...page, pullQuote: page.highlight }}
+      locale={locale}
+      ui={ui}
+      navLabel={ui.labels.portfolio}
+      image={heroImage}
+      processItems={portfolio.map((entry) => `${entry.title}: ${entry.outcome}`)}
     >
-      <PortfolioGrid cases={portfolio} locale={locale} cta={ui.actions.viewCase} />
-    </StandardListingPage>
+      <PortfolioCaseRows cases={portfolio} locale={locale} ui={ui} />
+    </ListingRhythm>
   )
 }

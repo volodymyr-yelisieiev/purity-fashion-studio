@@ -30,6 +30,9 @@ export default defineConfig({
       VITE_ENABLE_ADMIN: 'true',
       VITE_ENABLE_ROUTER_DEVTOOLS: 'false',
       VITE_ENABLE_PROTOTYPE_FLOWS: 'false',
+      ADMIN_USERNAME: 'admin',
+      ADMIN_PASSWORD: 'purity-local-admin',
+      ADMIN_SESSION_SECRET: 'purity-playwright-admin-session-secret',
     },
   },
 })

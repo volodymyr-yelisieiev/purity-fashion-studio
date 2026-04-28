@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { OfferGrid, ServiceCard, StandardListingPage } from '~/components/site-shell'
+import { ListingRhythm, ServiceRowsSection } from '~/components/editorial'
 import { buildLocalePath } from '~/lib/i18n'
-import { listingProcessMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -31,37 +30,22 @@ function RealisationIndexPage() {
   const heroImage = page.seo.image
 
   return (
-    <StandardListingPage
-      hero={{
-        eyebrow: `PURITY / ${ui.nav.realisation}`,
-        title: page.title,
-        text: page.intro,
-        emphasis: 'grand',
-        imageSrc: heroImage.src,
-        imageAlt: heroImage.alt,
-        caption: page.seo.image.caption,
-      }}
-      quoteTitle={page.title}
-      quoteText={page.pullQuote}
-      process={{
-        eyebrow: ui.labels.process,
-        title: page.pullQuote,
-        text: page.intro,
-        items: services.flatMap((service) => service.process).slice(0, 3),
-        images: listingProcessMedia.realisation,
-      }}
+    <ListingRhythm
+      page={page}
+      locale={locale}
+      ui={ui}
+      navLabel={ui.nav.realisation}
+      image={heroImage}
+      processItems={services.flatMap((service) => service.process)}
     >
-      <OfferGrid title={page.title} subtitle={page.intro}>
-        {services.map((service) => (
-          <ServiceCard
-            key={service.slug}
-            item={service}
-            locale={locale}
-            cta={ui.actions.bookNow}
-            pricingLabel={ui.labels.pricing}
-          />
-        ))}
-      </OfferGrid>
-    </StandardListingPage>
+      <ServiceRowsSection
+        title={page.title}
+        subtitle={page.intro}
+        services={services}
+        locale={locale}
+        cta={ui.actions.bookNow}
+        eyebrow={ui.labels.process}
+      />
+    </ListingRhythm>
   )
 }
