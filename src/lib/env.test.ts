@@ -17,6 +17,24 @@ test('parsePublicEnv disables prototype-only flags in production by default', ()
   assert.equal(env.analyticsMode, 'off')
 })
 
+test('parsePublicEnv refuses prototype-only flags on production surfaces', () => {
+  const env = parsePublicEnv({
+    MODE: 'production',
+    VITE_APP_ENV: 'production',
+    VITE_ENABLE_ADMIN: 'true',
+    VITE_ENABLE_ROUTER_DEVTOOLS: 'true',
+    VITE_ENABLE_PROTOTYPE_FLOWS: 'true',
+    VITE_ENABLE_FORCE_MOCK_FAILURES: 'true',
+    VITE_ANALYTICS_MODE: 'console',
+  })
+
+  assert.equal(env.showRouterDevtools, false)
+  assert.equal(env.enableAdmin, false)
+  assert.equal(env.enablePrototypeFlows, false)
+  assert.equal(env.enableForcedMockFailures, false)
+  assert.equal(env.analyticsMode, 'off')
+})
+
 test('parsePublicEnv keeps non-production analytics and prototype flows enabled by default', () => {
   const env = parsePublicEnv({
     MODE: 'development',

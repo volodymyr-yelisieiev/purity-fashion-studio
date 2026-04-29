@@ -379,7 +379,7 @@ const ui: Localized<UiCopy> = {
       studioDetail: 'Зустріч у київській студії з тактильними референсами',
       consultationLabel: 'Консультація',
       prototypeNotice:
-        'Локальний режим фіксує заявку без зовнішньої CRM, щоб перевірити сценарій відправлення.',
+        'Якщо автоматичне надсилання недоступне, напишіть напряму на email або в Instagram.',
       pending: 'Формуємо запит і перевіряємо наступний крок.',
       success: 'Запит зафіксовано. Команда PURITY підтвердить деталі та наступний крок окремо.',
       failure: 'Не вдалося зафіксувати запит. Перевірте з’єднання або повторіть спробу.',
@@ -392,7 +392,7 @@ const ui: Localized<UiCopy> = {
       interestLabel: 'Цікавить напрям',
       messageLabel: 'Повідомлення',
       prototypeNotice:
-        'Локальний режим фіксує запит без зовнішньої CRM або email-відправлення.',
+        'Якщо автоматичне надсилання недоступне, напишіть напряму на email або в Instagram.',
       pending: 'Надсилаємо запит до черги студії.',
       success: 'Запит зафіксовано. Команда PURITY зв’яжеться з вами окремо.',
       failure: 'Не вдалося зафіксувати запит. Перевірте з’єднання та повторіть спробу.',
@@ -514,7 +514,7 @@ const ui: Localized<UiCopy> = {
       studioDetail: 'Kyiv studio meeting with tactile references',
       consultationLabel: 'Consultation',
       prototypeNotice:
-        'Local mode records the request without an external CRM handoff while the submission path is checked.',
+        'If automatic submission is unavailable, write directly by email or Instagram.',
       pending: 'Preparing your request and checking the next step.',
       success: 'Request recorded. The PURITY team will confirm the details and next step separately.',
       failure: 'The request could not be recorded. Check your connection and try again.',
@@ -527,7 +527,7 @@ const ui: Localized<UiCopy> = {
       interestLabel: 'Area of interest',
       messageLabel: 'Message',
       prototypeNotice:
-        'Local mode records the inquiry without an external CRM or email handoff.',
+        'If automatic submission is unavailable, write directly by email or Instagram.',
       pending: 'Sending your inquiry to the studio queue.',
       success: 'Inquiry recorded. The PURITY team will follow up separately.',
       failure: 'The inquiry could not be recorded. Check your connection and try again.',
@@ -649,7 +649,7 @@ const ui: Localized<UiCopy> = {
       studioDetail: 'Встреча в киевской студии с тактильными референсами',
       consultationLabel: 'Консультация',
       prototypeNotice:
-        'Локальный режим фиксирует заявку без внешней CRM, чтобы проверить сценарий отправки.',
+        'Если автоматическая отправка недоступна, напишите напрямую на email или в Instagram.',
       pending: 'Подготавливаем запрос и проверяем следующий шаг.',
       success: 'Запрос зафиксирован. Команда PURITY отдельно подтвердит детали и следующий шаг.',
       failure: 'Не удалось зафиксировать запрос. Проверьте соединение и попробуйте ещё раз.',
@@ -662,7 +662,7 @@ const ui: Localized<UiCopy> = {
       interestLabel: 'Интересующий раздел',
       messageLabel: 'Сообщение',
       prototypeNotice:
-        'Локальный режим фиксирует запрос без внешней CRM и email-отправки.',
+        'Если автоматическая отправка недоступна, напишите напрямую на email или в Instagram.',
       pending: 'Отправляем запрос в очередь студии.',
       success: 'Запрос зафиксирован. Команда PURITY свяжется с вами отдельно.',
       failure: 'Не удалось зафиксировать запрос. Проверьте соединение и попробуйте ещё раз.',
@@ -680,12 +680,12 @@ const homePages: Localized<PageSeed> = {
       'PURITY створює персональні lookbook-напрями, couture-рішення й трансформаційні fashion-досвіди для приватних та корпоративних клієнтів в Україні й міжнародно.',
     heroPrimaryCta: 'Надіслати запит',
     heroSecondaryCta: 'Дивитися колекції',
-    philosophy: 'Ощути форму. Ощути тканину. Ощути своє майбутнє.',
+    philosophy: 'Відчуй форму. Відчуй тканину. Відчуй своє майбутнє.',
     methodologyTitle: 'Дослідження / Втілення / Трансформація',
     methodologySteps: [
-      'Research читає силует, колір та гардероб як особисту архітектуру.',
-      'Realisation переводить інсайти в shopping-супровід, dossier та atelier-виробництво.',
-      'Transformation відкриває курси, фотомедитації й ритуали перевтілення.',
+      'Дослідження читає силует, колір та гардероб як особисту архітектуру.',
+      'Втілення переводить інсайти в shopping-супровід, dossier та atelier-виробництво.',
+      'Трансформація відкриває курси, фотомедитації й ритуали перевтілення.',
     ],
     privateClientsTitle: 'Для приватних клієнтів',
     privateClientsText: 'Гардеробні стратегії, капсули, персональні lookbook-и та couture-рішення.',
@@ -701,14 +701,14 @@ const homePages: Localized<PageSeed> = {
     }),
   },
   en: {
-    heroKicker: '@ИССЛЕДУЙ @ПРЕДСТАВЛЯЙ @СОЗДАВАЙ',
+    heroKicker: '@RESEARCH @IMAGINE @CREATE',
     heroTitle: 'A studio shaping the future wardrobe through form, fabric, and movement.',
     heroDescription:
       'PURITY designs personal lookbook directions, couture services, and transformational fashion experiences for private and corporate clients in Ukraine and beyond.',
     heroPrimaryCta: 'Request service',
     heroSecondaryCta: 'View collections',
     philosophy: 'Feel the form. Feel the fabric. Feel your future.',
-    methodologyTitle: 'Исследование / Воплощение / Трансформация',
+    methodologyTitle: 'Research / Realisation / Transformation',
     methodologySteps: [
       'Research reads silhouette, color, and wardrobe as a personal architecture.',
       'Realisation turns insight into shopping support, dossier sessions, and atelier production.',
@@ -728,18 +728,18 @@ const homePages: Localized<PageSeed> = {
     }),
   },
   ru: {
-    heroKicker: '@RESEARCH @IMAGINE @CREATE',
+    heroKicker: '@ИССЛЕДУЙ @ПРЕДСТАВЛЯЙ @СОЗДАВАЙ',
     heroTitle: 'Студия, которая формирует будущий гардероб через ощущение формы, ткани и движения.',
     heroDescription:
       'PURITY создаёт персональные lookbook-направления, couture-сервисы и трансформационные fashion-опыты для частных и корпоративных клиентов в Украине и за её пределами.',
     heroPrimaryCta: 'Отправить запрос',
     heroSecondaryCta: 'Смотреть коллекции',
     philosophy: 'Ощутить форму. Ощутить ткань. Ощутить своё будущее.',
-    methodologyTitle: 'Research / Realisation / Transformation',
+    methodologyTitle: 'Исследование / Воплощение / Трансформация',
     methodologySteps: [
-      'Research считывает силуэт, цвет и гардероб как личную архитектуру.',
-      'Realisation переводит инсайт в shopping-сопровождение, dossier-сессию и atelier-пошив.',
-      'Transformation открывает курсы, фотомедитации и сценарии перевоплощения.',
+      'Исследование считывает силуэт, цвет и гардероб как личную архитектуру.',
+      'Воплощение переводит инсайт в shopping-сопровождение, dossier-сессию и atelier-пошив.',
+      'Трансформация открывает курсы, фотомедитации и сценарии перевоплощения.',
     ],
     privateClientsTitle: 'Для частных клиентов',
     privateClientsText: 'Гардеробные стратегии, капсулы, персональные lookbook-и и couture-решения.',
@@ -1319,7 +1319,7 @@ const courses: Localized<CourseSeed[]> = {
     {
       kind: 'course',
       slug: 'draping-moulage',
-      title: 'Draping / Macetirovanie',
+      title: 'Драпірування / муляжний метод',
       summary: 'Практика об’ємного моделювання для дизайнерів і стилістів.',
       price: { eur: '€540', uah: '₴23 300' },
       sessions: '8 сесій',
@@ -1383,7 +1383,7 @@ const courses: Localized<CourseSeed[]> = {
     {
       kind: 'course',
       slug: 'draping-moulage',
-      title: 'Draping / Macetirovanie',
+      title: 'Драпировка / макетирование',
       summary: 'Практика объёмного моделирования для дизайнеров и стилистов.',
       price: { eur: '€540', uah: '₴23 300' },
       sessions: '8 сессий',

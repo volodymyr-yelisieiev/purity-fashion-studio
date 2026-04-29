@@ -173,51 +173,51 @@ export const localizedCopyOverrides: Partial<
 
 export const pageMedia = {
   home: {
-    src: '/images/abstract-atelier-grid.svg',
-    alt: 'Abstract PURITY atelier grid',
+    src: '/images/atelier-workshop.jpeg',
+    alt: 'PURITY atelier workshop with tailoring tools and fabric',
     caption: 'Kyiv editorial direction',
   },
   research: {
-    src: '/images/abstract-research-01.svg',
-    alt: 'Abstract lookbook research composition',
+    src: '/images/stylist-lookbook.jpeg',
+    alt: 'Stylist preparing a personal lookbook at PURITY',
     caption: 'Research / Form / Silhouette',
   },
   realisation: {
-    src: '/images/abstract-realisation-01.svg',
-    alt: 'Abstract atelier realisation composition',
+    src: '/images/atelier-detail.jpeg',
+    alt: 'Atelier detail work with fabric and form',
     caption: 'Atelier / fitting / couture',
   },
   transformation: {
-    src: '/images/abstract-transform-01.svg',
-    alt: 'Abstract transformation ritual composition',
+    src: '/images/stylist-editorial.jpeg',
+    alt: 'Editorial styling session for transformation work',
     caption: 'Transformation / ritual / styling',
   },
   collections: {
-    src: '/images/abstract-collections-01.svg',
-    alt: 'Abstract PURITY collection study',
+    src: '/images/portfolio-black-look.jpeg',
+    alt: 'Editorial black dress silhouette from PURITY',
     caption: 'Collections / editorial pieces',
   },
   school: {
-    src: '/images/abstract-school-01.svg',
-    alt: 'Abstract draping and school study',
+    src: '/images/wardrobe-system.jpeg',
+    alt: 'Wardrobe planning board and form study',
     caption: 'School / study / transformation',
   },
   portfolio: {
-    src: '/images/abstract-portfolio-01.svg',
-    alt: 'Abstract selected portfolio frame',
+    src: '/images/stylist-consultation.jpeg',
+    alt: 'Stylist consultation and personal image work',
     caption: 'Portfolio / selected cases',
   },
   contactsIntro: {
-    src: '/images/abstract-contact-space.svg',
-    alt: 'Abstract PURITY studio contact composition',
+    src: '/images/concept-atelier.jpeg',
+    alt: 'PURITY concept atelier space for studio meetings',
   },
   contactsAside: {
-    src: '/images/abstract-studio-light.svg',
-    alt: 'Abstract PURITY studio light composition',
+    src: '/images/concept-team.jpeg',
+    alt: 'PURITY team and editorial image direction',
   },
   bookingDefault: {
-    src: '/images/abstract-booking-note.svg',
-    alt: 'Abstract PURITY booking request',
+    src: '/images/shopping-fitting.jpeg',
+    alt: 'Personal styling fitting and booking consultation',
   },
 } satisfies Record<string, PlannedImage>
 

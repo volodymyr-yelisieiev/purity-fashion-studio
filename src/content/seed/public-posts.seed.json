@@ -472,7 +472,7 @@
         {
           "kind": "course",
           "slug": "draping-moulage",
-          "title": "Draping / Macetirovanie",
+          "title": "Драпірування / муляжний метод",
           "summary": "Практика об’ємного моделювання для дизайнерів і стилістів.",
           "price": {
             "eur": "€540",
@@ -3478,7 +3478,7 @@
         {
           "kind": "course",
           "slug": "draping-moulage",
-          "title": "Draping / Macetirovanie",
+          "title": "Драпировка / макетирование",
           "summary": "Практика объёмного моделирования для дизайнеров и стилистов.",
           "price": {
             "eur": "€540",

@@ -85,20 +85,31 @@ export function parsePublicEnv(source: EnvSource): PublicEnv {
     ['development', 'staging', 'production'] as const,
     defaultAppEnv(mode),
   )
+  const isProductionSurface = mode === 'production' || appEnv === 'production'
 
   return {
     mode,
     appEnv,
-    showRouterDevtools: readBoolean(source, 'VITE_ENABLE_ROUTER_DEVTOOLS', false),
-    enableAdmin: readBoolean(source, 'VITE_ENABLE_ADMIN', appEnv !== 'production'),
-    enablePrototypeFlows: readBoolean(source, 'VITE_ENABLE_PROTOTYPE_FLOWS', appEnv !== 'production'),
-    enableForcedMockFailures: readBoolean(source, 'VITE_ENABLE_FORCE_MOCK_FAILURES', false),
-    analyticsMode: readEnum(
-      source,
-      'VITE_ANALYTICS_MODE',
-      ['off', 'console'] as const,
-      mode === 'production' ? 'off' : 'console',
-    ),
+    showRouterDevtools: isProductionSurface
+      ? false
+      : readBoolean(source, 'VITE_ENABLE_ROUTER_DEVTOOLS', false),
+    enableAdmin: isProductionSurface
+      ? false
+      : readBoolean(source, 'VITE_ENABLE_ADMIN', true),
+    enablePrototypeFlows: isProductionSurface
+      ? false
+      : readBoolean(source, 'VITE_ENABLE_PROTOTYPE_FLOWS', true),
+    enableForcedMockFailures: isProductionSurface
+      ? false
+      : readBoolean(source, 'VITE_ENABLE_FORCE_MOCK_FAILURES', false),
+    analyticsMode: isProductionSurface
+      ? 'off'
+      : readEnum(
+          source,
+          'VITE_ANALYTICS_MODE',
+          ['off', 'console'] as const,
+          'console',
+        ),
   }
 }
 

@@ -406,6 +406,10 @@ function EditorialGallery({ gallery }: { gallery: Array<{ src: string; alt: stri
   )
 }
 
+function detailSectionNumber(index: number) {
+  return String(index + 1).padStart(2, '0')
+}
+
 export function PortfolioCaseStory({
   entry,
   locale,
@@ -416,6 +420,12 @@ export function PortfolioCaseStory({
   ui: UiCopy
 }) {
   const gallery = productionGallery(entry.heroMedia, entry.gallery)
+  const storyModules = [
+    { label: ui.labels.challenge, copy: entry.challenge },
+    { label: ui.labels.approach, copy: entry.approach },
+    { label: ui.labels.result, copy: entry.outcome },
+  ]
+  const visualSystemNumber = detailSectionNumber(storyModules.length + 1)
 
   return (
     <>
@@ -442,20 +452,14 @@ export function PortfolioCaseStory({
 
       <Section className="product-detail-section">
         <div className="product-modules-grid">
+          {storyModules.map((module, index) => (
+            <article key={module.label} className="product-module">
+              <p className="eyebrow">{detailSectionNumber(index)} {module.label}</p>
+              <p className="editorial-copy">{module.copy}</p>
+            </article>
+          ))}
           <article className="product-module">
-            <p className="eyebrow">01 {ui.labels.challenge}</p>
-            <p className="editorial-copy">{entry.challenge}</p>
-          </article>
-          <article className="product-module">
-            <p className="eyebrow">02 {ui.labels.approach}</p>
-            <p className="editorial-copy">{entry.approach}</p>
-          </article>
-          <article className="product-module">
-            <p className="eyebrow">03 {ui.labels.result}</p>
-            <p className="editorial-copy">{entry.outcome}</p>
-          </article>
-          <article className="product-module">
-            <p className="eyebrow">04 {ui.labels.deliverables}</p>
+            <p className="eyebrow">{detailSectionNumber(storyModules.length)} {ui.labels.deliverables}</p>
             <ul className="product-list">
               {entry.deliverables.map((item) => (
                 <li key={item}>
@@ -470,7 +474,7 @@ export function PortfolioCaseStory({
 
       {gallery.length ? (
         <Section className="product-detail-section">
-          <SectionHead eyebrow="04 Visual system" title={entry.title} subtitle={entry.context} />
+          <SectionHead eyebrow={`${visualSystemNumber} Visual system`} title={entry.title} subtitle={entry.context} />
           <EditorialGallery gallery={gallery} />
         </Section>
       ) : null}

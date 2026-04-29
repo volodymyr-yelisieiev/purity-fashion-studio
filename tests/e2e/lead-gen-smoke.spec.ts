@@ -85,7 +85,7 @@ async function assertSiteChromePresent(page: Page) {
 
 async function assertNoPrototypeCopy(page: Page) {
   await expect(page.locator('body')).not.toContainText(
-    /Локальний режим|Локальный режим|Local mode|without an external CRM|без зовнішньої CRM|без внешней CRM/i,
+    /prototype|mock(?!-up)|Локальний режим|Локальный режим|Local mode|without an external CRM|external CRM|без зовнішньої CRM|без внешней CRM|без CRM|без email/i,
   )
 }
 

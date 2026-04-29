@@ -1,10 +1,13 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 
 import publicPostsSeed from '~/content/seed/public-posts.seed.json'
 import { courseCoverAsset } from './media-refs'
 import { photoKey } from './media-refs'
 import {
+  homeLayerMedia,
   plannedMediaRefs,
 } from './media-plan'
 import { getPublicPostSeedMeta, getSeedServices } from './public-content-seed'
@@ -95,6 +98,10 @@ test('planned public media uses each visual asset once', () => {
   const byKey = new Map<string, string>()
 
   for (const { owner, image } of plannedMediaRefs()) {
+    if (!/^(service|course|collection|portfolio|transformation):/.test(owner)) {
+      continue
+    }
+
     const key = photoKey(image.src)
     const existingOwner = byKey.get(key)
 
@@ -104,6 +111,36 @@ test('planned public media uses each visual asset once', () => {
       `planned image ${image.src} is reused by ${existingOwner} and ${owner}`,
     )
     byKey.set(key, owner)
+  }
+})
+
+test('primary public media references existing non-placeholder assets', async () => {
+  const [services, courses, collections, portfolio, transformations] = await Promise.all([
+    contentRepository.getServices('en'),
+    contentRepository.getCourses('en'),
+    contentRepository.getCollections('en'),
+    contentRepository.getPortfolio('en'),
+    contentRepository.getTransformationOffers('en'),
+  ])
+
+  const primaryImages = [
+    ...plannedMediaRefs()
+      .filter(({ owner }) => owner.startsWith('page:'))
+      .map(({ image }) => image),
+    ...Object.values(homeLayerMedia),
+    ...services.map((service) => service.media),
+    ...courses.map((course) => courseCoverAsset(course)),
+    ...collections.flatMap((collection) => [collection.heroMedia, ...collection.gallery]),
+    ...portfolio.flatMap((entry) => [entry.heroMedia, ...entry.gallery]),
+    ...transformations.map((offer) => offer.media),
+  ].filter((image): image is { src: string; alt: string } => Boolean(image))
+
+  for (const image of primaryImages) {
+    assert.ok(image.alt.trim(), `missing primary image alt: ${image.src}`)
+    assert.doesNotMatch(image.src, /\/abstract-|gallery-.*\.svg$/i, `placeholder primary image: ${image.src}`)
+
+    const publicPath = join(process.cwd(), 'public', image.src.replace(/^\//, ''))
+    assert.equal(existsSync(publicPath), true, `missing primary image file: ${image.src}`)
   }
 })
 
