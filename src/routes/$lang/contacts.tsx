@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { CompactIntro, ContactsLayout } from '~/components/site-shell'
+import { CompactIntro } from '~/components/editorial'
+import { ContactsLayout } from '~/components/forms/ContactForm'
 import { buildLocalePath } from '~/lib/i18n'
 import { pageMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'

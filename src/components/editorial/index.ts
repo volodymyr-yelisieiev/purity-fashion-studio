@@ -1,6 +1,14 @@
 export { LayeredHomeHero } from './LayeredHomeHero'
 export { Section, SectionHead } from './Section'
 export {
+  CollectionGallery,
+  CompactIntro,
+  DetailHero,
+  DetailSections,
+  PortfolioCaseStory,
+  QuoteBand,
+} from './DetailContent'
+export {
   CollectionLookbookRows,
   CollectionsRail,
   CourseRows,

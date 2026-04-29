@@ -1,0 +1,11 @@
+@media (max-width: 767px) {
+  .footer-link {
+    overflow-wrap: anywhere;
+    word-break: normal;
+    white-space: normal;
+  }
+
+  .footer-column {
+    min-width: 0;
+  }
+}

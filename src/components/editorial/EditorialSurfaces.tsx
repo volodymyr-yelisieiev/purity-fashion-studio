@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { courseCoverAsset, optimizedImageSrc } from '~/lib/media-refs'
 import { homeLayerMedia } from '~/lib/media-plan'
 import { buildLocalePath } from '~/lib/i18n'
+import { LISTING_PAGE_CONFIG, type ListingPageKey } from '~/lib/page-config'
 import type {
   CollectionEntity,
   CourseEntity,
@@ -42,12 +43,6 @@ const finalCtaCopy: Record<Locale, { title: string; text: string; secondary: str
     text: 'Оставьте запрос, и студия предложит формат: lookbook, ревизию, shopping-сопровождение, atelier или трансформационный опыт.',
     secondary: 'Написать в студию',
   },
-}
-
-const listingProcessLabels: Record<Locale, string[]> = {
-  uk: ['Діагностика', 'Колір / силует', 'Рішення'],
-  en: ['Diagnosis', 'Color / silhouette', 'Decision'],
-  ru: ['Диагностика', 'Цвет / силуэт', 'Решение'],
 }
 
 export function PageEditorialHero({
@@ -163,7 +158,14 @@ export function ServiceRow({
       >
         {cta} →
       </Link>
-      <img src={optimizedImageSrc(item.media.src)} alt="" className="service-editorial-row-image" loading="lazy" decoding="async" />
+      <img
+        src={optimizedImageSrc(item.media.src)}
+        alt=""
+        role="presentation"
+        className="service-editorial-row-image"
+        loading="lazy"
+        decoding="async"
+      />
     </article>
   )
 }
@@ -389,24 +391,23 @@ export function FinalCta({
 }
 
 export function ListingRhythm({
+  pageKey,
   page,
   locale,
   ui,
   navLabel,
   image,
   children,
-  processItems,
 }: {
+  pageKey: ListingPageKey
   page: ListingPageData | SchoolPageData
   locale: Locale
   ui: UiCopy
   navLabel: string
   image?: ImageAsset
   children: ReactNode
-  processItems?: string[]
 }) {
-  const labels = listingProcessLabels[locale]
-  const items = processItems?.length ? processItems.slice(0, 3) : [page.intro, page.pullQuote, page.title]
+  const rhythm = LISTING_PAGE_CONFIG[pageKey].rhythm[locale]
 
   return (
     <>
@@ -422,11 +423,11 @@ export function ListingRhythm({
         <div className="listing-rhythm-grid">
           <p className="quote-copy">{page.pullQuote}</p>
           <ol className="listing-process-list">
-            {items.slice(0, 3).map((item, index) => (
-              <li key={`${labels[index]}-${item}`}>
+            {rhythm.map((step, index) => (
+              <li key={`${pageKey}-${step.label}`}>
                 <span className="list-index">{String(index + 1).padStart(2, '0')}</span>
-                <strong>{labels[index] ?? ui.labels.process}</strong>
-                <p>{item}</p>
+                <strong>{step.label}</strong>
+                <p>{step.text}</p>
               </li>
             ))}
           </ol>
@@ -455,6 +456,9 @@ export function TransformationRows({
               <p className="eyebrow">{offer.format}</p>
               <h2>{offer.title}</h2>
               <p>{offer.summary}</p>
+              <div className="micro-tag-row">
+                <span className="micro-tag">{offer.cta}</span>
+              </div>
             </div>
             <Link to={buildLocalePath(locale, '/book')} search={{ kind: 'transformation', slug: offer.slug }} className="button-secondary">
               {offer.cta}
@@ -586,7 +590,13 @@ export function CourseRows({
 export function EditorialTextureBand() {
   return (
     <div className="editorial-texture-band" aria-hidden="true">
-      <img src={optimizedImageSrc(homeLayerMedia.threadDetail.src)} alt="" loading="lazy" decoding="async" />
+      <img
+        src={optimizedImageSrc(homeLayerMedia.threadDetail.src)}
+        alt=""
+        role="presentation"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   )
 }

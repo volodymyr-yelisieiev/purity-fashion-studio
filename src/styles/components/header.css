@@ -1,0 +1,9 @@
+.header-surface {
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.menu-toggle,
+.locale-switcher {
+  border-radius: 0;
+}

@@ -25,24 +25,24 @@
     {
       "id": "home-hero-silk-fold",
       "owner": "home:layered-hero:silk-fold",
-      "outputPath": "public/images/generated/home-hero-silk-fold.png",
+      "outputPath": "public/images/generated/home-hero-silk-fold.webp",
       "model": "${OPENAI_IMAGE_MODEL}",
       "size": "1024x1024",
       "quality": "high",
-      "output_format": "png",
-      "background": "transparent",
-      "prompt": "Isolated ivory silk fabric fold, elegant tactile drape, soft natural shadow, minimal high-fashion editorial lighting, object centered with transparent background, no text, no logo, no body, no mannequin."
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Isolated ivory silk fabric fold, elegant tactile drape, soft natural shadow, minimal high-fashion editorial lighting. Object isolated on pure white studio background, centered with clean edges and easy to mask in CSS, no text, no logo, no body, no mannequin."
     },
     {
       "id": "home-hero-mannequin-drape",
       "owner": "home:layered-hero:mannequin-drape",
-      "outputPath": "public/images/generated/home-hero-mannequin-drape.png",
+      "outputPath": "public/images/generated/home-hero-mannequin-drape.webp",
       "model": "${OPENAI_IMAGE_MODEL}",
       "size": "1024x1024",
       "quality": "high",
-      "output_format": "png",
-      "background": "transparent",
-      "prompt": "Tailor mannequin torso with an unfinished ivory silk dress draped over one shoulder, clean sculptural silhouette, no human face, no head details, no logo, no text, transparent background, luxury atelier lighting, sharp editorial form."
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Tailor mannequin torso with an unfinished ivory silk dress draped over one shoulder, clean sculptural silhouette, luxury atelier lighting, sharp editorial form. Object isolated on pure white studio background with clean edges and easy to mask in CSS, no human face, no head details, no text, no logo."
     },
     {
       "id": "atelier-feature",

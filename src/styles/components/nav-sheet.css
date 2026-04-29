@@ -1,0 +1,5 @@
+.nav-sheet-shell,
+.nav-sheet-shell::before {
+  box-shadow: none;
+  backdrop-filter: none;
+}

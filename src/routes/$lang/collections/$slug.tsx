@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
-import { CollectionGallery } from '~/components/site-shell'
+import { CollectionGallery } from '~/components/editorial'
 import { buildLocalePath } from '~/lib/i18n'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'

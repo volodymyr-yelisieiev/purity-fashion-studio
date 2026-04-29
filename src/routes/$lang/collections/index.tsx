@@ -31,12 +31,12 @@ function CollectionsPage() {
 
   return (
     <ListingRhythm
+      pageKey="collections"
       page={page}
       locale={locale}
       ui={ui}
       navLabel={ui.nav.collections}
       image={heroImage}
-      processItems={collections.map((collection) => `${collection.title}: ${collection.priceNote}`)}
     >
       <CollectionLookbookRows collections={collections} locale={locale} ui={ui} />
     </ListingRhythm>

@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { BookingLayout } from '~/components/site-shell'
+import { BookingLayout } from '~/components/forms/BookingForm'
 import { pageMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import type { ImageAsset, Price } from '~/lib/types'

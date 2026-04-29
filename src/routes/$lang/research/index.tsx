@@ -31,12 +31,12 @@ function ResearchIndexPage() {
 
   return (
     <ListingRhythm
+      pageKey="research"
       page={page}
       locale={locale}
       ui={ui}
       navLabel={ui.nav.research}
       image={heroImage}
-      processItems={services.flatMap((service) => service.process)}
     >
       <ServiceRowsSection
         title={page.title}

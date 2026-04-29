@@ -1,0 +1,115 @@
+.service-editorial-list {
+  margin-top: clamp(2rem, 5vw, 4rem);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.service-editorial-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 7rem;
+  border-top: 1px solid var(--color-hairline);
+  overflow: clip;
+  transition: background-color var(--motion-base) var(--ease-editorial), color var(--motion-base) var(--ease-editorial);
+}
+
+.service-editorial-row:hover {
+  background: var(--color-ink);
+  color: var(--color-canvas);
+}
+
+.service-editorial-row-main {
+  display: grid;
+  grid-template-columns: 4rem minmax(14rem, 1.05fr) minmax(10rem, 0.7fr) minmax(8rem, 0.35fr);
+  gap: 1rem;
+  align-items: center;
+  min-height: 7rem;
+  padding-block: 1rem;
+}
+
+.service-editorial-row-title {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.service-editorial-row-title strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.4vw, 3.4rem);
+  font-weight: 300;
+  line-height: 0.96;
+}
+
+.service-editorial-row-title small,
+.service-editorial-row-meta,
+.editorial-row-price small {
+  color: currentColor;
+  opacity: 0.62;
+  line-height: 1.5;
+}
+
+.editorial-row-price {
+  display: grid;
+  gap: 0.2rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.editorial-row-price span {
+  font-size: 1.1rem;
+}
+
+.service-editorial-row-action {
+  position: relative;
+  z-index: 2;
+  padding: 1rem 0 1rem 1rem;
+  font-size: var(--text-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.service-editorial-row-image {
+  position: absolute;
+  right: 12rem;
+  top: 50%;
+  z-index: 1;
+  width: 9rem;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  opacity: 0;
+  transform: translateY(-50%) translateX(1.5rem);
+  transition: opacity var(--motion-base) var(--ease-editorial), transform var(--motion-base) var(--ease-editorial);
+  filter: grayscale(1);
+}
+
+.service-editorial-row:hover .service-editorial-row-image {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+@media (max-width: 1023px) {
+  .service-editorial-row {
+    grid-template-columns: 1fr;
+    padding-block: 1rem;
+  }
+
+  .service-editorial-row-main {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .service-editorial-row-meta,
+  .editorial-row-price {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .service-editorial-row-action {
+    padding: 0 0 1rem 3rem;
+  }
+
+  .service-editorial-row-image {
+    display: none;
+  }
+}

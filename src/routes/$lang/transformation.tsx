@@ -31,12 +31,12 @@ function TransformationPage() {
 
   return (
     <ListingRhythm
+      pageKey="transformation"
       page={page}
       locale={locale}
       ui={ui}
       navLabel={ui.nav.transformation}
       image={heroImage}
-      processItems={offers.map((offer) => `${offer.format}: ${offer.summary}`)}
     >
       <TransformationRows offers={offers} locale={locale} />
     </ListingRhythm>

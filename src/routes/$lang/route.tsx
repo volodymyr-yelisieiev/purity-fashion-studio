@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { SiteShell } from '~/components/site-shell'
+import { SiteShell } from '~/components/layout/SiteShell'
 import { assertLocale } from '~/lib/i18n'
 import { contentQueries } from '~/lib/query'
 

@@ -32,12 +32,12 @@ function PortfolioPage() {
 
   return (
     <ListingRhythm
+      pageKey="portfolio"
       page={{ ...page, pullQuote: page.highlight }}
       locale={locale}
       ui={ui}
       navLabel={ui.labels.portfolio}
       image={heroImage}
-      processItems={portfolio.map((entry) => `${entry.title}: ${entry.outcome}`)}
     >
       <PortfolioCaseRows cases={portfolio} locale={locale} ui={ui} />
     </ListingRhythm>

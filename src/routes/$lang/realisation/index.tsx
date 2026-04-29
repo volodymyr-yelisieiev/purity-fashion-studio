@@ -31,12 +31,12 @@ function RealisationIndexPage() {
 
   return (
     <ListingRhythm
+      pageKey="realisation"
       page={page}
       locale={locale}
       ui={ui}
       navLabel={ui.nav.realisation}
       image={heroImage}
-      processItems={services.flatMap((service) => service.process)}
     >
       <ServiceRowsSection
         title={page.title}

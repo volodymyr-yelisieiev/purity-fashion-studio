@@ -122,45 +122,8 @@ export const entityMediaOverrides: Record<MediaOverrideGroup, Record<string, Pla
 }
 
 export const galleryMediaOverrides: Record<'collection' | 'portfolio', Record<string, PlannedImage[]>> = {
-  collection: {
-    'dress-for-victory': [
-      { src: '/images/collection-dfv-gallery-01.svg', alt: 'Abstract Dress for Victory gallery study', caption: 'Editorial fitting' },
-      { src: '/images/collection-dfv-gallery-02.svg', alt: 'Abstract Dress for Victory event silhouette', caption: 'Event silhouette' },
-      { src: '/images/collection-dfv-gallery-03.svg', alt: 'Abstract Dress for Victory gesture study', caption: 'Victory gesture' },
-    ],
-    'retreat-wear': [
-      { src: '/images/collection-retreat-gallery-01.svg', alt: 'Abstract Retreat Wear morning layer', caption: 'Morning layer' },
-      { src: '/images/collection-retreat-gallery-02.svg', alt: 'Abstract Retreat Wear soft robe', caption: 'Soft robe' },
-      { src: '/images/collection-retreat-gallery-03.svg', alt: 'Abstract Retreat Wear jersey set', caption: 'Stretch jersey set' },
-    ],
-    'travel-capsule': [
-      { src: '/images/collection-travel-gallery-01.svg', alt: 'Abstract Travel Capsule five-piece edit', caption: 'Five-piece edit' },
-      { src: '/images/collection-travel-gallery-02.svg', alt: 'Abstract Travel Capsule airport drape', caption: 'Airport drape' },
-      { src: '/images/collection-travel-gallery-03.svg', alt: 'Abstract Travel Capsule evening reset', caption: 'Evening reset' },
-    ],
-    'silky-touches': [
-      { src: '/images/collection-silky-gallery-01.svg', alt: 'Abstract Silky Touches cruise look', caption: 'Cruise layer' },
-      { src: '/images/collection-silky-gallery-02.svg', alt: 'Abstract Silky Touches yoga look', caption: 'Yoga everywhere' },
-      { src: '/images/collection-silky-gallery-03.svg', alt: 'Abstract Silky Touches chiffon column', caption: 'Chiffon column' },
-    ],
-  },
-  portfolio: {
-    'soft-power-capsule': [
-      { src: '/images/portfolio-soft-gallery-01.svg', alt: 'Abstract Soft Power Capsule portrait', caption: 'Reset portrait' },
-      { src: '/images/portfolio-soft-gallery-02.svg', alt: 'Abstract Soft Power Capsule movement', caption: 'Capsule movement' },
-      { src: '/images/portfolio-soft-gallery-03.svg', alt: 'Abstract Soft Power Capsule after styling', caption: 'After styling' },
-    ],
-    'editorial-corporate-shoot': [
-      { src: '/images/portfolio-corporate-gallery-01.svg', alt: 'Abstract corporate campaign frame', caption: 'Campaign frame' },
-      { src: '/images/portfolio-corporate-gallery-02.svg', alt: 'Abstract corporate fabric detail', caption: 'Fabric detail' },
-      { src: '/images/portfolio-corporate-gallery-03.svg', alt: 'Abstract corporate event look', caption: 'Event look' },
-    ],
-    'bridal-reset': [
-      { src: '/images/portfolio-bridal-gallery-01.svg', alt: 'Abstract Bridal Reset atelier fitting', caption: 'Atelier fitting' },
-      { src: '/images/portfolio-bridal-gallery-02.svg', alt: 'Abstract Bridal Reset event silhouette', caption: 'Event silhouette' },
-      { src: '/images/portfolio-bridal-gallery-03.svg', alt: 'Abstract Bridal Reset after-event look', caption: 'After-event look' },
-    ],
-  },
+  collection: {},
+  portfolio: {},
 }
 
 export const localizedCopyOverrides: Partial<

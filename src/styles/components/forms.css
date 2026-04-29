@@ -1,0 +1,11 @@
+.button-primary,
+.button-secondary,
+.selector-chip {
+  border-radius: 0;
+}
+
+.booking-offer-panel,
+.booking-request-panel {
+  box-shadow: none;
+  border-radius: 0;
+}

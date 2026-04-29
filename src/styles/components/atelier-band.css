@@ -1,0 +1,94 @@
+.atelier-black-band {
+  margin-top: var(--space-section-lg);
+  background: var(--color-inverse);
+  color: var(--color-inverse-ink);
+}
+
+.atelier-black-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(18rem, 0.5fr) minmax(14rem, 0.35fr);
+  gap: var(--space-grid);
+  min-height: min(78svh, 48rem);
+  align-items: stretch;
+  padding-top: clamp(4rem, 8vw, 7rem);
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+}
+
+.atelier-black-copy {
+  display: grid;
+  align-content: center;
+  gap: 1.5rem;
+}
+
+.atelier-black-copy h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-h2-fluid);
+  font-weight: 300;
+  letter-spacing: 0;
+  line-height: 0.96;
+}
+
+.atelier-black-copy p:not(.eyebrow) {
+  max-width: 42rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: var(--text-lead-fluid);
+  line-height: 1.38;
+}
+
+.atelier-black-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--text-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.atelier-black-cta {
+  color: var(--color-inverse-ink);
+  border-color: currentColor;
+}
+
+.atelier-black-media {
+  margin: 0;
+  overflow: clip;
+}
+
+.atelier-black-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.06);
+}
+
+.atelier-black-side {
+  display: grid;
+  align-content: end;
+  gap: 1rem;
+}
+
+.atelier-black-note {
+  display: grid;
+  gap: 0.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  padding-top: 1rem;
+}
+
+.atelier-black-note strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 2.8vw, 2.8rem);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.atelier-black-note small {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+@media (max-width: 1023px) {
+  .atelier-black-grid {
+    grid-template-columns: 1fr;
+  }
+}

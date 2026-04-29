@@ -115,6 +115,7 @@ export function LayeredHomeHero({
         <img
           src={optimizedImageSrc(homeLayerMedia.bgStudio.src)}
           alt=""
+          role="presentation"
           className="layered-home-bg"
           loading="eager"
           decoding="async"
@@ -123,6 +124,7 @@ export function LayeredHomeHero({
         <img
           src={optimizedImageSrc(homeLayerMedia.patternPaper.src)}
           alt=""
+          role="presentation"
           className="layered-home-paper"
           loading="eager"
           decoding="async"
@@ -137,6 +139,7 @@ export function LayeredHomeHero({
         <img
           src={optimizedImageSrc(homeLayerMedia.silkFold.src)}
           alt=""
+          role="presentation"
           className="layered-home-material"
           loading="eager"
           decoding="async"
@@ -145,6 +148,7 @@ export function LayeredHomeHero({
         <img
           src={optimizedImageSrc(homeLayerMedia.mannequinDrape.src)}
           alt=""
+          role="presentation"
           className="layered-home-silhouette"
           loading="eager"
           decoding="async"
