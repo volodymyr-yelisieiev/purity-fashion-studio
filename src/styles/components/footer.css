@@ -1,3 +1,21 @@
+  .site-footer {
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-nav-grid {
+    border-top: 0;
+  }
+
+  .footer-logo-band {
+    width: 100%;
+    padding-top: clamp(1rem, 2.8vw, 2.2rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-legal {
+    padding-top: 0.85rem;
+  }
+
 @media (max-width: 767px) {
   .footer-link {
     overflow-wrap: anywhere;

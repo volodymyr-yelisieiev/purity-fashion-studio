@@ -5,7 +5,6 @@ import { join } from 'node:path'
 
 import publicPostsSeed from '~/content/seed/public-posts.seed.json'
 import { courseCoverAsset } from './media-refs'
-import { photoKey } from './media-refs'
 import {
   homeLayerMedia,
   plannedMediaRefs,
@@ -65,7 +64,7 @@ test('transformation cards use explicit managed media references', async () => {
   const offers = await contentRepository.getTransformationOffers('en')
 
   for (const offer of offers) {
-    assert.match(offer.media.src, /^\/images\/.+\.(webp|jpe?g|svg)$/)
+    assert.match(offer.media.src, /^\/images\/generated\/.+\.(webp|png|jpe?g)$/)
     assert.ok(offer.media.alt, `missing media alt: ${offer.slug}`)
   }
 })
@@ -90,27 +89,18 @@ test('public offer media comes from managed seed records', async () => {
   for (const image of imageRefs) {
     assert.ok(image?.src, 'missing public post image src')
     assert.ok(image.alt, `missing alt text for ${image.src}`)
-    assert.match(image.src, /^\/images\/.+\.(webp|jpe?g|svg)$/)
+    assert.match(image.src, /^\/images\/generated\/.+\.(webp|png|jpe?g)$/)
   }
 })
 
-test('planned public media uses each visual asset once', () => {
-  const byKey = new Map<string, string>()
-
+test('planned public media uses generated raster assets', () => {
   for (const { owner, image } of plannedMediaRefs()) {
-    if (!/^(service|course|collection|portfolio|transformation):/.test(owner)) {
-      continue
-    }
+    assert.ok(image.alt.trim(), `missing planned image alt: ${owner}`)
+    assert.match(image.src, /^\/images\/generated\/.+\.(webp|png|jpe?g)$/i, `non-generated planned image: ${owner}`)
+    assert.doesNotMatch(image.src, /\.svg$/i, `placeholder planned image: ${owner}`)
 
-    const key = photoKey(image.src)
-    const existingOwner = byKey.get(key)
-
-    assert.equal(
-      existingOwner,
-      undefined,
-      `planned image ${image.src} is reused by ${existingOwner} and ${owner}`,
-    )
-    byKey.set(key, owner)
+    const publicPath = join(process.cwd(), 'public', image.src.replace(/^\//, ''))
+    assert.equal(existsSync(publicPath), true, `missing planned image file: ${owner} ${image.src}`)
   }
 })
 
@@ -137,7 +127,8 @@ test('primary public media references existing non-placeholder assets', async ()
 
   for (const image of primaryImages) {
     assert.ok(image.alt.trim(), `missing primary image alt: ${image.src}`)
-    assert.doesNotMatch(image.src, /\/abstract-|gallery-.*\.svg$/i, `placeholder primary image: ${image.src}`)
+    assert.match(image.src, /^\/images\/generated\/.+\.(webp|png|jpe?g)$/i, `non-generated primary image: ${image.src}`)
+    assert.doesNotMatch(image.src, /\.svg$/i, `placeholder primary image: ${image.src}`)
 
     const publicPath = join(process.cwd(), 'public', image.src.replace(/^\//, ''))
     assert.equal(existsSync(publicPath), true, `missing primary image file: ${image.src}`)
@@ -216,7 +207,7 @@ test('public post seed applies editable admin overlay fields', () => {
         fields: {
           priceEur: '€999',
           priceUah: '₴40 000',
-          mediaSrc: '/images/purity_7.webp',
+          mediaSrc: '/uploads/legacy-photo.webp',
           mediaAlt: 'Edited cover',
         },
       },
@@ -231,7 +222,7 @@ test('public post seed applies editable admin overlay fields', () => {
   assert.equal(service.summary, 'Edited summary')
   assert.equal(service.price.eur, '€999')
   assert.equal(service.price.uah, '₴40 000')
-  assert.equal(service.media.src, '/images/stylist-lookbook.jpeg')
+  assert.equal(service.media.src, '/images/generated/swatch-stack.webp')
   assert.equal(service.media.alt, 'Edited cover')
 
   const review = {

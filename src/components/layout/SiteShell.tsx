@@ -252,7 +252,7 @@ export function SiteShell({
         ? 1
         : clamp01(window.scrollY / dockThreshold)
       const docked = !isHome || open || progress >= 0.999
-      const headerSurfaceOpacity = open ? 0.98 : isHome ? 0.8 + progress * 0.18 : 0.96
+      const headerSurfaceOpacity = open ? 1 : isHome ? 0.8 + progress * 0.18 : 0.96
       const brandOpacity = !isHome || open || prefersReducedMotion ? 1 : clamp01((progress - 0.38) / 0.42)
 
       setShellVar('--home-dock-progress', progress.toFixed(3))
@@ -367,7 +367,8 @@ export function SiteShell({
       className="site-frame"
       style={
         {
-          '--header-surface-opacity': isHome && !open ? '0.800' : '0.960',
+          '--header-surface-opacity': open ? '1' : isHome ? '0.800' : '0.960',
+          '--chrome-surface': open ? '#ffffff' : 'rgba(255, 255, 255, 0.92)',
           '--home-dock-progress': !isHome || open ? '1' : '0',
           '--header-brand-opacity': !isHome || open ? '1' : '0',
         } as React.CSSProperties

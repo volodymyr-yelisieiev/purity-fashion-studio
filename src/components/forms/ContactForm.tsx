@@ -5,6 +5,7 @@ import { Section, SectionHead } from '~/components/editorial/Section'
 import { analytics } from '~/lib/analytics'
 import { publicEnv } from '~/lib/env'
 import { buildLocalePath } from '~/lib/i18n'
+import { optimizedImageSrc } from '~/lib/media-refs'
 import { pageMedia } from '~/lib/media-plan'
 import { isDuplicateSubmission } from '~/lib/mock-submission'
 import { submitContactLead } from '~/lib/submissions'
@@ -32,29 +33,35 @@ export function ContactsLayout({
   ui: UiCopy
 }) {
   return (
-    <Section>
-      <div className="editorial-two-column">
-        <article className="editorial-panel">
+    <Section className="booking-section contact-section">
+      <div className="booking-workspace contact-workspace">
+        <article className="booking-request-panel contact-request-panel">
+          <div className="booking-request-head">
+            <p className="eyebrow">{`PURITY / ${ui.nav.contacts}`}</p>
+            <h1 className="section-title contact-title">{page.title}</h1>
+            <p className="editorial-copy">{page.intro}</p>
+          </div>
           <SectionHead
             eyebrow={ui.labels.studioInquiry}
             title={page.inquiryTitle}
             subtitle={page.scheduleNote}
+            className="contact-form-head"
           />
           <ContactForm locale={locale} ui={ui} />
         </article>
 
-        <aside className="editorial-side-stack">
-          <div className="editorial-photo-panel">
+        <aside className="contact-info-panel">
+          <figure className="contact-info-media">
             <img
-              src={pageMedia.contactsAside.src}
+              src={optimizedImageSrc(pageMedia.contactsAside.src)}
               alt={pageMedia.contactsAside.alt}
               className="editorial-photo-image"
               loading="lazy"
               decoding="async"
             />
-          </div>
+          </figure>
 
-          <article className="editorial-panel editorial-panel-compact">
+          <article className="contact-info-card">
             <p className="eyebrow">{page.corporateTitle}</p>
             <h2 className="section-subtitle">{page.corporateText}</h2>
             <Link to={buildLocalePath(locale, '/book')} className="button-secondary">
@@ -62,33 +69,26 @@ export function ContactsLayout({
             </Link>
           </article>
 
-          <article className="editorial-panel editorial-panel-compact">
+          <article className="contact-info-card contact-info-card-compact">
             <p className="eyebrow">{settings.mapLabel}</p>
-            <p className="editorial-copy">
+            <div className="contact-link-list">
               <a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a>
               {settings.corporateEmail ? (
-                <>
-                  <br />
-                  <a href={`mailto:${settings.corporateEmail}`}>{settings.corporateEmail}</a>
-                </>
+                <a href={`mailto:${settings.corporateEmail}`}>{settings.corporateEmail}</a>
               ) : null}
               {settings.phone ? (
-                <>
-                  <br />
-                  <a href={`tel:${settings.phone.replace(/\s+/g, '')}`}>{settings.phone}</a>
-                </>
+                <a href={`tel:${settings.phone.replace(/\s+/g, '')}`}>{settings.phone}</a>
               ) : null}
-              <br />
-              {page.addressText}
-            </p>
-            <div className="micro-tag-row">
+              <span>{page.addressText}</span>
+            </div>
+            <div className="contact-social-list">
               {settings.socialLinks.map((link) => (
-                <a key={link.href} href={link.href} className="micro-tag" target="_blank" rel="noreferrer">
+                <a key={link.href} href={link.href} target="_blank" rel="noreferrer">
                   {link.label}
                 </a>
               ))}
               {settings.mapHref ? (
-                <a href={settings.mapHref} className="micro-tag" target="_blank" rel="noreferrer">
+                <a href={settings.mapHref} target="_blank" rel="noreferrer">
                   {settings.mapLabel}
                 </a>
               ) : null}

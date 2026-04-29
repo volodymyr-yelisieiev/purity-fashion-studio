@@ -1,7 +1,12 @@
 import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { courseCoverAsset, optimizedImageSrc } from '~/lib/media-refs'
-import { homeLayerMedia } from '~/lib/media-plan'
+import {
+  homeLayerMedia,
+  listingPreviewMedia,
+  listingProcessMedia,
+  plannedImageAt,
+} from '~/lib/media-plan'
 import { buildLocalePath } from '~/lib/i18n'
 import { LISTING_PAGE_CONFIG, type ListingPageKey } from '~/lib/page-config'
 import type {
@@ -96,21 +101,33 @@ export function ThreePartMethod({
   ui: UiCopy
 }) {
   const titles = methodTitles[locale]
+  const methodMedia = [
+    homeLayerMedia.patternPaper,
+    homeLayerMedia.silkFold,
+    homeLayerMedia.mannequinDrape,
+  ]
 
   return (
     <Section>
       <SectionHead eyebrow={ui.labels.methodology} title={home.methodologyTitle} subtitle={home.philosophy} />
       <div className="method-band">
-        {home.methodologySteps.slice(0, 3).map((step, index) => (
-          <article key={step} className="method-column">
-            <span className="list-index">{String(index + 1).padStart(2, '0')}</span>
-            <h3>{titles[index]}</h3>
-            <p>{step}</p>
-            <Link to={buildLocalePath(locale, `/${(['research', 'realisation', 'transformation'] as const)[index]}`)}>
-              {titles[index]} →
-            </Link>
-          </article>
-        ))}
+        {home.methodologySteps.slice(0, 3).map((step, index) => {
+          const media = methodMedia[index]
+
+          return (
+            <article key={step} className="method-column">
+              <img src={optimizedImageSrc(media.src)} alt={media.alt} loading="lazy" decoding="async" />
+              <div className="method-column-content">
+                <span className="list-index">{String(index + 1).padStart(2, '0')}</span>
+                <h3>{titles[index]}</h3>
+                <p>{step}</p>
+                <Link to={buildLocalePath(locale, `/${(['research', 'realisation', 'transformation'] as const)[index]}`)}>
+                  {titles[index]} →
+                </Link>
+              </div>
+            </article>
+          )
+        })}
       </div>
     </Section>
   )
@@ -151,6 +168,16 @@ export function ServiceRow({
         <span className="service-editorial-row-meta">{item.duration} / {item.leadTime}</span>
         <PriceCell price={item.price} />
       </Link>
+      <figure className="service-editorial-row-frame" aria-hidden="true">
+        <img
+          src={optimizedImageSrc(item.media.src)}
+          alt=""
+          role="presentation"
+          className="service-editorial-row-image"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
       <Link
         to={buildLocalePath(locale, '/book')}
         search={{ kind: 'service', slug: item.slug, area: item.area }}
@@ -158,14 +185,6 @@ export function ServiceRow({
       >
         {cta} →
       </Link>
-      <img
-        src={optimizedImageSrc(item.media.src)}
-        alt=""
-        role="presentation"
-        className="service-editorial-row-image"
-        loading="lazy"
-        decoding="async"
-      />
     </article>
   )
 }
@@ -317,6 +336,7 @@ export function PortfolioProof({
       <div className="portfolio-proof-grid">
         <Link to={buildLocalePath(locale, `/portfolio/${lead.slug}`)} className="portfolio-proof-lead">
           <img src={optimizedImageSrc(lead.heroMedia.src)} alt={lead.heroMedia.alt} loading="lazy" decoding="async" />
+          <span className="list-index">01</span>
           <span className="eyebrow">{lead.category}</span>
           <strong>{lead.title}</strong>
           <p>{lead.outcome}</p>
@@ -408,6 +428,10 @@ export function ListingRhythm({
   children: ReactNode
 }) {
   const rhythm = LISTING_PAGE_CONFIG[pageKey].rhythm[locale]
+  const rhythmMedia = pageKey === 'collections' || pageKey === 'portfolio'
+    ? listingPreviewMedia[pageKey]
+    : listingProcessMedia[pageKey]
+  const fallbackImage = image ?? page.seo.image
 
   return (
     <>
@@ -424,10 +448,17 @@ export function ListingRhythm({
           <p className="quote-copy">{page.pullQuote}</p>
           <ol className="listing-process-list">
             {rhythm.map((step, index) => (
-              <li key={`${pageKey}-${step.label}`}>
-                <span className="list-index">{String(index + 1).padStart(2, '0')}</span>
-                <strong>{step.label}</strong>
-                <p>{step.text}</p>
+              <li key={`${pageKey}-${step.label}`} className="listing-process-card">
+                {(() => {
+                  const media = plannedImageAt(rhythmMedia, index, fallbackImage)
+
+                  return <img src={optimizedImageSrc(media.src)} alt={media.alt} loading="lazy" decoding="async" />
+                })()}
+                <div className="listing-process-card-copy">
+                  <span className="list-index">{String(index + 1).padStart(2, '0')}</span>
+                  <strong>{step.label}</strong>
+                  <p>{step.text}</p>
+                </div>
               </li>
             ))}
           </ol>
@@ -456,9 +487,6 @@ export function TransformationRows({
               <p className="eyebrow">{offer.format}</p>
               <h2>{offer.title}</h2>
               <p>{offer.summary}</p>
-              <div className="micro-tag-row">
-                <span className="micro-tag">{offer.cta}</span>
-              </div>
             </div>
             <Link to={buildLocalePath(locale, '/book')} search={{ kind: 'transformation', slug: offer.slug }} className="button-secondary">
               {offer.cta}

@@ -1,59 +1,224 @@
 {
   "jobs": [
     {
-      "id": "home-hero-bg-studio",
+      "id": "home-hero-blank-form",
       "owner": "home:layered-hero:bg",
-      "outputPath": "public/images/generated/home-hero-bg-studio.webp",
-      "model": "${OPENAI_IMAGE_MODEL}",
-      "size": "1536x1024",
-      "quality": "high",
-      "output_format": "webp",
-      "background": "opaque",
-      "prompt": "Create a minimal white fashion atelier interior for PURITY Fashion Studio. Empty studio, large soft daylight from the left, white walls, pale floor, one distant garment rail barely visible, sharp editorial negative space, subtle black tailoring marks on a pattern table, quiet luxury mood, no people, no logo, no text, no clutter. Landscape web hero background with empty center space."
-    },
-    {
-      "id": "home-hero-pattern-paper",
-      "owner": "home:layered-hero:pattern-paper",
-      "outputPath": "public/images/generated/home-hero-pattern-paper.webp",
-      "model": "${OPENAI_IMAGE_MODEL}",
-      "size": "1536x1024",
-      "quality": "high",
-      "output_format": "webp",
-      "background": "opaque",
-      "prompt": "Top-down editorial view of white pattern paper, black tailoring curves, measuring tape, a few steel pins, ivory fabric corner, precise atelier drafting composition, monochrome, high-end fashion studio, lots of white negative space, no text, no brand marks, no hands."
-    },
-    {
-      "id": "home-hero-silk-fold",
-      "owner": "home:layered-hero:silk-fold",
-      "outputPath": "public/images/generated/home-hero-silk-fold.webp",
-      "model": "${OPENAI_IMAGE_MODEL}",
-      "size": "1024x1024",
-      "quality": "high",
-      "output_format": "webp",
-      "background": "opaque",
-      "prompt": "Isolated ivory silk fabric fold, elegant tactile drape, soft natural shadow, minimal high-fashion editorial lighting. Object isolated on pure white studio background, centered with clean edges and easy to mask in CSS, no text, no logo, no body, no mannequin."
-    },
-    {
-      "id": "home-hero-mannequin-drape",
-      "owner": "home:layered-hero:mannequin-drape",
-      "outputPath": "public/images/generated/home-hero-mannequin-drape.webp",
-      "model": "${OPENAI_IMAGE_MODEL}",
-      "size": "1024x1024",
-      "quality": "high",
-      "output_format": "webp",
-      "background": "opaque",
-      "prompt": "Tailor mannequin torso with an unfinished ivory silk dress draped over one shoulder, clean sculptural silhouette, luxury atelier lighting, sharp editorial form. Object isolated on pure white studio background with clean edges and easy to mask in CSS, no human face, no head details, no text, no logo."
-    },
-    {
-      "id": "atelier-feature",
-      "owner": "home:atelier-feature",
-      "outputPath": "public/images/generated/atelier-feature.webp",
+      "outputPath": "public/images/generated/home-hero-blank-form.webp",
       "model": "${OPENAI_IMAGE_MODEL}",
       "size": "1024x1536",
       "quality": "high",
       "output_format": "webp",
       "background": "opaque",
-      "prompt": "Close editorial crop of designer hands pinning ivory fabric on a mannequin, only hands and fabric visible, no face, no logo, no text, monochrome ivory and black palette, precise couture atelier mood, natural daylight, tactile detail, premium fashion editorial photography."
+      "prompt": "Blank ivory tailor mannequin in a minimal white atelier interior, soft daylight, warm gray shadows, quiet negative space, premium monochrome fashion atelier photography. No people, no face, no logo, no text, no finished clothing product shot."
+    },
+    {
+      "id": "home-hero-pattern-thread",
+      "owner": "home:layered-hero:pattern-thread",
+      "outputPath": "public/images/generated/home-hero-pattern-thread.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1536",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "The same abstract ivory tailor mannequin with black pattern lines, thread, and pins, minimal white atelier, soft daylight, crop-safe portrait composition, premium monochrome atelier photography. No readable text, no logo, no human model, no finished product campaign pose."
+    },
+    {
+      "id": "home-hero-fabric-construction",
+      "owner": "home:layered-hero:fabric-construction",
+      "outputPath": "public/images/generated/home-hero-fabric-construction.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1536",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Raw ivory muslin and fabric construction pinned on an abstract tailor mannequin, minimal white atelier, tactile fabric edges, black tailoring marks, soft daylight, premium monochrome fashion atelier photography. No person, no face, no logo, no readable text."
+    },
+    {
+      "id": "home-hero-abstract-drape",
+      "owner": "home:layered-hero:abstract-drape",
+      "outputPath": "public/images/generated/home-hero-abstract-drape.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1536",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Final abstract sculptural ivory drape on a tailor mannequin, minimal white atelier, soft daylight, tactile folds, quiet luxury, crop-safe portrait composition. No model, no identifiable person, no logo, no text, no finished commercial clothing shot."
+    },
+    {
+      "id": "atelier-mannequin-study",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/atelier-mannequin-study.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Close abstract mannequin torso study with black atelier markings and pinned ivory muslin, tactile fabric texture, pale studio wall, premium monochrome fashion atelier photography. No face, no logo, no text."
+    },
+    {
+      "id": "pattern-paper-folds",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/pattern-paper-folds.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Layered ivory pattern paper folds with black drafting lines, subtle pins, clean atelier tabletop, quiet negative space, premium monochrome fashion studio detail. No readable text, no logo, no hands."
+    },
+    {
+      "id": "pin-bowl-detail",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/pin-bowl-detail.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Black ceramic pin bowl with loose tailoring pins on a pale ivory atelier table, soft daylight, restrained monochrome palette, tactile editorial detail. No text, no logo, no hands."
+    },
+    {
+      "id": "fabric-shoulder-drape",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/fabric-shoulder-drape.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Ivory fabric shoulder drape on an abstract mannequin edge, subtle black tailoring marks, pale atelier wall, soft daylight, premium monochrome textile study. No face, no person, no logo, no text."
+    },
+    {
+      "id": "thread-spool",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/thread-spool.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Ivory thread spool with loose thread trails on a pale atelier table, sheer fabric in the background, soft daylight, quiet luxury monochrome detail. No text, no logo, no hands."
+    },
+    {
+      "id": "pinned-bodice-study",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/pinned-bodice-study.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Pinned raw ivory muslin bodice study on a tailor mannequin, frayed edges, black pattern marks, premium monochrome atelier photography. No human face, no logo, no text."
+    },
+    {
+      "id": "couture-seam-curve",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/couture-seam-curve.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Extreme close-up of an ivory textile with a curved black couture seam line, tactile woven surface, soft studio light, abstract atelier detail. No text, no logo, no hands."
+    },
+    {
+      "id": "charcoal-texture-study",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/charcoal-texture-study.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Charcoal tailoring marks and erased sketch texture on ivory fabric, abstract atelier surface, premium monochrome editorial detail. No readable text, no logo, no people."
+    },
+    {
+      "id": "sheer-drape-study",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/sheer-drape-study.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Sheer black gauze fabric draped across a pale abstract mannequin form, black tailoring marks visible through fabric, soft white atelier light. No person, no face, no logo, no text."
+    },
+    {
+      "id": "swatch-stack",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/swatch-stack.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Stack of ivory, cream, beige, and black fabric swatches on a white atelier table, tactile frayed edges, subtle botanical pin detail, premium monochrome fashion studio photography. No text, no logo, no hands."
+    },
+    {
+      "id": "mannequin-back-line",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/mannequin-back-line.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Back view of an abstract tailor mannequin with black curved pattern line and charcoal mark, pale atelier wall, soft daylight, premium monochrome study. No face, no person, no logo, no text."
+    },
+    {
+      "id": "folded-pattern-scroll",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/folded-pattern-scroll.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Folded ivory pattern paper scroll and raw muslin with black drafting marks, layered tactile surface, premium monochrome atelier photography. No readable text, no logo, no hands."
+    },
+    {
+      "id": "pinned-muslin-panel",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/pinned-muslin-panel.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Close view of pinned raw muslin panel with frayed ivory fabric and black stitch marks, premium monochrome atelier detail. No people, no logo, no text."
+    },
+    {
+      "id": "studio-shadow-form",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/studio-shadow-form.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Soft window light and an abstract mannequin shadow in a minimal white atelier, quiet negative space, premium monochrome photography. No identifiable person, no logo, no text."
+    },
+    {
+      "id": "seam-pin-close",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/seam-pin-close.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Close view of tailoring pins along raw ivory seam construction, frayed muslin edge, soft studio daylight, premium monochrome atelier detail. No text, no logo, no hands."
+    },
+    {
+      "id": "figure-sketches",
+      "owner": "generated:atelier-atlas",
+      "outputPath": "public/images/generated/figure-sketches.webp",
+      "model": "${OPENAI_IMAGE_MODEL}",
+      "size": "1024x1024",
+      "quality": "high",
+      "output_format": "webp",
+      "background": "opaque",
+      "prompt": "Three abstract charcoal mannequin silhouette sketches on ivory paper, fashion atelier concept study, expressive black marks, premium monochrome editorial texture. No readable text, no logo."
     }
   ]
 }

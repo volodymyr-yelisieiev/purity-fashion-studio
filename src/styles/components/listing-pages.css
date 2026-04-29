@@ -43,7 +43,6 @@
   grid-template-columns: minmax(0, 0.9fr) minmax(16rem, 0.62fr);
   gap: var(--space-grid);
   align-items: start;
-  border-top: 1px solid var(--color-hairline);
   padding-top: clamp(2rem, 5vw, 4rem);
 }
 
@@ -56,11 +55,43 @@
 }
 
 .listing-process-list li {
+  position: relative;
+  display: grid;
+  min-height: clamp(12rem, 18vw, 17rem);
+  overflow: clip;
+  color: var(--color-canvas);
+  isolation: isolate;
+  background: var(--color-ink);
+}
+
+.listing-process-list li::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(9, 9, 9, 0.12), rgba(9, 9, 9, 0.78));
+}
+
+.listing-process-list img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.04);
+}
+
+.listing-process-card-copy {
   display: grid;
   grid-template-columns: 3rem minmax(0, 1fr);
   gap: 0.7rem 1rem;
-  border-top: 1px solid var(--color-hairline);
-  padding-top: 1rem;
+  align-self: end;
+  padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.listing-process-list .list-index {
+  color: rgba(255, 255, 255, 0.68);
 }
 
 .listing-process-list strong {
@@ -72,7 +103,7 @@
 .listing-process-list p {
   grid-column: 2;
   margin: 0;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.76);
   line-height: 1.65;
 }
 
@@ -125,6 +156,11 @@
   max-width: 44rem;
   color: var(--color-muted);
   line-height: 1.65;
+}
+
+.editorial-offer-row .button-secondary,
+.case-row .button-secondary {
+  justify-self: end;
 }
 
 .lookbook-row {

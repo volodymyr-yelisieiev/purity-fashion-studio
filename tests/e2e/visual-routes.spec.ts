@@ -118,7 +118,7 @@ async function assertPrimaryImagesLoaded(page: Page) {
 }
 
 async function waitForRouteReady(page: Page) {
-  await page.waitForLoadState('networkidle')
+  await page.waitForLoadState('domcontentloaded')
 
   const enhancedForms = page.locator('form[data-enhanced]')
   if (await enhancedForms.count()) {

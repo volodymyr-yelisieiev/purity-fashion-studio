@@ -74,12 +74,16 @@ function localizedDraft(record: ManagedContentRecord | undefined, locale: Locale
   return record?.localizations.find((entry) => entry.locale === locale)
 }
 
+function isGeneratedRaster(src?: string) {
+  return Boolean(src && /^\/images\/generated\/.+\.(webp|png|jpe?g)$/i.test(src))
+}
+
 function withImagePatch(
   image: { src: string; alt: string; caption?: string },
   fields: ManagedOfferDraftFields,
   owner: string,
 ) {
-  const nextSrc = fields.mediaSrc && !isReservedMediaForDifferentOwner(fields.mediaSrc, owner)
+  const nextSrc = fields.mediaSrc && isGeneratedRaster(fields.mediaSrc) && !isReservedMediaForDifferentOwner(fields.mediaSrc, owner)
     ? fields.mediaSrc
     : image.src
 
@@ -262,7 +266,9 @@ function applyRecordPatch<T extends PublicPostEntity>(
           ...cover,
           asset: {
             ...cover.asset,
-            src: fields.mediaSrc && !isReservedMediaForDifferentOwner(fields.mediaSrc, `course:${patched.slug}`)
+            src: fields.mediaSrc &&
+              isGeneratedRaster(fields.mediaSrc) &&
+              !isReservedMediaForDifferentOwner(fields.mediaSrc, `course:${patched.slug}`)
               ? fields.mediaSrc
               : cover.asset.src,
             alt: fields.mediaAlt || cover.asset.alt,

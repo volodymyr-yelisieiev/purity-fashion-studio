@@ -13,9 +13,6 @@ export function Footer({
 
   return (
     <footer className="site-footer">
-      <div className="footer-logo-band">
-        <img src="/main_black.svg" alt={ui.brand} className="footer-logo-band-image" />
-      </div>
       <div className="site-container site-container-wide footer-nav-grid">
         {shellColumns.map((group) => (
           <div key={group.title} className="footer-column">
@@ -54,6 +51,9 @@ export function Footer({
             )}
           </div>
         ))}
+      </div>
+      <div className="footer-logo-band">
+        <img src="/main_black.svg" alt={ui.brand} className="footer-logo-band-image" />
       </div>
       <div className="site-container site-container-wide footer-legal">
         <p className="footer-legal-copy">© {currentYear} {ui.labels.allRightsReserved}</p>

@@ -1,8 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { CompactIntro } from '~/components/editorial'
 import { ContactsLayout } from '~/components/forms/ContactForm'
 import { buildLocalePath } from '~/lib/i18n'
-import { pageMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 
@@ -31,23 +29,6 @@ function ContactsPage() {
   const { locale, page, ui, settings } = Route.useLoaderData()
 
   return (
-    <>
-      <CompactIntro
-        eyebrow={`PURITY / ${ui.nav.contacts}`}
-        title={page.title}
-        text={page.intro}
-        asideEyebrow={ui.labels.client}
-        asideTitle={page.corporateTitle}
-        asideText={page.corporateText}
-        chips={[
-          ui.labels.conciergeFollowUp,
-          ui.labels.privateInquiries,
-          ui.labels.corporateBriefs,
-        ]}
-        imageSrc={pageMedia.contactsIntro.src}
-        imageAlt={pageMedia.contactsIntro.alt}
-      />
-      <ContactsLayout page={page} settings={settings} locale={locale} ui={ui} />
-    </>
+    <ContactsLayout page={page} settings={settings} locale={locale} ui={ui} />
   )
 }

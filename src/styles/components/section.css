@@ -25,12 +25,42 @@
 }
 
 .method-column {
+  position: relative;
   min-height: 18rem;
-  border-top: 1px solid var(--color-ink);
-  padding-top: 1rem;
+  overflow: clip;
   display: grid;
-  align-content: start;
+  align-content: end;
+  isolation: isolate;
+  background: var(--color-ink);
+  color: var(--color-canvas);
+}
+
+.method-column::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(9, 9, 9, 0.06), rgba(9, 9, 9, 0.76));
+}
+
+.method-column img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.04);
+}
+
+.method-column-content {
+  display: grid;
   gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.method-column .list-index {
+  color: rgba(255, 255, 255, 0.68);
 }
 
 .method-column h3,
@@ -50,13 +80,13 @@
 .method-column a {
   max-width: 24rem;
   margin: 0;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.76);
   line-height: 1.7;
 }
 
 .method-column a {
   width: fit-content;
-  color: var(--color-ink);
+  color: var(--color-canvas);
   border-bottom: 1px solid currentColor;
 }
 
@@ -69,6 +99,11 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   padding-bottom: 1rem;
+  scrollbar-width: none;
+}
+
+.collection-rail::-webkit-scrollbar {
+  display: none;
 }
 
 .collection-rail-item {
@@ -121,6 +156,8 @@
 .portfolio-proof-lead {
   display: grid;
   gap: 0.9rem;
+  border-top: 1px solid var(--color-hairline);
+  padding-top: 1rem;
 }
 
 .portfolio-proof-lead img {
@@ -144,15 +181,20 @@
 
 .portfolio-proof-stack {
   display: grid;
-  gap: 1rem;
+  gap: 0;
+  border-block: 1px solid var(--color-hairline);
 }
 
 .portfolio-proof-small {
   display: grid;
   align-content: start;
   gap: 0.7rem;
+  min-height: 50%;
+  padding: 1rem 0;
+}
+
+.portfolio-proof-small + .portfolio-proof-small {
   border-top: 1px solid var(--color-hairline);
-  padding-top: 1rem;
 }
 
 .portfolio-proof-small span:last-child {
@@ -168,6 +210,15 @@
   border-top: 1px solid var(--color-hairline);
   border-bottom: 1px solid var(--color-hairline);
   padding-block: clamp(2rem, 4vw, 3.5rem);
+}
+
+.school-note-band .editorial-copy {
+  align-self: center;
+}
+
+.school-note-band .button-secondary {
+  justify-self: end;
+  align-self: center;
 }
 
 .editorial-final-cta {
@@ -237,6 +288,10 @@
 
   .collection-rail {
     grid-auto-columns: minmax(16rem, 82vw);
+  }
+
+  .school-note-band .button-secondary {
+    justify-self: start;
   }
 }
 

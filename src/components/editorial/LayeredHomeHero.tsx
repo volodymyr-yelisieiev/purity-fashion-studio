@@ -34,7 +34,6 @@ function stage(progress: number, start: number, end: number) {
 }
 
 function setHeroState(root: HTMLElement, progress: number) {
-  const line = stage(progress, 0.12, 0.38)
   const material = stage(progress, 0.32, 0.58)
   const silhouette = stage(progress, 0.52, 0.78)
   const copy = stage(progress, 0.7, 0.96)
@@ -44,8 +43,6 @@ function setHeroState(root: HTMLElement, progress: number) {
   root.style.setProperty('--hero-logo-opacity', logoFade.toFixed(3))
   root.style.setProperty('--hero-logo-scale', (1 - progress * 0.24).toFixed(3))
   root.style.setProperty('--hero-bg-opacity', stage(progress, 0.18, 0.45).toFixed(3))
-  root.style.setProperty('--hero-line-progress', line.toFixed(3))
-  root.style.setProperty('--hero-line-offset', `${1600 - 1600 * line}px`)
   root.style.setProperty('--hero-paper-opacity', stage(progress, 0.24, 0.48).toFixed(3))
   root.style.setProperty('--hero-material-opacity', material.toFixed(3))
   root.style.setProperty('--hero-material-y', `${(1 - material) * 48}px`)
@@ -130,11 +127,6 @@ export function LayeredHomeHero({
           decoding="async"
           fetchPriority="high"
         />
-
-        <svg className="layered-home-pattern-line" viewBox="0 0 1440 900" aria-hidden="true">
-          <path d="M 44 788 C 266 672 348 558 522 556 C 722 554 746 244 970 266 C 1160 284 1132 582 1392 488" />
-          <path d="M 278 868 C 438 718 594 720 746 614 C 884 516 894 356 1078 330" />
-        </svg>
 
         <img
           src={optimizedImageSrc(homeLayerMedia.silkFold.src)}

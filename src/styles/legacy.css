@@ -1837,12 +1837,7 @@ button {
 }
 
 .route-curtain::before {
-  content: '';
-  position: absolute;
-  inset: clamp(1rem, 2.6vw, 2.6rem);
-  border: 1px solid var(--line);
-  opacity: 0.64;
-  pointer-events: none;
+  content: none;
 }
 
 .route-curtain-logo {
@@ -1852,20 +1847,6 @@ button {
   height: auto;
   opacity: 0;
   transform: translateY(-1.125rem) scale(0.94);
-  will-change: transform, opacity;
-}
-
-.route-curtain-rule {
-  position: absolute;
-  left: 50%;
-  top: calc(50% + clamp(3.7rem, 7vw, 5.3rem));
-  z-index: 1;
-  width: min(62vw, 34rem);
-  height: 1px;
-  background: var(--text);
-  opacity: 0;
-  transform: translateX(-50%) scaleX(0);
-  transform-origin: center;
   will-change: transform, opacity;
 }
 

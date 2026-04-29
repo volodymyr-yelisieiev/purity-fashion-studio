@@ -9,3 +9,140 @@
   box-shadow: none;
   border-radius: 0;
 }
+
+.price-value,
+.price-secondary,
+.booking-meta-value,
+.booking-meta-item,
+.editorial-row-price,
+.course-row-side,
+.lookbook-row small,
+.collection-rail-item small {
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.price-value,
+.booking-meta-value {
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.contact-section {
+  margin-top: 0;
+}
+
+.contact-workspace {
+  grid-template-columns: minmax(0, 1.12fr) minmax(18rem, 0.88fr);
+}
+
+.contact-request-panel {
+  align-content: start;
+}
+
+.contact-title {
+  margin-top: 0.55rem;
+  max-width: 11ch;
+  font-size: clamp(2.8rem, 5.8vw, 5.8rem);
+}
+
+.contact-form-head {
+  grid-template-columns: 1fr;
+  gap: 0.8rem;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.contact-form-head .section-title {
+  max-width: 14ch;
+  font-size: clamp(2rem, 3.6vw, 3.6rem);
+}
+
+.contact-form-head .editorial-copy {
+  justify-self: start;
+  text-align: left;
+}
+
+.contact-request-panel .editorial-form {
+  gap: clamp(1rem, 1.8vw, 1.35rem);
+}
+
+.contact-info-panel {
+  position: sticky;
+  top: clamp(5.2rem, 7vw, 6.5rem);
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  min-width: 0;
+}
+
+.contact-info-media {
+  height: min(36dvh, 23rem);
+  min-height: 16rem;
+  margin: 0;
+  overflow: clip;
+  background: var(--bg-soft);
+}
+
+.contact-info-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.04);
+}
+
+.contact-info-card {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.contact-info-card .section-subtitle {
+  max-width: 28rem;
+  font-size: clamp(1.65rem, 2.4vw, 2.65rem);
+  line-height: 1.05;
+}
+
+.contact-info-card-compact {
+  gap: 0.85rem;
+}
+
+.contact-link-list,
+.contact-social-list {
+  display: grid;
+  gap: 0.55rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.contact-link-list a,
+.contact-social-list a {
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.contact-social-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-top: 0.65rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 960px) {
+  .contact-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-info-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .contact-social-list {
+    grid-template-columns: 1fr;
+  }
+}

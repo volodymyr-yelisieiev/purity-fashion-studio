@@ -23,107 +23,245 @@ export type LocalizedCopyOverride = {
   eyebrow?: string
 }
 
+type GeneratedImageArgs = Omit<PlannedImage, 'src' | 'generated'> & {
+  id: string
+  owner: string
+  alt: string
+  promptId?: 'atelier-atlas-v1' | 'hero-sequence-v1'
+}
+
+function generatedImage({
+  id,
+  owner,
+  alt,
+  caption,
+  aspect = 'square',
+  focalPoint,
+  promptId = 'atelier-atlas-v1',
+}: GeneratedImageArgs): PlannedImage {
+  return {
+    id,
+    owner,
+    src: `/images/generated/${id}.webp`,
+    alt,
+    caption,
+    aspect,
+    focalPoint,
+    generated: {
+      model: 'gpt-image-2',
+      promptId,
+      reviewed: true,
+    },
+  }
+}
+
+const atlasImage = (
+  id: string,
+  owner: string,
+  alt: string,
+  aspect: PlannedImage['aspect'] = 'square',
+  focalPoint?: PlannedImage['focalPoint'],
+  caption?: string,
+) => generatedImage({ id, owner, alt, aspect, focalPoint, caption, promptId: 'atelier-atlas-v1' })
+
+const heroStageImage = (
+  id: string,
+  owner: string,
+  alt: string,
+  aspect: PlannedImage['aspect'] = 'portrait',
+  focalPoint?: PlannedImage['focalPoint'],
+  caption?: string,
+) => generatedImage({ id, owner, alt, aspect, focalPoint, caption, promptId: 'hero-sequence-v1' })
+
 export const entityMediaOverrides: Record<MediaOverrideGroup, Record<string, PlannedImage>> = {
   service: {
-    'personal-lookbook': {
-      src: '/images/stylist-lookbook.jpeg',
-      alt: 'Stylist preparing a personal lookbook at PURITY',
-      caption: 'Personal lookbook / stylist work',
-    },
-    'wardrobe-review': {
-      src: '/images/wardrobe-review.jpeg',
-      alt: 'Wardrobe review process with selected garments',
-      caption: 'Wardrobe review / edit',
-    },
-    'shopping-service': {
-      src: '/images/shopping-service.jpeg',
-      alt: 'Shopping route and curated wardrobe selection',
-      caption: 'Shopping service / route',
-    },
-    'atelier-service': {
-      src: '/images/atelier-workshop.jpeg',
-      alt: 'PURITY atelier workshop and tailoring process',
-      caption: 'Atelier / workshop',
-    },
+    'personal-lookbook': atlasImage(
+      'swatch-stack',
+      'service:personal-lookbook',
+      'Abstract stack of ivory and black fabric swatches for a personal lookbook study',
+      'square',
+      { x: 50, y: 48 },
+      'Personal lookbook / palette study',
+    ),
+    'wardrobe-review': atlasImage(
+      'folded-pattern-scroll',
+      'service:wardrobe-review',
+      'Folded pattern paper and muslin for a wardrobe review system',
+      'square',
+      { x: 52, y: 42 },
+      'Wardrobe review / structure',
+    ),
+    'shopping-service': atlasImage(
+      'pattern-paper-folds',
+      'service:shopping-service',
+      'Layered ivory pattern paper and tailoring marks for a shopping route',
+      'square',
+      { x: 48, y: 44 },
+      'Shopping service / route planning',
+    ),
+    'atelier-service': atlasImage(
+      'pinned-bodice-study',
+      'service:atelier-service',
+      'Pinned muslin bodice study on a tailor form',
+      'square',
+      { x: 50, y: 34 },
+      'Atelier / pinned construction',
+    ),
   },
   course: {
-    'dress-for-victory-course': {
-      src: '/images/stylist-editorial.jpeg',
-      alt: 'Editorial dress work for a PURITY course',
-      caption: 'Dress course / editorial work',
-    },
-    'draping-moulage': {
-      src: '/images/atelier-detail.jpeg',
-      alt: 'Draping and atelier detail work',
-      caption: 'Draping / form creation',
-    },
-    'wardrobe-management': {
-      src: '/images/wardrobe-system.jpeg',
-      alt: 'Wardrobe system and visual planning board',
-      caption: 'Wardrobe management / system',
-    },
+    'dress-for-victory-course': heroStageImage(
+      'home-hero-abstract-drape',
+      'course:dress-for-victory-course',
+      'Abstract ivory drape on a tailor mannequin for a dress course',
+      'portrait',
+      { x: 50, y: 34 },
+      'Dress course / abstract drape',
+    ),
+    'draping-moulage': heroStageImage(
+      'home-hero-fabric-construction',
+      'course:draping-moulage',
+      'Raw ivory fabric construction pinned on a mannequin',
+      'portrait',
+      { x: 50, y: 36 },
+      'Draping / moulage study',
+    ),
+    'wardrobe-management': atlasImage(
+      'pattern-paper-folds',
+      'course:wardrobe-management',
+      'Pattern paper folds and atelier drafting marks for wardrobe management',
+      'square',
+      { x: 48, y: 44 },
+      'Wardrobe management / visual system',
+    ),
   },
   collection: {
-    'dress-for-victory': {
-      src: '/images/portfolio-black-look.jpeg',
-      alt: 'Editorial dress silhouette by PURITY',
-      caption: 'Dress for Victory / editorial silhouette',
-    },
-    'retreat-wear': {
-      src: '/images/purity_7.webp',
-      alt: 'Soft retreat wear editorial portrait',
-      caption: 'Retreat Wear / soft layer',
-    },
-    'travel-capsule': {
-      src: '/images/shopping-fitting.jpeg',
-      alt: 'Travel capsule fitting and styling detail',
-      caption: 'Travel Capsule / fitting',
-    },
-    'silky-touches': {
-      src: '/images/purity_2.webp',
-      alt: 'Silky Touches cruise layer editorial portrait',
-      caption: 'Silky Touches / cruise layer',
-    },
+    'dress-for-victory': heroStageImage(
+      'home-hero-abstract-drape',
+      'collection:dress-for-victory',
+      'Final abstract ivory drape on a tailor mannequin',
+      'portrait',
+      { x: 50, y: 34 },
+      'Dress for Victory / abstract drape',
+    ),
+    'retreat-wear': atlasImage(
+      'sheer-drape-study',
+      'collection:retreat-wear',
+      'Sheer black fabric draped across a pale mannequin form',
+      'square',
+      { x: 45, y: 48 },
+      'Retreat Wear / sheer layer',
+    ),
+    'travel-capsule': atlasImage(
+      'folded-pattern-scroll',
+      'collection:travel-capsule',
+      'Folded pattern scroll and ivory muslin for a travel capsule study',
+      'square',
+      { x: 52, y: 42 },
+      'Travel Capsule / pattern system',
+    ),
+    'silky-touches': atlasImage(
+      'fabric-shoulder-drape',
+      'collection:silky-touches',
+      'Ivory fabric shoulder drape and subtle tailor marks',
+      'square',
+      { x: 54, y: 40 },
+      'Silky Touches / fabric study',
+    ),
   },
   portfolio: {
-    'soft-power-capsule': {
-      src: '/images/stylist-consultation.jpeg',
-      alt: 'Stylist consultation and personal image work',
-      caption: 'Soft Power Capsule / consultation',
-    },
-    'editorial-corporate-shoot': {
-      src: '/images/concept-team.jpeg',
-      alt: 'PURITY team and editorial image direction',
-      caption: 'Corporate editorial / team image',
-    },
-    'bridal-reset': {
-      src: '/images/purity_6.webp',
-      alt: 'Atelier fitting detail for a special occasion piece',
-      caption: 'Bridal Reset / atelier detail',
-    },
+    'soft-power-capsule': atlasImage(
+      'atelier-mannequin-study',
+      'portfolio:soft-power-capsule',
+      'Close abstract mannequin study with black atelier markings',
+      'square',
+      { x: 48, y: 38 },
+      'Soft Power Capsule / silhouette study',
+    ),
+    'editorial-corporate-shoot': atlasImage(
+      'figure-sketches',
+      'portfolio:editorial-corporate-shoot',
+      'Charcoal abstract mannequin sketches for an editorial visual system',
+      'square',
+      { x: 52, y: 48 },
+      'Corporate editorial / sketch system',
+    ),
+    'bridal-reset': atlasImage(
+      'seam-pin-close',
+      'portfolio:bridal-reset',
+      'Close view of pins and raw ivory seam construction',
+      'square',
+      { x: 50, y: 42 },
+      'Bridal Reset / construction detail',
+    ),
   },
   transformation: {
-    'dress-of-victory': {
-      src: '/images/purity_5.webp',
-      alt: 'Dress of Victory editorial transformation',
-      caption: 'Dress of Victory / transformation',
-    },
-    'wholeness-photomeditation': {
-      src: '/images/purity_1.webp',
-      alt: 'Transformational image work and archetype direction',
-      caption: 'Wholeness / image practice',
-    },
-    'fashion-retreat': {
-      src: '/images/concept-atelier.jpeg',
-      alt: 'PURITY concept space for retreat and transformation work',
-      caption: 'Fashion retreat / concept space',
-    },
+    'dress-of-victory': heroStageImage(
+      'home-hero-abstract-drape',
+      'transformation:dress-of-victory',
+      'Sculptural ivory drape on an abstract tailor form',
+      'portrait',
+      { x: 50, y: 34 },
+      'Dress of Victory / abstract transformation',
+    ),
+    'wholeness-photomeditation': atlasImage(
+      'studio-shadow-form',
+      'transformation:wholeness-photomeditation',
+      'Soft atelier window light and an abstract mannequin shadow',
+      'square',
+      { x: 58, y: 54 },
+      'Wholeness / silhouette meditation',
+    ),
+    'fashion-retreat': atlasImage(
+      'charcoal-texture-study',
+      'transformation:fashion-retreat',
+      'Charcoal tailoring marks on ivory fabric texture',
+      'square',
+      { x: 50, y: 48 },
+      'Fashion retreat / atelier texture',
+    ),
   },
 }
 
 export const galleryMediaOverrides: Record<'collection' | 'portfolio', Record<string, PlannedImage[]>> = {
-  collection: {},
-  portfolio: {},
+  collection: {
+    'dress-for-victory': [
+      heroStageImage('home-hero-pattern-thread', 'collection:dress-for-victory:gallery:0', 'Tailor mannequin with black pattern lines and pins', 'portrait', { x: 50, y: 36 }, 'Pattern / thread'),
+      heroStageImage('home-hero-fabric-construction', 'collection:dress-for-victory:gallery:1', 'Raw ivory fabric construction on a mannequin', 'portrait', { x: 50, y: 36 }, 'Muslin construction'),
+      heroStageImage('home-hero-abstract-drape', 'collection:dress-for-victory:gallery:2', 'Final abstract ivory drape on a mannequin', 'portrait', { x: 50, y: 34 }, 'Abstract drape'),
+    ],
+    'retreat-wear': [
+      atlasImage('sheer-drape-study', 'collection:retreat-wear:gallery:0', 'Sheer fabric study on a pale mannequin form', 'square', { x: 45, y: 48 }, 'Sheer study'),
+      atlasImage('swatch-stack', 'collection:retreat-wear:gallery:1', 'Ivory and black fabric swatch stack', 'square', { x: 50, y: 48 }, 'Swatch stack'),
+      atlasImage('studio-shadow-form', 'collection:retreat-wear:gallery:2', 'Soft atelier shadow and mannequin silhouette', 'square', { x: 58, y: 54 }, 'Studio light'),
+    ],
+    'travel-capsule': [
+      atlasImage('pattern-paper-folds', 'collection:travel-capsule:gallery:0', 'Folded pattern paper with black drafting lines', 'square', { x: 48, y: 44 }, 'Pattern map'),
+      atlasImage('thread-spool', 'collection:travel-capsule:gallery:1', 'Ivory thread spool and loose thread on a studio table', 'square', { x: 44, y: 52 }, 'Thread route'),
+      atlasImage('folded-pattern-scroll', 'collection:travel-capsule:gallery:2', 'Folded pattern paper and raw muslin scroll', 'square', { x: 52, y: 42 }, 'Folded system'),
+    ],
+    'silky-touches': [
+      atlasImage('fabric-shoulder-drape', 'collection:silky-touches:gallery:0', 'Ivory shoulder drape with subtle atelier markings', 'square', { x: 54, y: 40 }, 'Shoulder drape'),
+      atlasImage('couture-seam-curve', 'collection:silky-touches:gallery:1', 'Curved couture seam line on ivory textile', 'square', { x: 50, y: 48 }, 'Seam curve'),
+      atlasImage('pin-bowl-detail', 'collection:silky-touches:gallery:2', 'Black pin bowl and loose tailoring pins on a pale table', 'square', { x: 50, y: 44 }, 'Pin detail'),
+    ],
+  },
+  portfolio: {
+    'soft-power-capsule': [
+      atlasImage('atelier-mannequin-study', 'portfolio:soft-power-capsule:gallery:0', 'Mannequin torso with black atelier markings', 'square', { x: 48, y: 38 }, 'Silhouette mark'),
+      atlasImage('swatch-stack', 'portfolio:soft-power-capsule:gallery:1', 'Ivory and black fabric swatch stack', 'square', { x: 50, y: 48 }, 'Palette study'),
+      atlasImage('figure-sketches', 'portfolio:soft-power-capsule:gallery:2', 'Abstract charcoal mannequin sketch studies', 'square', { x: 52, y: 48 }, 'Sketch system'),
+    ],
+    'editorial-corporate-shoot': [
+      atlasImage('figure-sketches', 'portfolio:editorial-corporate-shoot:gallery:0', 'Charcoal abstract mannequin sketch system', 'square', { x: 52, y: 48 }, 'Figure system'),
+      atlasImage('charcoal-texture-study', 'portfolio:editorial-corporate-shoot:gallery:1', 'Charcoal tailoring marks on ivory fabric texture', 'square', { x: 50, y: 48 }, 'Texture mark'),
+      atlasImage('pattern-paper-folds', 'portfolio:editorial-corporate-shoot:gallery:2', 'Folded pattern paper with black drafting marks', 'square', { x: 48, y: 44 }, 'Pattern board'),
+    ],
+    'bridal-reset': [
+      atlasImage('seam-pin-close', 'portfolio:bridal-reset:gallery:0', 'Pins placed along raw ivory muslin seam construction', 'square', { x: 50, y: 42 }, 'Pinned seam'),
+      atlasImage('pinned-bodice-study', 'portfolio:bridal-reset:gallery:1', 'Pinned muslin bodice study on a mannequin', 'square', { x: 50, y: 34 }, 'Bodice construction'),
+      atlasImage('fabric-shoulder-drape', 'portfolio:bridal-reset:gallery:2', 'Ivory fabric shoulder drape and soft textile marks', 'square', { x: 54, y: 40 }, 'Fabric reset'),
+    ],
+  },
 }
 
 export const localizedCopyOverrides: Partial<
@@ -172,101 +310,46 @@ export const localizedCopyOverrides: Partial<
 }
 
 export const pageMedia = {
-  home: {
-    src: '/images/atelier-workshop.jpeg',
-    alt: 'PURITY atelier workshop with tailoring tools and fabric',
-    caption: 'Kyiv editorial direction',
-  },
-  research: {
-    src: '/images/stylist-lookbook.jpeg',
-    alt: 'Stylist preparing a personal lookbook at PURITY',
-    caption: 'Research / Form / Silhouette',
-  },
-  realisation: {
-    src: '/images/atelier-detail.jpeg',
-    alt: 'Atelier detail work with fabric and form',
-    caption: 'Atelier / fitting / couture',
-  },
-  transformation: {
-    src: '/images/stylist-editorial.jpeg',
-    alt: 'Editorial styling session for transformation work',
-    caption: 'Transformation / ritual / styling',
-  },
-  collections: {
-    src: '/images/portfolio-black-look.jpeg',
-    alt: 'Editorial black dress silhouette from PURITY',
-    caption: 'Collections / editorial pieces',
-  },
-  school: {
-    src: '/images/wardrobe-system.jpeg',
-    alt: 'Wardrobe planning board and form study',
-    caption: 'School / study / transformation',
-  },
-  portfolio: {
-    src: '/images/stylist-consultation.jpeg',
-    alt: 'Stylist consultation and personal image work',
-    caption: 'Portfolio / selected cases',
-  },
-  contactsIntro: {
-    src: '/images/concept-atelier.jpeg',
-    alt: 'PURITY concept atelier space for studio meetings',
-  },
-  contactsAside: {
-    src: '/images/concept-team.jpeg',
-    alt: 'PURITY team and editorial image direction',
-  },
-  bookingDefault: {
-    src: '/images/shopping-fitting.jpeg',
-    alt: 'Personal styling fitting and booking consultation',
-  },
+  home: heroStageImage('home-hero-abstract-drape', 'page:home', 'Abstract ivory mannequin drape in a white atelier', 'wide', { x: 50, y: 34 }, 'Kyiv editorial direction'),
+  research: atlasImage('swatch-stack', 'page:research', 'Fabric swatch stack and silhouette palette study', 'portrait', { x: 50, y: 48 }, 'Research / Form / Silhouette'),
+  realisation: atlasImage('pinned-bodice-study', 'page:realisation', 'Pinned muslin bodice study on an atelier form', 'portrait', { x: 50, y: 34 }, 'Atelier / fitting / couture'),
+  transformation: atlasImage('studio-shadow-form', 'page:transformation', 'Soft atelier shadow and abstract mannequin silhouette', 'portrait', { x: 58, y: 54 }, 'Transformation / ritual / styling'),
+  collections: atlasImage('folded-pattern-scroll', 'page:collections', 'Folded pattern paper and ivory muslin for collection planning', 'portrait', { x: 52, y: 42 }, 'Collections / editorial pieces'),
+  school: atlasImage('pattern-paper-folds', 'page:school', 'Pattern paper folds and black drafting lines for atelier study', 'portrait', { x: 48, y: 44 }, 'School / study / transformation'),
+  portfolio: atlasImage('figure-sketches', 'page:portfolio', 'Charcoal abstract mannequin sketches for selected portfolio cases', 'portrait', { x: 52, y: 48 }, 'Portfolio / selected cases'),
+  contactsIntro: atlasImage('studio-shadow-form', 'page:contactsIntro', 'Soft atelier window light with abstract mannequin shadow', 'wide', { x: 58, y: 54 }),
+  contactsAside: atlasImage('thread-spool', 'page:contactsAside', 'Ivory thread spool and loose thread in a quiet atelier detail', 'square', { x: 44, y: 52 }),
+  bookingDefault: heroStageImage('home-hero-pattern-thread', 'page:bookingDefault', 'Tailor mannequin with pattern lines and pins for a booking consultation', 'portrait', { x: 50, y: 36 }),
 } satisfies Record<string, PlannedImage>
 
 export const homeMedia = {
-  heroLeft: {
-    src: '/images/abstract-silk-fold.svg',
-    alt: 'Abstract silk fold composition',
-  },
-  heroRight: {
-    src: '/images/abstract-pattern-board.svg',
-    alt: 'Abstract fashion pattern board composition',
-  },
+  heroLeft: heroStageImage('home-hero-pattern-thread', 'home:heroLeft', 'Tailor mannequin with pattern lines and pins', 'portrait', { x: 50, y: 36 }),
+  heroRight: heroStageImage('home-hero-abstract-drape', 'home:heroRight', 'Abstract ivory drape on a mannequin form', 'portrait', { x: 50, y: 34 }),
   direction: {
-    atelier: {
-      src: '/images/abstract-thread-line.svg',
-      alt: 'Abstract atelier thread line',
-    },
-    collection: {
-      src: '/images/abstract-capsule-map.svg',
-      alt: 'Abstract capsule wardrobe map',
-    },
-    school: {
-      src: '/images/abstract-school-moulage.svg',
-      alt: 'Abstract moulage study',
-    },
+    atelier: atlasImage('pinned-bodice-study', 'home:direction:atelier', 'Pinned muslin bodice study for atelier direction', 'square', { x: 50, y: 34 }),
+    collection: atlasImage('folded-pattern-scroll', 'home:direction:collection', 'Folded pattern scroll for collection direction', 'square', { x: 52, y: 42 }),
+    school: atlasImage('pattern-paper-folds', 'home:direction:school', 'Pattern paper folds for school direction', 'square', { x: 48, y: 44 }),
   },
-  atelierFeature: {
-    src: '/images/abstract-swatch-ivory.svg',
-    alt: 'Abstract ivory atelier swatch',
-  },
+  atelierFeature: atlasImage('pinned-bodice-study', 'home:atelierFeature', 'Pinned muslin bodice and tailoring marks on a mannequin', 'portrait', { x: 50, y: 34 }),
   servicePreview: {
     research: [
-      { src: '/images/abstract-service-palette.svg', alt: 'Abstract personal palette and lookbook study' },
-      { src: '/images/abstract-portfolio-frame.svg', alt: 'Abstract wardrobe review frame' },
+      atlasImage('swatch-stack', 'home:servicePreview:research:0', 'Fabric swatches for personal palette research', 'square', { x: 50, y: 48 }),
+      atlasImage('folded-pattern-scroll', 'home:servicePreview:research:1', 'Folded pattern paper for wardrobe review structure', 'square', { x: 52, y: 42 }),
     ],
     realisation: [
-      { src: '/images/abstract-shopping-route.svg', alt: 'Abstract shopping route composition' },
-      { src: '/images/abstract-service-tailoring.svg', alt: 'Abstract tailoring and atelier service study' },
+      atlasImage('pattern-paper-folds', 'home:servicePreview:realisation:0', 'Pattern paper folds for shopping route planning', 'square', { x: 48, y: 44 }),
+      atlasImage('pinned-bodice-study', 'home:servicePreview:realisation:1', 'Pinned muslin bodice for atelier service work', 'square', { x: 50, y: 34 }),
     ],
   },
   collectionPreview: [
-    { src: '/images/abstract-collection-study.svg', alt: 'Abstract collection study' },
-    { src: '/images/abstract-swatch-pearl.svg', alt: 'Abstract pearl collection swatch' },
-    { src: '/images/abstract-form-study.svg', alt: 'Abstract form study' },
+    atlasImage('folded-pattern-scroll', 'home:collectionPreview:0', 'Folded pattern scroll for collection preview', 'square', { x: 52, y: 42 }),
+    atlasImage('fabric-shoulder-drape', 'home:collectionPreview:1', 'Ivory shoulder drape for collection preview', 'square', { x: 54, y: 40 }),
+    atlasImage('swatch-stack', 'home:collectionPreview:2', 'Fabric swatch stack for collection preview', 'square', { x: 50, y: 48 }),
   ],
   portfolioPreview: [
-    { src: '/images/abstract-ritual-circle.svg', alt: 'Abstract portfolio ritual circle' },
-    { src: '/images/abstract-lookbook-paper.svg', alt: 'Abstract lookbook paper composition' },
-    { src: '/images/abstract-wardrobe-index.svg', alt: 'Abstract wardrobe index composition' },
+    atlasImage('figure-sketches', 'home:portfolioPreview:0', 'Charcoal mannequin sketches for portfolio preview', 'square', { x: 52, y: 48 }),
+    atlasImage('studio-shadow-form', 'home:portfolioPreview:1', 'Soft atelier mannequin shadow for portfolio preview', 'square', { x: 58, y: 54 }),
+    atlasImage('charcoal-texture-study', 'home:portfolioPreview:2', 'Charcoal texture mark for portfolio preview', 'square', { x: 50, y: 48 }),
   ],
 } satisfies {
   heroLeft: PlannedImage
@@ -279,85 +362,54 @@ export const homeMedia = {
 }
 
 export const homeLayerMedia = {
-  bgStudio: {
-    id: 'home-hero-bg-studio',
-    owner: 'home:layered-hero:bg',
-    src: '/images/atelier-workshop.jpeg',
-    alt: 'White PURITY atelier space with tailoring work',
-    aspect: 'wide',
-    focalPoint: { x: 48, y: 42 },
-  },
-  patternPaper: {
-    id: 'home-hero-pattern-paper',
-    owner: 'home:layered-hero:pattern-paper',
-    src: '/images/wardrobe-system.jpeg',
-    alt: 'Wardrobe planning board and pattern system',
-    aspect: 'landscape',
-    focalPoint: { x: 44, y: 48 },
-  },
-  silkFold: {
-    id: 'home-hero-silk-fold',
-    owner: 'home:layered-hero:silk-fold',
-    src: '/images/atelier-detail.jpeg',
-    alt: 'Ivory fabric fold and atelier detail',
-    aspect: 'square',
-    focalPoint: { x: 50, y: 42 },
-  },
-  mannequinDrape: {
-    id: 'home-hero-mannequin-drape',
-    owner: 'home:layered-hero:mannequin-drape',
-    src: '/images/portfolio-black-look.jpeg',
-    alt: 'Editorial sculptural fashion silhouette',
-    aspect: 'portrait',
-    focalPoint: { x: 52, y: 34 },
-  },
-  threadDetail: {
-    id: 'home-hero-detail-thread',
-    owner: 'home:layered-hero:thread-detail',
-    src: '/images/stylist-lookbook.jpeg',
-    alt: 'Lookbook and atelier detail for PURITY',
-    aspect: 'landscape',
-    focalPoint: { x: 50, y: 50 },
-  },
+  bgStudio: heroStageImage('home-hero-blank-form', 'home:layered-hero:bg', 'Blank ivory dress form in a white atelier', 'portrait', { x: 50, y: 34 }),
+  patternPaper: heroStageImage('home-hero-pattern-thread', 'home:layered-hero:pattern-paper', 'Tailor mannequin with pattern lines, thread, and pins', 'portrait', { x: 50, y: 36 }),
+  silkFold: heroStageImage('home-hero-fabric-construction', 'home:layered-hero:silk-fold', 'Raw ivory fabric construction pinned to a mannequin', 'portrait', { x: 50, y: 36 }),
+  mannequinDrape: heroStageImage('home-hero-abstract-drape', 'home:layered-hero:mannequin-drape', 'Final abstract ivory drape on a mannequin', 'portrait', { x: 50, y: 34 }),
+  threadDetail: atlasImage('seam-pin-close', 'home:layered-hero:thread-detail', 'Close view of pins and raw ivory seam construction', 'landscape', { x: 50, y: 42 }),
 } satisfies Record<string, PlannedImage>
 
 export const listingProcessMedia = {
   research: [
-    { src: '/images/abstract-research-02.svg', alt: 'Abstract research fabric fold' },
-    { src: '/images/abstract-research-03.svg', alt: 'Abstract research thread line' },
-    { src: '/images/abstract-couture-seam.svg', alt: 'Abstract couture seam detail' },
+    atlasImage('swatch-stack', 'process:research:0', 'Fabric swatch palette for research step one', 'square', { x: 50, y: 48 }),
+    atlasImage('thread-spool', 'process:research:1', 'Thread spool and loose thread for research step two', 'square', { x: 44, y: 52 }),
+    atlasImage('couture-seam-curve', 'process:research:2', 'Curved couture seam for research step three', 'square', { x: 50, y: 48 }),
   ],
   realisation: [
-    { src: '/images/abstract-realisation-02.svg', alt: 'Abstract realisation board' },
-    { src: '/images/abstract-realisation-03.svg', alt: 'Abstract realisation swatch' },
-    { src: '/images/abstract-drape-shadow.svg', alt: 'Abstract drape shadow' },
+    atlasImage('pinned-bodice-study', 'process:realisation:0', 'Pinned bodice study for realisation step one', 'square', { x: 50, y: 34 }),
+    heroStageImage('home-hero-fabric-construction', 'process:realisation:1', 'Fabric construction on a mannequin for realisation step two', 'portrait', { x: 50, y: 36 }),
+    atlasImage('folded-pattern-scroll', 'process:realisation:2', 'Folded pattern scroll for realisation step three', 'square', { x: 52, y: 42 }),
   ],
   school: [
-    { src: '/images/abstract-school-02.svg', alt: 'Abstract school fabric fold' },
-    { src: '/images/abstract-school-03.svg', alt: 'Abstract school grid' },
-    { src: '/images/abstract-school-04.svg', alt: 'Abstract school study line' },
+    atlasImage('pattern-paper-folds', 'process:school:0', 'Pattern paper folds for school step one', 'square', { x: 48, y: 44 }),
+    atlasImage('atelier-mannequin-study', 'process:school:1', 'Mannequin study for school step two', 'square', { x: 48, y: 38 }),
+    atlasImage('swatch-stack', 'process:school:2', 'Fabric swatch stack for school step three', 'square', { x: 50, y: 48 }),
   ],
   transformation: [
-    { src: '/images/abstract-transform-02.svg', alt: 'Abstract transformation line' },
-    { src: '/images/abstract-transform-03.svg', alt: 'Abstract transformation drape' },
-    { src: '/images/abstract-transform-04.svg', alt: 'Abstract transformation light' },
+    atlasImage('studio-shadow-form', 'process:transformation:0', 'Soft atelier shadow for transformation step one', 'square', { x: 58, y: 54 }),
+    atlasImage('charcoal-texture-study', 'process:transformation:1', 'Charcoal tailoring texture for transformation step two', 'square', { x: 50, y: 48 }),
+    atlasImage('figure-sketches', 'process:transformation:2', 'Charcoal mannequin sketches for transformation step three', 'square', { x: 52, y: 48 }),
   ],
 } satisfies Record<string, PlannedImage[]>
 
 export const listingPreviewMedia = {
   collections: [
-    { src: '/images/abstract-collections-02.svg', alt: 'Abstract collection board' },
-    { src: '/images/abstract-collections-03.svg', alt: 'Abstract collection fabric fold' },
-    { src: '/images/abstract-collections-04.svg', alt: 'Abstract collection swatch' },
+    atlasImage('folded-pattern-scroll', 'preview:collections:0', 'Folded pattern scroll for collection listing preview', 'square', { x: 52, y: 42 }),
+    atlasImage('fabric-shoulder-drape', 'preview:collections:1', 'Ivory shoulder drape for collection listing preview', 'square', { x: 54, y: 40 }),
+    atlasImage('swatch-stack', 'preview:collections:2', 'Fabric swatches for collection listing preview', 'square', { x: 50, y: 48 }),
   ],
   portfolio: [
-    { src: '/images/abstract-portfolio-02.svg', alt: 'Abstract portfolio line' },
-    { src: '/images/abstract-portfolio-03.svg', alt: 'Abstract portfolio drape' },
-    { src: '/images/abstract-portfolio-04.svg', alt: 'Abstract portfolio pattern board' },
+    atlasImage('figure-sketches', 'preview:portfolio:0', 'Charcoal mannequin sketches for portfolio listing preview', 'square', { x: 52, y: 48 }),
+    atlasImage('atelier-mannequin-study', 'preview:portfolio:1', 'Marked mannequin study for portfolio listing preview', 'square', { x: 48, y: 38 }),
+    atlasImage('charcoal-texture-study', 'preview:portfolio:2', 'Charcoal texture mark for portfolio listing preview', 'square', { x: 50, y: 48 }),
   ],
 } satisfies Record<string, PlannedImage[]>
 
-export function plannedImageAt(images: PlannedImage[], index: number, fallback: PlannedImage) {
+export function plannedImageAt(
+  images: Array<{ src: string; alt: string }>,
+  index: number,
+  fallback: { src: string; alt: string },
+) {
   return images[index] ?? fallback
 }
 
@@ -367,6 +419,7 @@ export function plannedMediaRefs() {
     { owner: 'home:heroLeft', image: homeMedia.heroLeft },
     { owner: 'home:heroRight', image: homeMedia.heroRight },
     { owner: 'home:atelierFeature', image: homeMedia.atelierFeature },
+    ...Object.entries(homeLayerMedia).map(([owner, image]) => ({ owner: `home:layer:${owner}`, image })),
     ...Object.entries(homeMedia.direction).map(([owner, image]) => ({ owner: `home:direction:${owner}`, image })),
     ...Object.entries(homeMedia.servicePreview).flatMap(([owner, images]) =>
       images.map((image, index) => ({ owner: `home:servicePreview:${owner}:${index}`, image })),
@@ -395,6 +448,10 @@ export function plannedMediaOwners() {
 }
 
 export function isReservedMediaForDifferentOwner(src: string, owner: string) {
+  if (/^\/images\/generated\/.+\.(webp|png|jpe?g)$/i.test(src)) {
+    return false
+  }
+
   const reservedOwner = plannedMediaOwners().get(photoKey(src))
 
   return Boolean(reservedOwner && reservedOwner !== owner)

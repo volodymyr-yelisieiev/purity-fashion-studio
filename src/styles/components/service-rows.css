@@ -1,22 +1,36 @@
 .service-editorial-list {
+  display: grid;
   margin-top: clamp(2rem, 5vw, 4rem);
-  border-bottom: 1px solid var(--color-hairline);
+  border-block: 1px solid var(--color-hairline);
 }
 
 .service-editorial-row {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  min-height: 7rem;
-  border-top: 1px solid var(--color-hairline);
+  grid-template-columns: minmax(0, 1fr) minmax(7rem, 10rem) auto;
+  gap: clamp(1rem, 2.4vw, 2rem);
+  align-items: stretch;
+  min-height: 8rem;
+  padding: clamp(0.85rem, 1.4vw, 1.1rem) 0;
   overflow: clip;
-  transition: background-color var(--motion-base) var(--ease-editorial), color var(--motion-base) var(--ease-editorial);
+  transition:
+    background-color var(--motion-base) var(--ease-editorial),
+    color var(--motion-base) var(--ease-editorial);
 }
 
-.service-editorial-row:hover {
+.service-editorial-row + .service-editorial-row {
+  border-top: 1px solid var(--color-hairline);
+}
+
+.service-editorial-row:hover,
+.service-editorial-row:focus-within {
   background: var(--color-ink);
   color: var(--color-canvas);
+}
+
+.service-editorial-row:hover .list-index,
+.service-editorial-row:focus-within .list-index {
+  color: rgba(255, 255, 255, 0.68);
 }
 
 .service-editorial-row-main {
@@ -24,8 +38,8 @@
   grid-template-columns: 4rem minmax(14rem, 1.05fr) minmax(10rem, 0.7fr) minmax(8rem, 0.35fr);
   gap: 1rem;
   align-items: center;
-  min-height: 7rem;
-  padding-block: 1rem;
+  min-height: 100%;
+  padding: 0 clamp(1rem, 2vw, 1.35rem);
 }
 
 .service-editorial-row-title {
@@ -37,6 +51,7 @@
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 3.4vw, 3.4rem);
   font-weight: 300;
+  letter-spacing: 0;
   line-height: 0.96;
 }
 
@@ -44,7 +59,7 @@
 .service-editorial-row-meta,
 .editorial-row-price small {
   color: currentColor;
-  opacity: 0.62;
+  opacity: 0.68;
   line-height: 1.5;
 }
 
@@ -52,45 +67,58 @@
   display: grid;
   gap: 0.2rem;
   text-align: right;
+  font-family: var(--font-body);
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 
 .editorial-row-price span {
   font-size: 1.1rem;
 }
 
+.service-editorial-row-frame {
+  align-self: stretch;
+  width: 100%;
+  min-height: 6.4rem;
+  margin: 0;
+  background: rgba(9, 9, 9, 0.04);
+  overflow: clip;
+}
+
+.service-editorial-row-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.62;
+  filter: grayscale(1) contrast(1.04);
+  transform: scale(1.01);
+  transition:
+    opacity var(--motion-base) var(--ease-editorial),
+    transform var(--motion-base) var(--ease-editorial);
+}
+
+.service-editorial-row:hover .service-editorial-row-image,
+.service-editorial-row:focus-within .service-editorial-row-image {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
 .service-editorial-row-action {
-  position: relative;
-  z-index: 2;
-  padding: 1rem 0 1rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  min-height: 3rem;
+  padding: 0 clamp(1rem, 2vw, 1.35rem) 0 0;
   font-size: var(--text-micro);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.service-editorial-row-image {
-  position: absolute;
-  right: 12rem;
-  top: 50%;
-  z-index: 1;
-  width: 9rem;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  opacity: 0;
-  transform: translateY(-50%) translateX(1.5rem);
-  transition: opacity var(--motion-base) var(--ease-editorial), transform var(--motion-base) var(--ease-editorial);
-  filter: grayscale(1);
-}
-
-.service-editorial-row:hover .service-editorial-row-image {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
-}
-
 @media (max-width: 1023px) {
   .service-editorial-row {
     grid-template-columns: 1fr;
+    gap: 0.9rem;
     padding-block: 1rem;
   }
 
@@ -105,11 +133,22 @@
     text-align: left;
   }
 
+  .service-editorial-row-frame,
   .service-editorial-row-action {
-    padding: 0 0 1rem 3rem;
+    grid-column: 1;
+    margin-inline: 3rem clamp(1rem, 2vw, 1.35rem);
+  }
+
+  .service-editorial-row-frame {
+    aspect-ratio: 16 / 9;
+    min-height: 0;
   }
 
   .service-editorial-row-image {
-    display: none;
+    opacity: 1;
+  }
+
+  .service-editorial-row-action {
+    padding: 0;
   }
 }

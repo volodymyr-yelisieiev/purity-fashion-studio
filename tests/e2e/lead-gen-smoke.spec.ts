@@ -383,7 +383,7 @@ test.describe('lead-gen MVP viewport smoke', () => {
 
     await page.goto('/admin/content/transformation/dress-of-victory')
     await page.locator('input[name="title"]').fill(smokeTitle)
-    await page.locator('input[name="mediaSrc"]').fill('/images/purity_3.webp')
+    await page.locator('input[name="mediaSrc"]').fill('/images/generated/home-hero-abstract-drape.webp')
     await page.getByRole('button', { name: /save change/i }).click()
     await page.waitForTimeout(500)
 

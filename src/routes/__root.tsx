@@ -144,7 +144,6 @@ function RouteCurtain() {
   const prefersReducedMotion = usePrefersReducedMotion()
   const curtainRef = React.useRef<HTMLDivElement | null>(null)
   const logoRef = React.useRef<HTMLImageElement | null>(null)
-  const ruleRef = React.useRef<HTMLSpanElement | null>(null)
   const timelineRef = React.useRef<gsap.core.Timeline | null>(null)
   const phaseRef = React.useRef<'idle' | 'covering' | 'waiting' | 'revealing'>('idle')
   const [phase, setPhaseState] = React.useState<'idle' | 'covering' | 'waiting' | 'revealing'>('idle')
@@ -164,8 +163,7 @@ function RouteCurtain() {
   const resetCurtain = React.useCallback(() => {
     const curtain = curtainRef.current
     const logo = logoRef.current
-    const rule = ruleRef.current
-    if (!curtain || !logo || !rule) {
+    if (!curtain || !logo) {
       return
     }
 
@@ -175,14 +173,12 @@ function RouteCurtain() {
     setPhase('idle')
     gsap.set(curtain, { display: 'none', y: 0, yPercent: -110, autoAlpha: 0, pointerEvents: 'none' })
     gsap.set(logo, { autoAlpha: 0, y: -18, scale: 0.94 })
-    gsap.set(rule, { autoAlpha: 0, xPercent: -50, scaleX: 0 })
   }, [setPhase])
 
   const revealCurtain = React.useCallback(() => {
     const curtain = curtainRef.current
     const logo = logoRef.current
-    const rule = ruleRef.current
-    if (!curtain || !logo || !rule || phaseRef.current !== 'waiting') {
+    if (!curtain || !logo || phaseRef.current !== 'waiting') {
       return
     }
 
@@ -209,18 +205,6 @@ function RouteCurtain() {
       duration: MOTION.fast,
       ease: 'power2.out',
     })
-    timeline.to(
-      rule,
-      {
-        autoAlpha: 0,
-        y: 16,
-        xPercent: -50,
-        scaleX: 0.98,
-        duration: MOTION.fast,
-        ease: 'power2.out',
-      },
-      0,
-    )
     timeline.to(
       curtain,
       {
@@ -268,8 +252,7 @@ function RouteCurtain() {
 
     const curtain = curtainRef.current
     const logo = logoRef.current
-    const rule = ruleRef.current
-    if (!curtain || !logo || !rule) {
+    if (!curtain || !logo) {
       blocker.reset()
       return
     }
@@ -286,7 +269,6 @@ function RouteCurtain() {
     if (prefersReducedMotion) {
       gsap.set(curtain, { display: 'grid', y: 0, yPercent: 0, autoAlpha: 1, pointerEvents: 'auto' })
       gsap.set(logo, { autoAlpha: 1, y: 0, scale: 1 })
-      gsap.set(rule, { autoAlpha: 1, xPercent: -50, scaleX: 1 })
       proceedNavigation()
       return
     }
@@ -301,7 +283,6 @@ function RouteCurtain() {
     timelineRef.current = timeline
     timeline.set(curtain, { display: 'grid', y: 0, yPercent: -110, autoAlpha: 1, pointerEvents: 'auto' })
     timeline.set(logo, { autoAlpha: 0, y: -18, scale: 0.94 })
-    timeline.set(rule, { autoAlpha: 0, xPercent: -50, scaleX: 0 })
     timeline.to(curtain, {
       y: 0,
       yPercent: 0,
@@ -319,17 +300,6 @@ function RouteCurtain() {
       },
       '-=0.18',
     )
-    timeline.to(
-      rule,
-      {
-        autoAlpha: 1,
-        xPercent: -50,
-        scaleX: 1,
-        duration: MOTION.base,
-        ease: MOTION.ease,
-      },
-      '-=0.28',
-    )
   }, [blocker, prefersReducedMotion, setPhase])
 
   React.useEffect(() => {
@@ -341,7 +311,6 @@ function RouteCurtain() {
   return (
     <div ref={curtainRef} className="route-curtain" aria-hidden="true">
       <img ref={logoRef} src="/extended_black.svg" alt="" className="route-curtain-logo" />
-      <span ref={ruleRef} className="route-curtain-rule" />
     </div>
   )
 }
