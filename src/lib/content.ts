@@ -681,7 +681,7 @@ const homePages: Localized<PageSeed> = {
     heroPrimaryCta: 'Надіслати запит',
     heroSecondaryCta: 'Дивитися колекції',
     philosophy: 'Відчуй форму. Відчуй тканину. Відчуй своє майбутнє.',
-    methodologyTitle: 'Дослідження / Втілення / Трансформація',
+    methodologyTitle: 'Як народжується гардероб',
     methodologySteps: [
       'Дослідження читає силует, колір та гардероб як особисту архітектуру.',
       'Втілення переводить інсайти в shopping-супровід, dossier та atelier-виробництво.',
@@ -691,7 +691,7 @@ const homePages: Localized<PageSeed> = {
     privateClientsText: 'Гардеробні стратегії, капсули, персональні lookbook-и та couture-рішення.',
     corporateClientsTitle: 'Для брендів та команд',
     corporateClientsText: 'Стилізація зйомок, подій, командних гардеробів та делікатних luxury-колаборацій.',
-    transformationNote: 'Трансформація працює як окремий напрям для тих, хто шукає не лише одяг, а нову роль.',
+    transformationNote: 'Колекції для нової ролі.',
     seo: seoEntry({
       title: 'PURITY Fashion Studio | Дослідження, atelier і колекції',
       description:
@@ -708,7 +708,7 @@ const homePages: Localized<PageSeed> = {
     heroPrimaryCta: 'Request service',
     heroSecondaryCta: 'View collections',
     philosophy: 'Feel the form. Feel the fabric. Feel your future.',
-    methodologyTitle: 'Research / Realisation / Transformation',
+    methodologyTitle: 'How a wardrobe takes shape',
     methodologySteps: [
       'Research reads silhouette, color, and wardrobe as a personal architecture.',
       'Realisation turns insight into shopping support, dossier sessions, and atelier production.',
@@ -718,7 +718,7 @@ const homePages: Localized<PageSeed> = {
     privateClientsText: 'Wardrobe strategy, capsules, personal lookbooks, and couture interventions.',
     corporateClientsTitle: 'For brands and teams',
     corporateClientsText: 'Editorial styling for campaigns, events, team wardrobes, and refined collaborations.',
-    transformationNote: 'Transformation acts as the side chapter for clients seeking a new role, not just a new outfit.',
+    transformationNote: 'Collections for a new role.',
     seo: seoEntry({
       title: 'PURITY Fashion Studio | Research, atelier, collections, portfolio',
       description:
@@ -735,7 +735,7 @@ const homePages: Localized<PageSeed> = {
     heroPrimaryCta: 'Отправить запрос',
     heroSecondaryCta: 'Смотреть коллекции',
     philosophy: 'Ощутить форму. Ощутить ткань. Ощутить своё будущее.',
-    methodologyTitle: 'Исследование / Воплощение / Трансформация',
+    methodologyTitle: 'Как рождается гардероб',
     methodologySteps: [
       'Исследование считывает силуэт, цвет и гардероб как личную архитектуру.',
       'Воплощение переводит инсайт в shopping-сопровождение, dossier-сессию и atelier-пошив.',
@@ -745,7 +745,7 @@ const homePages: Localized<PageSeed> = {
     privateClientsText: 'Гардеробные стратегии, капсулы, персональные lookbook-и и couture-решения.',
     corporateClientsTitle: 'Для брендов и команд',
     corporateClientsText: 'Стилизация съёмок, мероприятий, командных гардеробов и деликатных luxury-коллабораций.',
-    transformationNote: 'Трансформация работает как отдельное направление для тех, кто ищет не только одежду, но и новую роль.',
+    transformationNote: 'Коллекции для новой роли.',
     seo: seoEntry({
       title: 'PURITY Fashion Studio | Исследование, atelier и коллекции',
       description:

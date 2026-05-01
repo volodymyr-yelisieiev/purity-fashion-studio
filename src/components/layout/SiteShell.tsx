@@ -246,14 +246,20 @@ export function SiteShell({
     }
 
     const syncBrand = () => {
-      dockThresholdRef.current = Math.min(window.innerHeight * MOTION.dockTravelViewport, 320)
+      dockThresholdRef.current = isHome ? window.innerHeight * 0.92 : Math.min(window.innerHeight * MOTION.dockTravelViewport, 320)
       const dockThreshold = Math.max(dockThresholdRef.current, 1)
       const progress = !isHome || open || prefersReducedMotion
         ? 1
         : clamp01(window.scrollY / dockThreshold)
       const docked = !isHome || open || progress >= 0.999
       const headerSurfaceOpacity = open ? 1 : isHome ? 0.8 + progress * 0.18 : 0.96
-      const brandOpacity = !isHome || open || prefersReducedMotion ? 1 : clamp01((progress - 0.38) / 0.42)
+      const heroLogo = document.querySelector<HTMLElement>('.layered-home-brand-logo')
+      const heroLogoClear = !heroLogo || heroLogo.getBoundingClientRect().bottom <= 0
+      const brandOpacity = !isHome || open || prefersReducedMotion
+        ? 1
+        : heroLogoClear
+          ? clamp01((progress - 0.86) / 0.14)
+          : 0
 
       setShellVar('--home-dock-progress', progress.toFixed(3))
       setShellVar('--header-surface-opacity', headerSurfaceOpacity.toFixed(3))

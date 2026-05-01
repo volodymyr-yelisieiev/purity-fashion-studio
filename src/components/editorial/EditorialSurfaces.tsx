@@ -34,17 +34,17 @@ const methodTitles: Record<Locale, [string, string, string]> = {
 
 const finalCtaCopy: Record<Locale, { title: string; text: string; secondary: string }> = {
   uk: {
-    title: 'Почати з консультації PURITY',
+    title: 'Почати з консультації',
     text: 'Залиште запит, і студія запропонує формат: lookbook, ревізія, shopping-супровід, atelier або трансформаційний досвід.',
     secondary: 'Написати в студію',
   },
   en: {
-    title: 'Start with a PURITY consultation',
+    title: 'Start with a consultation',
     text: 'Leave a request and the studio will suggest the right format: lookbook, wardrobe review, shopping route, atelier, or transformation experience.',
     secondary: 'Write to the studio',
   },
   ru: {
-    title: 'Начать с консультации PURITY',
+    title: 'Начать с консультации',
     text: 'Оставьте запрос, и студия предложит формат: lookbook, ревизию, shopping-сопровождение, atelier или трансформационный опыт.',
     secondary: 'Написать в студию',
   },
@@ -222,8 +222,6 @@ export function ServiceRowsSection({
 
 export function HomeAtelierBand({
   atelier,
-  school,
-  collection,
   locale,
   ui,
 }: {
@@ -260,22 +258,6 @@ export function HomeAtelierBand({
         <figure className="atelier-black-media">
           <img src={optimizedImageSrc(atelier.media.src)} alt={atelier.media.alt} loading="lazy" decoding="async" />
         </figure>
-        <div className="atelier-black-side">
-          {school ? (
-            <Link to={buildLocalePath(locale, '/school')} className="atelier-black-note">
-              <span className="eyebrow">{ui.labels.schoolSpotlight}</span>
-              <strong>{school.title}</strong>
-              <small>{school.sessions}</small>
-            </Link>
-          ) : null}
-          {collection ? (
-            <Link to={buildLocalePath(locale, `/collections/${collection.slug}`)} className="atelier-black-note">
-              <span className="eyebrow">{ui.labels.collectionSpotlight}</span>
-              <strong>{collection.title}</strong>
-              <small>{collection.priceNote}</small>
-            </Link>
-          ) : null}
-        </div>
       </div>
     </section>
   )
@@ -286,11 +268,13 @@ export function CollectionsRail({
   locale,
   ui,
   title,
+  subtitle,
 }: {
   collections: CollectionEntity[]
   locale: Locale
   ui: UiCopy
   title: string
+  subtitle?: string
 }) {
   if (!collections.length) {
     return null
@@ -298,7 +282,7 @@ export function CollectionsRail({
 
   return (
     <Section>
-      <SectionHead eyebrow={ui.nav.collections} title={title} subtitle={ui.labels.collectionStory} />
+      <SectionHead eyebrow={ui.nav.collections} title={title} subtitle={subtitle} />
       <div className="collection-rail" aria-label={ui.nav.collections}>
         {collections.slice(0, 4).map((collection, index) => (
           <Link key={collection.slug} to={buildLocalePath(locale, `/collections/${collection.slug}`)} className="collection-rail-item">
@@ -375,7 +359,13 @@ export function SchoolNote({
         <p className="eyebrow">{ui.labels.schoolSpotlight}</p>
         <h2 className="section-subtitle">{course.title}</h2>
       </div>
-      <p className="editorial-copy">{course.summary}</p>
+      <div className="school-note-copy">
+        <p className="editorial-copy">{course.summary}</p>
+        <div className="school-note-meta">
+          <span>{course.sessions}</span>
+          <span>{course.format}</span>
+        </div>
+      </div>
       <Link to={buildLocalePath(locale, '/school')} className="button-secondary">
         {ui.nav.school}
       </Link>
@@ -393,7 +383,7 @@ export function FinalCta({
   const copy = finalCtaCopy[locale]
 
   return (
-    <Section large>
+    <Section className="editorial-final-section">
       <div className="editorial-final-cta">
         <h2>{copy.title}</h2>
         <p>{copy.text}</p>

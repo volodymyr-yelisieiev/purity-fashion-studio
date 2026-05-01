@@ -76,7 +76,12 @@ function HomePage() {
       <HomeAtelierBand atelier={atelier} school={school} collection={collectionSpotlight} locale={locale} ui={ui} />
       <EditorialTextureBand />
 
-      <CollectionsRail collections={collections} locale={locale} ui={ui} title={home.transformationNote} />
+      <CollectionsRail
+        collections={collections}
+        locale={locale}
+        ui={ui}
+        title={home.transformationNote}
+      />
       <PortfolioProof cases={portfolio.slice(0, 3)} locale={locale} ui={ui} />
       <SchoolNote course={school} locale={locale} ui={ui} />
 

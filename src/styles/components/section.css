@@ -95,6 +95,7 @@
   grid-auto-flow: column;
   grid-auto-columns: minmax(17rem, 24vw);
   gap: var(--space-grid);
+  align-items: stretch;
   margin-top: clamp(2rem, 5vw, 4rem);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -108,11 +109,17 @@
 
 .collection-rail-item {
   display: grid;
+  grid-template-rows: auto auto minmax(5.8rem, auto) 1fr;
   gap: 0.8rem;
+  min-width: 0;
+  height: 100%;
   scroll-snap-align: start;
 }
 
 .collection-rail-item figure {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin: 0;
   aspect-ratio: 4 / 5;
   overflow: clip;
@@ -120,6 +127,7 @@
 
 .collection-rail-item img,
 .portfolio-proof-lead img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -146,18 +154,22 @@
   line-height: 1.5;
 }
 
+.collection-rail-item small {
+  align-self: end;
+}
+
 .portfolio-proof-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(16rem, 0.6fr);
+  grid-template-columns: minmax(0, 1.02fr) minmax(18rem, 0.5fr);
   gap: var(--space-grid);
   margin-top: clamp(2rem, 5vw, 4rem);
+  align-items: start;
 }
 
 .portfolio-proof-lead {
   display: grid;
   gap: 0.9rem;
-  border-top: 1px solid var(--color-hairline);
-  padding-top: 1rem;
+  min-width: 0;
 }
 
 .portfolio-proof-lead img {
@@ -181,20 +193,19 @@
 
 .portfolio-proof-stack {
   display: grid;
-  gap: 0;
-  border-block: 1px solid var(--color-hairline);
+  gap: clamp(1.25rem, 3vw, 2rem);
 }
 
 .portfolio-proof-small {
   display: grid;
   align-content: start;
   gap: 0.7rem;
-  min-height: 50%;
-  padding: 1rem 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-hairline);
 }
 
 .portfolio-proof-small + .portfolio-proof-small {
-  border-top: 1px solid var(--color-hairline);
+  padding-top: clamp(1.25rem, 3vw, 2rem);
 }
 
 .portfolio-proof-small span:last-child {
@@ -204,16 +215,36 @@
 
 .school-note-band {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(15rem, 0.55fr) auto;
+  grid-template-columns: minmax(0, 0.85fr) minmax(16rem, 0.5fr) auto;
   gap: var(--space-grid);
   align-items: center;
-  border-top: 1px solid var(--color-hairline);
   border-bottom: 1px solid var(--color-hairline);
-  padding-block: clamp(2rem, 4vw, 3.5rem);
+  padding-block: clamp(2rem, 4vw, 3rem);
+}
+
+.school-note-copy {
+  display: grid;
+  gap: 1rem;
 }
 
 .school-note-band .editorial-copy {
   align-self: center;
+  margin: 0;
+}
+
+.school-note-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.school-note-meta span {
+  border: 1px solid var(--color-hairline);
+  padding: 0.35rem 0.55rem;
+  color: var(--color-muted);
+  font-size: var(--text-micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .school-note-band .button-secondary {
@@ -221,11 +252,13 @@
   align-self: center;
 }
 
+.editorial-final-section {
+  margin-top: var(--space-section-sm);
+}
+
 .editorial-final-cta {
   display: grid;
   gap: 1.3rem;
-  border-top: 1px solid var(--color-ink);
-  padding-top: clamp(2rem, 5vw, 4rem);
   padding-bottom: clamp(3rem, 6vw, 5rem);
 }
 
@@ -275,6 +308,10 @@
   .method-band {
     grid-template-columns: 1fr;
   }
+
+  .portfolio-proof-stack {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 767px) {
@@ -288,6 +325,10 @@
 
   .collection-rail {
     grid-auto-columns: minmax(16rem, 82vw);
+  }
+
+  .portfolio-proof-stack {
+    grid-template-columns: 1fr;
   }
 
   .school-note-band .button-secondary {

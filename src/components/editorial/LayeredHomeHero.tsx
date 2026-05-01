@@ -1,55 +1,44 @@
 import { Link } from '@tanstack/react-router'
-import * as React from 'react'
 import { BrandLogo } from '~/components/brand/BrandLogo'
 import { buildLocalePath } from '~/lib/i18n'
 import { optimizedImageSrc } from '~/lib/media-refs'
 import { homeLayerMedia } from '~/lib/media-plan'
-import { usePrefersReducedMotion } from '~/lib/motion'
 import type { HomePageData, Locale, UiCopy } from '~/lib/types'
 
-const HOME_SLOGANS: Record<Locale, [string, string, string]> = {
-  uk: ['Відчуй', 'Уяви', 'Створи'],
-  en: ['Feel', 'Imagine', 'Create'],
-  ru: ['Ощути', 'Представь', 'Создай'],
+const HOME_ASSEMBLY_COPY: Record<Locale, { kicker: string; title: string; slogan: string }> = {
+  uk: {
+    kicker: 'Research / Realisation / Transformation',
+    title: 'PURITY — персональний дизайнер гардероба',
+    slogan: 'Не підібрано. Вирішено.',
+  },
+  en: {
+    kicker: 'Research / Realisation / Transformation',
+    title: 'PURITY — personal wardrobe designer',
+    slogan: 'Not styled. Resolved.',
+  },
+  ru: {
+    kicker: 'Research / Realisation / Transformation',
+    title: 'PURITY — персональный дизайнер гардероба',
+    slogan: 'Не подобрано. Решено.',
+  },
 }
 
-const HOME_VERTICAL_LABEL: Record<Locale, string> = {
-  uk: 'Персональний дизайнер гардероба',
-  en: 'Personal wardrobe designer',
-  ru: 'Персональный дизайнер гардероба',
-}
-
-const HOME_SCROLL_LABEL: Record<Locale, string> = {
-  uk: 'Гортати',
-  en: 'Scroll',
-  ru: 'Листать',
-}
-
-function clamp01(value: number) {
-  return Math.min(Math.max(value, 0), 1)
-}
-
-function stage(progress: number, start: number, end: number) {
-  return clamp01((progress - start) / (end - start))
-}
-
-function setHeroState(root: HTMLElement, progress: number) {
-  const material = stage(progress, 0.32, 0.58)
-  const silhouette = stage(progress, 0.52, 0.78)
-  const copy = stage(progress, 0.7, 0.96)
-  const logoFade = 1 - stage(progress, 0.02, 0.28)
-
-  root.style.setProperty('--hero-p', progress.toFixed(3))
-  root.style.setProperty('--hero-logo-opacity', logoFade.toFixed(3))
-  root.style.setProperty('--hero-logo-scale', (1 - progress * 0.24).toFixed(3))
-  root.style.setProperty('--hero-bg-opacity', stage(progress, 0.18, 0.45).toFixed(3))
-  root.style.setProperty('--hero-paper-opacity', stage(progress, 0.24, 0.48).toFixed(3))
-  root.style.setProperty('--hero-material-opacity', material.toFixed(3))
-  root.style.setProperty('--hero-material-y', `${(1 - material) * 48}px`)
-  root.style.setProperty('--hero-silhouette-opacity', silhouette.toFixed(3))
-  root.style.setProperty('--hero-silhouette-y', `${(1 - silhouette) * 34}px`)
-  root.style.setProperty('--hero-copy-opacity', copy.toFixed(3))
-  root.style.setProperty('--hero-copy-y', `${(1 - copy) * 24}px`)
+const HOME_ASSEMBLY_STAGES: Record<Locale, Array<{ number: string; title: string; label: string }>> = {
+  uk: [
+    { number: '01', title: 'Research', label: 'розбір' },
+    { number: '02', title: 'Realisation', label: 'збірка' },
+    { number: '03', title: 'Transformation', label: 'образ' },
+  ],
+  en: [
+    { number: '01', title: 'Research', label: 'dissection' },
+    { number: '02', title: 'Realisation', label: 'construction' },
+    { number: '03', title: 'Transformation', label: 'image' },
+  ],
+  ru: [
+    { number: '01', title: 'Research', label: 'разбор' },
+    { number: '02', title: 'Realisation', label: 'сборка' },
+    { number: '03', title: 'Transformation', label: 'образ' },
+  ],
 }
 
 export function LayeredHomeHero({
@@ -61,105 +50,47 @@ export function LayeredHomeHero({
   ui: UiCopy
   home: HomePageData
 }) {
-  const rootRef = React.useRef<HTMLElement | null>(null)
-  const prefersReducedMotion = usePrefersReducedMotion()
-  const slogan = HOME_SLOGANS[locale]
-
-  React.useLayoutEffect(() => {
-    const root = rootRef.current
-    if (!root || typeof window === 'undefined') {
-      return
-    }
-
-    const mediaQuery = window.matchMedia('(max-width: 767px)')
-    let frame = 0
-
-    const sync = () => {
-      window.cancelAnimationFrame(frame)
-      frame = window.requestAnimationFrame(() => {
-        if (prefersReducedMotion || mediaQuery.matches) {
-          setHeroState(root, 1)
-          return
-        }
-
-        const rect = root.getBoundingClientRect()
-        const total = Math.max(root.offsetHeight - window.innerHeight, 1)
-        const progress = clamp01(-rect.top / total)
-        setHeroState(root, progress)
-      })
-    }
-
-    sync()
-    window.addEventListener('scroll', sync, { passive: true })
-    window.addEventListener('resize', sync)
-    mediaQuery.addEventListener('change', sync)
-
-    return () => {
-      window.cancelAnimationFrame(frame)
-      window.removeEventListener('scroll', sync)
-      window.removeEventListener('resize', sync)
-      mediaQuery.removeEventListener('change', sync)
-    }
-  }, [prefersReducedMotion])
+  const copy = HOME_ASSEMBLY_COPY[locale]
+  const stages = HOME_ASSEMBLY_STAGES[locale]
+  const heroStages = [
+    homeLayerMedia.mannequinBase,
+    homeLayerMedia.constructionOverlay,
+    homeLayerMedia.drapeOverlay,
+  ] as const
 
   return (
-    <section ref={rootRef} className="layered-home-hero" aria-labelledby="home-hero-title">
+    <section className="layered-home-hero" aria-labelledby="home-hero-title">
       <div className="layered-home-hero-sticky">
-        <div className="layered-home-logo-stage" aria-hidden="true">
-          <BrandLogo variant="extended" className="layered-home-logo" alt="" />
-        </div>
+        <figure className="layered-home-sequence" aria-hidden="true">
+          {heroStages.map((stageMedia, index) => (
+            <img
+              key={stageMedia.src}
+              src={optimizedImageSrc(stageMedia.src)}
+              alt=""
+              role="presentation"
+              className={`layered-home-stage layered-home-stage-${index + 1}`}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+            />
+          ))}
+        </figure>
 
-        <img
-          src={optimizedImageSrc(homeLayerMedia.bgStudio.src)}
-          alt=""
-          role="presentation"
-          className="layered-home-bg"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
-        <img
-          src={optimizedImageSrc(homeLayerMedia.patternPaper.src)}
-          alt=""
-          role="presentation"
-          className="layered-home-paper"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
-
-        <img
-          src={optimizedImageSrc(homeLayerMedia.silkFold.src)}
-          alt=""
-          role="presentation"
-          className="layered-home-material"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
-        <img
-          src={optimizedImageSrc(homeLayerMedia.mannequinDrape.src)}
-          alt=""
-          role="presentation"
-          className="layered-home-silhouette"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
-
-        <div className="layered-home-rail">
-          <span>{HOME_VERTICAL_LABEL[locale]}</span>
-        </div>
-        <span className="layered-home-scroll">{HOME_SCROLL_LABEL[locale]}</span>
+        <ol className="layered-home-stage-list" aria-label={copy.kicker}>
+          {stages.map((stage, index) => (
+            <li key={stage.title} className={`layered-home-stage-label layered-home-stage-label-${index + 1}`}>
+              <span>{stage.number}</span>
+              <strong>{stage.title}</strong>
+              <small>{stage.label}</small>
+            </li>
+          ))}
+        </ol>
 
         <div className="layered-home-copy">
-          <p className="eyebrow">{home.heroKicker.replaceAll('@', '')}</p>
-          <h1 id="home-hero-title" className="layered-home-title">
-            {slogan.map((word) => (
-              <span key={word}>{word}</span>
-            ))}
-          </h1>
-          <p className="layered-home-lead">{home.heroDescription}</p>
+          <p className="eyebrow">{copy.kicker}</p>
+          <h1 id="home-hero-title" className="sr-only">{copy.title}</h1>
+          <BrandLogo variant="extended" className="layered-home-brand-logo" alt="" />
+          <p className="layered-home-statement">{copy.slogan}</p>
           <div className="layered-home-actions">
             <Link to={buildLocalePath(locale, '/book')} className="button-primary">
               {home.heroPrimaryCta}
