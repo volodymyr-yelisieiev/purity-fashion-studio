@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
 
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+const npmExecPath = process.env.npm_execpath;
+const npmCommand = npmExecPath
+  ? process.execPath
+  : process.platform === 'win32'
+    ? 'npm.cmd'
+    : 'npm';
+const npmCommandPrefix = npmExecPath ? [npmExecPath] : [];
 const args = new Set(process.argv.slice(2));
 const validArgs = new Set([
   '--all',
@@ -24,6 +29,8 @@ if (args.has('--help')) {
 Usage:
   npm run ci:local       Clean install, build checks, and smoke tests
   npm run ci:local:all   Clean install, build checks, smoke tests, and visual checks
+  npm run ci:github      Same as ci:local, using the npm version pinned for GitHub
+  npm run ci:github:all  Same as ci:local:all, using the npm version pinned for GitHub
   npm run ci:build       Typecheck, unit tests, and build
   npm run ci:smoke       Playwright smoke tests
   npm run ci:visual      Production copy and visual route checks
@@ -34,7 +41,9 @@ Usage:
 let playwrightInstalled = false;
 
 function run(command, commandArgs = [], options = {}) {
-  const printable = [command, ...commandArgs].join(' ');
+  const printable = npmExecPath && command === process.execPath && commandArgs[0] === npmExecPath
+    ? ['npm', ...commandArgs.slice(1)].join(' ')
+    : [command, ...commandArgs].join(' ');
   console.log(`\n[ci-local] ${printable}`);
 
   const result = spawnSync(command, commandArgs, {
@@ -57,8 +66,12 @@ function run(command, commandArgs = [], options = {}) {
   }
 }
 
+function runNpm(npmArgs = [], options = {}) {
+  run(npmCommand, [...npmCommandPrefix, ...npmArgs], options);
+}
+
 function runNpmScript(scriptName, scriptArgs = [], options = {}) {
-  run(npmCommand, [
+  runNpm([
     'run',
     scriptName,
     ...(scriptArgs.length > 0 ? ['--', ...scriptArgs] : []),
@@ -70,14 +83,14 @@ function installPlaywrightChromium() {
     return;
   }
 
-  const installArgs = ['playwright', 'install'];
+  const installArgs = ['exec', '--', 'playwright', 'install'];
 
   if (process.platform === 'linux') {
     installArgs.push('--with-deps');
   }
 
   installArgs.push('chromium');
-  run(npxCommand, installArgs);
+  runNpm(installArgs);
   playwrightInstalled = true;
 }
 
@@ -110,7 +123,7 @@ if (args.has('--build-only')) {
 } else if (args.has('--visual-only')) {
   runVisualChecks();
 } else {
-  run(npmCommand, ['ci', '--foreground-scripts']);
+  runNpm(['ci', '--foreground-scripts']);
   runBuildChecks();
   runSmokeChecks();
 

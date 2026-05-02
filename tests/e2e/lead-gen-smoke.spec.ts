@@ -362,7 +362,7 @@ async function attachSmokeScreenshot(page: Page, testInfo: TestInfo, route: stri
   }
 
   await testInfo.attach(`smoke-${width}-${screenshotSlug(route)}.png`, {
-    body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+    body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
     contentType: 'image/png',
   })
 }
@@ -692,43 +692,43 @@ test.describe('lead-gen MVP viewport smoke', () => {
 
     await page.goto('/uk')
     await testInfo.attach('home-top.png', {
-      body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+      body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
       contentType: 'image/png',
     })
     await page.evaluate(() => window.scrollTo(0, Math.round(window.innerHeight * 0.8)))
     await testInfo.attach('home-hero-midpoint.png', {
-      body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+      body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
       contentType: 'image/png',
     })
     await page.locator('.atelier-black-band').scrollIntoViewIfNeeded()
     await testInfo.attach('home-atelier-band.png', {
-      body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+      body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
       contentType: 'image/png',
     })
 
     await page.goto('/uk/research')
     await testInfo.attach('research-top.png', {
-      body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+      body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
       contentType: 'image/png',
     })
 
     await page.goto('/uk/collections/dress-for-victory')
     await testInfo.attach('collections-detail-top.png', {
-      body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+      body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
       contentType: 'image/png',
     })
 
     await page.goto('/uk/contacts')
     await page.locator('#contact-form').scrollIntoViewIfNeeded()
     await testInfo.attach('contact-form.png', {
-      body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+      body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
       contentType: 'image/png',
     })
 
     await page.goto('/uk/book')
     await page.locator('.booking-request-panel').scrollIntoViewIfNeeded()
     await testInfo.attach('booking-form.png', {
-      body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+      body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
       contentType: 'image/png',
     })
   })
@@ -757,7 +757,7 @@ test.describe('lead-gen MVP viewport smoke', () => {
     await page.locator('form').filter({ has: page.locator('textarea[name="message"]') }).getByRole('button').click()
     await expect(page.locator('[aria-live="polite"]').last()).toContainText(/reference|зафіксовано|received|recorded/i)
     await testInfo.attach('contact-success.png', {
-      body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+      body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
       contentType: 'image/png',
     })
 
@@ -773,7 +773,7 @@ test.describe('lead-gen MVP viewport smoke', () => {
     await page.locator('form').filter({ has: page.locator('select[name="format"]') }).getByRole('button').click()
     await expect(page.locator('[aria-live="polite"]').last()).toContainText(/reference|зафіксовано|received|recorded/i)
     await testInfo.attach('booking-success.png', {
-      body: await page.screenshot({ animations: 'disabled', fullPage: false }),
+      body: await page.screenshot({ animations: 'disabled', caret: 'initial', fullPage: false }),
       contentType: 'image/png',
     })
 

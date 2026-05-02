@@ -211,6 +211,7 @@ test.describe('manual visual route matrix', () => {
           await page.screenshot({
             path: join(dir, `${viewport.width}.png`),
             animations: 'disabled',
+            caret: 'initial',
             fullPage: true,
           })
         }
