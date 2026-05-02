@@ -262,8 +262,8 @@ async function assertLayeredHeroGeometry(page: Page) {
   expect(metrics.copy.top).toBeLessThan(metrics.viewport.height - 96)
 
   if (metrics.viewport.width < 768) {
-    expect(metrics.sequence.width).toBeGreaterThanOrEqual(metrics.viewport.width * 0.77)
-    expect(metrics.sequence.height).toBeGreaterThanOrEqual(metrics.viewport.height * 0.4)
+    expect(metrics.sequence.width).toBeGreaterThanOrEqual(metrics.viewport.width * 0.86)
+    expect(metrics.sequence.height).toBeGreaterThanOrEqual(metrics.viewport.height * 0.48)
     expect(metrics.sequence.bottom).toBeLessThanOrEqual(metrics.copy.top + 4)
     expect(Math.abs(metrics.sequence.centerX - metrics.viewport.width / 2)).toBeLessThanOrEqual(
       metrics.viewport.width * 0.04,
@@ -273,8 +273,70 @@ async function assertLayeredHeroGeometry(page: Page) {
     return
   }
 
-  expect(metrics.sequence.height).toBeGreaterThanOrEqual(metrics.viewport.height * 0.7)
+  expect(metrics.sequence.height).toBeGreaterThanOrEqual(metrics.viewport.height * 0.78)
   expect(metrics.sequence.right).toBeLessThanOrEqual(metrics.viewport.width - 16)
+}
+
+async function assertSkipLinkStaysHiddenUntilFocused(page: Page) {
+  const hiddenBox = await page.locator('.skip-link').boundingBox()
+  expect(hiddenBox).not.toBeNull()
+  expect((hiddenBox?.y ?? 1) + (hiddenBox?.height ?? 0)).toBeLessThanOrEqual(1)
+
+  await page.keyboard.press('Tab')
+
+  const focused = await page.evaluate(() => document.activeElement?.classList.contains('skip-link'))
+  expect(focused).toBe(true)
+
+  const focusedBox = await page.locator('.skip-link').boundingBox()
+  expect(focusedBox).not.toBeNull()
+  expect(focusedBox?.y ?? -1).toBeGreaterThanOrEqual(0)
+  expect((focusedBox?.x ?? -1) + (focusedBox?.width ?? 0)).toBeLessThanOrEqual(
+    (page.viewportSize()?.width ?? 320) + 1,
+  )
+}
+
+async function assertSubMinimumViewportScales(page: Page) {
+  const metrics = await page.evaluate(() => {
+    const frame = document.querySelector('.site-frame')?.getBoundingClientRect()
+    const sequence = document.querySelector('.layered-home-sequence')?.getBoundingClientRect()
+    const copy = document.querySelector('.layered-home-copy')?.getBoundingClientRect()
+
+    return {
+      viewport: { width: window.innerWidth, height: window.innerHeight },
+      frame: frame
+        ? {
+            width: frame.width,
+            right: frame.right,
+          }
+        : null,
+      sequence: sequence
+        ? {
+            left: sequence.left,
+            right: sequence.right,
+            width: sequence.width,
+          }
+        : null,
+      copy: copy
+        ? {
+            left: copy.left,
+            right: copy.right,
+            width: copy.width,
+          }
+        : null,
+    }
+  })
+
+  expect(metrics.frame).not.toBeNull()
+  expect(metrics.sequence).not.toBeNull()
+  expect(metrics.copy).not.toBeNull()
+
+  expect(metrics.frame?.width ?? 0).toBeLessThanOrEqual(metrics.viewport.width + 1)
+  expect(metrics.frame?.right ?? 9999).toBeLessThanOrEqual(metrics.viewport.width + 1)
+  expect(metrics.sequence?.left ?? -1).toBeGreaterThanOrEqual(-1)
+  expect(metrics.sequence?.right ?? 9999).toBeLessThanOrEqual(metrics.viewport.width + 1)
+  expect(metrics.sequence?.width ?? 0).toBeGreaterThanOrEqual(metrics.viewport.width * 0.86)
+  expect(metrics.copy?.left ?? -1).toBeGreaterThanOrEqual(-1)
+  expect(metrics.copy?.right ?? 9999).toBeLessThanOrEqual(metrics.viewport.width + 1)
 }
 
 async function attachSmokeScreenshot(page: Page, testInfo: TestInfo, route: string, width: number) {
@@ -387,6 +449,28 @@ test.describe('lead-gen MVP viewport smoke', () => {
       await page.waitForTimeout(6_100)
       await assertNoHorizontalOverflow(page)
       await assertLayeredHeroGeometry(page)
+    }
+
+    expect(errors).toEqual([])
+  })
+
+  test('sub-320 viewports scale the minimum layout and keep skip link hidden', async ({ page }) => {
+    const errors = collectConsoleErrors(page)
+
+    for (const viewport of [
+      { width: 280, height: 680 },
+      { width: 300, height: 700 },
+      { width: 320, height: 740 },
+    ] as const) {
+      await page.setViewportSize(viewport)
+      await page.goto('/uk')
+      await assertSkipLinkStaysHiddenUntilFocused(page)
+
+      if (viewport.width < 320) {
+        await assertSubMinimumViewportScales(page)
+      } else {
+        await assertNoHorizontalOverflow(page)
+      }
     }
 
     expect(errors).toEqual([])

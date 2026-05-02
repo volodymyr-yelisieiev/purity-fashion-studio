@@ -18,12 +18,12 @@
   --hero-sequence-y: -50%;
 
   position: absolute;
-  right: clamp(1rem, 7.6vw, 10rem);
+  right: clamp(1rem, 6.4vw, 8.5rem);
   top: 50%;
   z-index: 2;
-  width: clamp(17rem, 29vw, 33rem);
-  height: min(80svh, 56rem);
-  max-height: calc(100svh - 8rem);
+  width: clamp(18.5rem, 32vw, 37rem);
+  height: min(86svh, 60rem);
+  max-height: calc(100svh - 6rem);
   margin: 0;
   opacity: 0;
   transform: translate(var(--hero-sequence-x), calc(var(--hero-sequence-y) + 18px));
@@ -158,9 +158,10 @@
 
 @media (min-width: 768px) and (max-width: 1120px) {
   .layered-home-sequence {
-    right: clamp(1rem, 4vw, 3rem);
-    width: clamp(19rem, 40vw, 30rem);
-    height: min(74svh, 46rem);
+    right: clamp(0.75rem, 3.6vw, 2.75rem);
+    width: clamp(23rem, 52vw, 38rem);
+    height: min(88svh, 58rem);
+    max-height: calc(100svh - 5.5rem);
   }
 
   .layered-home-copy {
@@ -191,11 +192,11 @@
 
     left: 50%;
     right: auto;
-    top: clamp(7.4rem, 17svh, 9rem);
+    top: clamp(5.6rem, 11svh, 8rem);
     bottom: auto;
-    width: min(82vw, 24.5rem);
-    height: clamp(19.5rem, 44svh, 27rem);
-    max-height: 27rem;
+    width: min(92vw, 29rem);
+    height: clamp(22rem, 52svh, 32rem);
+    max-height: 32rem;
   }
 
   .layered-home-stage-list {
@@ -247,9 +248,9 @@
 
 @media (max-width: 360px) {
   .layered-home-sequence {
-    top: clamp(8rem, 17svh, 9rem);
-    width: min(78vw, 23rem);
-    height: clamp(19rem, 41svh, 25rem);
+    top: clamp(5.1rem, 10svh, 6.8rem);
+    width: min(88vw, 26rem);
+    height: clamp(21rem, 50svh, 29rem);
   }
 
   .layered-home-actions {
@@ -265,6 +266,19 @@
     padding-inline: 0.42rem;
     font-size: 0.55rem;
     letter-spacing: 0.1em;
+  }
+}
+
+@media (max-width: 319px) {
+  .layered-home-hero-sticky {
+    height: calc(100svh / var(--site-min-scale));
+    min-height: calc(100svh / var(--site-min-scale));
+  }
+
+  .layered-home-sequence {
+    top: clamp(5.1rem, 10%, 6.8rem);
+    width: min(88%, 26rem);
+    height: clamp(21rem, 50%, 29rem);
   }
 }
 
