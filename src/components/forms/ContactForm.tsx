@@ -129,7 +129,7 @@ export function ContactForm({
     canRetry?: boolean
   }>({ state: 'idle' })
   const pending = submission.state === 'pending'
-  const submitDisabled = pending
+  const submitDisabled = pending || !isEnhanced
 
   React.useEffect(() => {
     setIsEnhanced(true)
@@ -138,6 +138,10 @@ export function ContactForm({
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const formElement = event.currentTarget
+
+    if (!isEnhanced) {
+      return
+    }
 
     if (pending) {
       analytics.track('contact_duplicate_submit_blocked', { locale })
@@ -211,7 +215,7 @@ export function ContactForm({
       method="post"
       data-enhanced={isEnhanced ? 'true' : 'false'}
       onSubmit={onSubmit}
-      aria-busy={pending}
+      aria-busy={submitDisabled}
     >
       <label className="field">
         <span>{ui.contact.nameLabel}</span>

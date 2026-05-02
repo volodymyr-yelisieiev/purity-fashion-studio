@@ -91,11 +91,34 @@ function futureDate(daysAhead = 21) {
 }
 
 async function assertNoHorizontalOverflow(page: Page) {
-  const hasOverflow = await page.evaluate(
-    () => document.documentElement.scrollWidth > window.innerWidth + 1,
-  )
+  await expect.poll(async () => {
+    try {
+      return await page.evaluate(() => {
+        const maxScrollWidth = Math.max(
+          document.documentElement.scrollWidth,
+          document.body.scrollWidth,
+        )
 
-  expect(hasOverflow).toBe(false)
+        return maxScrollWidth <= window.innerWidth + 1
+      })
+    } catch {
+      return false
+    }
+  }).toBe(true)
+}
+
+async function waitForRouteReady(page: Page) {
+  await page.waitForLoadState('domcontentloaded')
+  await expect(page.locator('main')).toBeVisible()
+
+  const enhancedForms = page.locator('form[data-enhanced]')
+  if (await enhancedForms.count()) {
+    await expect(enhancedForms.first()).toHaveAttribute('data-enhanced', 'true')
+  }
+
+  await page.evaluate(() => new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve))
+  }))
 }
 
 async function assertReloadIsNotBlocked(page: Page) {
@@ -512,6 +535,7 @@ test.describe('lead-gen MVP viewport smoke', () => {
 
       for (const route of publicRoutes) {
         await page.goto(route)
+        await waitForRouteReady(page)
         await assertDocumentLanguage(page, route)
         await assertSiteChromePresent(page)
         await expect(page.locator('main')).toBeVisible()
@@ -738,7 +762,7 @@ test.describe('lead-gen MVP viewport smoke', () => {
 
     const errors = collectConsoleErrors(page)
     const smokeSeed = Date.now()
-    const smokeTitle = `Smoke editable transformation ${smokeSeed}`
+    const smokeTitle = 'Atelier content proof'
     const smokeEmail = `smoke-${smokeSeed}@example.com`
     const smokePhone = `+380${String(smokeSeed).slice(-9).padStart(9, '0')}`
 
@@ -747,6 +771,7 @@ test.describe('lead-gen MVP viewport smoke', () => {
     await expect(page).toHaveURL(/\/en\/?$/)
 
     await page.goto('/uk/contacts')
+    await waitForRouteReady(page)
     await expect(page.locator('label:has(input[name="name"])')).toBeVisible()
     await expect(page.locator('label:has(textarea[name="message"])')).toBeVisible()
     await page.locator('input[name="name"]').fill('Smoke Test')
@@ -762,6 +787,7 @@ test.describe('lead-gen MVP viewport smoke', () => {
     })
 
     await page.goto('/uk/book?kind=service&slug=personal-lookbook&area=research')
+    await waitForRouteReady(page)
     await expect(page.locator('label:has(select[name="format"])')).toBeVisible()
     await expect(page.locator('label:has(input[name="date"])')).toBeVisible()
     await page.locator('select[name="format"]').selectOption({ index: 1 })
@@ -779,18 +805,24 @@ test.describe('lead-gen MVP viewport smoke', () => {
 
     await page.goto('/admin/content')
     await expect(page).toHaveURL(/\/admin\/login/)
+    await expect(page.locator('form[data-enhanced]')).toHaveAttribute('data-enhanced', 'true')
     await page.locator('input[name="username"]').fill('admin')
     await page.locator('input[name="password"]').fill('purity-local-admin')
-    await page.getByRole('button', { name: /sign in/i }).click()
+    const signInButton = page.getByRole('button', { name: /sign in/i })
+    await expect(signInButton).toBeEnabled()
+    await signInButton.click()
     await expect(page).toHaveURL(/\/admin\/content/)
 
     await page.goto('/admin/content/transformation/dress-of-victory')
+    await expect(page.locator('form[data-enhanced]')).toHaveAttribute('data-enhanced', 'true')
     await page.locator('input[name="title"]').fill(smokeTitle)
+    await page.locator('textarea[name="summary"]').fill(`Smoke admin edit ${smokeSeed}`)
     await page.locator('input[name="mediaSrc"]').fill('/images/generated/home-hero-abstract-drape.webp')
     await page.getByRole('button', { name: /save change/i }).click()
-    await page.waitForTimeout(500)
+    await expect(page.locator('[aria-live="polite"]').last()).toContainText(/transformation dress-of-victory saved/i)
 
     await page.goto('/en/transformation')
+    await waitForRouteReady(page)
     await expect(page.getByText(smokeTitle)).toBeVisible()
 
     expect(errors).toEqual([])

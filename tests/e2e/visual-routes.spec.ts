@@ -86,11 +86,20 @@ function collectConsoleErrors(page: Page) {
 }
 
 async function assertNoHorizontalOverflow(page: Page) {
-  const hasOverflow = await page.evaluate(
-    () => document.documentElement.scrollWidth > window.innerWidth + 1,
-  )
+  await expect.poll(async () => {
+    try {
+      return await page.evaluate(() => {
+        const maxScrollWidth = Math.max(
+          document.documentElement.scrollWidth,
+          document.body.scrollWidth,
+        )
 
-  expect(hasOverflow).toBe(false)
+        return maxScrollWidth <= window.innerWidth + 1
+      })
+    } catch {
+      return false
+    }
+  }).toBe(true)
 }
 
 async function assertHeaderDoesNotCoverMain(page: Page, routePath: string) {
@@ -145,7 +154,9 @@ async function waitForRouteReady(page: Page) {
     await expect(enhancedForms.first()).toHaveAttribute('data-enhanced', 'true')
   }
 
-  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => resolve(undefined))))
+  await page.evaluate(() => new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve))
+  }))
 }
 
 async function loadLazyImagesForFullPage(page: Page) {

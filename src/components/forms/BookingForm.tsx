@@ -67,7 +67,7 @@ export function BookingLayout({
     canRetry?: boolean
   }>({ state: 'idle' })
   const pending = submission.state === 'pending'
-  const submitDisabled = pending
+  const submitDisabled = pending || !isEnhanced
   const minBookingDate = React.useMemo(() => new Date().toISOString().slice(0, 10), [])
 
   React.useEffect(() => {
@@ -77,6 +77,10 @@ export function BookingLayout({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const formElement = event.currentTarget
+
+    if (!isEnhanced) {
+      return
+    }
 
     if (pending) {
       analytics.track('booking_duplicate_submit_blocked', {
@@ -243,7 +247,7 @@ export function BookingLayout({
             method="post"
             data-enhanced={isEnhanced ? 'true' : 'false'}
             onSubmit={handleSubmit}
-            aria-busy={pending}
+            aria-busy={submitDisabled}
           >
             <div className="booking-form-group">
               <p className="eyebrow">{ui.labels.sessionSetup}</p>

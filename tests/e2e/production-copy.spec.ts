@@ -90,11 +90,34 @@ function collectConsoleErrors(page: Page) {
 }
 
 async function assertNoHorizontalOverflow(page: Page) {
-  const hasOverflow = await page.evaluate(
-    () => document.documentElement.scrollWidth > window.innerWidth + 1,
-  )
+  await expect.poll(async () => {
+    try {
+      return await page.evaluate(() => {
+        const maxScrollWidth = Math.max(
+          document.documentElement.scrollWidth,
+          document.body.scrollWidth,
+        )
 
-  expect(hasOverflow).toBe(false)
+        return maxScrollWidth <= window.innerWidth + 1
+      })
+    } catch {
+      return false
+    }
+  }).toBe(true)
+}
+
+async function waitForRouteReady(page: Page) {
+  await page.waitForLoadState('domcontentloaded')
+  await expect(page.locator('main')).toBeVisible()
+
+  const enhancedForms = page.locator('form[data-enhanced]')
+  if (await enhancedForms.count()) {
+    await expect(enhancedForms.first()).toHaveAttribute('data-enhanced', 'true')
+  }
+
+  await page.evaluate(() => new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve))
+  }))
 }
 
 async function assertLocalizedHead(page: Page, locale: (typeof locales)[number], routePath: string) {
@@ -136,6 +159,7 @@ test.describe('production route copy audit', () => {
 
       for (const routePath of routePaths) {
         await page.goto(localizedRoute(locale, routePath))
+        await waitForRouteReady(page)
         await expect(page.locator('html')).toHaveAttribute('lang', locale)
         await expect(page.locator('main')).toBeVisible()
         await assertNoHorizontalOverflow(page)
