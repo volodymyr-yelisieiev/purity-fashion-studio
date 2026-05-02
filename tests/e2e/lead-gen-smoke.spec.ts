@@ -377,6 +377,131 @@ async function assertFocusInsideOpenMenu(page: Page) {
   expect(focusEscaped).toBe(false)
 }
 
+async function assertMenuControlsAreNotDuplicated(page: Page) {
+  await expect(page.locator('#nav-sheet')).toBeVisible()
+  await page.waitForFunction(() => {
+    const sheet = document.querySelector<HTMLElement>('#nav-sheet')
+    if (!sheet) {
+      return false
+    }
+
+    const style = window.getComputedStyle(sheet)
+    return style.visibility !== 'hidden' && Number(style.opacity) > 0.95
+  })
+
+  const metrics = await page.evaluate(() => {
+    const visibleCount = (selector: string) =>
+      Array.from(document.querySelectorAll<HTMLElement>(selector)).filter((element) => {
+        const style = window.getComputedStyle(element)
+        const rect = element.getBoundingClientRect()
+
+        return (
+          style.display !== 'none' &&
+          style.visibility !== 'hidden' &&
+          rect.width > 0 &&
+          rect.height > 0
+        )
+      }).length
+
+    return {
+      headerCtas: visibleCount('header .header-cta'),
+      headerLocales: visibleCount('header .header-side-right .locale-switcher'),
+      sheetContactBookingLinks: visibleCount('#nav-sheet .nav-sheet-contact-column a[href*="/book"]'),
+      sheetCtas: visibleCount('#nav-sheet .nav-sheet-toolbar .button-primary'),
+      sheetLocales: visibleCount('#nav-sheet .nav-sheet-toolbar .locale-switcher'),
+    }
+  })
+
+  expect(metrics.headerLocales + metrics.sheetLocales).toBe(1)
+  expect(metrics.headerCtas + metrics.sheetCtas).toBe(1)
+  expect(metrics.sheetContactBookingLinks).toBe(0)
+}
+
+async function assertMobileNavSheetScrolls(page: Page) {
+  const metrics = await page.evaluate(() => {
+    const sheet = document.querySelector<HTMLElement>('#nav-sheet')
+    if (!sheet) {
+      return null
+    }
+
+    sheet.scrollTop = 0
+    sheet.scrollTop = sheet.scrollHeight
+
+    const rect = sheet.getBoundingClientRect()
+    const style = window.getComputedStyle(sheet)
+
+    return {
+      bottom: rect.bottom,
+      clientHeight: sheet.clientHeight,
+      overflowY: style.overflowY,
+      scrollHeight: sheet.scrollHeight,
+      scrollTop: sheet.scrollTop,
+      viewportHeight: window.innerHeight,
+    }
+  })
+
+  expect(metrics).not.toBeNull()
+  if (!metrics) {
+    return
+  }
+
+  expect(metrics.overflowY).toBe('auto')
+  expect(metrics.scrollHeight).toBeGreaterThan(metrics.clientHeight + 1)
+  expect(metrics.scrollTop).toBeGreaterThan(0)
+  expect(metrics.bottom).toBeLessThanOrEqual(metrics.viewportHeight + 1)
+}
+
+async function assertFooterLegalTypographyMatches(page: Page) {
+  await page.locator('footer.site-footer').scrollIntoViewIfNeeded()
+
+  const metrics = await page.evaluate(() => {
+    const copy = document.querySelector<HTMLElement>('.footer-legal-copy')
+    const link = document.querySelector<HTMLElement>('.footer-legal-link')
+    if (!copy || !link) {
+      return null
+    }
+
+    const copyStyle = window.getComputedStyle(copy)
+    const linkStyle = window.getComputedStyle(link)
+    const copyRect = copy.getBoundingClientRect()
+    const linkRect = link.getBoundingClientRect()
+
+    return {
+      copy: {
+        fontSize: copyStyle.fontSize,
+        fontWeight: copyStyle.fontWeight,
+        height: copyRect.height,
+        letterSpacing: copyStyle.letterSpacing,
+        lineHeight: copyStyle.lineHeight,
+        textTransform: copyStyle.textTransform,
+        top: copyRect.top,
+      },
+      link: {
+        fontSize: linkStyle.fontSize,
+        fontWeight: linkStyle.fontWeight,
+        height: linkRect.height,
+        letterSpacing: linkStyle.letterSpacing,
+        lineHeight: linkStyle.lineHeight,
+        textTransform: linkStyle.textTransform,
+        top: linkRect.top,
+      },
+    }
+  })
+
+  expect(metrics).not.toBeNull()
+  if (!metrics) {
+    return
+  }
+
+  expect(metrics.link.fontSize).toBe(metrics.copy.fontSize)
+  expect(metrics.link.fontWeight).toBe(metrics.copy.fontWeight)
+  expect(metrics.link.letterSpacing).toBe(metrics.copy.letterSpacing)
+  expect(metrics.link.lineHeight).toBe(metrics.copy.lineHeight)
+  expect(metrics.link.textTransform).toBe(metrics.copy.textTransform)
+  expect(Math.abs(metrics.link.height - metrics.copy.height)).toBeLessThanOrEqual(1)
+  expect(Math.abs(metrics.link.top - metrics.copy.top)).toBeLessThanOrEqual(1)
+}
+
 test.describe('lead-gen MVP viewport smoke', () => {
   test.describe.configure({ timeout: 120_000 })
 
@@ -415,6 +540,7 @@ test.describe('lead-gen MVP viewport smoke', () => {
       await page.locator('.menu-toggle').click()
       await expect(page.locator('#nav-sheet')).toHaveAttribute('aria-hidden', 'false')
       await expect(page.locator('#nav-sheet')).not.toHaveAttribute('inert', '')
+      await assertMenuControlsAreNotDuplicated(page)
       await page.keyboard.press('Tab')
       await assertFocusInsideOpenMenu(page)
       await page.keyboard.press('Shift+Tab')
@@ -430,6 +556,29 @@ test.describe('lead-gen MVP viewport smoke', () => {
       expect(errors).toEqual([])
     })
   }
+
+  test('mobile menu scrolls when the viewport is short', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 480 })
+    const errors = collectConsoleErrors(page)
+
+    await page.goto('/uk')
+    await page.locator('.menu-toggle').click()
+    await expect(page.locator('#nav-sheet')).toHaveAttribute('aria-hidden', 'false')
+    await assertMenuControlsAreNotDuplicated(page)
+    await assertMobileNavSheetScrolls(page)
+
+    expect(errors).toEqual([])
+  })
+
+  test('footer legal link matches rights copy typography', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 946 })
+    const errors = collectConsoleErrors(page)
+
+    await page.goto('/ru')
+    await assertFooterLegalTypographyMatches(page)
+
+    expect(errors).toEqual([])
+  })
 
   test('reduced motion keeps the home journey readable', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
@@ -459,11 +608,17 @@ test.describe('lead-gen MVP viewport smoke', () => {
       await page.setViewportSize(viewport)
       await page.goto('/uk')
       await page.waitForTimeout(3_000)
-      const copyOpacity = await page.locator('.layered-home-copy').evaluate((element) =>
+      const midSequenceState = await page.evaluate(() => ({
+        copyOpacity: Number(window.getComputedStyle(document.querySelector('.layered-home-copy')!).opacity),
+        realisationOpacity: Number(window.getComputedStyle(document.querySelector('.layered-home-stage-2')!).opacity),
+      }))
+      expect(midSequenceState.realisationOpacity).toBeGreaterThan(0.5)
+      expect(midSequenceState.copyOpacity).toBeLessThan(0.05)
+      await page.waitForTimeout(3_200)
+      const finalCopyOpacity = await page.locator('.layered-home-copy').evaluate((element) =>
         Number(window.getComputedStyle(element).opacity),
       )
-      expect(copyOpacity).toBeGreaterThan(0.5)
-      await page.waitForTimeout(6_100)
+      expect(finalCopyOpacity).toBeGreaterThan(0.95)
       await assertNoHorizontalOverflow(page)
       await assertLayeredHeroGeometry(page)
     }

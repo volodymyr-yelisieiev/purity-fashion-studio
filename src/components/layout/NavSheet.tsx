@@ -35,57 +35,58 @@ export function NavSheet({
       tabIndex={-1}
     >
       <div className="site-container site-container-wide nav-sheet-grid">
-        {shellColumns.map((group) => (
-          <div
-            key={group.title}
-            className={
-              group.title === ui.navigation.contact
-                ? 'footer-column nav-sheet-animate nav-sheet-contact-column'
-                : 'footer-column nav-sheet-animate'
-            }
-          >
-            <p className="eyebrow">{group.title}</p>
-            {group.items.map((item) =>
-              'kind' in item ? (
-                item.kind === 'internal' ? (
-                  <Link
-                    key={item.label}
-                    to={item.to}
-                    search={item.search as never}
-                    className="footer-link"
-                    onClick={() => setOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
+        {shellColumns.map((group) => {
+          const items = group.items.filter(
+            (item) => !('kind' in item && item.kind === 'internal' && item.to === bookingPath),
+          )
+
+          return (
+            <div
+              key={group.title}
+              className={
+                group.title === ui.navigation.contact
+                  ? 'footer-column nav-sheet-animate nav-sheet-contact-column'
+                  : 'footer-column nav-sheet-animate'
+              }
+            >
+              <p className="eyebrow">{group.title}</p>
+              {items.map((item) =>
+                'kind' in item ? (
+                  item.kind === 'internal' ? (
+                    <Link
+                      key={item.label}
+                      to={item.to}
+                      search={item.search as never}
+                      className="footer-link"
+                      onClick={() => setOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={item.label}
+                      className="footer-link"
+                      href={item.to}
+                      target={item.to.startsWith('http') ? '_blank' : undefined}
+                      rel={item.to.startsWith('http') ? 'noreferrer' : undefined}
+                    >
+                      {item.label}
+                    </a>
+                  )
                 ) : (
-                  <a
-                    key={item.label}
+                  <HeaderLink
+                    key={item.key}
+                    itemKey={item.key}
+                    to={item.to}
+                    label={item.label}
                     className="footer-link"
-                    href={item.to}
-                    target={item.to.startsWith('http') ? '_blank' : undefined}
-                    rel={item.to.startsWith('http') ? 'noreferrer' : undefined}
-                  >
-                    {item.label}
-                  </a>
-                )
-              ) : (
-                <HeaderLink
-                  key={item.key}
-                  itemKey={item.key}
-                  to={item.to}
-                  label={item.label}
-                  className="footer-link"
-                  onNavigate={() => setOpen(false)}
-                />
-              ),
-            )}
-            {group.title === ui.navigation.contact ? (
-              <div className="mobile-nav-toolbar">
-                <LocaleSwitcher currentLocale={currentLocale} />
-              </div>
-            ) : null}
-          </div>
-        ))}
+                    onNavigate={() => setOpen(false)}
+                  />
+                ),
+              )}
+            </div>
+          )
+        })}
 
         <div className="nav-sheet-toolbar nav-sheet-animate">
           <LocaleSwitcher currentLocale={currentLocale} />

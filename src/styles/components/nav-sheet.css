@@ -11,7 +11,38 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.nav-sheet-toolbar .locale-switcher {
+  display: none;
+}
+
 .nav-sheet-shell::before {
   background: #ffffff;
   opacity: 1;
+}
+
+@media (max-width: 1180px) {
+  .chrome-shell-menu-open .header-side-right {
+    visibility: hidden;
+  }
+
+  .nav-sheet-toolbar .locale-switcher {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-sheet-shell {
+    position: fixed;
+    top: 4.4rem;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: auto !important;
+    max-height: none;
+    overflow-y: auto !important;
+  }
+
+  .nav-sheet-grid {
+    min-height: auto;
+  }
 }

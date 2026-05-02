@@ -418,12 +418,11 @@
 
 @keyframes hero-copy-intro {
   0%,
-  32% {
+  86% {
     opacity: 0;
     transform: translateY(18px);
   }
 
-  46%,
   100% {
     opacity: 1;
     transform: translateY(0);
