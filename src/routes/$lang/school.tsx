@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CourseRows, ListingRhythm, Section, SectionHead } from '~/components/editorial'
 import { buildLocalePath } from '~/lib/i18n'
+import { listingProcessMedia, plannedImageAt } from '~/lib/media-plan'
+import { optimizedImageSrc } from '~/lib/media-refs'
 import { contentQueries } from '~/lib/query'
 import { buildSeoHead } from '~/lib/seo'
 import type { Locale } from '~/lib/types'
@@ -111,13 +113,20 @@ function SchoolPage() {
       <Section>
         <SectionHead eyebrow={audience.eyebrow} title={audience.title} subtitle={audience.subtitle} />
         <div className="method-band">
-          {audience.items.map((item, index) => (
-            <article key={item.title} className="method-column">
-              <span className="list-index">{String(index + 1).padStart(2, '0')}</span>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </article>
-          ))}
+          {audience.items.map((item, index) => {
+            const media = plannedImageAt(listingProcessMedia.school, index, heroImage)
+
+            return (
+              <article key={item.title} className="method-column">
+                <img src={optimizedImageSrc(media.src)} alt={media.alt} loading="lazy" decoding="async" />
+                <div className="method-column-content">
+                  <span className="list-index">{String(index + 1).padStart(2, '0')}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </div>
+              </article>
+            )
+          })}
         </div>
       </Section>
       <CourseRows courses={courses} locale={locale} ui={ui} />

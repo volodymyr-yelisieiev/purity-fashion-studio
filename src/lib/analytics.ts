@@ -2,9 +2,9 @@ import { publicEnv } from './env'
 
 export type AnalyticsEventName =
   | 'page_view'
-  | 'booking_submit_started'
-  | 'booking_submit_succeeded'
-  | 'booking_submit_failed'
+  | 'booking_lead_submit_started'
+  | 'booking_lead_submit_succeeded'
+  | 'booking_lead_submit_failed'
   | 'booking_duplicate_submit_blocked'
   | 'booking_retry_requested'
   | 'contact_submit_started'

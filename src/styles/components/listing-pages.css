@@ -1,25 +1,32 @@
 .editorial-page-hero {
-  padding-top: clamp(7rem, 11vw, 10rem);
+  padding-top: clamp(5.75rem, 8vw, 7.75rem);
 }
 
 .editorial-page-hero-compact {
-  padding-bottom: clamp(1rem, 4vw, 3rem);
+  padding-bottom: clamp(0.5rem, 2.4vw, 1.75rem);
 }
 
 .editorial-page-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(18rem, 0.52fr);
-  gap: var(--space-grid);
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr) minmax(clamp(14rem, 23vw, 22rem), 0.38fr);
+  gap: clamp(1rem, 2.6vw, 3rem);
+  align-items: center;
 }
 
 .editorial-page-hero-copy {
   min-width: 0;
 }
 
+.editorial-page-hero .hero-title {
+  max-width: 100%;
+  font-size: clamp(3.8rem, 7.6vw, 7.8rem);
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
 .editorial-page-hero-media {
   margin: 0;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 5.15;
   overflow: clip;
 }
 
@@ -40,15 +47,16 @@
 
 .listing-rhythm-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(16rem, 0.62fr);
-  gap: var(--space-grid);
-  align-items: start;
-  padding-top: clamp(2rem, 5vw, 4rem);
+  grid-template-columns: minmax(18rem, 0.72fr) minmax(24rem, 0.9fr);
+  gap: clamp(1.25rem, 3vw, 3.5rem);
+  align-items: center;
+  padding-top: clamp(0.25rem, 1.6vw, 1.5rem);
 }
 
 .listing-process-list {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.8rem, 1.4vw, 1.1rem);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -57,7 +65,7 @@
 .listing-process-list li {
   position: relative;
   display: grid;
-  min-height: clamp(12rem, 18vw, 17rem);
+  min-height: clamp(10rem, 13vw, 14rem);
   overflow: clip;
   color: var(--color-canvas);
   isolation: isolate;
@@ -84,10 +92,10 @@
 
 .listing-process-card-copy {
   display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr);
-  gap: 0.7rem 1rem;
+  grid-template-columns: 2.35rem minmax(0, 1fr);
+  gap: 0.55rem 0.85rem;
   align-self: end;
-  padding: clamp(1rem, 2vw, 1.35rem);
+  padding: clamp(0.9rem, 1.6vw, 1.2rem);
 }
 
 .listing-process-list .list-index {
@@ -104,7 +112,7 @@
   grid-column: 2;
   margin: 0;
   color: rgba(255, 255, 255, 0.76);
-  line-height: 1.65;
+  line-height: 1.55;
 }
 
 .editorial-offer-rows,
@@ -254,6 +262,13 @@
   gap: 1rem;
   align-content: center;
   justify-items: start;
+  min-width: 0;
+}
+
+.course-row-side .editorial-row-price {
+  grid-column: auto;
+  justify-self: start;
+  text-align: left;
 }
 
 .course-row-side span {
@@ -265,6 +280,14 @@
 @media (max-width: 1023px) {
   .editorial-page-hero-grid,
   .listing-rhythm-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .editorial-page-hero .hero-title {
+    max-width: 100%;
+  }
+
+  .listing-process-list {
     grid-template-columns: 1fr;
   }
 
@@ -291,6 +314,11 @@
 @media (max-width: 767px) {
   .editorial-page-hero {
     padding-top: 6.5rem;
+  }
+
+  .editorial-page-hero .hero-title {
+    font-size: clamp(3.1rem, 14vw, 4rem);
+    overflow-wrap: anywhere;
   }
 
   .editorial-page-hero-media {

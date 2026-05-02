@@ -13,7 +13,20 @@
   }
 
   .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1rem;
+    align-items: center;
+    justify-content: space-between;
     padding-top: 0.85rem;
+  }
+
+  .footer-legal-link {
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
   }
 
 @media (max-width: 767px) {

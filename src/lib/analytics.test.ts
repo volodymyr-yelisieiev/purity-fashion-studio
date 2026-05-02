@@ -28,7 +28,7 @@ test('createAnalytics dispatches normalized events when enabled', () => {
     },
   })
 
-  analytics.track('booking_submit_succeeded', {
+  analytics.track('booking_lead_submit_succeeded', {
     kind: 'service',
     slug: 'atelier-service',
     source: 'mock',
@@ -36,7 +36,7 @@ test('createAnalytics dispatches normalized events when enabled', () => {
 
   assert.deepEqual(events, [
     {
-      name: 'booking_submit_succeeded',
+      name: 'booking_lead_submit_succeeded',
       payload: {
         kind: 'service',
         slug: 'atelier-service',

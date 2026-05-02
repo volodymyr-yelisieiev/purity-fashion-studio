@@ -1,11 +1,14 @@
 import { Link } from '@tanstack/react-router'
-import type { UiCopy } from '~/lib/types'
+import { buildLocalePath } from '~/lib/i18n'
+import type { Locale, UiCopy } from '~/lib/types'
 import { HeaderLink, type ShellColumn } from './Header'
 
 export function Footer({
+  locale,
   shellColumns,
   ui,
 }: {
+  locale: Locale
   shellColumns: ShellColumn[]
   ui: UiCopy
 }) {
@@ -57,6 +60,9 @@ export function Footer({
       </div>
       <div className="site-container site-container-wide footer-legal">
         <p className="footer-legal-copy">© {currentYear} {ui.labels.allRightsReserved}</p>
+        <Link to={buildLocalePath(locale, '/privacy')} className="footer-legal-link">
+          {ui.labels.privacyLink}
+        </Link>
       </div>
     </footer>
   )

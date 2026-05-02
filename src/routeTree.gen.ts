@@ -17,6 +17,7 @@ import { Route as LangIndexRouteImport } from './routes/$lang/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as LangTransformationRouteImport } from './routes/$lang/transformation'
 import { Route as LangSchoolRouteImport } from './routes/$lang/school'
+import { Route as LangPrivacyRouteImport } from './routes/$lang/privacy'
 import { Route as LangContactsRouteImport } from './routes/$lang/contacts'
 import { Route as LangBookRouteImport } from './routes/$lang/book'
 import { Route as AdminContentRouteRouteImport } from './routes/admin/content/route'
@@ -74,6 +75,11 @@ const LangTransformationRoute = LangTransformationRouteImport.update({
 const LangSchoolRoute = LangSchoolRouteImport.update({
   id: '/school',
   path: '/school',
+  getParentRoute: () => LangRouteRoute,
+} as any)
+const LangPrivacyRoute = LangPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => LangRouteRoute,
 } as any)
 const LangContactsRoute = LangContactsRouteImport.update({
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/admin/content': typeof AdminContentRouteRouteWithChildren
   '/$lang/book': typeof LangBookRoute
   '/$lang/contacts': typeof LangContactsRoute
+  '/$lang/privacy': typeof LangPrivacyRoute
   '/$lang/school': typeof LangSchoolRoute
   '/$lang/transformation': typeof LangTransformationRoute
   '/admin/login': typeof AdminLoginRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$lang/book': typeof LangBookRoute
   '/$lang/contacts': typeof LangContactsRoute
+  '/$lang/privacy': typeof LangPrivacyRoute
   '/$lang/school': typeof LangSchoolRoute
   '/$lang/transformation': typeof LangTransformationRoute
   '/admin/login': typeof AdminLoginRoute
@@ -228,6 +236,7 @@ export interface FileRoutesById {
   '/admin/content': typeof AdminContentRouteRouteWithChildren
   '/$lang/book': typeof LangBookRoute
   '/$lang/contacts': typeof LangContactsRoute
+  '/$lang/privacy': typeof LangPrivacyRoute
   '/$lang/school': typeof LangSchoolRoute
   '/$lang/transformation': typeof LangTransformationRoute
   '/admin/login': typeof AdminLoginRoute
@@ -258,6 +267,7 @@ export interface FileRouteTypes {
     | '/admin/content'
     | '/$lang/book'
     | '/$lang/contacts'
+    | '/$lang/privacy'
     | '/$lang/school'
     | '/$lang/transformation'
     | '/admin/login'
@@ -279,6 +289,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$lang/book'
     | '/$lang/contacts'
+    | '/$lang/privacy'
     | '/$lang/school'
     | '/$lang/transformation'
     | '/admin/login'
@@ -307,6 +318,7 @@ export interface FileRouteTypes {
     | '/admin/content'
     | '/$lang/book'
     | '/$lang/contacts'
+    | '/$lang/privacy'
     | '/$lang/school'
     | '/$lang/transformation'
     | '/admin/login'
@@ -387,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/school'
       fullPath: '/$lang/school'
       preLoaderRoute: typeof LangSchoolRouteImport
+      parentRoute: typeof LangRouteRoute
+    }
+    '/$lang/privacy': {
+      id: '/$lang/privacy'
+      path: '/privacy'
+      fullPath: '/$lang/privacy'
+      preLoaderRoute: typeof LangPrivacyRouteImport
       parentRoute: typeof LangRouteRoute
     }
     '/$lang/contacts': {
@@ -577,6 +596,7 @@ interface LangRouteRouteChildren {
   LangResearchRouteRoute: typeof LangResearchRouteRouteWithChildren
   LangBookRoute: typeof LangBookRoute
   LangContactsRoute: typeof LangContactsRoute
+  LangPrivacyRoute: typeof LangPrivacyRoute
   LangSchoolRoute: typeof LangSchoolRoute
   LangTransformationRoute: typeof LangTransformationRoute
   LangIndexRoute: typeof LangIndexRoute
@@ -589,6 +609,7 @@ const LangRouteRouteChildren: LangRouteRouteChildren = {
   LangResearchRouteRoute: LangResearchRouteRouteWithChildren,
   LangBookRoute: LangBookRoute,
   LangContactsRoute: LangContactsRoute,
+  LangPrivacyRoute: LangPrivacyRoute,
   LangSchoolRoute: LangSchoolRoute,
   LangTransformationRoute: LangTransformationRoute,
   LangIndexRoute: LangIndexRoute,

@@ -1,7 +1,9 @@
 import { useServerFn } from '@tanstack/react-start'
+import { Link } from '@tanstack/react-router'
 import * as React from 'react'
 import { Section } from '~/components/editorial/Section'
 import { analytics } from '~/lib/analytics'
+import { buildLocalePath } from '~/lib/i18n'
 import { optimizedImageSrc } from '~/lib/media-refs'
 import { isDuplicateSubmission } from '~/lib/mock-submission'
 import { submitBookingLead } from '~/lib/submissions'
@@ -111,7 +113,7 @@ export function BookingLayout({
     }
 
     setSubmission({ state: 'pending', message: ui.booking.pending })
-    analytics.track('booking_submit_started', {
+    analytics.track('booking_lead_submit_started', {
       locale,
       kind: intentKind,
       slug: intentSlug,
@@ -137,7 +139,7 @@ export function BookingLayout({
           message: submissionFailureCopy(locale, ui.booking.failure, result.message),
           canRetry: true,
         })
-        analytics.track('booking_submit_failed', {
+        analytics.track('booking_lead_submit_failed', {
           locale,
           kind: intentKind,
           slug: intentSlug,
@@ -149,7 +151,7 @@ export function BookingLayout({
 
       lastSuccessfulSubmissionRef.current = payload
       setSubmission({ state: 'success', message: ui.booking.success })
-      analytics.track('booking_submit_succeeded', {
+      analytics.track('booking_lead_submit_succeeded', {
         locale,
         kind: intentKind,
         slug: intentSlug,
@@ -157,7 +159,7 @@ export function BookingLayout({
       })
     } catch (submissionError) {
       setSubmission({ state: 'error', message: ui.booking.failure, canRetry: true })
-      analytics.track('booking_submit_failed', {
+      analytics.track('booking_lead_submit_failed', {
         locale,
         kind: intentKind,
         slug: intentSlug,
@@ -299,6 +301,11 @@ export function BookingLayout({
               </label>
               <p className="field-help">{ui.booking.nextStepHint}</p>
             </div>
+
+            <p className="form-privacy-note">
+              {ui.labels.privacyNotice}{' '}
+              <Link to={buildLocalePath(locale, '/privacy')}>{ui.labels.privacyLink}</Link>
+            </p>
 
             <div className="booking-submit-row">
               <button className="button-primary" type="submit" disabled={submitDisabled}>

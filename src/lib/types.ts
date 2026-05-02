@@ -394,6 +394,8 @@ export interface UiCopy {
     privateInquiries: string
     corporateBriefs: string
     socialFollowUp: string
+    privacyNotice: string
+    privacyLink: string
     sending: string
     processing: string
   }

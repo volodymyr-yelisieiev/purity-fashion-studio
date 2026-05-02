@@ -225,6 +225,10 @@ export function ContactForm({
         <textarea required name="message" rows={5} />
       </label>
       {publicEnv.enablePrototypeFlows ? <p className="form-status">{ui.contact.prototypeNotice}</p> : null}
+      <p className="form-privacy-note">
+        {ui.labels.privacyNotice}{' '}
+        <Link to={buildLocalePath(locale, '/privacy')}>{ui.labels.privacyLink}</Link>
+      </p>
       <button className="button-primary w-fit" type="submit" disabled={submitDisabled}>
         {pending ? ui.actions.sending : ui.actions.sendInquiry}
       </button>

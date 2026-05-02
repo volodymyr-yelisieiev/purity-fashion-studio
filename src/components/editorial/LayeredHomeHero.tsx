@@ -89,7 +89,7 @@ export function LayeredHomeHero({
         <div className="layered-home-copy">
           <p className="eyebrow">{copy.kicker}</p>
           <h1 id="home-hero-title" className="sr-only">{copy.title}</h1>
-          <BrandLogo variant="extended" className="layered-home-brand-logo" alt="" />
+          <BrandLogo variant="extended" className="layered-home-brand-logo" alt={ui.brand} />
           <p className="layered-home-statement">{copy.slogan}</p>
           <div className="layered-home-actions">
             <Link to={buildLocalePath(locale, '/book')} className="button-primary">

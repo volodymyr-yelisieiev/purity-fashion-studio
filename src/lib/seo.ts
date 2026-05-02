@@ -2,7 +2,7 @@ import { buildLocalePath } from './i18n'
 import { pageMedia } from './media-plan'
 import type { Locale, SeoMetadata } from './types'
 
-const SITE_URL = 'https://purity-fashion-studio.com'
+const SITE_URL = 'https://purity-fashion.com'
 
 function absoluteUrl(path: string) {
   return new URL(path, SITE_URL).toString()

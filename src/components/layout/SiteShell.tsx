@@ -405,7 +405,7 @@ export function SiteShell({
         <Outlet />
       </main>
 
-      <Footer shellColumns={shellColumns} ui={ui} />
+      <Footer locale={locale} shellColumns={shellColumns} ui={ui} />
     </div>
   )
 }

@@ -310,7 +310,14 @@ function RouteCurtain() {
 
   return (
     <div ref={curtainRef} className="route-curtain" aria-hidden="true">
-      <img ref={logoRef} src="/extended_black.svg" alt="" className="route-curtain-logo" />
+      <img
+        ref={logoRef}
+        src="/extended_black.svg"
+        alt=""
+        role="presentation"
+        aria-hidden="true"
+        className="route-curtain-logo"
+      />
     </div>
   )
 }

@@ -93,9 +93,7 @@ export function parsePublicEnv(source: EnvSource): PublicEnv {
     showRouterDevtools: isProductionSurface
       ? false
       : readBoolean(source, 'VITE_ENABLE_ROUTER_DEVTOOLS', false),
-    enableAdmin: isProductionSurface
-      ? false
-      : readBoolean(source, 'VITE_ENABLE_ADMIN', true),
+    enableAdmin: readBoolean(source, 'VITE_ENABLE_ADMIN', !isProductionSurface),
     enablePrototypeFlows: isProductionSurface
       ? false
       : readBoolean(source, 'VITE_ENABLE_PROTOTYPE_FLOWS', true),

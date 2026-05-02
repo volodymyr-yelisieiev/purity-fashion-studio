@@ -73,6 +73,15 @@ const heroStageImage = (
   caption?: string,
 ) => generatedImage({ id, owner, alt, aspect, focalPoint, caption, promptId: 'hero-sequence-v1' })
 
+const slotImage = (
+  id: string,
+  owner: string,
+  alt: string,
+  aspect: PlannedImage['aspect'] = 'square',
+  focalPoint?: PlannedImage['focalPoint'],
+  caption?: string,
+) => generatedImage({ id, owner, alt, aspect, focalPoint, caption, promptId: 'atelier-atlas-v1' })
+
 const heroLayerPng = (
   id: string,
   owner: string,
@@ -95,147 +104,147 @@ const heroLayerPng = (
 
 export const entityMediaOverrides: Record<MediaOverrideGroup, Record<string, PlannedImage>> = {
   service: {
-    'personal-lookbook': atlasImage(
-      'swatch-stack',
+    'personal-lookbook': slotImage(
+      'purity-service-lookbook',
       'service:personal-lookbook',
-      'Abstract stack of ivory and black fabric swatches for a personal lookbook study',
+      'Ivory and black palette study arranged for a personal lookbook',
       'square',
       { x: 50, y: 48 },
       'Personal lookbook / palette study',
     ),
-    'wardrobe-review': atlasImage(
-      'folded-pattern-scroll',
+    'wardrobe-review': slotImage(
+      'purity-service-review',
       'service:wardrobe-review',
       'Folded pattern paper and muslin for a wardrobe review system',
       'square',
       { x: 52, y: 42 },
       'Wardrobe review / structure',
     ),
-    'shopping-service': atlasImage(
-      'pattern-paper-folds',
+    'shopping-service': slotImage(
+      'purity-service-shopping',
       'service:shopping-service',
-      'Layered ivory pattern paper and tailoring marks for a shopping route',
+      'Layered atelier route board for a shopping service',
       'square',
       { x: 48, y: 44 },
       'Shopping service / route planning',
     ),
-    'atelier-service': atlasImage(
-      'pinned-bodice-study',
+    'atelier-service': slotImage(
+      'purity-service-atelier',
       'service:atelier-service',
-      'Pinned muslin bodice study on a tailor form',
+      'Pinned ivory muslin construction for atelier service work',
       'square',
       { x: 50, y: 34 },
       'Atelier / pinned construction',
     ),
   },
   course: {
-    'dress-for-victory-course': heroStageImage(
-      'home-hero-abstract-drape',
+    'dress-for-victory-course': slotImage(
+      'purity-course-dress-victory',
       'course:dress-for-victory-course',
-      'Abstract ivory drape on a tailor mannequin for a dress course',
+      'Sculptural ivory dress study for the Dress for Victory course',
       'portrait',
       { x: 50, y: 34 },
       'Dress course / abstract drape',
     ),
-    'draping-moulage': heroStageImage(
-      'home-hero-fabric-construction',
+    'draping-moulage': slotImage(
+      'purity-course-draping',
       'course:draping-moulage',
-      'Raw ivory fabric construction pinned on a mannequin',
+      'Raw ivory draping construction pinned for moulage study',
       'portrait',
       { x: 50, y: 36 },
       'Draping / moulage study',
     ),
-    'wardrobe-management': atlasImage(
-      'pattern-paper-folds',
+    'wardrobe-management': slotImage(
+      'purity-course-wardrobe',
       'course:wardrobe-management',
-      'Pattern paper folds and atelier drafting marks for wardrobe management',
-      'square',
+      'Wardrobe system materials arranged as an atelier study',
+      'portrait',
       { x: 48, y: 44 },
       'Wardrobe management / visual system',
     ),
   },
   collection: {
-    'dress-for-victory': heroStageImage(
-      'home-hero-abstract-drape',
+    'dress-for-victory': slotImage(
+      'purity-collection-dress-for-victory',
       'collection:dress-for-victory',
-      'Final abstract ivory drape on a tailor mannequin',
+      'Final abstract ivory drape for the Dress for Victory collection',
       'portrait',
       { x: 50, y: 34 },
       'Dress for Victory / abstract drape',
     ),
-    'retreat-wear': atlasImage(
-      'sheer-drape-study',
+    'retreat-wear': slotImage(
+      'purity-collection-retreat-wear',
       'collection:retreat-wear',
-      'Sheer black fabric draped across a pale mannequin form',
-      'square',
+      'Sheer monochrome retreat wear textile study on a pale form',
+      'portrait',
       { x: 45, y: 48 },
       'Retreat Wear / sheer layer',
     ),
-    'travel-capsule': atlasImage(
-      'home-hero-fabric-construction',
+    'travel-capsule': slotImage(
+      'purity-collection-travel-capsule',
       'collection:travel-capsule',
       'Raw ivory travel drape construction pinned on a mannequin',
       'portrait',
       { x: 50, y: 36 },
       'Travel Capsule / travel drape',
     ),
-    'silky-touches': atlasImage(
-      'fabric-shoulder-drape',
+    'silky-touches': slotImage(
+      'purity-collection-silky-touches',
       'collection:silky-touches',
-      'Ivory fabric shoulder drape and subtle tailor marks',
-      'square',
+      'Ivory silk-touch textile drape with subtle tailor marks',
+      'portrait',
       { x: 54, y: 40 },
       'Silky Touches / fabric study',
     ),
   },
   portfolio: {
-    'soft-power-capsule': atlasImage(
-      'atelier-mannequin-study',
+    'soft-power-capsule': slotImage(
+      'purity-portfolio-soft-power',
       'portfolio:soft-power-capsule',
-      'Close abstract mannequin study with black atelier markings',
-      'square',
+      'Soft power capsule silhouette study with black atelier markings',
+      'portrait',
       { x: 48, y: 38 },
       'Soft Power Capsule / silhouette study',
     ),
-    'editorial-corporate-shoot': atlasImage(
-      'figure-sketches',
+    'editorial-corporate-shoot': slotImage(
+      'purity-portfolio-corporate-shoot',
       'portfolio:editorial-corporate-shoot',
-      'Charcoal abstract mannequin sketches for an editorial visual system',
-      'square',
+      'Editorial corporate shoot concept board in monochrome atelier materials',
+      'portrait',
       { x: 52, y: 48 },
       'Corporate editorial / sketch system',
     ),
-    'bridal-reset': atlasImage(
-      'seam-pin-close',
+    'bridal-reset': slotImage(
+      'purity-portfolio-bridal-reset',
       'portfolio:bridal-reset',
-      'Close view of pins and raw ivory seam construction',
-      'square',
+      'Bridal reset construction study in raw ivory muslin',
+      'portrait',
       { x: 50, y: 42 },
       'Bridal Reset / construction detail',
     ),
   },
   transformation: {
-    'dress-of-victory': heroStageImage(
-      'home-hero-abstract-drape',
+    'dress-of-victory': slotImage(
+      'purity-transformation-dress-victory',
       'transformation:dress-of-victory',
       'Sculptural ivory drape on an abstract tailor form',
       'portrait',
       { x: 50, y: 34 },
       'Dress of Victory / abstract transformation',
     ),
-    'wholeness-photomeditation': atlasImage(
-      'studio-shadow-form',
+    'wholeness-photomeditation': slotImage(
+      'purity-transformation-wholeness',
       'transformation:wholeness-photomeditation',
-      'Soft atelier window light and an abstract mannequin shadow',
-      'square',
+      'Soft atelier light and silhouette study for wholeness photomeditation',
+      'portrait',
       { x: 58, y: 54 },
       'Wholeness / silhouette meditation',
     ),
-    'fashion-retreat': atlasImage(
-      'charcoal-texture-study',
+    'fashion-retreat': slotImage(
+      'purity-transformation-retreat',
       'transformation:fashion-retreat',
-      'Charcoal tailoring marks on ivory fabric texture',
-      'square',
+      'Fashion retreat textile ritual study in monochrome atelier materials',
+      'portrait',
       { x: 50, y: 48 },
       'Fashion retreat / atelier texture',
     ),
@@ -331,12 +340,12 @@ export const localizedCopyOverrides: Partial<
 
 export const pageMedia = {
   home: heroStageImage('home-hero-abstract-drape', 'page:home', 'Abstract ivory mannequin drape in a white atelier', 'wide', { x: 50, y: 34 }, 'Kyiv editorial direction'),
-  research: atlasImage('swatch-stack', 'page:research', 'Fabric swatch stack and silhouette palette study', 'portrait', { x: 50, y: 48 }, 'Research / Form / Silhouette'),
-  realisation: atlasImage('pinned-bodice-study', 'page:realisation', 'Pinned muslin bodice study on an atelier form', 'portrait', { x: 50, y: 34 }, 'Atelier / fitting / couture'),
-  transformation: atlasImage('studio-shadow-form', 'page:transformation', 'Soft atelier shadow and abstract mannequin silhouette', 'portrait', { x: 58, y: 54 }, 'Transformation / ritual / styling'),
-  collections: atlasImage('folded-pattern-scroll', 'page:collections', 'Folded pattern paper and ivory muslin for collection planning', 'portrait', { x: 52, y: 42 }, 'Collections / editorial pieces'),
-  school: atlasImage('pattern-paper-folds', 'page:school', 'Pattern paper folds and black drafting lines for atelier study', 'portrait', { x: 48, y: 44 }, 'School / study / transformation'),
-  portfolio: atlasImage('figure-sketches', 'page:portfolio', 'Charcoal abstract mannequin sketches for selected portfolio cases', 'portrait', { x: 52, y: 48 }, 'Portfolio / selected cases'),
+  research: slotImage('purity-page-research', 'page:research', 'Research materials with fabric swatches and silhouette notes', 'portrait', { x: 50, y: 48 }, 'Research / Form / Silhouette'),
+  realisation: slotImage('purity-page-realisation', 'page:realisation', 'Pinned muslin bodice study for atelier realisation', 'portrait', { x: 50, y: 34 }, 'Atelier / fitting / couture'),
+  transformation: slotImage('purity-page-transformation', 'page:transformation', 'Soft atelier silhouette study for transformation work', 'portrait', { x: 58, y: 54 }, 'Transformation / ritual / styling'),
+  collections: slotImage('purity-page-collections', 'page:collections', 'Collection planning materials in ivory muslin and pattern paper', 'portrait', { x: 52, y: 42 }, 'Collections / editorial pieces'),
+  school: slotImage('purity-page-school', 'page:school', 'Atelier school drafting study with pattern paper and fabric', 'portrait', { x: 48, y: 44 }, 'School / study / transformation'),
+  portfolio: slotImage('purity-page-portfolio', 'page:portfolio', 'Portfolio case materials arranged as an atelier concept board', 'portrait', { x: 52, y: 48 }, 'Portfolio / selected cases'),
   contactsIntro: atlasImage('studio-shadow-form', 'page:contactsIntro', 'Soft atelier window light with abstract mannequin shadow', 'wide', { x: 58, y: 54 }),
   contactsAside: atlasImage('thread-spool', 'page:contactsAside', 'Ivory thread spool and loose thread in a quiet atelier detail', 'square', { x: 44, y: 52 }),
   bookingDefault: heroStageImage('home-hero-pattern-thread', 'page:bookingDefault', 'Tailor mannequin with pattern lines and pins for a booking consultation', 'portrait', { x: 50, y: 36 }),
@@ -394,37 +403,37 @@ export const homeLayerMedia = {
 
 export const listingProcessMedia = {
   research: [
-    atlasImage('swatch-stack', 'process:research:0', 'Fabric swatch palette for research step one', 'square', { x: 50, y: 48 }),
-    atlasImage('thread-spool', 'process:research:1', 'Thread spool and loose thread for research step two', 'square', { x: 44, y: 52 }),
-    atlasImage('couture-seam-curve', 'process:research:2', 'Curved couture seam for research step three', 'square', { x: 50, y: 48 }),
+    slotImage('purity-process-research-context', 'process:research:0', 'Context board with ivory swatches for research step one', 'square', { x: 50, y: 48 }),
+    slotImage('purity-process-research-form', 'process:research:1', 'Abstract form study with thread and muslin for research step two', 'square', { x: 44, y: 52 }),
+    slotImage('purity-process-research-system', 'process:research:2', 'Couture seam system study for research step three', 'square', { x: 50, y: 48 }),
   ],
   realisation: [
-    atlasImage('pinned-bodice-study', 'process:realisation:0', 'Pinned bodice study for realisation step one', 'square', { x: 50, y: 34 }),
-    heroStageImage('home-hero-fabric-construction', 'process:realisation:1', 'Fabric construction on a mannequin for realisation step two', 'portrait', { x: 50, y: 36 }),
-    atlasImage('folded-pattern-scroll', 'process:realisation:2', 'Folded pattern scroll for realisation step three', 'square', { x: 52, y: 42 }),
+    slotImage('purity-process-realisation-route', 'process:realisation:0', 'Atelier route board for realisation step one', 'square', { x: 50, y: 34 }),
+    slotImage('purity-process-realisation-dossier', 'process:realisation:1', 'Dossier materials and pinned muslin for realisation step two', 'square', { x: 50, y: 36 }),
+    slotImage('purity-process-realisation-object', 'process:realisation:2', 'Finished atelier object study for realisation step three', 'square', { x: 52, y: 42 }),
   ],
   school: [
-    atlasImage('pattern-paper-folds', 'process:school:0', 'Pattern paper folds for school step one', 'square', { x: 48, y: 44 }),
-    atlasImage('atelier-mannequin-study', 'process:school:1', 'Mannequin study for school step two', 'square', { x: 48, y: 38 }),
-    atlasImage('swatch-stack', 'process:school:2', 'Fabric swatch stack for school step three', 'square', { x: 50, y: 48 }),
+    slotImage('purity-process-school-construction', 'process:school:0', 'Pattern construction study for school step one', 'square', { x: 48, y: 44 }),
+    slotImage('purity-process-school-fabric', 'process:school:1', 'Fabric behavior study for school step two', 'square', { x: 48, y: 38 }),
+    slotImage('purity-process-school-practice', 'process:school:2', 'Practice board with muslin and swatches for school step three', 'square', { x: 50, y: 48 }),
   ],
   transformation: [
-    atlasImage('studio-shadow-form', 'process:transformation:0', 'Soft atelier shadow for transformation step one', 'square', { x: 58, y: 54 }),
-    atlasImage('charcoal-texture-study', 'process:transformation:1', 'Charcoal tailoring texture for transformation step two', 'square', { x: 50, y: 48 }),
-    atlasImage('figure-sketches', 'process:transformation:2', 'Charcoal mannequin sketches for transformation step three', 'square', { x: 52, y: 48 }),
+    slotImage('purity-process-transformation-state', 'process:transformation:0', 'Quiet atelier state study for transformation step one', 'square', { x: 58, y: 54 }),
+    slotImage('purity-process-transformation-image', 'process:transformation:1', 'Image transformation texture study for step two', 'square', { x: 50, y: 48 }),
+    slotImage('purity-process-transformation-experience', 'process:transformation:2', 'Experience board with charcoal silhouette marks for step three', 'square', { x: 52, y: 48 }),
   ],
 } satisfies Record<string, PlannedImage[]>
 
 export const listingPreviewMedia = {
   collections: [
-    atlasImage('folded-pattern-scroll', 'preview:collections:0', 'Folded pattern scroll for collection listing preview', 'square', { x: 52, y: 42 }),
-    atlasImage('fabric-shoulder-drape', 'preview:collections:1', 'Ivory shoulder drape for collection listing preview', 'square', { x: 54, y: 40 }),
-    atlasImage('swatch-stack', 'preview:collections:2', 'Fabric swatches for collection listing preview', 'square', { x: 50, y: 48 }),
+    slotImage('purity-process-collections-scenario', 'preview:collections:0', 'Collection scenario board with folded ivory pattern paper', 'square', { x: 52, y: 42 }),
+    slotImage('purity-process-collections-material', 'preview:collections:1', 'Collection material study with ivory drape and tailoring marks', 'square', { x: 54, y: 40 }),
+    slotImage('purity-process-collections-silhouette', 'preview:collections:2', 'Collection silhouette study with fabric swatches and muslin', 'square', { x: 50, y: 48 }),
   ],
   portfolio: [
-    atlasImage('figure-sketches', 'preview:portfolio:0', 'Charcoal mannequin sketches for portfolio listing preview', 'square', { x: 52, y: 48 }),
-    atlasImage('atelier-mannequin-study', 'preview:portfolio:1', 'Marked mannequin study for portfolio listing preview', 'square', { x: 48, y: 38 }),
-    atlasImage('charcoal-texture-study', 'preview:portfolio:2', 'Charcoal texture mark for portfolio listing preview', 'square', { x: 50, y: 48 }),
+    slotImage('purity-process-portfolio-task', 'preview:portfolio:0', 'Portfolio task board with charcoal silhouette studies', 'square', { x: 52, y: 48 }),
+    slotImage('purity-process-portfolio-method', 'preview:portfolio:1', 'Portfolio method study with marked mannequin and muslin', 'square', { x: 48, y: 38 }),
+    slotImage('purity-process-portfolio-result', 'preview:portfolio:2', 'Portfolio result texture board with refined atelier marks', 'square', { x: 50, y: 48 }),
   ],
 } satisfies Record<string, PlannedImage[]>
 

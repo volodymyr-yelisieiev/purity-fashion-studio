@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { expect, test, type Page, type TestInfo } from '@playwright/test'
 
 const viewports = [
@@ -11,21 +12,44 @@ const viewports = [
   { width: 1440, height: 946 },
 ] as const
 
+const seed = JSON.parse(
+  readFileSync(new URL('../../src/content/seed/public-posts.seed.json', import.meta.url), 'utf8'),
+) as {
+  locales: {
+    uk: {
+      services: Array<{ slug: string; area: 'research' | 'realisation' }>
+      collections: Array<{ slug: string }>
+      portfolio: Array<{ slug: string }>
+    }
+  }
+}
+
+const publicRoutePaths = [
+  '',
+  '/research',
+  ...seed.locales.uk.services
+    .filter((service) => service.area === 'research')
+    .map((service) => `/research/${service.slug}`),
+  '/realisation',
+  ...seed.locales.uk.services
+    .filter((service) => service.area === 'realisation')
+    .map((service) => `/realisation/${service.slug}`),
+  '/transformation',
+  '/collections',
+  ...seed.locales.uk.collections.map((collection) => `/collections/${collection.slug}`),
+  '/portfolio',
+  ...seed.locales.uk.portfolio.map((entry) => `/portfolio/${entry.slug}`),
+  '/school',
+  '/contacts',
+  '/book',
+  '/privacy',
+]
+
 const publicRoutes = [
-  '/uk',
-  '/uk/research',
-  '/uk/realisation',
-  '/uk/transformation',
-  '/uk/collections',
-  '/uk/collections/dress-for-victory',
-  '/uk/portfolio',
-  '/uk/portfolio/soft-power-capsule',
-  '/uk/school',
-  '/uk/contacts',
-  '/uk/book',
+  ...publicRoutePaths.map((path) => `/uk${path}`),
   '/uk/book?kind=service&slug=personal-lookbook&area=research',
   '/uk/book?kind=portfolio&slug=soft-power-capsule',
-] as const
+]
 
 const screenshotRoutePaths = new Set(['/uk', '/uk/contacts', '/uk/book?kind=service&slug=personal-lookbook&area=research'])
 const screenshotViewportWidths = new Set([390, 1440])
@@ -220,6 +244,8 @@ async function assertFocusInsideOpenMenu(page: Page) {
 }
 
 test.describe('lead-gen MVP viewport smoke', () => {
+  test.describe.configure({ timeout: 120_000 })
+
   for (const viewport of viewports) {
     test(`public routes render without console errors at ${viewport.width}px`, async ({ page }, testInfo) => {
       await page.setViewportSize(viewport)

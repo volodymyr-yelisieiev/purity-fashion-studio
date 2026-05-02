@@ -1,22 +1,42 @@
 import { mkdir } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { expect, test, type Page } from '@playwright/test'
 
 const locales = ['uk', 'en', 'ru'] as const
 
+const seed = JSON.parse(
+  readFileSync(new URL('../../src/content/seed/public-posts.seed.json', import.meta.url), 'utf8'),
+) as {
+  locales: {
+    uk: {
+      services: Array<{ slug: string; area: 'research' | 'realisation' }>
+      collections: Array<{ slug: string }>
+      portfolio: Array<{ slug: string }>
+    }
+  }
+}
+
 const routePaths = [
   '',
   '/research',
+  ...seed.locales.uk.services
+    .filter((service) => service.area === 'research')
+    .map((service) => `/research/${service.slug}`),
   '/realisation',
+  ...seed.locales.uk.services
+    .filter((service) => service.area === 'realisation')
+    .map((service) => `/realisation/${service.slug}`),
   '/transformation',
   '/collections',
-  '/collections/dress-for-victory',
+  ...seed.locales.uk.collections.map((collection) => `/collections/${collection.slug}`),
   '/portfolio',
-  '/portfolio/soft-power-capsule',
+  ...seed.locales.uk.portfolio.map((entry) => `/portfolio/${entry.slug}`),
   '/school',
   '/contacts',
   '/book',
-] as const
+  '/privacy',
+]
 
 const viewports = [
   { width: 320, height: 740 },
@@ -165,7 +185,7 @@ async function assertFirstFoldAction(page: Page) {
 }
 
 test.describe('manual visual route matrix', () => {
-  test.describe.configure({ timeout: 120_000 })
+  test.describe.configure({ timeout: 360_000 })
 
   for (const viewport of viewports) {
     test(`public routes render stable screenshots at ${viewport.width}px`, async ({ page }) => {

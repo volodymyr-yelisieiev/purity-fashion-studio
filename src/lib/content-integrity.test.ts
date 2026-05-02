@@ -222,7 +222,7 @@ test('public post seed applies editable admin overlay fields', () => {
   assert.equal(service.summary, 'Edited summary')
   assert.equal(service.price.eur, '€999')
   assert.equal(service.price.uah, '₴40 000')
-  assert.equal(service.media.src, '/images/generated/swatch-stack.webp')
+  assert.equal(service.media.src, '/images/generated/purity-service-lookbook.webp')
   assert.equal(service.media.alt, 'Edited cover')
 
   const review = {

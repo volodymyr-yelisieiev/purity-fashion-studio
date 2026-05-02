@@ -70,8 +70,9 @@ function AdminLayout() {
         <p className="eyebrow">Admin</p>
         <h1 className="section-title">Content Platform</h1>
         <p className="editorial-copy editorial-copy-measure">
-          Adapter-ready content management for Headless CMS publishing. The route is config-gated
-          and disabled by default in production until auth and provider credentials are configured.
+          Adapter-ready content management for Headless CMS publishing. The route is config-gated,
+          disabled by default in production, and can be enabled only with auth and provider
+          credentials configured.
         </p>
       </div>
 

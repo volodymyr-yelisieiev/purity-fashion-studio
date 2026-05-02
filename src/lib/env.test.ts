@@ -17,7 +17,7 @@ test('parsePublicEnv disables prototype-only flags in production by default', ()
   assert.equal(env.analyticsMode, 'off')
 })
 
-test('parsePublicEnv refuses prototype-only flags on production surfaces', () => {
+test('parsePublicEnv keeps production admin explicit while refusing prototype-only flags', () => {
   const env = parsePublicEnv({
     MODE: 'production',
     VITE_APP_ENV: 'production',
@@ -29,7 +29,7 @@ test('parsePublicEnv refuses prototype-only flags on production surfaces', () =>
   })
 
   assert.equal(env.showRouterDevtools, false)
-  assert.equal(env.enableAdmin, false)
+  assert.equal(env.enableAdmin, true)
   assert.equal(env.enablePrototypeFlows, false)
   assert.equal(env.enableForcedMockFailures, false)
   assert.equal(env.analyticsMode, 'off')
