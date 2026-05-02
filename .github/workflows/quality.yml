@@ -27,14 +27,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --foreground-scripts
 
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Unit tests
-        run: npm run test
-
-      - name: Build
-        run: npm run build
+      - name: Run build checks
+        run: npm run ci:build
 
   playwright-smoke:
     runs-on: ubuntu-latest
@@ -54,11 +48,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --foreground-scripts
 
-      - name: Install Playwright
-        run: npx playwright install --with-deps chromium
-
       - name: Run smoke tests
-        run: npm run test:smoke -- --reporter=list
+        run: npm run ci:smoke
 
       - name: Upload Playwright artifacts
         if: always()
@@ -89,20 +80,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --foreground-scripts
 
-      - name: Install Playwright
-        run: npx playwright install --with-deps chromium
-
-      - name: Run production copy audit
-        run: npm run test:production-copy -- --reporter=list
-        env:
-          PLAYWRIGHT_APP_ENV: production
-          PLAYWRIGHT_ENABLE_ADMIN: 'false'
-
-      - name: Capture visual route screenshots
-        run: npm run test:visual -- --reporter=list
-        env:
-          PLAYWRIGHT_APP_ENV: production
-          PLAYWRIGHT_ENABLE_ADMIN: 'false'
+      - name: Run visual review checks
+        run: npm run ci:visual
 
       - name: Upload visual review artifacts
         if: always()
