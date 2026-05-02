@@ -151,6 +151,7 @@ function RouteCurtain() {
 
   const blocker = useBlocker({
     shouldBlockFn: ({ current, next }) => current.pathname !== next.pathname,
+    enableBeforeUnload: false,
     withResolver: true,
     disabled: phase !== 'idle',
   })

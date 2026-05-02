@@ -98,6 +98,23 @@ async function assertNoHorizontalOverflow(page: Page) {
   expect(hasOverflow).toBe(false)
 }
 
+async function assertReloadIsNotBlocked(page: Page) {
+  const beforeUnloadState = await page.evaluate(() => {
+    const event = new Event('beforeunload', { cancelable: true })
+    const dispatchResult = window.dispatchEvent(event)
+
+    return {
+      defaultPrevented: event.defaultPrevented,
+      dispatchResult,
+    }
+  })
+
+  expect(beforeUnloadState).toEqual({
+    defaultPrevented: false,
+    dispatchResult: true,
+  })
+}
+
 async function assertDocumentLanguage(page: Page, route: string) {
   await expect(page.locator('html')).toHaveAttribute('lang', routeLocale(route))
 }
@@ -488,6 +505,18 @@ test.describe('lead-gen MVP viewport smoke', () => {
     await expect(page.locator('#nav-sheet')).toBeVisible()
     await assertFocusInsideOpenMenu(page)
     await assertNoHorizontalOverflow(page)
+
+    expect(errors).toEqual([])
+  })
+
+  test('route curtain does not block browser reload', async ({ page }) => {
+    const errors = collectConsoleErrors(page)
+
+    await page.goto('/uk')
+    await assertReloadIsNotBlocked(page)
+    await page.getByRole('link', { name: /Research|Дослідження|Исследование/i }).first().click()
+    await expect(page).toHaveURL(/\/uk\/research$/)
+    await assertReloadIsNotBlocked(page)
 
     expect(errors).toEqual([])
   })
