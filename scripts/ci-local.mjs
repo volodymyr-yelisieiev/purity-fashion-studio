@@ -101,8 +101,25 @@ function runBuildChecks() {
 }
 
 function runSmokeChecks() {
+  const smokeEnv = {
+    APP_ENV: 'development',
+    HOST: '127.0.0.1',
+    NODE_ENV: 'production',
+    PLAYWRIGHT_BASE_URL: 'http://127.0.0.1:3100',
+    PLAYWRIGHT_APP_ENV: 'development',
+    PLAYWRIGHT_ENABLE_ADMIN: 'true',
+    PLAYWRIGHT_WEB_SERVER_COMMAND: 'npm run start',
+    PLAYWRIGHT_WEB_SERVER_URL: 'http://127.0.0.1:3100/uk',
+    PORT: '3100',
+    VITE_APP_ENV: 'development',
+    VITE_ENABLE_ADMIN: 'true',
+    VITE_ENABLE_PROTOTYPE_FLOWS: 'false',
+    VITE_ENABLE_ROUTER_DEVTOOLS: 'false',
+  };
+
+  runNpmScript('build', [], { env: smokeEnv });
   installPlaywrightChromium();
-  runNpmScript('test:smoke', ['--reporter=list']);
+  runNpmScript('test:smoke', ['--reporter=list'], { env: smokeEnv });
 }
 
 function runVisualChecks() {
