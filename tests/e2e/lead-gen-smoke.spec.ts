@@ -221,6 +221,62 @@ async function assertPrimaryActionVisible(page: Page) {
   await expect(action).toBeVisible()
 }
 
+async function assertLayeredHeroGeometry(page: Page) {
+  const metrics = await page.evaluate(() => {
+    const sequenceElement = document.querySelector('.layered-home-sequence')
+    const copyElement = document.querySelector('.layered-home-copy')
+    const sequence = sequenceElement?.getBoundingClientRect()
+    const copy = copyElement?.getBoundingClientRect()
+    const stage = document.querySelector('.layered-home-stage-3')
+
+    if (!sequence || !copy || !copyElement || !stage) {
+      return null
+    }
+
+    return {
+      viewport: { width: window.innerWidth, height: window.innerHeight },
+      sequence: {
+        left: sequence.left,
+        right: sequence.right,
+        top: sequence.top,
+        bottom: sequence.bottom,
+        width: sequence.width,
+        height: sequence.height,
+        centerX: sequence.left + sequence.width / 2,
+      },
+      copy: {
+        top: copy.top,
+        bottom: copy.bottom,
+      },
+      stageOpacity: getComputedStyle(stage).opacity,
+      copyOpacity: getComputedStyle(copyElement).opacity,
+    }
+  })
+
+  expect(metrics).not.toBeNull()
+  if (!metrics) {
+    return
+  }
+
+  expect(metrics.stageOpacity).toBe('1')
+  expect(metrics.copy.top).toBeLessThan(metrics.viewport.height - 96)
+
+  if (metrics.viewport.width < 768) {
+    expect(metrics.sequence.width).toBeGreaterThanOrEqual(metrics.viewport.width * 0.77)
+    expect(metrics.sequence.height).toBeGreaterThanOrEqual(metrics.viewport.height * 0.4)
+    expect(metrics.sequence.bottom).toBeLessThanOrEqual(metrics.copy.top + 4)
+    expect(Math.abs(metrics.sequence.centerX - metrics.viewport.width / 2)).toBeLessThanOrEqual(
+      metrics.viewport.width * 0.04,
+    )
+    expect(metrics.sequence.left).toBeGreaterThanOrEqual(-2)
+    expect(metrics.sequence.right).toBeLessThanOrEqual(metrics.viewport.width + 2)
+    return
+  }
+
+  expect(metrics.sequence.height).toBeGreaterThanOrEqual(metrics.viewport.height * 0.7)
+  expect(metrics.sequence.right).toBeLessThanOrEqual(metrics.viewport.width - 16)
+}
+
 async function attachSmokeScreenshot(page: Page, testInfo: TestInfo, route: string, width: number) {
   if (!screenshotRoutePaths.has(route) || !screenshotViewportWidths.has(width)) {
     return
@@ -236,8 +292,7 @@ async function assertFocusInsideOpenMenu(page: Page) {
   const focusEscaped = await page.evaluate(() => {
     const active = document.activeElement
     const sheet = document.querySelector('#nav-sheet')
-    const toggle = document.querySelector('.menu-toggle')
-    return Boolean(active && !sheet?.contains(active) && !toggle?.contains(active))
+    return Boolean(active && !sheet?.contains(active))
   })
 
   expect(focusEscaped).toBe(false)
@@ -305,6 +360,60 @@ test.describe('lead-gen MVP viewport smoke', () => {
     await page.goto('/uk')
     await expect(page.locator('.layered-home-hero')).toBeVisible()
     await expect(page.locator('h1').first()).toBeVisible()
+    await assertNoHorizontalOverflow(page)
+    await assertLayeredHeroGeometry(page)
+
+    expect(errors).toEqual([])
+  })
+
+  test('home layered hero keeps editorial scale across viewport matrix', async ({ page }) => {
+    const errors = collectConsoleErrors(page)
+
+    for (const viewport of [
+      { width: 320, height: 740 },
+      { width: 375, height: 812 },
+      { width: 390, height: 844 },
+      { width: 768, height: 1024 },
+      { width: 1024, height: 768 },
+      { width: 1440, height: 946 },
+    ] as const) {
+      await page.setViewportSize(viewport)
+      await page.goto('/uk')
+      await page.waitForTimeout(3_000)
+      const copyOpacity = await page.locator('.layered-home-copy').evaluate((element) =>
+        Number(window.getComputedStyle(element).opacity),
+      )
+      expect(copyOpacity).toBeGreaterThan(0.5)
+      await page.waitForTimeout(6_100)
+      await assertNoHorizontalOverflow(page)
+      await assertLayeredHeroGeometry(page)
+    }
+
+    expect(errors).toEqual([])
+  })
+
+  test('reduced motion opens menu without staged focus escape', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 390, height: 844 })
+    const errors = collectConsoleErrors(page)
+
+    await page.goto('/uk')
+    await page.locator('.menu-toggle').click()
+    await expect(page.locator('#nav-sheet')).toHaveAttribute('aria-hidden', 'false')
+    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+    await expect(page.locator('#nav-sheet')).toBeVisible()
+    await assertFocusInsideOpenMenu(page)
+    await assertNoHorizontalOverflow(page)
+
+    expect(errors).toEqual([])
+  })
+
+  test('PRD atelier alias resolves to the atelier service page', async ({ page }) => {
+    const errors = collectConsoleErrors(page)
+
+    await page.goto('/uk/realisation/atelier')
+    await expect(page).toHaveURL(/\/uk\/realisation\/atelier-service$/)
+    await expect(page.locator('main h1, main h2').first()).toBeVisible()
     await assertNoHorizontalOverflow(page)
 
     expect(errors).toEqual([])

@@ -3,6 +3,11 @@ import { pageMedia } from './media-plan'
 import type { Locale, SeoMetadata } from './types'
 
 const SITE_URL = 'https://purity-fashion.com'
+const OPEN_GRAPH_LOCALES: Record<Locale, string> = {
+  uk: 'uk_UA',
+  en: 'en_GB',
+  ru: 'ru_RU',
+}
 
 function absoluteUrl(path: string) {
   return new URL(path, SITE_URL).toString()
@@ -45,7 +50,13 @@ export function buildSeoHead({
       { name: 'description', content: metadata.description },
       { name: 'keywords', content: keywords },
       { property: 'og:type', content: metadata.type ?? 'website' },
-      { property: 'og:locale', content: locale },
+      { property: 'og:locale', content: OPEN_GRAPH_LOCALES[locale] },
+      ...(['uk', 'en', 'ru'] as const)
+        .filter((alternateLocale) => alternateLocale !== locale)
+        .map((alternateLocale) => ({
+          property: 'og:locale:alternate',
+          content: OPEN_GRAPH_LOCALES[alternateLocale],
+        })),
       { property: 'og:title', content: metadata.title },
       { property: 'og:description', content: metadata.description },
       { property: 'og:url', content: canonical },

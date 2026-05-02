@@ -45,6 +45,30 @@ const localeForbiddenCopy = {
   ru: /Відчуй|Дослідження|Втілення|Локальний режим|Macetirovanie/i,
 } satisfies Record<(typeof locales)[number], RegExp>
 
+const ogLocales = {
+  uk: 'uk_UA',
+  en: 'en_GB',
+  ru: 'ru_RU',
+} satisfies Record<(typeof locales)[number], string>
+
+const localizedUtilityCopy = {
+  uk: {
+    privacyTitle: 'Політика приватності',
+    privacyLink: 'Політика приватності',
+    mapLabel: 'Київська студія на Предславинській',
+  },
+  en: {
+    privacyTitle: 'Privacy notice',
+    privacyLink: 'Privacy notice',
+    mapLabel: 'Kyiv studio on Predslavynska Street',
+  },
+  ru: {
+    privacyTitle: 'Политика приватности',
+    privacyLink: 'Политика приватности',
+    mapLabel: 'Киевская студия на Предславинской',
+  },
+} satisfies Record<(typeof locales)[number], Record<string, string>>
+
 function localizedRoute(locale: (typeof locales)[number], routePath: string) {
   return `/${locale}${routePath}`
 }
@@ -73,6 +97,35 @@ async function assertNoHorizontalOverflow(page: Page) {
   expect(hasOverflow).toBe(false)
 }
 
+async function assertLocalizedHead(page: Page, locale: (typeof locales)[number], routePath: string) {
+  const expectedCanonical = new URL(localizedRoute(locale, routePath), 'https://purity-fashion.com').toString()
+  const head = await page.evaluate(() => ({
+    title: document.title,
+    description: document.querySelector<HTMLMetaElement>('meta[name="description"]')?.content ?? '',
+    canonical: document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href ?? '',
+    ogUrl: document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.content ?? '',
+    ogLocale: document.querySelector<HTMLMetaElement>('meta[property="og:locale"]')?.content ?? '',
+    alternates: Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="alternate"]')).map((link) => ({
+      hrefLang: link.hreflang,
+      href: link.href,
+    })),
+  }))
+
+  expect(head.title).toContain('PURITY')
+  expect(head.description).not.toBe('')
+  expect(head.canonical).toBe(expectedCanonical)
+  expect(head.ogUrl).toBe(expectedCanonical)
+  expect(head.ogLocale).toBe(ogLocales[locale])
+  expect(head.alternates).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ hrefLang: 'x-default' }),
+      expect.objectContaining({ hrefLang: 'uk' }),
+      expect.objectContaining({ hrefLang: 'en' }),
+      expect.objectContaining({ hrefLang: 'ru' }),
+    ]),
+  )
+}
+
 test.describe('production route copy audit', () => {
   test.describe.configure({ timeout: 90_000 })
 
@@ -86,8 +139,19 @@ test.describe('production route copy audit', () => {
         await expect(page.locator('html')).toHaveAttribute('lang', locale)
         await expect(page.locator('main')).toBeVisible()
         await assertNoHorizontalOverflow(page)
+        await assertLocalizedHead(page, locale, routePath)
         await expect(page.locator('body')).not.toContainText(forbiddenProductionCopy)
         await expect(page.locator('body')).not.toContainText(localeForbiddenCopy[locale])
+
+        if (routePath === '/privacy') {
+          await expect(page.locator('h1')).toContainText(localizedUtilityCopy[locale].privacyTitle)
+        }
+
+        if (routePath === '/contacts') {
+          await expect(page.locator('body')).toContainText(localizedUtilityCopy[locale].mapLabel)
+        }
+
+        await expect(page.locator('footer.site-footer')).toContainText(localizedUtilityCopy[locale].privacyLink)
       }
 
       expect(errors).toEqual([])

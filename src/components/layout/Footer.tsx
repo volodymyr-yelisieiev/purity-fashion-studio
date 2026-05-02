@@ -56,7 +56,7 @@ export function Footer({
         ))}
       </div>
       <div className="footer-logo-band">
-        <img src="/main_black.svg" alt={ui.brand} className="footer-logo-band-image" />
+        <img src="/main_black.svg" alt={ui.brand} width={352.8} height={140.4} className="footer-logo-band-image" />
       </div>
       <div className="site-container site-container-wide footer-legal">
         <p className="footer-legal-copy">© {currentYear} {ui.labels.allRightsReserved}</p>

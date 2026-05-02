@@ -13,8 +13,8 @@ const privacyCopy: Record<Locale, {
   sections: Array<{ title: string; body: string }>
 }> = {
   uk: {
-    eyebrow: 'PURITY / Privacy notice',
-    title: 'Privacy notice',
+    eyebrow: 'PURITY / Політика приватності',
+    title: 'Політика приватності',
     intro:
       'Ця сторінка пояснює, як PURITY Fashion Studio обробляє контактні дані, які ви залишаєте у формах запиту.',
     sections: [
@@ -61,8 +61,8 @@ const privacyCopy: Record<Locale, {
     ],
   },
   ru: {
-    eyebrow: 'PURITY / Privacy notice',
-    title: 'Privacy notice',
+    eyebrow: 'PURITY / Политика приватности',
+    title: 'Политика приватности',
     intro:
       'Эта страница объясняет, как PURITY Fashion Studio обрабатывает контактные данные, которые вы оставляете в формах запроса.',
     sections: [

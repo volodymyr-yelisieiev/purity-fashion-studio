@@ -28,7 +28,6 @@
   opacity: 0;
   transform: translate(var(--hero-sequence-x), calc(var(--hero-sequence-y) + 18px));
   pointer-events: none;
-  filter: drop-shadow(0 1.4rem 2.4rem rgba(17, 35, 55, 0.11));
   animation: hero-sequence-intro 5.8s var(--ease-editorial) both;
 }
 
@@ -128,7 +127,7 @@
   position: absolute;
   inset: -1.1rem -1.4rem -1.2rem -1.1rem;
   z-index: -1;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.78) 64%, rgba(255, 255, 255, 0));
+  background: rgba(255, 255, 255, 0.94);
   pointer-events: none;
 }
 
@@ -160,7 +159,7 @@
 @media (min-width: 768px) and (max-width: 1120px) {
   .layered-home-sequence {
     right: clamp(1rem, 4vw, 3rem);
-    width: clamp(16rem, 33vw, 27rem);
+    width: clamp(19rem, 40vw, 30rem);
     height: min(74svh, 46rem);
   }
 
@@ -192,11 +191,11 @@
 
     left: 50%;
     right: auto;
-    top: 9.6rem;
+    top: clamp(7.4rem, 17svh, 9rem);
     bottom: auto;
-    width: min(70vw, 21rem);
-    height: 39svh;
-    max-height: 22.5rem;
+    width: min(82vw, 24.5rem);
+    height: clamp(19.5rem, 44svh, 27rem);
+    max-height: 27rem;
   }
 
   .layered-home-stage-list {
@@ -222,7 +221,7 @@
 
   .layered-home-copy::before {
     inset: -0.75rem -1rem -1rem -0.75rem;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92) 68%, rgba(255, 255, 255, 0.32));
+    background: rgba(255, 255, 255, 0.96);
   }
 
   .layered-home-brand-logo {
@@ -243,6 +242,29 @@
     min-height: 2.75rem;
     padding-inline: 0.85rem;
     font-size: 0.64rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .layered-home-sequence {
+    top: clamp(8rem, 17svh, 9rem);
+    width: min(78vw, 23rem);
+    height: clamp(19rem, 41svh, 25rem);
+  }
+
+  .layered-home-actions {
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+  }
+
+  .layered-home-actions .button-primary,
+  .layered-home-actions .button-secondary {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    padding-inline: 0.42rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
   }
 }
 
@@ -382,12 +404,12 @@
 
 @keyframes hero-copy-intro {
   0%,
-  86% {
+  32% {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(18px);
   }
 
-  98%,
+  46%,
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -403,10 +425,13 @@
     animation: none;
   }
 
-  .layered-home-sequence,
   .layered-home-stage-label,
   .layered-home-copy {
     transform: none;
+  }
+
+  .layered-home-sequence {
+    transform: translate(var(--hero-sequence-x), var(--hero-sequence-y));
   }
 
   .layered-home-sequence,

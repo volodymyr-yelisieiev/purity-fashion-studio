@@ -6,6 +6,7 @@ const webServerCommand =
 const webServerURL = process.env.PLAYWRIGHT_WEB_SERVER_URL ?? `${baseURL}/uk`
 const playwrightAppEnv = process.env.PLAYWRIGHT_APP_ENV ?? 'development'
 const enableAdmin = process.env.PLAYWRIGHT_ENABLE_ADMIN ?? (playwrightAppEnv === 'production' ? 'false' : 'true')
+const enableExtendedBrowsers = process.env.PLAYWRIGHT_EXTENDED_BROWSERS === 'true'
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -24,6 +25,18 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    ...(enableExtendedBrowsers
+      ? [
+          {
+            name: 'firefox',
+            use: { ...devices['Desktop Firefox'] },
+          },
+          {
+            name: 'mobile-safari',
+            use: { ...devices['iPhone 13'] },
+          },
+        ]
+      : []),
   ],
   webServer: {
     command: webServerCommand,

@@ -16,6 +16,8 @@ const directEmailFailure: Record<Locale, string> = {
   en: 'The request could not be sent. Please write directly to voronina@purity-fashion.com.',
   ru: 'Не удалось отправить запрос. Напишите напрямую на voronina@purity-fashion.com.',
 }
+const studioMapEmbedSrc =
+  'https://www.google.com/maps?q=Kyiv%2003150%2C%20Predslavynska%20Street%2044%2C%20office%201%2C%20floor%202%2C%20French%20Quarter%202&output=embed'
 
 function submissionFailureCopy(locale: Locale, fallback: string, reason?: string) {
   return reason === 'missing-contact-webhook' ? directEmailFailure[locale] : fallback
@@ -64,7 +66,7 @@ export function ContactsLayout({
           <article className="contact-info-card">
             <p className="eyebrow">{page.corporateTitle}</p>
             <h2 className="section-subtitle">{page.corporateText}</h2>
-            <Link to={buildLocalePath(locale, '/book')} className="button-secondary">
+            <Link to={buildLocalePath(locale, '/book')} search={{ intent: 'corporate' }} className="button-secondary">
               {ui.actions.requestConsultation}
             </Link>
           </article>
@@ -93,6 +95,15 @@ export function ContactsLayout({
                 </a>
               ) : null}
             </div>
+            {settings.mapHref ? (
+              <iframe
+                className="contact-map-embed"
+                title={settings.mapLabel}
+                src={studioMapEmbedSrc}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            ) : null}
           </article>
         </aside>
       </div>

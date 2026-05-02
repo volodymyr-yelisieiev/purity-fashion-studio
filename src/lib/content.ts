@@ -280,6 +280,7 @@ const ui: Localized<UiCopy> = {
     },
     nav: {
       home: 'Головна',
+      atelier: 'Atelier',
       research: 'Дослідження',
       realisation: 'Втілення',
       transformation: 'Трансформація',
@@ -289,7 +290,7 @@ const ui: Localized<UiCopy> = {
       contacts: 'Контакти',
     },
     actions: {
-      bookNow: 'Забронювати',
+      bookNow: 'Запит на бронювання',
       buyService: 'Надіслати запит',
       viewCollection: 'Дивитися колекцію',
       viewPortfolio: 'Переглянути кейси',
@@ -353,7 +354,7 @@ const ui: Localized<UiCopy> = {
       corporateBriefs: 'Корпоративні брифи',
       socialFollowUp: 'Instagram / YouTube / Facebook / приватний concierge follow-up',
       privacyNotice: 'Надсилаючи форму, ви погоджуєтесь з обробкою контактних даних для відповіді студії.',
-      privacyLink: 'Privacy notice',
+      privacyLink: 'Політика приватності',
       sending: 'Надсилання...',
       processing: 'Обробка...',
     },
@@ -417,6 +418,7 @@ const ui: Localized<UiCopy> = {
     },
     nav: {
       home: 'Home',
+      atelier: 'Atelier',
       research: 'Research',
       realisation: 'Realisation',
       transformation: 'Transformation',
@@ -426,7 +428,7 @@ const ui: Localized<UiCopy> = {
       contacts: 'Contacts',
     },
     actions: {
-      bookNow: 'Book now',
+      bookNow: 'Request booking',
       buyService: 'Request service',
       viewCollection: 'View collection',
       viewPortfolio: 'View portfolio',
@@ -554,6 +556,7 @@ const ui: Localized<UiCopy> = {
     },
     nav: {
       home: 'Главная',
+      atelier: 'Atelier',
       research: 'Исследование',
       realisation: 'Воплощение',
       transformation: 'Трансформация',
@@ -563,7 +566,7 @@ const ui: Localized<UiCopy> = {
       contacts: 'Контакты',
     },
     actions: {
-      bookNow: 'Забронировать',
+      bookNow: 'Запрос на бронь',
       buyService: 'Отправить запрос',
       viewCollection: 'Смотреть коллекцию',
       viewPortfolio: 'Смотреть кейсы',
@@ -627,7 +630,7 @@ const ui: Localized<UiCopy> = {
       corporateBriefs: 'Корпоративные брифы',
       socialFollowUp: 'Instagram / YouTube / Facebook / private concierge follow-up',
       privacyNotice: 'Отправляя форму, вы соглашаетесь на обработку контактных данных для ответа студии.',
-      privacyLink: 'Privacy notice',
+      privacyLink: 'Политика приватности',
       sending: 'Отправка...',
       processing: 'Обработка...',
     },
@@ -2744,8 +2747,14 @@ export function getServices(locale: Locale): ServiceEntity[] {
   return getSeedServices(locale)
 }
 
-export function getStudioSettings() {
-  return studioSettings
+export function getStudioSettings(locale: Locale = 'uk') {
+  const contactsPage = contactsPages[locale]
+
+  return {
+    ...studioSettings,
+    locationLabel: contactsPage.addressText,
+    mapLabel: contactsPage.mapLabel,
+  }
 }
 
 export function getAdminNavigation(locale: Locale) {

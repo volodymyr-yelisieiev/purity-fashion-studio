@@ -79,6 +79,7 @@ export function Header({
   locale,
   ui,
   open,
+  isHydrated,
   setOpen,
   isHome,
   headerDocked,
@@ -94,6 +95,7 @@ export function Header({
   locale: Locale
   ui: UiCopy
   open: boolean
+  isHydrated: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
   isHome: boolean
   headerDocked: boolean
@@ -124,6 +126,7 @@ export function Header({
             className="menu-toggle menu-toggle-inline"
             aria-expanded={open}
             aria-controls="nav-sheet"
+            disabled={!isHydrated}
             onClick={() => setOpen((value) => !value)}
           >
             {open ? ui.navigation.close : ui.navigation.menu}

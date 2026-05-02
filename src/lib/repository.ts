@@ -114,7 +114,7 @@ export const contentRepository: ContentRepository = {
   },
   async getStudioSettings(locale) {
     await wait()
-    return getStudioSettings()
+    return getStudioSettings(locale)
   },
   async getAdminNavigation(locale) {
     await wait()

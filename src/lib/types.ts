@@ -320,6 +320,7 @@ export interface UiCopy {
   }
   nav: Record<
     | 'home'
+    | 'atelier'
     | 'research'
     | 'realisation'
     | 'transformation'

@@ -32,6 +32,7 @@ export function NavSheet({
       aria-label={ui.accessibility.siteMenu}
       aria-hidden={!open}
       inert={!open}
+      tabIndex={-1}
     >
       <div className="site-container site-container-wide nav-sheet-grid">
         {shellColumns.map((group) => (

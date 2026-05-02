@@ -85,6 +85,9 @@
 }
 
 .method-column a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   width: fit-content;
   color: var(--color-canvas);
   border-bottom: 1px solid currentColor;

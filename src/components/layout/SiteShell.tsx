@@ -12,6 +12,12 @@ function clamp01(value: number) {
   return Math.min(Math.max(value, 0), 1)
 }
 
+const fallbackMapLabels: Record<Locale, string> = {
+  uk: 'Київська студія на Предславинській',
+  en: 'Kyiv studio on Predslavynska Street',
+  ru: 'Киевская студия на Предславинской',
+}
+
 type BookingIntentKind = 'service' | 'course' | 'collection' | 'portfolio' | 'transformation'
 
 type BookingSearchParams =
@@ -88,6 +94,7 @@ export function SiteShell({
   const isHome = pathname === homePath
   const prefersReducedMotion = usePrefersReducedMotion()
   const [open, setOpen] = React.useState(false)
+  const [isHydrated, setIsHydrated] = React.useState(false)
   const [isHeaderDocked, setIsHeaderDocked] = React.useState(!isHome)
   const shellRef = React.useRef<HTMLDivElement | null>(null)
   const menuToggleRef = React.useRef<HTMLButtonElement | null>(null)
@@ -103,7 +110,7 @@ export function SiteShell({
     socialLinks: [],
     mapHref:
       'https://www.google.com/maps/search/?api=1&query=Kyiv%2003150%2C%20Predslavynska%20Street%2044%2C%20office%201%2C%20floor%202%2C%20French%20Quarter%202',
-    mapLabel: 'PURITY studio on map',
+    mapLabel: fallbackMapLabels[locale],
   }
   const bookingPath = buildLocalePath(locale, '/book')
   const bookingSearch = React.useMemo(
@@ -112,16 +119,19 @@ export function SiteShell({
   )
 
   React.useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  React.useEffect(() => {
     setOpen(false)
   }, [pathname])
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (typeof window === 'undefined' || !open) {
       return
     }
 
     const sheet = navSheetRef.current
-    const toggle = menuToggleRef.current
     const previousActiveElement = document.activeElement instanceof HTMLElement
       ? document.activeElement
       : null
@@ -155,23 +165,9 @@ export function SiteShell({
       target.setAttribute('aria-hidden', 'true')
     })
 
-    const getFocusableElements = () => [
-      ...(toggle ? [toggle] : []),
-      ...Array.from(sheet?.querySelectorAll<HTMLElement>(focusableSelector) ?? []),
-    ].filter((element) => !element.hasAttribute('disabled'))
-
-    const handlePointerDown = (event: PointerEvent) => {
-      const target = event.target as Node | null
-      if (!target) {
-        return
-      }
-
-      const clickedInsideSheet = sheet?.contains(target) ?? false
-      const clickedToggle = toggle?.contains(target) ?? false
-      if (!clickedInsideSheet && !clickedToggle) {
-        setOpen(false)
-      }
-    }
+    const getFocusableElements = () =>
+      Array.from(sheet?.querySelectorAll<HTMLElement>(focusableSelector) ?? [])
+        .filter((element) => !element.hasAttribute('disabled'))
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -201,14 +197,21 @@ export function SiteShell({
 
       event.preventDefault()
       focusable[nextIndex]?.focus()
+
+      if (!sheet.contains(document.activeElement)) {
+        sheet.focus()
+      }
     }
 
-    window.requestAnimationFrame(() => toggle?.focus())
-    document.addEventListener('pointerdown', handlePointerDown, true)
+    sheet?.focus()
+    window.requestAnimationFrame(() => {
+      if (!sheet?.contains(document.activeElement)) {
+        sheet?.focus()
+      }
+    })
     document.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      document.removeEventListener('pointerdown', handlePointerDown, true)
       document.removeEventListener('keydown', handleKeyDown)
       document.documentElement.style.overflow = ''
       document.body.style.overflow = ''
@@ -303,6 +306,13 @@ export function SiteShell({
 
     if (open) {
       gsap.set(sheet, { display: 'block', pointerEvents: 'auto' })
+
+      if (prefersReducedMotion) {
+        gsap.set(sheet, { height: 'auto', autoAlpha: 1 })
+        gsap.set(items, { y: 0, autoAlpha: 1 })
+        return
+      }
+
       const timeline = gsap.timeline()
       timeline.fromTo(
         sheet,
@@ -329,14 +339,14 @@ export function SiteShell({
 
     gsap.set(items, { y: -18, autoAlpha: 0 })
     gsap.set(sheet, { display: 'none', height: 0, autoAlpha: 0, pointerEvents: 'none' })
-  }, [open])
+  }, [open, prefersReducedMotion])
 
   const navEntries = SITE_NAV_GROUPS.map((group) => ({
     title: siteNavGroupTitle(group.id, ui),
-    items: group.items.map((key) => ({
-      key,
-      to: buildLocalePath(locale, `/${key}`),
-      label: ui.nav[key],
+    items: group.items.map((item) => ({
+      key: item.key,
+      to: buildLocalePath(locale, item.path),
+      label: ui.nav[item.key],
     })),
   }))
 
@@ -388,6 +398,7 @@ export function SiteShell({
         locale={locale}
         ui={ui}
         open={open}
+        isHydrated={isHydrated}
         setOpen={setOpen}
         isHome={isHome}
         headerDocked={headerDocked}

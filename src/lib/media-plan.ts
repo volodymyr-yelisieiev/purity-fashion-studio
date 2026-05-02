@@ -82,7 +82,7 @@ const slotImage = (
   caption?: string,
 ) => generatedImage({ id, owner, alt, aspect, focalPoint, caption, promptId: 'atelier-atlas-v1' })
 
-const heroLayerPng = (
+const heroLayerImage = (
   id: string,
   owner: string,
   alt: string,
@@ -90,7 +90,7 @@ const heroLayerPng = (
 ): PlannedImage => ({
   id,
   owner,
-  src: `/images/generated/${id}.png`,
+  src: `/images/generated/${id}.webp`,
   alt,
   caption,
   aspect: 'portrait',
@@ -395,9 +395,9 @@ export const homeLayerMedia = {
   patternPaper: heroStageImage('home-hero-pattern-thread', 'home:layered-hero:pattern-paper', 'Tailor mannequin with pattern lines, thread, and pins', 'portrait', { x: 50, y: 36 }),
   silkFold: heroStageImage('home-hero-fabric-construction', 'home:layered-hero:silk-fold', 'Raw ivory fabric construction pinned to a mannequin', 'portrait', { x: 50, y: 36 }),
   mannequinDrape: heroStageImage('home-hero-abstract-drape', 'home:layered-hero:mannequin-drape', 'Final abstract ivory drape on a mannequin', 'portrait', { x: 50, y: 34 }),
-  mannequinBase: heroLayerPng('home-hero-frame-01-research', 'home:layered-hero:mannequin-base', 'Baked transparent research mannequin frame', 'Research / mannequin frame'),
-  constructionOverlay: heroLayerPng('home-hero-frame-02-realisation', 'home:layered-hero:construction-overlay', 'Baked transparent realisation construction frame', 'Realisation / construction frame'),
-  drapeOverlay: heroLayerPng('home-hero-frame-03-transformation', 'home:layered-hero:drape-overlay', 'Baked transparent transformation drape frame', 'Transformation / drape frame'),
+  mannequinBase: heroLayerImage('home-hero-frame-01-research', 'home:layered-hero:mannequin-base', 'Baked transparent research mannequin frame', 'Research / mannequin frame'),
+  constructionOverlay: heroLayerImage('home-hero-frame-02-realisation', 'home:layered-hero:construction-overlay', 'Baked transparent realisation construction frame', 'Realisation / construction frame'),
+  drapeOverlay: heroLayerImage('home-hero-frame-03-transformation', 'home:layered-hero:drape-overlay', 'Baked transparent transformation drape frame', 'Transformation / drape frame'),
   threadDetail: atlasImage('seam-pin-close', 'home:layered-hero:thread-detail', 'Close view of pins and raw ivory seam construction', 'landscape', { x: 50, y: 42 }),
 } satisfies Record<string, PlannedImage>
 

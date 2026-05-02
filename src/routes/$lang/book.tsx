@@ -1,7 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { BookingLayout } from '~/components/forms/BookingForm'
+import { buildLocalePath } from '~/lib/i18n'
 import { pageMedia } from '~/lib/media-plan'
 import { contentQueries } from '~/lib/query'
+import { buildSeoHead } from '~/lib/seo'
 import type { ImageAsset, Price } from '~/lib/types'
 
 type BookingSearch = {
@@ -54,6 +56,22 @@ export const Route = createFileRoute('/$lang/book')({
 
     return { locale, ui, researchServices, realisationServices, courses, collections, offers, portfolio }
   },
+  head: ({ loaderData }) =>
+    loaderData
+      ? buildSeoHead({
+          locale: loaderData.locale,
+          pathname: buildLocalePath(loaderData.locale, '/book'),
+          metadata: {
+            title: `PURITY | ${loaderData.ui.booking.title}`,
+            description: loaderData.ui.booking.intro,
+            keywords: ['PURITY booking', 'fashion studio consultation', 'atelier booking'],
+            image: {
+              src: pageMedia.bookingDefault.src,
+              alt: loaderData.ui.booking.title,
+            },
+          },
+        })
+      : {},
   component: BookingPage,
 })
 

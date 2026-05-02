@@ -31,6 +31,7 @@ import { Route as LangRealisationIndexRouteImport } from './routes/$lang/realisa
 import { Route as LangPortfolioIndexRouteImport } from './routes/$lang/portfolio/index'
 import { Route as LangCollectionsIndexRouteImport } from './routes/$lang/collections/index'
 import { Route as LangResearchSlugRouteImport } from './routes/$lang/research/$slug'
+import { Route as LangRealisationAtelierRouteImport } from './routes/$lang/realisation/atelier'
 import { Route as LangRealisationSlugRouteImport } from './routes/$lang/realisation/$slug'
 import { Route as LangPortfolioSlugRouteImport } from './routes/$lang/portfolio/$slug'
 import { Route as LangCollectionsSlugRouteImport } from './routes/$lang/collections/$slug'
@@ -147,6 +148,11 @@ const LangResearchSlugRoute = LangResearchSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => LangResearchRouteRoute,
 } as any)
+const LangRealisationAtelierRoute = LangRealisationAtelierRouteImport.update({
+  id: '/atelier',
+  path: '/atelier',
+  getParentRoute: () => LangRealisationRouteRoute,
+} as any)
 const LangRealisationSlugRoute = LangRealisationSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/$lang/collections/$slug': typeof LangCollectionsSlugRoute
   '/$lang/portfolio/$slug': typeof LangPortfolioSlugRoute
   '/$lang/realisation/$slug': typeof LangRealisationSlugRoute
+  '/$lang/realisation/atelier': typeof LangRealisationAtelierRoute
   '/$lang/research/$slug': typeof LangResearchSlugRoute
   '/$lang/collections/': typeof LangCollectionsIndexRoute
   '/$lang/portfolio/': typeof LangPortfolioIndexRoute
@@ -215,6 +222,7 @@ export interface FileRoutesByTo {
   '/$lang/collections/$slug': typeof LangCollectionsSlugRoute
   '/$lang/portfolio/$slug': typeof LangPortfolioSlugRoute
   '/$lang/realisation/$slug': typeof LangRealisationSlugRoute
+  '/$lang/realisation/atelier': typeof LangRealisationAtelierRoute
   '/$lang/research/$slug': typeof LangResearchSlugRoute
   '/$lang/collections': typeof LangCollectionsIndexRoute
   '/$lang/portfolio': typeof LangPortfolioIndexRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/$lang/collections/$slug': typeof LangCollectionsSlugRoute
   '/$lang/portfolio/$slug': typeof LangPortfolioSlugRoute
   '/$lang/realisation/$slug': typeof LangRealisationSlugRoute
+  '/$lang/realisation/atelier': typeof LangRealisationAtelierRoute
   '/$lang/research/$slug': typeof LangResearchSlugRoute
   '/$lang/collections/': typeof LangCollectionsIndexRoute
   '/$lang/portfolio/': typeof LangPortfolioIndexRoute
@@ -276,6 +285,7 @@ export interface FileRouteTypes {
     | '/$lang/collections/$slug'
     | '/$lang/portfolio/$slug'
     | '/$lang/realisation/$slug'
+    | '/$lang/realisation/atelier'
     | '/$lang/research/$slug'
     | '/$lang/collections/'
     | '/$lang/portfolio/'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/$lang/collections/$slug'
     | '/$lang/portfolio/$slug'
     | '/$lang/realisation/$slug'
+    | '/$lang/realisation/atelier'
     | '/$lang/research/$slug'
     | '/$lang/collections'
     | '/$lang/portfolio'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/$lang/collections/$slug'
     | '/$lang/portfolio/$slug'
     | '/$lang/realisation/$slug'
+    | '/$lang/realisation/atelier'
     | '/$lang/research/$slug'
     | '/$lang/collections/'
     | '/$lang/portfolio/'
@@ -499,6 +511,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangResearchSlugRouteImport
       parentRoute: typeof LangResearchRouteRoute
     }
+    '/$lang/realisation/atelier': {
+      id: '/$lang/realisation/atelier'
+      path: '/atelier'
+      fullPath: '/$lang/realisation/atelier'
+      preLoaderRoute: typeof LangRealisationAtelierRouteImport
+      parentRoute: typeof LangRealisationRouteRoute
+    }
     '/$lang/realisation/$slug': {
       id: '/$lang/realisation/$slug'
       path: '/$slug'
@@ -565,11 +584,13 @@ const LangPortfolioRouteRouteWithChildren =
 
 interface LangRealisationRouteRouteChildren {
   LangRealisationSlugRoute: typeof LangRealisationSlugRoute
+  LangRealisationAtelierRoute: typeof LangRealisationAtelierRoute
   LangRealisationIndexRoute: typeof LangRealisationIndexRoute
 }
 
 const LangRealisationRouteRouteChildren: LangRealisationRouteRouteChildren = {
   LangRealisationSlugRoute: LangRealisationSlugRoute,
+  LangRealisationAtelierRoute: LangRealisationAtelierRoute,
   LangRealisationIndexRoute: LangRealisationIndexRoute,
 }
 

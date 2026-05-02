@@ -226,6 +226,10 @@ button {
   background: transparent;
 }
 
+.selector-chip {
+  min-height: 2.75rem;
+}
+
 .button-primary,
 .button-secondary {
   display: inline-flex;
@@ -278,7 +282,7 @@ button {
 }
 
 .button-compact {
-  min-height: 2.5rem;
+  min-height: 2.75rem;
   padding-inline: 0.8rem;
 }
 
@@ -359,8 +363,10 @@ button {
 .nav-link,
 .footer-link {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   width: fit-content;
+  min-height: 2.75rem;
   white-space: nowrap;
   font-size: 0.76rem;
   font-weight: 400;
@@ -420,7 +426,11 @@ button {
 }
 
 .locale-link {
-  min-width: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   padding: 0.55rem 0.72rem;
   text-align: center;
   font-size: 0.68rem;
@@ -444,6 +454,7 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 2.75rem;
   border: 1px solid currentColor;
   background: var(--chrome-surface);
   color: currentColor;

@@ -145,6 +145,14 @@
   text-transform: uppercase;
 }
 
+.contact-map-embed {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--line);
+  filter: grayscale(1) contrast(1.02);
+}
+
 @media (max-width: 960px) {
   .contact-workspace {
     grid-template-columns: 1fr;
