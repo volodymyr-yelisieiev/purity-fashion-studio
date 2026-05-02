@@ -107,10 +107,20 @@ function runSmokeChecks() {
 
 function runVisualChecks() {
   const productionEnv = {
+    APP_ENV: 'production',
+    HOST: '127.0.0.1',
+    NODE_ENV: 'production',
+    PLAYWRIGHT_BASE_URL: 'http://127.0.0.1:3100',
     PLAYWRIGHT_APP_ENV: 'production',
     PLAYWRIGHT_ENABLE_ADMIN: 'false',
+    PLAYWRIGHT_WEB_SERVER_COMMAND: 'npm run start',
+    PLAYWRIGHT_WEB_SERVER_URL: 'http://127.0.0.1:3100/uk',
+    PORT: '3100',
+    VITE_APP_ENV: 'production',
+    VITE_ENABLE_ADMIN: 'false',
   };
 
+  runNpmScript('build', [], { env: productionEnv });
   installPlaywrightChromium();
   runNpmScript('test:production-copy', ['--reporter=list'], { env: productionEnv });
   runNpmScript('test:visual', ['--reporter=list'], { env: productionEnv });
