@@ -1,0 +1,374 @@
+import type { Metadata } from "next"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+
+import { ContentPage } from "@/components/content-page"
+import { FeatureList, ImageFrame } from "@/components/purity"
+import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { buttonVariants } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { collections, siteSettings } from "@/content/source"
+import {
+  beadedDressCopy,
+  capsuleCopy,
+  newYearPartyCopy,
+} from "@/content/collection-page-specs"
+import type { CollectionPageSpec } from "@/content/model"
+import { getEntryMetadata } from "@/content/metadata"
+import {
+  getCategory,
+  getMediaAsset,
+  getFirstMediaAsset,
+  getVisibleCollection,
+} from "@/content/queries"
+import { collectionPath } from "@/content/routes"
+import { BookingStartCta } from "@/features/booking/booking-start-cta"
+import { hasLocale, locales, localizePath, type Locale } from "@/i18n/routing"
+import { cn } from "@/lib/utils"
+
+type CollectionPageProps = {
+  params: Promise<{ locale: string; slug: string }>
+}
+
+export const dynamicParams = false
+
+export function generateStaticParams() {
+  return locales.flatMap((locale) =>
+    collections
+      .filter((collection) => collection.visibleInMvp)
+      .map((collection) => ({ locale, slug: collection.routeSegment }))
+  )
+}
+
+export async function generateMetadata({
+  params,
+}: CollectionPageProps): Promise<Metadata> {
+  const { locale: rawLocale, slug } = await params
+
+  if (!hasLocale(rawLocale)) {
+    return {}
+  }
+
+  const collection = getVisibleCollection(slug)
+
+  if (!collection) {
+    return {}
+  }
+
+  return getEntryMetadata(
+    collection,
+    rawLocale,
+    collectionPath(collection.routeSegment)
+  )
+}
+
+function CollectionDetailPage({
+  locale,
+  collection,
+  copy,
+}: {
+  locale: Locale
+  collection: NonNullable<ReturnType<typeof getVisibleCollection>>
+  copy: CollectionPageSpec
+}) {
+  const currentPath = collectionPath(collection.routeSegment)
+  const mediaAsset = getFirstMediaAsset(collection.mediaIds)
+  const storyAssets = collection.mediaIds
+    .slice(1)
+    .map((mediaId) => getMediaAsset(mediaId))
+    .filter((asset): asset is NonNullable<typeof asset> => Boolean(asset?.src))
+  const bookingHref = localizePath(
+    locale,
+    "/booking?service=capsule-collection"
+  )
+
+  return (
+    <div className="min-h-svh bg-background text-foreground">
+      <SiteHeader locale={locale} currentPath={currentPath} />
+
+      <main>
+        <section className="mx-auto grid w-full max-w-6xl min-w-0 gap-8 px-6 py-10 md:grid-cols-[1fr_0.95fr] md:items-end md:px-10 md:py-12">
+          <div className="grid min-w-0 gap-6">
+            <p className="text-xs tracking-normal text-muted-foreground uppercase">
+              {copy.eyebrow[locale]}
+            </p>
+            <h1 className="max-w-4xl text-4xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
+              {collection.title[locale]}
+            </h1>
+            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
+              {collection.summary[locale]}
+            </p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {collection.materials[locale].map((material) => (
+                <Card
+                  key={material}
+                  data-size="sm"
+                  className="border-border bg-background"
+                >
+                  <CardContent className="text-sm leading-6 text-muted-foreground">
+                    {material}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="flex max-w-full flex-wrap gap-3">
+              <BookingStartCta
+                href={bookingHref}
+                label={siteSettings.home.primaryCta.label[locale]}
+                serviceSlug="capsule-collection"
+              />
+              <Link
+                href={localizePath(locale, "/services/capsule-collection")}
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "lg" })
+                )}
+              >
+                {copy.serviceLabel[locale]}
+              </Link>
+            </div>
+          </div>
+          {mediaAsset?.src && (
+            <ImageFrame
+              alt={mediaAsset.alt[locale]}
+              src={mediaAsset.src}
+              label={collection.title[locale]}
+              eager
+              className="aspect-[4/5]"
+            />
+          )}
+        </section>
+
+        {storyAssets.length > 0 && (
+          <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
+            <div className="mb-8 grid gap-4 md:grid-cols-[0.8fr_1.2fr] md:items-end">
+              <h2 className="text-3xl leading-tight font-medium md:text-5xl">
+                {copy.stylingTitle[locale]}
+              </h2>
+              <p className="text-sm leading-7 text-muted-foreground">
+                {copy.narrative[locale]}
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {storyAssets.map((asset) => (
+                <ImageFrame
+                  key={asset.id}
+                  alt={asset.alt[locale]}
+                  src={asset.src}
+                  label={copy.stylingTitle[locale]}
+                  className="aspect-[4/3]"
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section className="bg-muted">
+          <div className="mx-auto grid max-w-6xl min-w-0 gap-10 px-6 py-16 md:grid-cols-[0.8fr_1.2fr] md:px-10">
+            <div>
+              <p className="mb-4 text-xs tracking-normal text-muted-foreground uppercase">
+                {copy.stylingTitle[locale]}
+              </p>
+              <h2 className="text-4xl leading-tight font-medium text-balance md:text-6xl">
+                {copy.stylingTitle[locale]}
+              </h2>
+              <p className="mt-5 text-sm leading-7 text-muted-foreground">
+                {copy.narrative[locale]}
+              </p>
+            </div>
+            <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {copy.styling.map((item) => (
+                <Card
+                  key={item.title[locale]}
+                  className="h-full border-border bg-background"
+                >
+                  <CardHeader>
+                    <CardTitle className="min-w-0 break-words">
+                      {item.title[locale]}
+                    </CardTitle>
+                    <CardDescription className="min-w-0 break-words">
+                      {item.text[locale]}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
+          <h2 className="mb-8 text-3xl leading-tight font-medium md:text-5xl">
+            {copy.factsTitle[locale]}
+          </h2>
+          <div className="grid auto-rows-fr gap-3 sm:grid-cols-3">
+            {copy.facts.map((fact) => (
+              <Card
+                key={fact.title[locale]}
+                className="h-full border-border bg-background"
+              >
+                <CardHeader>
+                  <CardTitle className="min-w-0 break-words">
+                    {fact.title[locale]}
+                  </CardTitle>
+                  <CardDescription className="min-w-0 break-words">
+                    {fact.text[locale]}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
+          <h2 className="mb-8 text-3xl leading-tight font-medium md:text-5xl">
+            {copy.inquiryTitle[locale]}
+          </h2>
+          <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {copy.inquiry.map((step, index) => (
+              <Card
+                key={step.title[locale]}
+                className="h-full border-border bg-background"
+              >
+                <CardHeader>
+                  <p className="mb-4 text-xs text-muted-foreground">
+                    {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <CardTitle className="min-w-0 break-words">
+                    {step.title[locale]}
+                  </CardTitle>
+                  <CardDescription className="min-w-0 break-words">
+                    {step.text[locale]}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-muted">
+          <div className="mx-auto grid max-w-6xl min-w-0 auto-rows-fr gap-4 px-6 py-16 md:grid-cols-2 md:px-10">
+            <Card className="h-full min-w-0 border-primary-foreground/20 bg-primary text-primary-foreground">
+              <CardHeader>
+                <CardTitle className="min-w-0 break-words">
+                  {copy.materialsTitle[locale]}
+                </CardTitle>
+                <CardDescription className="text-secondary">
+                  {copy.narrative[locale]}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="border-t border-primary-foreground/20 pt-5">
+                <FeatureList items={collection.materials[locale]} />
+              </CardContent>
+            </Card>
+            <Card className="h-full min-w-0 border-border bg-background">
+              <CardHeader>
+                <CardTitle className="min-w-0 break-words">
+                  {copy.availabilityTitle[locale]}
+                </CardTitle>
+                <CardDescription className="min-w-0 break-words">
+                  {collection.commercialStatus[locale]}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="border-t border-border pt-5 text-sm leading-7 text-muted-foreground">
+                {collection.priceNote[locale]}
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
+          <Card className="min-w-0 border-border bg-background">
+            <CardHeader>
+              <CardTitle className="min-w-0 break-words">
+                {copy.ctaTitle[locale]}
+              </CardTitle>
+              <CardDescription className="mt-3 max-w-3xl">
+                {copy.ctaSummary[locale]}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <BookingStartCta
+                href={bookingHref}
+                label={siteSettings.home.primaryCta.label[locale]}
+                serviceSlug="capsule-collection"
+              />
+            </CardContent>
+          </Card>
+        </section>
+      </main>
+      <SiteFooter locale={locale} currentPath={currentPath} />
+    </div>
+  )
+}
+
+export default async function CollectionPage({ params }: CollectionPageProps) {
+  const { locale: rawLocale, slug } = await params
+
+  if (!hasLocale(rawLocale)) {
+    notFound()
+  }
+
+  const locale: Locale = rawLocale
+  const collection = getVisibleCollection(slug)
+
+  if (!collection) {
+    notFound()
+  }
+
+  const category = getCategory("collections")
+
+  if (collection.slug === "purity-capsule") {
+    return (
+      <CollectionDetailPage
+        locale={locale}
+        collection={collection}
+        copy={capsuleCopy}
+      />
+    )
+  }
+
+  if (collection.slug === "new-year-party-collection") {
+    return (
+      <CollectionDetailPage
+        locale={locale}
+        collection={collection}
+        copy={newYearPartyCopy}
+      />
+    )
+  }
+
+  if (collection.slug === "beaded-dress-signal") {
+    return (
+      <CollectionDetailPage
+        locale={locale}
+        collection={collection}
+        copy={beadedDressCopy}
+      />
+    )
+  }
+
+  return (
+    <ContentPage
+      locale={locale}
+      currentPath={collectionPath(collection.routeSegment)}
+      eyebrow={category?.title[locale] ?? collection.title[locale]}
+      title={collection.title[locale]}
+      summary={collection.summary[locale]}
+      items={[
+        collection.commercialStatus[locale],
+        collection.priceNote[locale],
+        ...collection.materials[locale],
+      ]}
+      mediaAsset={getFirstMediaAsset(collection.mediaIds)}
+      action={{
+        label: siteSettings.home.primaryCta.label[locale],
+        href: localizePath(locale, "/booking?service=capsule-collection"),
+      }}
+    />
+  )
+}

@@ -1,0 +1,23 @@
+# PURITY QA Checklist
+
+- Core localized routes load for `uk`, `ru`, and `en`.
+- Booking and contact forms validate localized errors and clear stale errors after success.
+- Language switches preserve the current path.
+- Navigation, CTAs, form controls, and shadcn/Base UI surfaces keep accessible names.
+- Sitemap, robots, canonical, hreflang, Open Graph, and descriptions are present.
+- First-party links point to localized routes.
+- Generated placeholders are not presented as real client proof.
+- Generated media records point at non-empty files and include generation metadata.
+- Required PURITY logo variants exist, use client logo media records, and point at real files.
+- Public content does not regress to empty/generic placeholder copy.
+- Source-backed Kyiv contacts, Viber, email, hours, and social links remain visible and accessible.
+- Service CTAs preserve booking preselect, including route-segment based links.
+- PURITY uses its own logo, copy, palette, spacing, and imagery; no protected Louis Vuitton assets, monogram imitation, public copy, pixel-copy layout, or copied trade dress are used.
+- The shadcn preset remains `b59jufTOPg` with Base Sera, neutral tokens, Phosphor icons, and Base UI; invented Prague facts and protected brand references must fail QA.
+- Icons use Phosphor with the default 2px stroke and `size-*` geometry; decorative icons are hidden from assistive technology and every icon-only control has a localized accessible name.
+- Custom UI is limited to repeated PURITY brand sections; primitives stay in shadcn/Base UI.
+- Browser checks at 320, 390, 768, 934, 1024, and 1440 px show logo, fitted imagery, meaningful content, usable 44 px primary targets, and no clipping or horizontal overflow.
+- Performance budget: total built `.next/static` JavaScript stays under 2 MB for the MVP.
+- `pnpm qa:architecture` fails on forbidden icon/theme/primitive imports, shadcn config drift, or missing responsive QA matrix contracts.
+- `pnpm test:e2e` runs the route/locale/theme/viewport visual matrix, captures screenshots, and fails on console errors, missing landmarks, overflow, or blank visual output.
+- `.github/workflows/qa.yml` runs the full `pnpm qa:all` gate on pushes and pull requests.

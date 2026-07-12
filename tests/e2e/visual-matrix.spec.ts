@@ -1,0 +1,111 @@
+import { expect, test } from "@playwright/test"
+
+const themes = ["light", "dark"] as const
+const viewports = [320, 1440] as const
+const routes = [
+  "/",
+  "/stylist",
+  "/shopping",
+  "/atelier",
+  "/wardrobe",
+  "/corporate",
+  "/school",
+  "/collections",
+  "/studio",
+  "/privacy",
+  "/services/atelier-service",
+  "/courses/wardrobe-management-course",
+  "/collections/purity-capsule",
+  "/portfolio",
+  "/contacts",
+  "/booking?service=atelier-service",
+  "/payment/success?provider=stripe&order=purity-visual",
+  "/payment/cancel",
+  "/payment/failure",
+  "/styleguide",
+]
+
+test("visual matrix captures every public route family", async ({ page }) => {
+  test.setTimeout(900_000)
+  const errors: string[] = []
+
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      errors.push(message.text())
+    }
+  })
+  page.on("pageerror", (error) => errors.push(error.message))
+
+  for (const theme of themes) {
+    await page.emulateMedia({ colorScheme: theme })
+
+    for (const width of viewports) {
+      await page.setViewportSize({ width, height: 900 })
+
+      for (const route of routes) {
+        const localizedRoute = `/uk${route}`
+        const response = await page.goto(localizedRoute, {
+          waitUntil: "domcontentloaded",
+        })
+
+        expect(response?.ok(), `${theme} ${width} ${route}`).toBe(true)
+        await expect(page.locator("main h1").first()).toBeVisible()
+
+        const metrics = await page.evaluate(() => {
+          const isVisible = (element: Element | null) => {
+            if (!element) {
+              return false
+            }
+
+            const rect = element.getBoundingClientRect()
+            const style = getComputedStyle(element)
+
+            return (
+              rect.width > 1 &&
+              rect.height > 1 &&
+              style.visibility !== "hidden" &&
+              style.display !== "none"
+            )
+          }
+
+          return {
+            clientWidth: document.documentElement.clientWidth,
+            scrollWidth: document.documentElement.scrollWidth,
+            visibleHeader: isVisible(document.querySelector("header")),
+            visibleFooter: isVisible(document.querySelector("footer")),
+            mainTextLength:
+              document.querySelector("main")?.textContent?.trim().length ?? 0,
+            loadedImages: [...document.images].filter(
+              (image) =>
+                isVisible(image) && image.complete && image.naturalWidth > 0
+            ).length,
+          }
+        })
+        const screenshot = await page.screenshot({
+          animations: "disabled",
+          caret: "initial",
+        })
+
+        expect(metrics.visibleHeader, `${theme} ${width} ${route}`).toBe(true)
+        expect(metrics.visibleFooter, `${theme} ${width} ${route}`).toBe(true)
+        expect(
+          metrics.scrollWidth,
+          `${theme} ${width} ${route}`
+        ).toBeLessThanOrEqual(metrics.clientWidth + 1)
+        expect(screenshot.length, `${theme} ${width} ${route}`).toBeGreaterThan(
+          15_000
+        )
+        expect(
+          metrics.mainTextLength,
+          `${theme} ${width} ${route}`
+        ).toBeGreaterThan(120)
+        expect(
+          metrics.loadedImages,
+          `${theme} ${width} ${route}`
+        ).toBeGreaterThan(0)
+      }
+    }
+  }
+
+  expect(errors).toEqual([])
+})
