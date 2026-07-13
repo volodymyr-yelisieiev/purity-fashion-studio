@@ -143,7 +143,7 @@ function StudioPageView({
               {signalCards.map((signal) => (
                 <Card
                   key={signal.label[locale]}
-                  data-size="sm"
+                  size="sm"
                   className="border-border bg-background"
                 >
                   <CardHeader>
@@ -167,7 +167,6 @@ function StudioPageView({
               src={mediaAsset.src}
               label={publicPage.eyebrow[locale]}
               eager
-              className="aspect-[4/5]"
             />
           )}
         </section>
@@ -187,7 +186,7 @@ function StudioPageView({
                 {publicPage.body[locale].map((item) => (
                   <Card
                     key={item}
-                    data-size="sm"
+                    size="sm"
                     className="border-border bg-background"
                   >
                     <CardContent className="text-sm leading-7 text-muted-foreground">
@@ -200,7 +199,7 @@ function StudioPageView({
                 {studioPageCopy.methodSteps.map((step) => (
                   <Card
                     key={step.title[locale]}
-                    data-size="sm"
+                    size="sm"
                     className="border-border bg-background"
                   >
                     <CardHeader>
@@ -298,7 +297,7 @@ function StudioPageView({
                   className="block h-full focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
                 >
                   <Card
-                    data-size="sm"
+                    size="sm"
                     className="h-full border-border bg-background"
                   >
                     <CardHeader>
@@ -513,10 +512,7 @@ function CollectionsPageView({
               {copy.heroNote[locale]}
             </p>
             <div className="grid gap-3 sm:grid-cols-3">
-              <Card
-                data-size="sm"
-                className="min-w-0 border-border bg-background"
-              >
+              <Card size="sm" className="min-w-0 border-border bg-background">
                 <CardHeader>
                   <CardTitle className="min-w-0 break-words">
                     {collections.length}
@@ -526,10 +522,7 @@ function CollectionsPageView({
                   </CardDescription>
                 </CardHeader>
               </Card>
-              <Card
-                data-size="sm"
-                className="min-w-0 border-border bg-background"
-              >
+              <Card size="sm" className="min-w-0 border-border bg-background">
                 <CardHeader>
                   <CardTitle className="min-w-0 break-words">
                     {copy.availabilityValue[locale]}
@@ -539,10 +532,7 @@ function CollectionsPageView({
                   </CardDescription>
                 </CardHeader>
               </Card>
-              <Card
-                data-size="sm"
-                className="min-w-0 border-border bg-background"
-              >
+              <Card size="sm" className="min-w-0 border-border bg-background">
                 <CardHeader>
                   <CardTitle className="min-w-0 break-words">
                     {copy.fittingValue[locale]}
@@ -572,7 +562,6 @@ function CollectionsPageView({
               src={heroMedia.src}
               label={category.title[locale]}
               eager
-              className="aspect-[4/5]"
             />
           )}
         </section>
@@ -606,7 +595,7 @@ function CollectionsPageView({
                           mediaAsset?.alt[locale] ?? collection.title[locale]
                         }
                         src={mediaAsset?.src}
-                        className="aspect-[4/5] border-x-0 border-t-0"
+                        className="border-x-0 border-t-0"
                       />
                       <CardHeader className="flex-1">
                         <CardTitle className="min-w-0 break-words">
@@ -645,7 +634,7 @@ function CollectionsPageView({
             {copy.inquirySteps.map((step) => (
               <Card
                 key={step.title[locale]}
-                data-size="sm"
+                size="sm"
                 className="h-full border-border bg-background"
               >
                 <CardHeader>
@@ -756,7 +745,7 @@ function OfferCategoryPageView({
               {copy.outcomes.map((outcome) => (
                 <Card
                   key={outcome[locale]}
-                  data-size="sm"
+                  size="sm"
                   className="border-border bg-background"
                 >
                   <CardContent className="text-sm leading-6 text-muted-foreground">
@@ -789,7 +778,6 @@ function OfferCategoryPageView({
               src={mediaAsset.src}
               label={category.title[locale]}
               eager
-              className="aspect-[4/5]"
             />
           )}
         </section>
@@ -809,7 +797,7 @@ function OfferCategoryPageView({
                 {copy.processSteps.map((step) => (
                   <Card
                     key={step.title[locale]}
-                    data-size="sm"
+                    size="sm"
                     className="border-border bg-background"
                   >
                     <CardHeader>

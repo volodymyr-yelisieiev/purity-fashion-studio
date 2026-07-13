@@ -222,7 +222,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
               {course.lessons[locale].map((lesson) => (
                 <Card
                   key={lesson}
-                  data-size="sm"
+                  size="sm"
                   className="border-border bg-background"
                 >
                   <CardContent className="text-sm leading-6 text-muted-foreground">
@@ -257,7 +257,6 @@ export default async function CoursePage({ params }: CoursePageProps) {
               src={mediaAsset.src}
               label={category?.title[locale] ?? course.title[locale]}
               eager
-              className="aspect-[4/5]"
             />
           )}
         </section>

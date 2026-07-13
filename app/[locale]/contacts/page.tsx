@@ -226,7 +226,6 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
               src={mediaAsset.src}
               label={category.title[locale]}
               eager
-              className="aspect-[4/5]"
             />
           )}
         </section>

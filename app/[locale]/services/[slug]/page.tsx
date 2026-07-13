@@ -103,7 +103,7 @@ function ServiceDetailPage({
               {service.outcomes[locale].map((outcome) => (
                 <Card
                   key={outcome}
-                  data-size="sm"
+                  size="sm"
                   className="border-border bg-background"
                 >
                   <CardContent className="text-sm leading-6 text-muted-foreground">
@@ -125,8 +125,7 @@ function ServiceDetailPage({
                     buttonVariants({
                       variant: "outline",
                       size: "lg",
-                      className:
-                        "h-auto min-h-11 max-w-full whitespace-normal",
+                      className: "h-auto min-h-11 max-w-full whitespace-normal",
                     })
                   )}
                 >
@@ -143,8 +142,7 @@ function ServiceDetailPage({
                     buttonVariants({
                       variant: "outline",
                       size: "lg",
-                      className:
-                        "h-auto min-h-11 max-w-full whitespace-normal",
+                      className: "h-auto min-h-11 max-w-full whitespace-normal",
                     })
                   )}
                 >
@@ -158,8 +156,7 @@ function ServiceDetailPage({
                     buttonVariants({
                       variant: "outline",
                       size: "lg",
-                      className:
-                        "h-auto min-h-11 max-w-full whitespace-normal",
+                      className: "h-auto min-h-11 max-w-full whitespace-normal",
                     })
                   )}
                 >
@@ -174,7 +171,6 @@ function ServiceDetailPage({
               src={mediaAsset.src}
               label={service.title[locale]}
               eager
-              className="aspect-[4/5]"
             />
           )}
         </section>
@@ -196,7 +192,7 @@ function ServiceDetailPage({
               {copy.formats.map((format) => (
                 <Card
                   key={format.title[locale]}
-                  data-size="sm"
+                  size="sm"
                   className="h-full border-border bg-background"
                 >
                   <CardHeader>
@@ -221,7 +217,7 @@ function ServiceDetailPage({
             {copy.process.map((step, index) => (
               <Card
                 key={step.title[locale]}
-                data-size="sm"
+                size="sm"
                 className="h-full border-border bg-background"
               >
                 <CardHeader>

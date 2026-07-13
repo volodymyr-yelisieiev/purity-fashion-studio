@@ -18,6 +18,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet"
 import { EnhancedContrastToggle } from "@/components/theme-provider"
 import { siteSettings } from "@/content/source"
@@ -122,21 +123,22 @@ function SiteHeader({
               </Link>
             </div>
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-              <Button
-                type="button"
-                aria-label={menuLabel[locale]}
-                aria-expanded={menuOpen}
-                aria-haspopup="dialog"
-                data-testid="mobile-menu-trigger"
-                onClick={() => setMenuOpen(true)}
-                variant="outline"
-                size="icon"
-                className="size-11 md:hidden"
+              <SheetTrigger
+                render={
+                  <Button
+                    type="button"
+                    aria-label={menuLabel[locale]}
+                    data-testid="mobile-menu-trigger"
+                    variant="outline"
+                    size="icon-lg"
+                    className="md:hidden"
+                  />
+                }
               >
                 <MenuIcon />
-              </Button>
+              </SheetTrigger>
               <SheetContent
-                className="w-full bg-background sm:w-3/4"
+                className="w-full sm:w-3/4"
                 showCloseButton={false}
                 side="right"
               >
@@ -242,7 +244,7 @@ function SiteFooter({
         <div className="grid min-w-0 content-start gap-2">
           <BrandLogo locale={locale} variant="lockup" className="w-40" />
           <address className="mt-1 max-w-72 not-italic">
-            <p className="font-semibold leading-6 text-foreground">{city}</p>
+            <p className="leading-6 font-semibold text-foreground">{city}</p>
             <p className="leading-6">{address}</p>
           </address>
           <p className="leading-6 break-words">
@@ -324,7 +326,7 @@ function SiteFooter({
               )}
             >
               Viber
-              <ExternalLinkIcon aria-hidden="true" className="size-3.5" />
+              <ExternalLinkIcon aria-hidden="true" data-icon="inline-end" />
               <span className="sr-only">
                 {siteSettings.externalLinkLabel[locale]}
               </span>
@@ -345,7 +347,7 @@ function SiteFooter({
                 )}
               >
                 {social.label}
-                <ExternalLinkIcon aria-hidden="true" className="size-3.5" />
+                <ExternalLinkIcon aria-hidden="true" data-icon="inline-end" />
                 <span className="sr-only">
                   {siteSettings.externalLinkLabel[locale]}
                 </span>

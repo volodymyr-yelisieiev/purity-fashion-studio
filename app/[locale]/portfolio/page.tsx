@@ -8,11 +8,17 @@ import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { getEntryMetadata } from "@/content/metadata"
 import { getCategory, getMediaAsset } from "@/content/queries"
 import { hasLocale, localizePath, type Locale } from "@/i18n/routing"
@@ -262,29 +268,23 @@ export default async function PortfolioPage({ params }: PortfolioPageProps) {
               alt={mediaAsset.alt[locale]}
               label={portfolioCopy.heroImageLabel[locale]}
               eager
-              className="aspect-[4/5]"
             />
           )}
         </section>
 
         <section className="bg-muted">
           <div className="mx-auto max-w-6xl min-w-0 px-6 py-14 md:px-10">
-            <Card
-              data-testid="portfolio-empty-state"
-              className="border-border bg-background"
-            >
-              <CardHeader>
+            <Empty data-testid="portfolio-empty-state">
+              <EmptyHeader>
                 <Badge variant="outline">
                   {portfolioCopy.emptyEyebrow[locale]}
                 </Badge>
-                <CardTitle className="min-w-0 break-words">
-                  {portfolioCopy.emptyTitle[locale]}
-                </CardTitle>
-                <CardDescription className="min-w-0 break-words">
+                <EmptyTitle>{portfolioCopy.emptyTitle[locale]}</EmptyTitle>
+                <EmptyDescription>
                   {portfolioCopy.emptySummary[locale]}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
                 <Link
                   href={localizePath(locale, "/contacts")}
                   className={cn(
@@ -293,8 +293,8 @@ export default async function PortfolioPage({ params }: PortfolioPageProps) {
                 >
                   {portfolioCopy.emptyAction[locale]}
                 </Link>
-              </CardContent>
-            </Card>
+              </EmptyContent>
+            </Empty>
           </div>
         </section>
 

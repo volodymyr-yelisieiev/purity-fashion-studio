@@ -58,7 +58,7 @@ function ContentPage({
                 src={mediaAsset.src}
                 label={eyebrow}
                 eager
-                className="mb-6 aspect-[4/5]"
+                className="mb-6"
               />
             )}
             {children}
@@ -83,11 +83,7 @@ function ContentPage({
           <section className="mx-auto w-full max-w-6xl min-w-0 px-6 pb-16 md:px-10">
             <div className="grid min-w-0 gap-3 md:grid-cols-2">
               {items.map((item) => (
-                <Card
-                  key={item}
-                  data-size="sm"
-                  className="min-w-0 border-border"
-                >
+                <Card key={item} size="sm" className="min-w-0 border-border">
                   <CardContent className="text-sm leading-7 break-words text-muted-foreground">
                     {item}
                   </CardContent>
