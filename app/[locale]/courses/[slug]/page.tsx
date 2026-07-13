@@ -212,7 +212,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
             <p className="text-xs tracking-normal text-muted-foreground uppercase">
               {courseCopy.eyebrow[locale]}
             </p>
-            <h1 className="max-w-4xl text-4xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
+            <h1 className="max-w-4xl text-3xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
               {course.title[locale]}
             </h1>
             <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
@@ -240,7 +240,11 @@ export default async function CoursePage({ params }: CoursePageProps) {
               <Link
                 href={localizePath(locale, "/services/wardrobe-management")}
                 className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" })
+                  buttonVariants({
+                    variant: "outline",
+                    size: "lg",
+                    className: "h-auto min-h-11 max-w-full whitespace-normal",
+                  })
                 )}
               >
                 {courseCopy.serviceLabel[locale]}
@@ -326,7 +330,10 @@ export default async function CoursePage({ params }: CoursePageProps) {
                 </CardDescription>
               </CardHeader>
               <CardContent className="border-t border-primary-foreground/20 pt-5">
-                <FeatureList items={course.lessons[locale]} />
+                <FeatureList
+                  items={course.lessons[locale]}
+                  className="text-primary-foreground/80"
+                />
               </CardContent>
             </Card>
             <Card className="h-full min-w-0 border-border bg-background">

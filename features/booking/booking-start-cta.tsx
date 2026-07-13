@@ -16,7 +16,13 @@ function BookingStartCta({ href, label, serviceSlug }: BookingStartCtaProps) {
   return (
     <Link
       href={href}
-      className={cn(buttonVariants({ variant: "default", size: "lg" }))}
+      className={cn(
+        buttonVariants({
+          variant: "default",
+          size: "lg",
+          className: "h-auto min-h-11 max-w-full whitespace-normal",
+        })
+      )}
       onClick={() => {
         trackBookingEvent({ event: "cta_click", serviceSlug })
         trackBookingEvent({ event: "booking_start", serviceSlug })

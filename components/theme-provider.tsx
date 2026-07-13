@@ -177,12 +177,8 @@ function EnhancedContrastToggle({
       type="button"
       aria-pressed={enabled}
       onClick={() => setTheme(enabled ? "light" : "dark")}
-      className={cn(
-        "min-h-11",
-        "aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground",
-        className
-      )}
-      variant="outline"
+      className={cn("min-h-11", className)}
+      variant={enabled ? "default" : "outline"}
       size="sm"
     >
       {label}

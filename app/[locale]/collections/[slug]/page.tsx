@@ -98,7 +98,7 @@ function CollectionDetailPage({
             <p className="text-xs tracking-normal text-muted-foreground uppercase">
               {copy.eyebrow[locale]}
             </p>
-            <h1 className="max-w-4xl text-4xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
+            <h1 className="max-w-4xl text-3xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
               {collection.title[locale]}
             </h1>
             <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
@@ -126,7 +126,11 @@ function CollectionDetailPage({
               <Link
                 href={localizePath(locale, "/services/capsule-collection")}
                 className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" })
+                  buttonVariants({
+                    variant: "outline",
+                    size: "lg",
+                    className: "h-auto min-h-11 max-w-full whitespace-normal",
+                  })
                 )}
               >
                 {copy.serviceLabel[locale]}
@@ -174,7 +178,7 @@ function CollectionDetailPage({
               <p className="mb-4 text-xs tracking-normal text-muted-foreground uppercase">
                 {copy.stylingTitle[locale]}
               </p>
-              <h2 className="text-4xl leading-tight font-medium text-balance md:text-6xl">
+              <h2 className="text-3xl leading-tight font-medium text-balance md:text-6xl">
                 {copy.stylingTitle[locale]}
               </h2>
               <p className="mt-5 text-sm leading-7 text-muted-foreground">
@@ -262,7 +266,10 @@ function CollectionDetailPage({
                 </CardDescription>
               </CardHeader>
               <CardContent className="border-t border-primary-foreground/20 pt-5">
-                <FeatureList items={collection.materials[locale]} />
+                <FeatureList
+                  items={collection.materials[locale]}
+                  className="text-primary-foreground/80"
+                />
               </CardContent>
             </Card>
             <Card className="h-full min-w-0 border-border bg-background">

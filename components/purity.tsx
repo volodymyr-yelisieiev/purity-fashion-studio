@@ -194,12 +194,7 @@ function ServiceCard({
   }
 }) {
   return (
-    <Card
-      className={cn(
-        "h-full min-w-0 overflow-hidden border-border bg-background",
-        image?.src && "pt-0"
-      )}
-    >
+    <Card className="h-full min-w-0 overflow-hidden border-border bg-background">
       {image?.src && (
         <div
           data-slot="card-media"
@@ -251,12 +246,7 @@ function OfferCard({
   }
 }) {
   return (
-    <Card
-      className={cn(
-        "h-full min-w-0 overflow-hidden border-border bg-background",
-        image?.src && "pt-0"
-      )}
-    >
+    <Card className="h-full min-w-0 overflow-hidden border-border bg-background">
       {image?.src && (
         <div
           data-slot="card-media"
@@ -293,12 +283,21 @@ function OfferCard({
   )
 }
 
-function FeatureList({ items }: { items: string[] }) {
+function FeatureList({
+  items,
+  className,
+}: {
+  items: string[]
+  className?: string
+}) {
   return (
-    <ul className="grid gap-2 text-sm text-muted-foreground">
+    <ul className={cn("grid gap-2 text-sm text-muted-foreground", className)}>
       {items.map((item) => (
         <li key={item} className="flex min-w-0 gap-2">
-          <span aria-hidden="true" className="mt-2 size-1.5 bg-primary" />
+          <span
+            aria-hidden="true"
+            className="mt-2 size-1.5 shrink-0 bg-current"
+          />
           <span className="min-w-0 break-words">{item}</span>
         </li>
       ))}
@@ -318,7 +317,7 @@ function BookingCTA({
   href?: string
 }) {
   return (
-    <div className="grid gap-6 border border-border bg-muted px-6 py-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+    <div className="grid gap-6 border border-border bg-muted px-6 py-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
       <div className="grid min-w-0 grid-cols-[minmax(0,1fr)]">
         <h3 className="text-2xl font-medium break-words">{title}</h3>
         <p className="mt-2 text-sm leading-6 break-words text-muted-foreground">

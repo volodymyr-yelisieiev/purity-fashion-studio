@@ -409,9 +409,8 @@ export default async function PortfolioPage({ params }: PortfolioPageProps) {
               href={localizePath(locale, "/contacts")}
               className={cn(
                 buttonVariants({
+                  variant: "secondary",
                   size: "lg",
-                  className:
-                    "!border-primary-foreground !bg-transparent !text-primary-foreground hover:!bg-background hover:!text-foreground",
                 })
               )}
             >

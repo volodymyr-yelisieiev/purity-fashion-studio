@@ -133,7 +133,7 @@ function StudioPageView({
             <p className="text-xs tracking-normal text-muted-foreground uppercase">
               {publicPage.eyebrow[locale]}
             </p>
-            <h1 className="max-w-4xl text-4xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
+            <h1 className="max-w-4xl text-3xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
               {publicPage.title[locale]}
             </h1>
             <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
@@ -265,6 +265,7 @@ function StudioPageView({
                       studioPageCopy.corporateTitle[locale],
                     ]
                   }
+                  className="text-primary-foreground/80"
                 />
               </CardContent>
             </Card>
@@ -280,7 +281,7 @@ function StudioPageView({
               <Link
                 href={localizePath(locale, "/booking")}
                 className={cn(
-                  buttonVariants({ variant: "outline", size: "sm" })
+                  buttonVariants({ variant: "outline", size: "lg" })
                 )}
               >
                 {siteSettings.home.primaryCta.label[locale]}
@@ -332,7 +333,8 @@ function StudioPageView({
                   buttonVariants({
                     variant: "default",
                     size: "lg",
-                    className: "mt-4 md:mt-0",
+                    className:
+                      "mt-4 h-auto min-h-11 max-w-full whitespace-normal md:mt-0",
                   })
                 )}
               >
@@ -458,10 +460,8 @@ function LegalPageView({
                   href={localizePath(locale, publicPage.cta.path)}
                   className={cn(
                     buttonVariants({
-                      variant: "outline",
+                      variant: "secondary",
                       size: "lg",
-                      className:
-                        "!border-primary-foreground !bg-transparent !text-primary-foreground hover:!bg-background hover:!text-foreground",
                     })
                   )}
                 >
@@ -506,7 +506,7 @@ function CollectionsPageView({
             <p className="text-xs tracking-normal text-muted-foreground uppercase">
               {category.title[locale]}
             </p>
-            <h1 className="max-w-4xl text-4xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
+            <h1 className="max-w-4xl text-3xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
               {category.title[locale]}
             </h1>
             <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
@@ -746,7 +746,7 @@ function OfferCategoryPageView({
             <p className="text-xs tracking-normal text-muted-foreground uppercase">
               {siteSettings.home.serviceRailTitle[locale]}
             </p>
-            <h1 className="max-w-4xl text-4xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
+            <h1 className="max-w-4xl text-3xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
               {category.title[locale]}
             </h1>
             <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
@@ -845,6 +845,7 @@ function OfferCategoryPageView({
                   <CardContent className="border-t border-primary-foreground/20 pt-5">
                     <FeatureList
                       items={copy.outcomes.map((outcome) => outcome[locale])}
+                      className="text-primary-foreground/80"
                     />
                   </CardContent>
                 </Card>
