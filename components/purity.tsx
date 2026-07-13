@@ -2,12 +2,14 @@ import Image from "next/image"
 import Link from "next/link"
 import type * as React from "react"
 
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -99,42 +101,44 @@ function ImageFrame({
   label,
   className,
   eager,
-  aspectRatio = "4 / 5",
+  ratio = 4 / 5,
 }: {
   alt: string
   src?: string
   label?: string
   className?: string
   eager?: boolean
-  aspectRatio?: string
+  ratio?: number
 }) {
   return (
-    <figure
+    <AspectRatio
+      ratio={ratio}
       className={cn(
-        "relative aspect-[4/5] min-w-0 overflow-hidden border border-border bg-muted",
+        "min-w-0 overflow-hidden border border-border bg-muted",
         className
       )}
-      style={{ aspectRatio }}
     >
-      {src ? (
-        <Image
-          alt={alt}
-          src={src}
-          fill
-          sizes="(min-width: 768px) 50vw, 100vw"
-          loading={eager ? "eager" : "lazy"}
-          fetchPriority={eager ? "high" : undefined}
-          className="object-cover"
-        />
-      ) : (
-        <div className="h-full w-full bg-[repeating-linear-gradient(90deg,var(--muted),var(--muted)_18px,var(--secondary)_18px,var(--secondary)_19px)]" />
-      )}
-      {label && (
-        <figcaption className="absolute right-3 bottom-3 bg-background/90 px-2 py-1 text-xs text-muted-foreground">
-          {label}
-        </figcaption>
-      )}
-    </figure>
+      <figure className="size-full">
+        {src ? (
+          <Image
+            alt={alt}
+            src={src}
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            loading={eager ? "eager" : "lazy"}
+            fetchPriority={eager ? "high" : undefined}
+            className="object-cover"
+          />
+        ) : (
+          <div className="size-full bg-[repeating-linear-gradient(90deg,var(--muted),var(--muted)_18px,var(--secondary)_18px,var(--secondary)_19px)]" />
+        )}
+        {label && (
+          <figcaption className="absolute right-3 bottom-3 bg-background/90 px-2 py-1 text-xs text-muted-foreground">
+            {label}
+          </figcaption>
+        )}
+      </figure>
+    </AspectRatio>
   )
 }
 
@@ -194,12 +198,9 @@ function ServiceCard({
   }
 }) {
   return (
-    <Card className="h-full min-w-0 overflow-hidden border-border bg-background">
+    <Card className="h-full min-w-0 overflow-hidden border-border bg-background pt-0">
       {image?.src && (
-        <div
-          data-slot="card-media"
-          className="relative aspect-[4/3] border-b border-border bg-muted"
-        >
+        <AspectRatio ratio={4 / 3} className="border-b border-border bg-muted">
           <Image
             alt={image.alt}
             src={image.src}
@@ -208,7 +209,7 @@ function ServiceCard({
             sizes="(min-width: 768px) 33vw, 100vw"
             className="object-cover"
           />
-        </div>
+        </AspectRatio>
       )}
       <CardHeader>
         {meta && <Badge variant="default">{meta}</Badge>}
@@ -218,10 +219,10 @@ function ServiceCard({
         </CardDescription>
       </CardHeader>
       {(status || priceNote) && (
-        <CardContent className="mt-auto grid gap-2 border-t border-border pt-5 text-xs leading-5 text-muted-foreground">
+        <CardFooter className="mt-auto grid gap-2 border-t border-border pt-5 text-xs leading-5 text-muted-foreground">
           {status && <p>{status}</p>}
           {priceNote && <p>{priceNote}</p>}
-        </CardContent>
+        </CardFooter>
       )}
     </Card>
   )
@@ -246,12 +247,9 @@ function OfferCard({
   }
 }) {
   return (
-    <Card className="h-full min-w-0 overflow-hidden border-border bg-background">
+    <Card className="h-full min-w-0 overflow-hidden border-border bg-background pt-0">
       {image?.src && (
-        <div
-          data-slot="card-media"
-          className="relative aspect-[4/3] border-b border-border bg-muted"
-        >
+        <AspectRatio ratio={4 / 3} className="border-b border-border bg-muted">
           <Image
             alt={image.alt}
             src={image.src}
@@ -260,7 +258,7 @@ function OfferCard({
             sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover"
           />
-        </div>
+        </AspectRatio>
       )}
       <CardHeader>
         <CardTitle className="min-w-0 break-words">{title}</CardTitle>
@@ -268,16 +266,16 @@ function OfferCard({
           {summary}
         </CardDescription>
       </CardHeader>
-      {(children || status || priceNote) && (
+      {children && (
         <CardContent className="flex flex-1 flex-col gap-4">
           {children}
-          {(status || priceNote) && (
-            <div className="mt-auto grid gap-2 border-t border-border pt-4 text-xs leading-5 text-muted-foreground">
-              {status && <p>{status}</p>}
-              {priceNote && <p>{priceNote}</p>}
-            </div>
-          )}
         </CardContent>
+      )}
+      {(status || priceNote) && (
+        <CardFooter className="mt-auto grid gap-2 border-t border-border pt-4 text-xs leading-5 text-muted-foreground">
+          {status && <p>{status}</p>}
+          {priceNote && <p>{priceNote}</p>}
+        </CardFooter>
       )}
     </Card>
   )

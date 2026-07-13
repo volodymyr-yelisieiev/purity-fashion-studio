@@ -108,7 +108,7 @@ function CollectionDetailPage({
               {collection.materials[locale].map((material) => (
                 <Card
                   key={material}
-                  data-size="sm"
+                  size="sm"
                   className="border-border bg-background"
                 >
                   <CardContent className="text-sm leading-6 text-muted-foreground">
@@ -143,7 +143,6 @@ function CollectionDetailPage({
               src={mediaAsset.src}
               label={collection.title[locale]}
               eager
-              className="aspect-[4/5]"
             />
           )}
         </section>
@@ -165,7 +164,7 @@ function CollectionDetailPage({
                   alt={asset.alt[locale]}
                   src={asset.src}
                   label={copy.stylingTitle[locale]}
-                  className="aspect-[4/3]"
+                  ratio={4 / 3}
                 />
               ))}
             </div>

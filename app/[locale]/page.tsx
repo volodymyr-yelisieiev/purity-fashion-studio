@@ -20,9 +20,11 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import {
   collections,
   courses,
@@ -295,16 +297,19 @@ export default async function HomePage({ params }: HomePageProps) {
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
               {heroSignals.map((signal) => (
-                <div key={signal.label} className="border-t border-border pt-4">
-                  <p className="font-heading text-3xl leading-none text-foreground">
-                    {signal.value}
-                  </p>
-                  <p className="mt-2 text-xs tracking-widest text-muted-foreground uppercase">
-                    {signal.label}
-                  </p>
-                  <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                    {signal.detail}
-                  </p>
+                <div key={signal.label} className="grid gap-4">
+                  <Separator />
+                  <div>
+                    <p className="font-heading text-3xl leading-none text-foreground">
+                      {signal.value}
+                    </p>
+                    <p className="mt-2 text-xs tracking-widest text-muted-foreground uppercase">
+                      {signal.label}
+                    </p>
+                    <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                      {signal.detail}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -315,7 +320,6 @@ export default async function HomePage({ params }: HomePageProps) {
               src={heroImage?.src}
               label={siteSettings.home.eyebrow[locale]}
               eager
-              className="aspect-[4/5]"
             />
             <div className="grid gap-3 border border-border p-4 text-xs leading-5 text-muted-foreground sm:grid-cols-2">
               <p>{siteSettings.contacts.address[locale]}</p>
@@ -370,7 +374,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 )}
               </CardContent>
               {portfolioCase && (
-                <CardContent className="mt-auto border-t border-border pt-5">
+                <CardFooter className="mt-auto border-t border-border pt-5">
                   <Link
                     href={localizePath(
                       locale,
@@ -385,7 +389,7 @@ export default async function HomePage({ params }: HomePageProps) {
                   >
                     {portfolioCase.title[locale]}
                   </Link>
-                </CardContent>
+                </CardFooter>
               )}
             </Card>
           </div>
@@ -408,7 +412,8 @@ export default async function HomePage({ params }: HomePageProps) {
         </section>
 
         <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
-          <div className="mb-8 grid gap-4 border-t border-border pt-6 md:grid-cols-[0.8fr_1.2fr] md:items-end">
+          <Separator className="mb-6" />
+          <div className="mb-8 grid gap-4 md:grid-cols-[0.8fr_1.2fr] md:items-end">
             <div>
               <p className="mb-3 text-xs tracking-normal text-muted-foreground uppercase">
                 {siteSettings.home.serviceRailTitle[locale]}
@@ -487,7 +492,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 {studioDetails.map((detail) => (
                   <Card
                     key={detail}
-                    data-size="sm"
+                    size="sm"
                     className="border-border bg-background"
                   >
                     <CardContent className="text-sm leading-7 text-muted-foreground">
@@ -579,7 +584,6 @@ export default async function HomePage({ params }: HomePageProps) {
                     atelierService.title[locale]
                   }
                   eager
-                  className="aspect-[4/5]"
                 />
               )}
               <div className="min-w-0">

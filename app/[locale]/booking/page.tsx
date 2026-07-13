@@ -104,7 +104,6 @@ export default async function BookingPage({
               alt={mediaAsset.alt[locale]}
               label={page.eyebrow[locale]}
               eager
-              className="aspect-[4/5]"
             />
           )}
         </section>
