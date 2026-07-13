@@ -146,9 +146,9 @@ const homeEditorialCopy = {
     en: ["Approved brief", "Documented process", "Verified media"],
   },
   faqTitle: {
-    uk: "Поширені запитання.",
-    ru: "Частые вопросы.",
-    en: "Frequently asked questions.",
+    uk: "Поширені запитання",
+    ru: "Частые вопросы",
+    en: "Frequently asked questions",
   },
   faq: {
     uk: [
@@ -271,7 +271,11 @@ export default async function HomePage({ params }: HomePageProps) {
               <Link
                 href={localizePath(locale, siteSettings.home.primaryCta.path)}
                 className={cn(
-                  buttonVariants({ variant: "default", size: "lg" })
+                  buttonVariants({
+                    variant: "default",
+                    size: "lg",
+                    className: "w-full sm:w-auto",
+                  })
                 )}
               >
                 {siteSettings.home.primaryCta.label[locale]}
@@ -279,7 +283,11 @@ export default async function HomePage({ params }: HomePageProps) {
               <Link
                 href={localizePath(locale, siteSettings.home.secondaryCta.path)}
                 className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" })
+                  buttonVariants({
+                    variant: "outline",
+                    size: "lg",
+                    className: "w-full sm:w-auto",
+                  })
                 )}
               >
                 {siteSettings.home.secondaryCta.label[locale]}
@@ -317,12 +325,12 @@ export default async function HomePage({ params }: HomePageProps) {
         </section>
 
         <section className="bg-muted">
-          <div className="mx-auto grid max-w-6xl min-w-0 gap-6 px-6 py-16 md:grid-cols-[0.9fr_1.1fr] md:px-10">
+          <div className="mx-auto grid max-w-6xl min-w-0 gap-8 px-6 py-16 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:px-10">
             <div className="min-w-0">
               <p className="mb-4 text-xs text-muted-foreground uppercase">
                 Portfolio
               </p>
-              <h2 className="text-4xl leading-tight font-medium text-balance md:text-6xl">
+              <h2 className="text-3xl leading-tight font-medium text-balance md:text-5xl">
                 {homeEditorialCopy.portfolioTitle[locale]}
               </h2>
             </div>
@@ -331,13 +339,21 @@ export default async function HomePage({ params }: HomePageProps) {
                 aria-hidden="true"
                 className="absolute top-0 right-0 h-full w-2 bg-primary"
               />
-              <CardHeader>
-                <p className="text-xs tracking-widest text-muted-foreground uppercase">
-                  PURITY / 01
-                </p>
-                <CardDescription className="min-w-0 break-words">
-                  {homeEditorialCopy.portfolioSummary[locale]}
-                </CardDescription>
+              <CardHeader className="grid grid-cols-[minmax(0,1fr)_auto] gap-6">
+                <div className="grid gap-2">
+                  <p className="text-xs tracking-widest text-muted-foreground uppercase">
+                    PURITY / 01
+                  </p>
+                  <CardDescription className="min-w-0 break-words">
+                    {homeEditorialCopy.portfolioSummary[locale]}
+                  </CardDescription>
+                </div>
+                <span
+                  aria-hidden="true"
+                  className="font-heading text-7xl leading-none text-muted-foreground/20"
+                >
+                  01
+                </span>
               </CardHeader>
               <CardContent className="mt-auto grid gap-3 border-t border-border pt-5 sm:grid-cols-3">
                 {homeEditorialCopy.portfolioSignals[locale].map(
@@ -362,7 +378,7 @@ export default async function HomePage({ params }: HomePageProps) {
                     )}
                     className={cn(
                       buttonVariants({
-                        variant: "outline",
+                        variant: "default",
                         size: "lg",
                       })
                     )}
@@ -410,7 +426,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 className={cn(
                   buttonVariants({
                     variant: "outline",
-                    size: "sm",
+                    size: "lg",
                   })
                 )}
               >
@@ -484,7 +500,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 href={localizePath(locale, "/studio")}
                 className={cn(
                   buttonVariants({
-                    variant: "outline",
+                    variant: "default",
                     size: "lg",
                     className: "w-fit max-w-full",
                   })
@@ -540,10 +556,8 @@ export default async function HomePage({ params }: HomePageProps) {
                 href={localizePath(locale, "/booking")}
                 className={cn(
                   buttonVariants({
-                    variant: "default",
+                    variant: "secondary",
                     size: "lg",
-                    className:
-                      "bg-background text-foreground hover:bg-secondary",
                   })
                 )}
               >
@@ -589,7 +603,7 @@ export default async function HomePage({ params }: HomePageProps) {
                   )}
                   className={cn(
                     buttonVariants({
-                      variant: "outline",
+                      variant: "default",
                       size: "lg",
                       className: "mt-8",
                     })

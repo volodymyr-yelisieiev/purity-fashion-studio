@@ -73,7 +73,7 @@ const contactEntryLabels = {
 } as const
 
 const contactButtonClass =
-  "h-auto min-h-11 w-full min-w-0 justify-start overflow-hidden !whitespace-normal px-4 text-left leading-5 sm:px-8"
+  "h-auto min-h-11 w-full min-w-0 shrink justify-start overflow-hidden whitespace-normal px-4 text-left leading-5 sm:px-8"
 
 function ContactEntrypoints({ locale }: { locale: Locale }) {
   return (

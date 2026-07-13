@@ -735,7 +735,7 @@ export const services = [
       ru: ["Фото вещей", "Коллажи образов", "Памятка что с чем носить"],
       en: ["Item photos", "Look collages", "What-to-wear guide"],
     },
-    mediaIds: ["generated-lookbook-paper"],
+    mediaIds: ["generated-portfolio-silhouette"],
     seo: {
       uk: {
         title: "Трансформація гардероба | PURITY",
@@ -792,7 +792,7 @@ export const services = [
         "Training cases for teams",
       ],
     },
-    mediaIds: ["generated-lookbook-paper"],
+    mediaIds: ["generated-studio-atmosphere"],
     seo: {
       uk: {
         title: "Корпоративний імідж | PURITY",

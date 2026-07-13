@@ -134,22 +134,6 @@
   h5,
   h6 {
     font-family: var(--font-heading), Georgia, serif;
-    overflow-wrap: break-word;
-  }
-}
-
-a[class~="group/button"] {
-  max-width: 100%;
-  min-width: 0;
-  flex-shrink: 1;
-  height: auto;
-  min-height: 2.75rem;
-  white-space: normal;
-}
-
-@media (max-width: 39.999rem) {
-  a[class~="group/button"] {
-    width: 100%;
   }
 }
 

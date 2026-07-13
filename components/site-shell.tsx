@@ -100,7 +100,7 @@ function SiteHeader({
             >
               <EnhancedContrastToggle
                 label={siteSettings.contrastLabel[locale]}
-                className="border-transparent px-3"
+                className="px-3"
               />
               <LanguageSwitcher
                 currentLocale={locale}
@@ -163,18 +163,18 @@ function SiteHeader({
                     {menuLabel[locale]}
                   </SheetDescription>
                 </SheetHeader>
-                <nav
-                  aria-label={siteSettings.brandName}
-                  data-testid="mobile-navigation"
-                  className="grid px-8 text-xs text-muted-foreground uppercase"
-                >
-                  {primaryNavigation.map((item) => (
-                    <ShellLink key={item.id} href={item.href}>
-                      {item.label}
-                    </ShellLink>
-                  ))}
-                </nav>
-                <div className="px-8">
+                <div className="grid gap-6 px-8">
+                  <nav
+                    aria-label={siteSettings.brandName}
+                    data-testid="mobile-navigation"
+                    className="grid text-xs text-muted-foreground uppercase"
+                  >
+                    {primaryNavigation.map((item) => (
+                      <ShellLink key={item.id} href={item.href}>
+                        {item.label}
+                      </ShellLink>
+                    ))}
+                  </nav>
                   <Link
                     href={bookingHref}
                     data-testid="mobile-booking-cta"
@@ -230,18 +230,21 @@ function SiteFooter({
   const navigation = getNavigation(locale)
   const footerNavigation = getFooterNavigation(locale)
   const languageLabel = siteSettings.languageLabel[locale]
+  const city = siteSettings.contacts.city[locale]
+  const address = siteSettings.contacts.address[locale].replace(
+    new RegExp(`^${city}\\s*`),
+    ""
+  )
 
   return (
     <footer className="border-t border-border bg-background px-6 py-10 text-xs text-muted-foreground md:px-10">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1.5fr)_max-content_max-content_minmax(14rem,1fr)] lg:gap-x-16">
         <div className="grid min-w-0 content-start gap-2">
           <BrandLogo locale={locale} variant="lockup" className="w-40" />
-          <p className="mt-1 leading-6 break-words">
-            {siteSettings.contacts.city[locale]}
-          </p>
-          <p className="leading-6 break-words">
-            {siteSettings.contacts.address[locale]}
-          </p>
+          <address className="mt-1 max-w-72 not-italic">
+            <p className="font-semibold leading-6 text-foreground">{city}</p>
+            <p className="leading-6">{address}</p>
+          </address>
           <p className="leading-6 break-words">
             {siteSettings.contacts.hours[locale]}
           </p>
@@ -321,6 +324,10 @@ function SiteFooter({
               )}
             >
               Viber
+              <ExternalLinkIcon aria-hidden="true" className="size-3.5" />
+              <span className="sr-only">
+                {siteSettings.externalLinkLabel[locale]}
+              </span>
             </a>
             {siteSettings.contacts.socials.map((social) => (
               <a
