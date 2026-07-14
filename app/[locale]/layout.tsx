@@ -2,13 +2,11 @@ import type { Metadata } from "next"
 import { Noto_Sans, Noto_Serif } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
-import Script from "next/script"
 import { notFound } from "next/navigation"
 import type * as React from "react"
 
 import "../globals.css"
 import { MotionProvider } from "@/components/motion-provider"
-import { ThemeProvider } from "@/components/theme-provider"
 import { getSiteMetadata } from "@/content/metadata"
 import { hasLocale, locales } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
@@ -70,7 +68,6 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      suppressHydrationWarning
       className={cn(
         "font-sans antialiased",
         notoSans.variable,
@@ -78,13 +75,8 @@ export default async function LocaleLayout({
       )}
     >
       <body>
-        <Script id="purity-theme-init" strategy="beforeInteractive">
-          {`(function(){var r=document.documentElement,s=\"system\";try{var v=localStorage.getItem(\"theme\");if(v===\"light\"||v===\"dark\")s=v}catch(e){}var t=s===\"system\"&&window.matchMedia(\"(prefers-color-scheme: dark)\").matches?\"dark\":s===\"system\"?\"light\":s;r.classList.toggle(\"dark\",t===\"dark\");r.style.colorScheme=t})()`}
-        </Script>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ThemeProvider>
-            <MotionProvider>{children}</MotionProvider>
-          </ThemeProvider>
+          <MotionProvider>{children}</MotionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

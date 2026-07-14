@@ -1,11 +1,9 @@
 import Link from "next/link"
 import type * as React from "react"
 
-import { ImageFrame } from "@/components/purity"
+import { EditorialHero } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/site-shell"
-import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import type { MediaAsset } from "@/content/model"
 import type { Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
@@ -41,55 +39,52 @@ function ContentPage({
       <SiteHeader locale={locale} currentPath={currentPath} />
 
       <main>
-        <section className="mx-auto grid w-full max-w-6xl min-w-0 grid-cols-1 gap-10 px-6 py-16 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:px-10">
-          <div className="min-w-0">
-            <Badge variant="default">{eyebrow}</Badge>
-            <h1 className="mt-6 text-4xl leading-none font-medium text-balance break-words md:text-6xl xl:text-7xl">
-              {title}
-            </h1>
-            <p className="mt-6 max-w-2xl text-sm leading-7 break-words text-muted-foreground">
-              {summary}
-            </p>
-          </div>
-          <div className="min-w-0 border-t border-border pt-5">
-            {mediaAsset?.src && (
-              <ImageFrame
-                alt={mediaAsset.alt[locale]}
-                src={mediaAsset.src}
-                label={eyebrow}
-                eager
-                className="mb-6"
-              />
-            )}
-            {children}
-            {action && (
-              <Link
-                href={action.href}
-                className={cn(
-                  buttonVariants({
-                    variant: "default",
-                    size: "lg",
-                    className: "mt-6 w-fit max-w-full",
-                  })
-                )}
-              >
-                {action.label}
-              </Link>
-            )}
-          </div>
-        </section>
+        <EditorialHero
+          locale={locale}
+          eyebrow={eyebrow}
+          title={title}
+          summary={summary}
+          mediaAsset={mediaAsset}
+          composition="quiet"
+        >
+          {children && (
+            <div className="max-w-2xl text-sm leading-7 text-background/75">
+              {children}
+            </div>
+          )}
+          {action && (
+            <Link
+              href={action.href}
+              className={cn(
+                buttonVariants({
+                  variant: "secondary",
+                  size: "lg",
+                  className: "w-fit max-w-full",
+                })
+              )}
+            >
+              {action.label}
+            </Link>
+          )}
+        </EditorialHero>
 
         {items && (
-          <section className="mx-auto w-full max-w-6xl min-w-0 px-6 pb-16 md:px-10">
-            <div className="grid min-w-0 gap-3 md:grid-cols-2">
-              {items.map((item) => (
-                <Card key={item} size="sm" className="min-w-0 border-border">
-                  <CardContent className="text-sm leading-7 break-words text-muted-foreground">
+          <section className="bg-muted px-6 py-16 md:px-10 md:py-24">
+            <ol className="mx-auto grid max-w-screen-xl min-w-0 gap-x-12 md:grid-cols-2">
+              {items.map((item, index) => (
+                <li
+                  key={item}
+                  className="grid min-w-0 gap-4 py-6 sm:grid-cols-[3rem_minmax(0,1fr)] sm:py-8"
+                >
+                  <span className="text-xs text-muted-foreground">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <p className="max-w-3xl text-lg leading-8 break-words sm:text-xl">
                     {item}
-                  </CardContent>
-                </Card>
+                  </p>
+                </li>
               ))}
-            </div>
+            </ol>
           </section>
         )}
       </main>

@@ -1,30 +1,16 @@
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr"
+import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import {
   BookingCTA,
-  FeatureList,
+  BrandLogo,
+  EditorialFaq,
   ImageFrame,
-  OfferCard,
-  ServiceCard,
 } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/site-shell"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import {
   collections,
   courses,
@@ -50,6 +36,11 @@ type HomePageProps = {
 }
 
 const homeEditorialCopy = {
+  filmSteps: {
+    uk: ["Досліджуємо", "Уявляємо", "Створюємо"],
+    ru: ["Исследуем", "Воображаем", "Создаём"],
+    en: ["Research", "Imagine", "Create"],
+  },
   serviceIntro: {
     uk: "Від першої консультації до примірки, капсули або корпоративного образу: кожен напрям має зрозумілий вхід, результат і комерційний статус.",
     ru: "От первой консультации до примерки, капсулы или корпоративного образа: у каждого направления есть понятный вход, результат и коммерческий статус.",
@@ -212,7 +203,13 @@ export default async function HomePage({ params }: HomePageProps) {
   const visibleCollections = collections.filter(
     (collection) => collection.visibleInMvp
   )
-  const heroImage = getMediaAsset("generated-fabric-study")
+  const heroImage = getMediaAsset("generated-editorial-hero-flow")
+  const researchImage = getMediaAsset("generated-editorial-research")
+  const imagineImage = getMediaAsset("editorial-collections-flatlay")
+  const createImage = getMediaAsset("generated-editorial-create")
+  const directionsTexture = getMediaAsset("editorial-directions-texture")
+  const studioImage = getMediaAsset("editorial-studio-method")
+  const portfolioImage = getMediaAsset("editorial-portfolio-process")
   const atelierService = visibleServices.find(
     (service) => service.category === "atelier"
   )
@@ -231,278 +228,159 @@ export default async function HomePage({ params }: HomePageProps) {
   const studioLabel =
     navigation.find((item) => item.id === "studio")?.label ??
     siteSettings.home.studioEyebrow[locale]
-  const heroSignals = [
+  const studioDetails = homeEditorialCopy.methodDetails[locale]
+  const filmSteps = [
     {
-      value: visibleServices.length.toString(),
-      label: homeEditorialCopy.signalLabels.directions[locale],
-      detail: homeEditorialCopy.signalDetails.directions[locale],
+      title: homeEditorialCopy.filmSteps[locale][0],
+      text: homeEditorialCopy.serviceIntro[locale],
+      image: researchImage,
     },
     {
-      value: siteSettings.contacts.phones.length.toString(),
-      label: homeEditorialCopy.signalLabels.contacts[locale],
-      detail: homeEditorialCopy.signalDetails.contacts[locale],
+      title: homeEditorialCopy.filmSteps[locale][1],
+      text: studioDetails[0],
+      image: imagineImage,
     },
     {
-      value: siteSettings.contacts.hours[locale].replace(
-        /^(Щодня|Каждый день|Daily)\s+/,
-        ""
-      ),
-      label: homeEditorialCopy.signalLabels.studio[locale],
-      detail: homeEditorialCopy.signalDetails.studio[locale],
+      title: homeEditorialCopy.filmSteps[locale][2],
+      text: studioDetails[1],
+      image: createImage,
     },
   ]
-  const studioDetails = homeEditorialCopy.methodDetails[locale]
 
   return (
     <div className="min-h-svh bg-background text-foreground">
       <SiteHeader locale={locale} />
 
       <main>
-        <section className="mx-auto grid w-full max-w-6xl min-w-0 gap-8 px-6 py-10 md:grid-cols-[1.05fr_0.95fr] md:items-end md:px-10 md:py-12">
-          <div className="grid min-w-0 gap-7">
-            <p className="text-xs tracking-normal text-muted-foreground uppercase">
-              {siteSettings.home.eyebrow[locale]}
-            </p>
-            <h1 className="max-w-4xl text-4xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
-              {siteSettings.home.title[locale]}
-            </h1>
-            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-              {siteSettings.home.summary[locale]}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href={localizePath(locale, siteSettings.home.primaryCta.path)}
-                className={cn(
-                  buttonVariants({
-                    variant: "default",
-                    size: "lg",
-                    className: "w-full sm:w-auto",
-                  })
-                )}
-              >
-                {siteSettings.home.primaryCta.label[locale]}
-              </Link>
-              <Link
-                href={localizePath(locale, siteSettings.home.secondaryCta.path)}
-                className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                    size: "lg",
-                    className: "w-full sm:w-auto",
-                  })
-                )}
-              >
-                {siteSettings.home.secondaryCta.label[locale]}
-              </Link>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {heroSignals.map((signal) => (
-                <div key={signal.label} className="grid gap-4">
-                  <Separator />
-                  <div>
-                    <p className="font-heading text-3xl leading-none text-foreground">
-                      {signal.value}
-                    </p>
-                    <p className="mt-2 text-xs tracking-widest text-muted-foreground uppercase">
-                      {signal.label}
-                    </p>
-                    <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                      {signal.detail}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="grid min-w-0 gap-4">
-            <ImageFrame
-              alt={heroImage?.alt[locale] ?? siteSettings.home.title[locale]}
-              src={heroImage?.src}
-              label={siteSettings.home.eyebrow[locale]}
-              eager
-            />
-            <div className="grid gap-3 border border-border p-4 text-xs leading-5 text-muted-foreground sm:grid-cols-2">
-              <p>{siteSettings.contacts.address[locale]}</p>
-              <p>{homeEditorialCopy.contactSummary[locale]}</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-muted">
-          <div className="mx-auto grid max-w-6xl min-w-0 gap-8 px-6 py-16 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:px-10">
-            <div className="min-w-0">
-              <p className="mb-4 text-xs text-muted-foreground uppercase">
-                Portfolio
-              </p>
-              <h2 className="text-3xl leading-tight font-medium text-balance md:text-5xl">
-                {homeEditorialCopy.portfolioTitle[locale]}
-              </h2>
-            </div>
-            <Card className="relative min-h-72 min-w-0 border-border bg-background">
-              <div
-                aria-hidden="true"
-                className="absolute top-0 right-0 h-full w-2 bg-primary"
+        <section
+          className="relative min-h-svh overflow-hidden bg-foreground text-background"
+          data-testid="editorial-hero"
+        >
+          <figure className="absolute inset-0">
+            {heroImage?.src && (
+              <Image
+                alt={heroImage.alt[locale]}
+                src={heroImage.src}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-[62%_center] md:object-center"
               />
-              <CardHeader className="grid grid-cols-[minmax(0,1fr)_auto] gap-6">
-                <div className="grid gap-2">
-                  <p className="text-xs tracking-widest text-muted-foreground uppercase">
-                    PURITY / 01
-                  </p>
-                  <CardDescription className="min-w-0 break-words">
-                    {homeEditorialCopy.portfolioSummary[locale]}
-                  </CardDescription>
-                </div>
-                <span
-                  aria-hidden="true"
-                  className="font-heading text-7xl leading-none text-muted-foreground/20"
+            )}
+          </figure>
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-foreground/45"
+          />
+          <div className="relative mx-auto flex min-h-svh w-full max-w-screen-2xl items-end px-6 pt-32 pb-12 md:px-10 md:pb-16 lg:px-16 lg:pb-20">
+            <div className="grid max-w-5xl gap-6">
+              <p className="text-xs tracking-[0.18em] text-background/70 uppercase">
+                {siteSettings.home.eyebrow[locale]}
+              </p>
+              <h1 className="max-w-[13ch] text-[clamp(3rem,8vw,7.5rem)] leading-[0.86] font-medium text-pretty">
+                {siteSettings.home.title[locale]}
+              </h1>
+              <p className="max-w-2xl text-sm leading-7 text-background/75 md:text-base">
+                {siteSettings.home.summary[locale]}
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href={localizePath(locale, siteSettings.home.primaryCta.path)}
+                  className={cn(
+                    buttonVariants({
+                      variant: "secondary",
+                      size: "lg",
+                    })
+                  )}
                 >
-                  01
-                </span>
-              </CardHeader>
-              <CardContent className="mt-auto grid gap-3 border-t border-border pt-5 sm:grid-cols-3">
-                {homeEditorialCopy.portfolioSignals[locale].map(
-                  (signal, index) => (
-                    <div key={signal} className="grid gap-1">
-                      <span className="text-xs text-muted-foreground">
-                        0{index + 1}
-                      </span>
-                      <span className="text-xs font-semibold tracking-wider uppercase">
-                        {signal}
-                      </span>
-                    </div>
-                  )
-                )}
-              </CardContent>
-              {portfolioCase && (
-                <CardFooter className="mt-auto border-t border-border pt-5">
-                  <Link
-                    href={localizePath(
-                      locale,
-                      portfolioCasePath(portfolioCase.routeSegment)
-                    )}
-                    className={cn(
-                      buttonVariants({
-                        variant: "default",
-                        size: "lg",
-                      })
-                    )}
-                  >
-                    {portfolioCase.title[locale]}
-                  </Link>
-                </CardFooter>
-              )}
-            </Card>
+                  {siteSettings.home.primaryCta.label[locale]}
+                </Link>
+                <Link
+                  href={localizePath(
+                    locale,
+                    siteSettings.home.secondaryCta.path
+                  )}
+                  className={cn(
+                    buttonVariants({
+                      variant: "outline",
+                      size: "lg",
+                    })
+                  )}
+                >
+                  {siteSettings.home.secondaryCta.label[locale]}
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
-          <h2 className="mb-8 text-3xl leading-tight font-medium md:text-5xl">
-            {homeEditorialCopy.faqTitle[locale]}
-          </h2>
-          <Accordion>
-            {homeEditorialCopy.faq[locale].map(([question, answer]) => (
-              <AccordionItem key={question} value={question}>
-                <AccordionTrigger>{question}</AccordionTrigger>
-                <AccordionContent className="max-w-3xl leading-7 text-muted-foreground">
-                  {answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+        <section data-editorial-sequence="home-method" className="w-full">
+          {filmSteps.map((step, index) => (
+            <article key={step.title} className="grid min-w-0 md:grid-cols-2">
+              <ImageFrame
+                alt={step.image?.alt[locale] ?? step.title}
+                src={step.image?.src}
+                ratio={3 / 2}
+                eager={index === 0}
+                className={cn("rounded-none", index % 2 === 1 && "md:order-2")}
+              />
+              <div
+                className={cn(
+                  "flex min-h-80 flex-col justify-center gap-5 px-6 py-12 md:px-12 lg:px-20",
+                  index === 1 && "bg-muted"
+                )}
+              >
+                <p className="text-xs text-muted-foreground">0{index + 1}</p>
+                <h2 className="text-4xl leading-none font-medium text-pretty lg:text-6xl">
+                  {step.title}
+                </h2>
+                <p className="max-w-lg text-sm leading-7 text-muted-foreground">
+                  {step.text}
+                </p>
+              </div>
+            </article>
+          ))}
         </section>
 
-        <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
-          <Separator className="mb-6" />
-          <div className="mb-8 grid gap-4 md:grid-cols-[0.8fr_1.2fr] md:items-end">
-            <div>
-              <p className="mb-3 text-xs tracking-normal text-muted-foreground uppercase">
+        <section
+          aria-hidden="true"
+          className="flex min-h-40 items-center justify-center bg-background px-6 py-10"
+        >
+          <BrandLogo
+            locale={locale}
+            variant="mark"
+            decorative
+            className="w-8 opacity-55"
+          />
+        </section>
+
+        <section className="relative px-6 py-16 md:px-10 md:py-24">
+          {directionsTexture?.src && (
+            <Image
+              alt=""
+              src={directionsTexture.src}
+              fill
+              sizes="100vw"
+              className="object-cover"
+            />
+          )}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-background/85"
+          />
+          <div className="relative mx-auto grid max-w-screen-2xl gap-12 lg:grid-cols-[0.65fr_1.35fr]">
+            <div className="grid content-start gap-6 lg:sticky lg:top-32 lg:self-start">
+              <p className="text-xs tracking-[0.16em] text-muted-foreground uppercase">
                 {siteSettings.home.serviceRailTitle[locale]}
               </p>
-              <h2 className="text-3xl leading-tight font-medium md:text-5xl">
-                {siteSettings.home.serviceRailTitle[locale]}
+              <h2 className="text-5xl leading-[0.94] font-medium text-balance md:text-7xl">
+                {homeEditorialCopy.methodTitle[locale]}
               </h2>
-            </div>
-            <div className="grid gap-3 md:justify-items-end">
-              <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-right">
+              <p className="max-w-lg text-sm leading-7 text-muted-foreground">
                 {homeEditorialCopy.serviceIntro[locale]}
               </p>
               <Link
                 href={localizePath(locale, researchPath)}
-                className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                    size: "lg",
-                  })
-                )}
-              >
-                {researchLabel}
-              </Link>
-            </div>
-          </div>
-          <div className="grid min-w-0 auto-rows-fr gap-4 md:grid-cols-3">
-            {visibleServices.map((service) => {
-              const serviceImage = getFirstMediaAsset(service.mediaIds)
-
-              return (
-                <Link
-                  key={service.slug}
-                  href={localizePath(locale, servicePath(service.routeSegment))}
-                  className="block h-full focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-                >
-                  <ServiceCard
-                    title={service.title[locale]}
-                    summary={service.summary[locale]}
-                    meta={
-                      serviceCategories.find(
-                        (category) => category.slug === service.category
-                      )?.title[locale]
-                    }
-                    status={service.commercialStatus[locale]}
-                    priceNote={homeEditorialCopy.priceNote[locale]}
-                    image={
-                      serviceImage?.src
-                        ? {
-                            src: serviceImage.src,
-                            alt: serviceImage.alt[locale],
-                          }
-                        : undefined
-                    }
-                  />
-                </Link>
-              )
-            })}
-          </div>
-        </section>
-
-        <section className="bg-muted">
-          <div className="mx-auto grid max-w-6xl min-w-0 gap-10 px-6 py-16 md:grid-cols-[0.9fr_1.1fr] md:items-start md:px-10">
-            <div>
-              <p className="mb-4 text-xs text-muted-foreground uppercase">
-                {homeEditorialCopy.methodEyebrow[locale]}
-              </p>
-              <h2 className="text-4xl leading-tight font-medium text-balance md:text-6xl">
-                {homeEditorialCopy.methodTitle[locale]}
-              </h2>
-            </div>
-            <div className="grid gap-4">
-              <p className="text-sm leading-7 text-muted-foreground">
-                {siteSettings.home.studioSummary[locale]}
-              </p>
-              <div className="grid gap-3 md:grid-cols-2">
-                {studioDetails.map((detail) => (
-                  <Card
-                    key={detail}
-                    size="sm"
-                    className="border-border bg-background"
-                  >
-                    <CardContent className="text-sm leading-7 text-muted-foreground">
-                      {detail}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              <Link
-                href={localizePath(locale, "/studio")}
                 className={cn(
                   buttonVariants({
                     variant: "default",
@@ -511,125 +389,153 @@ export default async function HomePage({ params }: HomePageProps) {
                   })
                 )}
               >
-                {studioLabel}
+                {researchLabel}
               </Link>
             </div>
+            <nav aria-label={siteSettings.home.serviceRailTitle[locale]}>
+              {visibleServices.map((service, index) => {
+                const category = serviceCategories.find(
+                  (item) => item.slug === service.category
+                )
+
+                return (
+                  <Link
+                    key={service.slug}
+                    href={localizePath(
+                      locale,
+                      servicePath(service.routeSegment)
+                    )}
+                    className="group grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-5 border-t border-border py-7 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                  >
+                    <span className="text-xs text-muted-foreground">
+                      0{index + 1}
+                    </span>
+                    <span className="grid min-w-0 gap-2">
+                      <span className="font-heading text-3xl leading-none md:text-5xl">
+                        {service.title[locale]}
+                      </span>
+                      <span className="text-xs tracking-[0.12em] text-muted-foreground uppercase">
+                        {category?.title[locale]}
+                      </span>
+                    </span>
+                    <ArrowRightIcon
+                      aria-hidden="true"
+                      data-icon="inline-end"
+                      className="transition-transform group-hover:translate-x-1"
+                    />
+                  </Link>
+                )
+              })}
+            </nav>
           </div>
         </section>
 
-        <section className="mx-auto grid w-full max-w-6xl min-w-0 gap-4 px-6 py-14 md:grid-cols-3 md:px-10">
-          <Card className="min-w-0 border-border bg-background md:col-span-2">
-            <CardHeader>
-              <CardTitle className="min-w-0 break-words">
-                {homeEditorialCopy.contactTitle[locale]}
-              </CardTitle>
-              <CardDescription className="min-w-0 break-words">
-                {homeEditorialCopy.contactSummary[locale]}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-3 border-t border-border pt-5 text-sm leading-7 text-muted-foreground md:grid-cols-3">
-              {siteSettings.contacts.phones.map((phone) => (
-                <a
-                  key={phone}
-                  href={`tel:${phone.replace(/\s+/g, "")}`}
-                  className="inline-flex min-h-11 items-center break-words hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-                >
-                  {phone}
-                </a>
-              ))}
-              {siteSettings.contacts.email && (
-                <a
-                  href={`mailto:${siteSettings.contacts.email}`}
-                  className="inline-flex min-h-11 items-center [overflow-wrap:anywhere] hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-                >
-                  {siteSettings.contacts.email}
-                </a>
-              )}
-            </CardContent>
-          </Card>
-          <Card className="min-w-0 border-primary-foreground/20 bg-primary text-primary-foreground">
-            <CardHeader>
-              <CardTitle className="min-w-0 break-words">
-                {siteSettings.contacts.city[locale]}
-              </CardTitle>
-              <CardDescription className="text-secondary">
-                {siteSettings.contacts.hours[locale]}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+        <section className="grid min-w-0 bg-foreground text-background lg:grid-cols-2">
+          {studioImage?.src && (
+            <ImageFrame
+              alt={studioImage.alt[locale]}
+              src={studioImage.src}
+              ratio={3 / 2}
+              className="lg:aspect-auto lg:min-h-[44rem]"
+            />
+          )}
+          <div className="grid min-w-0 content-center gap-8 px-6 py-16 md:px-10 lg:px-16">
+            <div className="grid content-start gap-6">
+              <p className="text-xs tracking-[0.16em] text-muted-foreground uppercase">
+                {homeEditorialCopy.methodEyebrow[locale]}
+              </p>
+              <h2 className="text-[clamp(2.5rem,12vw,4.5rem)] leading-[0.94] font-medium text-balance">
+                {siteSettings.home.studioTitle[locale]}
+              </h2>
+              <p className="max-w-xl text-sm leading-7 text-background/70">
+                {siteSettings.home.studioSummary[locale]}
+              </p>
               <Link
-                href={localizePath(locale, "/booking")}
+                href={localizePath(locale, "/studio")}
                 className={cn(
                   buttonVariants({
                     variant: "secondary",
                     size: "lg",
+                    className: "w-fit max-w-full",
                   })
                 )}
               >
-                {siteSettings.home.primaryCta.label[locale]}
+                {studioLabel}
               </Link>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="grid gap-8 md:grid-cols-2">
+              {studioDetails.map((detail, index) => (
+                <div key={detail} className="grid content-start gap-5">
+                  <p className="font-heading text-6xl text-background/25">
+                    0{index + 1}
+                  </p>
+                  <p className="text-sm leading-7 text-background/70">
+                    {detail}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         {atelierService && (
-          <section className="bg-muted">
-            <div className="mx-auto grid max-w-6xl min-w-0 gap-10 px-6 py-16 md:grid-cols-[0.9fr_1.1fr] md:items-center md:px-10">
-              {atelierImage?.src && (
-                <ImageFrame
-                  alt={atelierImage.alt[locale]}
-                  src={atelierImage.src}
-                  label={
-                    atelierCategory?.title[locale] ??
-                    atelierService.title[locale]
-                  }
-                  eager
-                />
-              )}
-              <div className="min-w-0">
-                <p className="mb-4 text-xs text-muted-foreground uppercase">
-                  {atelierCategory?.title[locale] ??
-                    atelierService.title[locale]}
-                </p>
-                <h2 className="text-4xl leading-tight font-medium text-balance md:text-6xl">
-                  {atelierService.title[locale]}
-                </h2>
-                <p className="mt-6 text-sm leading-7 text-muted-foreground">
-                  {atelierService.summary[locale]}
-                </p>
-                <div className="mt-6">
-                  <FeatureList items={atelierService.outcomes[locale]} />
-                </div>
-                <Link
-                  href={localizePath(
-                    locale,
-                    servicePath(atelierService.routeSegment)
-                  )}
-                  className={cn(
-                    buttonVariants({
-                      variant: "default",
-                      size: "lg",
-                      className: "mt-8",
-                    })
-                  )}
-                >
-                  {atelierService.title[locale]}
-                </Link>
-              </div>
+          <section className="grid min-w-0 bg-primary text-primary-foreground lg:grid-cols-2">
+            {atelierImage?.src && (
+              <ImageFrame
+                alt={atelierImage.alt[locale]}
+                src={atelierImage.src}
+                ratio={3 / 2}
+                eager
+                className="rounded-none lg:aspect-auto lg:min-h-[42rem]"
+              />
+            )}
+            <div className="flex flex-col justify-center gap-7 px-6 py-16 md:px-10 lg:px-16">
+              <p className="text-xs tracking-[0.16em] text-primary-foreground/65 uppercase">
+                {atelierCategory?.title[locale] ?? atelierService.title[locale]}
+              </p>
+              <h2 className="text-5xl leading-[0.94] font-medium text-balance md:text-7xl">
+                {atelierService.title[locale]}
+              </h2>
+              <p className="max-w-xl text-sm leading-7 text-primary-foreground/70">
+                {atelierService.summary[locale]}
+              </p>
+              <ol className="grid gap-4 border-t border-primary-foreground/20 pt-6 text-sm text-primary-foreground/70">
+                {atelierService.outcomes[locale].map((outcome, index) => (
+                  <li key={outcome} className="grid grid-cols-[auto_1fr] gap-4">
+                    <span>0{index + 1}</span>
+                    <span>{outcome}</span>
+                  </li>
+                ))}
+              </ol>
+              <Link
+                href={localizePath(
+                  locale,
+                  servicePath(atelierService.routeSegment)
+                )}
+                className={cn(
+                  buttonVariants({
+                    variant: "secondary",
+                    size: "lg",
+                    className: "w-fit max-w-full",
+                  })
+                )}
+              >
+                {atelierService.title[locale]}
+              </Link>
             </div>
           </section>
         )}
 
-        <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
-          <div className="mb-8 grid gap-4 md:grid-cols-[0.8fr_1.2fr] md:items-end">
-            <h2 className="text-3xl leading-tight font-medium md:text-5xl">
+        <section className="w-full py-16 md:py-24">
+          <div className="grid gap-6 px-6 pb-10 md:grid-cols-[0.8fr_1.2fr] md:items-start md:px-10 lg:px-16">
+            <h2 className="text-5xl leading-[0.94] font-medium md:text-7xl">
               {siteSettings.home.collectionRailTitle[locale]}
             </h2>
-            <p className="text-sm leading-7 text-muted-foreground">
+            <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:justify-self-end">
               {siteSettings.home.portfolioNote[locale]}
             </p>
           </div>
-          <div className="grid auto-rows-fr gap-4 md:grid-cols-2">
+          <div className="grid lg:grid-cols-2">
             {visibleCourses.map((course) => {
               const courseImage = getFirstMediaAsset(course.mediaIds)
 
@@ -637,71 +543,167 @@ export default async function HomePage({ params }: HomePageProps) {
                 <Link
                   key={course.slug}
                   href={localizePath(locale, coursePath(course.routeSegment))}
-                  className="block h-full focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                  className="group grid min-w-0 gap-6 pb-10 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none lg:border-r lg:border-border"
                 >
-                  <OfferCard
-                    title={course.title[locale]}
-                    summary={course.summary[locale]}
-                    status={course.commercialStatus[locale]}
-                    priceNote={homeEditorialCopy.priceNote[locale]}
-                    image={
-                      courseImage?.src
-                        ? { src: courseImage.src, alt: courseImage.alt[locale] }
-                        : undefined
-                    }
-                  >
-                    <FeatureList items={course.lessons[locale]} />
-                  </OfferCard>
-                </Link>
-              )
-            })}
-            {visibleCollections.map((collection) => {
-              const collectionImage = getFirstMediaAsset(collection.mediaIds)
-
-              return (
-                <Link
-                  key={collection.slug}
-                  href={localizePath(
-                    locale,
-                    collectionPath(collection.routeSegment)
+                  {courseImage?.src && (
+                    <ImageFrame
+                      alt={courseImage.alt[locale]}
+                      src={courseImage.src}
+                      ratio={3 / 2}
+                      eager
+                      className="rounded-none"
+                    />
                   )}
-                  className="block h-full focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-                >
-                  <OfferCard
-                    title={collection.title[locale]}
-                    summary={collection.summary[locale]}
-                    status={collection.commercialStatus[locale]}
-                    priceNote={homeEditorialCopy.priceNote[locale]}
-                    image={
-                      collectionImage?.src
-                        ? {
-                            src: collectionImage.src,
-                            alt: collectionImage.alt[locale],
-                          }
-                        : undefined
-                    }
-                  >
-                    <FeatureList items={collection.materials[locale]} />
-                  </OfferCard>
+                  <h3 className="px-6 text-4xl leading-none font-medium md:px-10 md:text-5xl lg:px-16">
+                    {course.title[locale]}
+                  </h3>
+                  <p className="px-6 text-sm leading-7 text-muted-foreground md:px-10 lg:px-16">
+                    {course.summary[locale]}
+                  </p>
+                  <p className="px-6 text-sm leading-7 text-muted-foreground md:px-10 lg:px-16">
+                    {course.audience[locale]}
+                  </p>
+                  <ol className="grid grid-cols-2 gap-x-6 gap-y-3 px-6 text-xs tracking-[0.12em] uppercase md:px-10 lg:px-16">
+                    {course.lessons[locale].map((lesson, index) => (
+                      <li
+                        key={lesson}
+                        className="grid grid-cols-[auto_1fr] gap-3"
+                      >
+                        <span className="text-muted-foreground">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span>{lesson}</span>
+                      </li>
+                    ))}
+                  </ol>
+                  <span className="flex items-center gap-3 px-6 text-xs tracking-[0.14em] uppercase md:px-10 lg:px-16">
+                    {course.commercialStatus[locale]}
+                    <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
+                  </span>
                 </Link>
               )
             })}
+            <div className="grid min-w-0">
+              {visibleCollections.map((collection, index) => {
+                const collectionImage = getFirstMediaAsset(collection.mediaIds)
+
+                return (
+                  <Link
+                    key={collection.slug}
+                    href={localizePath(
+                      locale,
+                      collectionPath(collection.routeSegment)
+                    )}
+                    className="group grid min-w-0 grid-cols-[minmax(0,1fr)_7rem] gap-5 px-6 py-8 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none sm:grid-cols-[minmax(0,1fr)_12rem] md:px-10 lg:px-12"
+                  >
+                    <span className="grid min-w-0 content-center gap-3">
+                      <span className="text-xs text-muted-foreground">
+                        0{index + 1}
+                      </span>
+                      <span className="font-heading text-3xl leading-none md:text-4xl">
+                        {collection.title[locale]}
+                      </span>
+                      <span className="text-xs leading-5 text-muted-foreground">
+                        {homeEditorialCopy.priceNote[locale]}
+                      </span>
+                    </span>
+                    {collectionImage?.src && (
+                      <ImageFrame
+                        alt={collectionImage.alt[locale]}
+                        src={collectionImage.src}
+                        ratio={4 / 5}
+                        className="rounded-none"
+                      />
+                    )}
+                  </Link>
+                )
+              })}
+            </div>
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
-          <BookingCTA
-            title={
-              bookingPage?.title[locale] ??
-              siteSettings.home.primaryCta.label[locale]
-            }
-            summary={
-              bookingPage?.summary[locale] ?? siteSettings.home.summary[locale]
-            }
-            action={siteSettings.home.primaryCta.label[locale]}
-            href={localizePath(locale, "/booking")}
+        <section className="relative min-h-[44rem] overflow-hidden px-6 py-16 text-background md:px-10 md:py-24 lg:px-16">
+          {portfolioImage?.src && (
+            <Image
+              alt={portfolioImage.alt[locale]}
+              src={portfolioImage.src}
+              fill
+              sizes="100vw"
+              className="object-cover"
+            />
+          )}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-foreground/55"
           />
+          <div className="relative mx-auto flex min-h-[32rem] max-w-screen-2xl min-w-0 flex-col justify-between gap-16">
+            <div className="grid min-w-0 content-start gap-5">
+              <p className="text-xs tracking-[0.16em] text-muted-foreground uppercase">
+                Portfolio / 01
+              </p>
+            </div>
+            <div className="grid min-w-0 items-end gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(24rem,0.7fr)] lg:gap-20">
+              <h2 className="max-w-[11ch] text-5xl leading-[0.94] font-medium text-balance md:text-7xl">
+                {homeEditorialCopy.portfolioTitle[locale]}
+              </h2>
+              <div className="grid min-w-0 gap-8">
+                <p className="max-w-2xl text-sm leading-7 text-background/75">
+                  {homeEditorialCopy.portfolioSummary[locale]}
+                </p>
+                <div className="grid gap-6 sm:grid-cols-3">
+                  {homeEditorialCopy.portfolioSignals[locale].map(
+                    (signal, index) => (
+                      <div key={signal} className="grid gap-2">
+                        <span className="text-xs text-background/60">
+                          0{index + 1}
+                        </span>
+                        <span className="text-xs font-semibold tracking-[0.12em] uppercase">
+                          {signal}
+                        </span>
+                      </div>
+                    )
+                  )}
+                </div>
+                {portfolioCase && (
+                  <Link
+                    href={localizePath(
+                      locale,
+                      portfolioCasePath(portfolioCase.routeSegment)
+                    )}
+                    className={cn(
+                      buttonVariants({
+                        variant: "secondary",
+                        size: "lg",
+                        className: "w-fit max-w-full",
+                      })
+                    )}
+                  >
+                    {portfolioCase.title[locale]}
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
         </section>
+
+        <EditorialFaq
+          title={homeEditorialCopy.faqTitle[locale]}
+          items={homeEditorialCopy.faq[locale].map(
+            ([question, answer]) => [question, answer] as const
+          )}
+        />
+
+        <BookingCTA
+          title={
+            bookingPage?.title[locale] ??
+            siteSettings.home.primaryCta.label[locale]
+          }
+          summary={
+            bookingPage?.summary[locale] ?? siteSettings.home.summary[locale]
+          }
+          action={siteSettings.home.primaryCta.label[locale]}
+          href={localizePath(locale, "/booking")}
+        />
       </main>
       <SiteFooter locale={locale} />
     </div>

@@ -24,7 +24,8 @@
     "qa:all": "pnpm readiness:mvp && pnpm qa:architecture && pnpm test:e2e && pnpm qa:budget",
     "i18n:check": "tsx scripts/check-i18n.ts",
     "tokens:check": "tsx scripts/check-design-tokens.ts",
-    "readiness:mvp": "pnpm env:check && pnpm typecheck && pnpm lint && pnpm content:validate && pnpm cms:check && pnpm qa:static && pnpm handoff:check && pnpm i18n:check && pnpm tokens:check"
+    "brand:check": "tsx scripts/check-brand-assets.ts",
+    "readiness:mvp": "pnpm env:check && pnpm typecheck && pnpm lint && pnpm content:validate && pnpm cms:check && pnpm qa:static && pnpm handoff:check && pnpm i18n:check && pnpm tokens:check && pnpm brand:check"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -35,7 +36,6 @@
     "motion": "^12.42.2",
     "next": "16.2.10",
     "next-intl": "^4.13.1",
-    "next-themes": "^0.4.6",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-hook-form": "^7.81.0",

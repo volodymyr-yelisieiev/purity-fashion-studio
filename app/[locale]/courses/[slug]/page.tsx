@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { FeatureList, ImageFrame } from "@/components/purity"
+import { EditorialHero, FeatureList } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/site-shell"
 import {
   Accordion,
@@ -20,11 +20,7 @@ import {
 } from "@/components/ui/card"
 import { courses } from "@/content/source"
 import { getEntryMetadata } from "@/content/metadata"
-import {
-  getCategory,
-  getFirstMediaAsset,
-  getVisibleCourse,
-} from "@/content/queries"
+import { getFirstMediaAsset, getVisibleCourse } from "@/content/queries"
 import { coursePath } from "@/content/routes"
 import { BookingStartCta } from "@/features/booking/booking-start-cta"
 import { hasLocale, locales, localizePath, type Locale } from "@/i18n/routing"
@@ -194,7 +190,6 @@ export default async function CoursePage({ params }: CoursePageProps) {
     notFound()
   }
 
-  const category = getCategory("school")
   const currentPath = coursePath(course.routeSegment)
   const mediaAsset = getFirstMediaAsset(course.mediaIds)
   const bookingHref = localizePath(
@@ -207,59 +202,35 @@ export default async function CoursePage({ params }: CoursePageProps) {
       <SiteHeader locale={locale} currentPath={currentPath} />
 
       <main>
-        <section className="mx-auto grid w-full max-w-6xl min-w-0 gap-8 px-6 py-10 md:grid-cols-[1fr_0.95fr] md:items-end md:px-10 md:py-12">
-          <div className="grid min-w-0 gap-6">
-            <p className="text-xs tracking-normal text-muted-foreground uppercase">
-              {courseCopy.eyebrow[locale]}
-            </p>
-            <h1 className="max-w-4xl text-3xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
-              {course.title[locale]}
-            </h1>
-            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-              {courseCopy.intro[locale]}
-            </p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {course.lessons[locale].map((lesson) => (
-                <Card
-                  key={lesson}
-                  size="sm"
-                  className="border-border bg-background"
-                >
-                  <CardContent className="text-sm leading-6 text-muted-foreground">
-                    {lesson}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <div className="flex max-w-full flex-wrap gap-3">
-              <BookingStartCta
-                href={bookingHref}
-                label={courseCopy.checkoutLabel[locale]}
-                serviceSlug="wardrobe-management"
-              />
-              <Link
-                href={localizePath(locale, "/services/wardrobe-management")}
-                className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                    size: "lg",
-                    className: "h-auto min-h-11 max-w-full whitespace-normal",
-                  })
-                )}
-              >
-                {courseCopy.serviceLabel[locale]}
-              </Link>
-            </div>
-          </div>
-          {mediaAsset?.src && (
-            <ImageFrame
-              alt={mediaAsset.alt[locale]}
-              src={mediaAsset.src}
-              label={category?.title[locale] ?? course.title[locale]}
-              eager
+        <EditorialHero
+          locale={locale}
+          eyebrow={courseCopy.eyebrow[locale]}
+          title={course.title[locale]}
+          summary={courseCopy.intro[locale]}
+          mediaAsset={mediaAsset}
+          composition="editorial"
+        >
+          <div className="flex max-w-full flex-wrap gap-3">
+            <BookingStartCta
+              href={bookingHref}
+              label={courseCopy.checkoutLabel[locale]}
+              serviceSlug="wardrobe-management"
+              variant="secondary"
             />
-          )}
-        </section>
+            <Link
+              href={localizePath(locale, "/services/wardrobe-management")}
+              className={cn(
+                buttonVariants({
+                  variant: "outline",
+                  size: "lg",
+                  className: "h-auto min-h-11 max-w-full whitespace-normal",
+                })
+              )}
+            >
+              {courseCopy.serviceLabel[locale]}
+            </Link>
+          </div>
+        </EditorialHero>
 
         <section className="bg-muted">
           <div className="mx-auto grid max-w-6xl min-w-0 auto-rows-fr gap-4 px-6 py-16 sm:grid-cols-2 md:px-10 lg:grid-cols-3">

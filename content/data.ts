@@ -188,10 +188,10 @@ export const mediaAssets = [
     kind: "logo",
     source: "client",
     generated: false,
-    fileName: "logo-wordmark-black.png",
-    aspectRatio: "1320:450",
-    sourceFile: "/Users/v.yelisieiev/Downloads/Logo_PURITY.ai",
-    src: "/brand/logo-wordmark-black.png",
+    fileName: "wordmark-black.png",
+    aspectRatio: "2212:1079",
+    sourceFile: "assets/brand/Logo_PURITY.ai",
+    src: "/brand/purity/wordmark-black.png",
     usage: ["header", "light brand moments"],
     internalLabel: {
       uk: "Чорний wordmark PURITY з клієнтського AI-файлу",
@@ -211,10 +211,10 @@ export const mediaAssets = [
     kind: "logo",
     source: "client",
     generated: false,
-    fileName: "logo-lockup-black.png",
-    aspectRatio: "1308:525",
-    sourceFile: "/Users/v.yelisieiev/Downloads/Logo_PURITY.ai",
-    src: "/brand/logo-lockup-black.png",
+    fileName: "lockup-black.png",
+    aspectRatio: "2245:1103",
+    sourceFile: "assets/brand/Logo_PURITY.ai",
+    src: "/brand/purity/lockup-black.png",
     usage: ["footer", "light brand moments"],
     internalLabel: {
       uk: "Чорний lockup PURITY з підписом",
@@ -234,10 +234,10 @@ export const mediaAssets = [
     kind: "logo",
     source: "client",
     generated: false,
-    fileName: "logo-mark-grey.png",
-    aspectRatio: "250:452",
-    sourceFile: "/Users/v.yelisieiev/Downloads/Logo_PURITY.ai",
-    src: "/brand/logo-mark-grey.png",
+    fileName: "mark-grey.png",
+    aspectRatio: "487:808",
+    sourceFile: "assets/brand/Logo_PURITY.ai",
+    src: "/brand/purity/mark-grey.png",
     usage: ["favicon", "app icon", "apple touch icon"],
     internalLabel: {
       uk: "Сірий знак PURITY",
@@ -257,10 +257,10 @@ export const mediaAssets = [
     kind: "logo",
     source: "client",
     generated: false,
-    fileName: "logo-wordmark-reversed.png",
-    aspectRatio: "1315:620",
-    sourceFile: "/Users/v.yelisieiev/Downloads/Logo_PURITY.ai",
-    src: "/brand/logo-wordmark-reversed.png",
+    fileName: "wordmark-white.png",
+    aspectRatio: "2218:1085",
+    sourceFile: "assets/brand/Logo_PURITY.ai",
+    src: "/brand/purity/wordmark-white.png",
     usage: ["dark brand moments"],
     internalLabel: {
       uk: "Reversed wordmark PURITY",
@@ -280,10 +280,10 @@ export const mediaAssets = [
     kind: "logo",
     source: "client",
     generated: false,
-    fileName: "logo-lockup-reversed.png",
-    aspectRatio: "1305:474",
-    sourceFile: "/Users/v.yelisieiev/Downloads/Logo_PURITY.ai",
-    src: "/brand/logo-lockup-reversed.png",
+    fileName: "lockup-white.png",
+    aspectRatio: "2238:1103",
+    sourceFile: "assets/brand/Logo_PURITY.ai",
+    src: "/brand/purity/lockup-white.png",
     usage: ["dark footer", "dark brand moments"],
     internalLabel: {
       uk: "Reversed lockup PURITY з підписом",
@@ -305,7 +305,7 @@ export const mediaAssets = [
     generated: false,
     fileName: "logo-og.png",
     aspectRatio: "1200:630",
-    sourceFile: "/Users/v.yelisieiev/Downloads/Logo_PURITY.ai",
+    sourceFile: "assets/brand/Logo_PURITY.ai",
     src: "/brand/logo-og.png",
     usage: ["open graph", "twitter social preview"],
     internalLabel: {
@@ -351,6 +351,88 @@ export const mediaAssets = [
       uk: "Мʼякі складки шовку й тонкої вовни у світлих відтінках",
       ru: "Мягкие складки шелка и тонкой шерсти в светлых оттенках",
       en: "Soft folds of silk and fine wool in light neutral tones",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "generated-editorial-hero-flow",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "hero-flow.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "Cinematic editorial image of an anonymous woman walking through a sunlit Kyiv atelier in a flowing ivory garment, with negative space for the PURITY homepage hero.",
+    },
+    src: "/generated/editorial/hero-flow.webp",
+    heroFocalPoint: "right",
+    usage: ["homepage hero", "cinematic brand moments"],
+    internalLabel: {
+      uk: "Кінематографічний герой PURITY",
+      ru: "Кинематографический герой PURITY",
+      en: "PURITY cinematic hero",
+    },
+    alt: {
+      uk: "Жінка у світлому вбранні рухається сонячною студією",
+      ru: "Женщина в светлом наряде движется по солнечной студии",
+      en: "A woman in a light garment moves through a sunlit studio",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "generated-editorial-research",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "research-process.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "Editorial close-up of a stylist researching a wardrobe through garment sketches and neutral fabric swatches in warm atelier light.",
+    },
+    src: "/generated/editorial/research-process.webp",
+    usage: ["homepage research story", "research category pages"],
+    internalLabel: {
+      uk: "Редакційний кадр дослідження",
+      ru: "Редакционный кадр исследования",
+      en: "Editorial research frame",
+    },
+    alt: {
+      uk: "Руки стиліста працюють над ескізами й зразками тканин",
+      ru: "Руки стилиста работают над эскизами и образцами тканей",
+      en: "A stylist works with garment sketches and fabric samples",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "generated-editorial-create",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "create-process.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "Editorial close-up of a tailor pinning and hand-stitching ivory fabric in warm directional atelier light.",
+    },
+    src: "/generated/editorial/create-process.webp",
+    usage: ["homepage creation story", "atelier category pages"],
+    internalLabel: {
+      uk: "Редакційний кадр створення",
+      ru: "Редакционный кадр создания",
+      en: "Editorial creation frame",
+    },
+    alt: {
+      uk: "Руки майстра вручну зшивають світлу тканину",
+      ru: "Руки мастера вручную сшивают светлую ткань",
+      en: "A maker hand-stitches light fabric",
     },
     replacementPriority: "replace-when-client-proof-arrives",
     isRealClientProof: false,
@@ -560,6 +642,318 @@ export const mediaAssets = [
     replacementPriority: "replace-when-client-proof-arrives",
     isRealClientProof: false,
   },
+  {
+    id: "editorial-directions-texture",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "directions-texture.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "Layered wool, silk, pattern paper and tailoring chalk in warm monochrome atelier light.",
+    },
+    src: "/generated/editorial/directions-texture.webp",
+    heroFocalPoint: "center",
+    usage: ["homepage directions background"],
+    internalLabel: {
+      uk: "Фактури напряму",
+      ru: "Фактуры направления",
+      en: "Direction textures",
+    },
+    alt: {
+      uk: "Шари вовни, шовку й паперу для лекал",
+      ru: "Слои шерсти, шёлка и бумаги для лекал",
+      en: "Layers of wool, silk, and pattern paper",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-stylist-mirror",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "stylist-mirror.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "Anonymous client and stylist shaping a silhouette at an atelier mirror.",
+    },
+    src: "/generated/editorial/stylist-mirror.webp",
+    heroFocalPoint: "right",
+    usage: ["stylist category", "personal lookbook service"],
+    internalLabel: {
+      uk: "Робота стиліста біля дзеркала",
+      ru: "Работа стилиста у зеркала",
+      en: "Stylist at the mirror",
+    },
+    alt: {
+      uk: "Стиліст уточнює силует клієнтки біля дзеркала",
+      ru: "Стилист уточняет силуэт клиентки у зеркала",
+      en: "A stylist refines a client's silhouette at a mirror",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-shopping-rail",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "shopping-rail.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "A stylist's hand curating graphite and ivory garments on a private showroom rail.",
+    },
+    src: "/generated/editorial/shopping-rail.webp",
+    heroFocalPoint: "right",
+    usage: ["shopping category", "realisation support service"],
+    internalLabel: {
+      uk: "Кураторська добірка речей",
+      ru: "Кураторская подборка вещей",
+      en: "Curated garment selection",
+    },
+    alt: {
+      uk: "Рука стиліста обирає речі на рейлі",
+      ru: "Рука стилиста выбирает вещи на рейле",
+      en: "A stylist selects garments from a rail",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-wardrobe-archive",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "wardrobe-archive.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "An architectural wardrobe archive with ordered garments and accessories.",
+    },
+    src: "/generated/editorial/wardrobe-archive.webp",
+    heroFocalPoint: "right",
+    usage: ["wardrobe category", "wardrobe transformation service"],
+    internalLabel: {
+      uk: "Гардероб як архів",
+      ru: "Гардероб как архив",
+      en: "Wardrobe as archive",
+    },
+    alt: {
+      uk: "Організований гардероб із речами й аксесуарами",
+      ru: "Организованный гардероб с вещами и аксессуарами",
+      en: "An organized wardrobe with garments and accessories",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-corporate-tailoring",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "corporate-tailoring.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "Three tailored jackets and precise sleeve fitting in a restrained corporate studio.",
+    },
+    src: "/generated/editorial/corporate-tailoring.webp",
+    heroFocalPoint: "right",
+    usage: ["corporate category", "corporate image service"],
+    internalLabel: {
+      uk: "Корпоративний крій",
+      ru: "Корпоративный крой",
+      en: "Corporate tailoring",
+    },
+    alt: {
+      uk: "Майстер працює з посадкою корпоративного жакета",
+      ru: "Мастер работает с посадкой корпоративного жакета",
+      en: "A maker adjusts the fit of a corporate jacket",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-collections-flatlay",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "collections-flatlay.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "Ivory silk, graphite wool and one muted aubergine evening accent in a capsule flat-lay.",
+    },
+    src: "/generated/editorial/collections-flatlay.webp",
+    heroFocalPoint: "right",
+    usage: [
+      "collections category",
+      "capsule collection service",
+      "collection details",
+    ],
+    internalLabel: {
+      uk: "Капсульна добірка",
+      ru: "Капсульная подборка",
+      en: "Capsule selection",
+    },
+    alt: {
+      uk: "Капсула з шовку, вовни й вечірнього акценту",
+      ru: "Капсула из шёлка, шерсти и вечернего акцента",
+      en: "A capsule of silk, wool, and an evening accent",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-studio-method",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "studio-method.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "A working wardrobe design studio with consultation table, fabric archive, forms and rails.",
+    },
+    src: "/generated/editorial/studio-method.webp",
+    heroFocalPoint: "center",
+    usage: ["homepage method", "studio page"],
+    internalLabel: {
+      uk: "Робоча студія PURITY",
+      ru: "Рабочая студия PURITY",
+      en: "PURITY working studio",
+    },
+    alt: {
+      uk: "Студія з тканинами, манекеном і робочим столом",
+      ru: "Студия с тканями, манекеном и рабочим столом",
+      en: "A studio with fabrics, a dress form, and worktable",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-portfolio-process",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "portfolio-process.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "Documentary fashion process with fitting notes, swatches, garment details and proof prints.",
+    },
+    src: "/generated/editorial/portfolio-process.webp",
+    heroFocalPoint: "right",
+    usage: ["portfolio page", "honest process story"],
+    internalLabel: {
+      uk: "Документування процесу",
+      ru: "Документирование процесса",
+      en: "Documenting the process",
+    },
+    alt: {
+      uk: "Руки документують процес роботи з тканиною",
+      ru: "Руки документируют процесс работы с тканью",
+      en: "Hands document the process of working with fabric",
+    },
+    replacementPriority: "replace-before-launch",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-booking-consultation",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "booking-consultation.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "Two anonymous people reviewing fabric and silhouettes during a first studio consultation.",
+    },
+    src: "/generated/editorial/booking-consultation.webp",
+    heroFocalPoint: "right",
+    usage: ["booking page"],
+    internalLabel: {
+      uk: "Перша консультація",
+      ru: "Первая консультация",
+      en: "First consultation",
+    },
+    alt: {
+      uk: "Двоє людей обговорюють тканини й ескізи за столом",
+      ru: "Два человека обсуждают ткани и эскизы за столом",
+      en: "Two people discuss fabrics and sketches at a table",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-contacts-studio",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "contacts-studio.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "An understated urban fashion studio entrance glowing at early evening.",
+    },
+    src: "/generated/editorial/contacts-studio.webp",
+    heroFocalPoint: "right",
+    usage: ["contacts page"],
+    internalLabel: {
+      uk: "Вхід до студії",
+      ru: "Вход в студию",
+      en: "Studio entrance",
+    },
+    alt: {
+      uk: "Освітлений вхід до міської студії",
+      ru: "Освещённый вход в городскую студию",
+      en: "The illuminated entrance to an urban studio",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
+  {
+    id: "editorial-utility-patternmaking",
+    kind: "image",
+    source: "generated",
+    generated: true,
+    fileName: "utility-patternmaking.webp",
+    aspectRatio: "3:2",
+    sourceMetadata: {
+      engine: "OpenAI image generation",
+      prompt:
+        "A quiet patternmaking table with rulers, paper, fabric and a dress form in shadow.",
+    },
+    src: "/generated/editorial/utility-patternmaking.webp",
+    heroFocalPoint: "right",
+    usage: ["school", "course", "legal", "payment status"],
+    internalLabel: {
+      uk: "Робочий стіл конструктора",
+      ru: "Рабочий стол конструктора",
+      en: "Patternmaker's worktable",
+    },
+    alt: {
+      uk: "Лекала, тканина й інструменти на робочому столі",
+      ru: "Лекала, ткань и инструменты на рабочем столе",
+      en: "Patterns, fabric, and tools on a worktable",
+    },
+    replacementPriority: "replace-when-client-proof-arrives",
+    isRealClientProof: false,
+  },
 ] satisfies MediaAsset[]
 
 export const services = [
@@ -595,7 +989,7 @@ export const services = [
         "Stylist recommendations",
       ],
     },
-    mediaIds: ["generated-fabric-study"],
+    mediaIds: ["editorial-stylist-mirror"],
     seo: {
       uk: {
         title: "Персональний лукбук | PURITY",
@@ -647,7 +1041,7 @@ export const services = [
       ],
       en: ["Store route", "Up to 6 seasonal looks", "Studio or home fitting"],
     },
-    mediaIds: ["generated-lookbook-paper"],
+    mediaIds: ["editorial-shopping-rail"],
     seo: {
       uk: {
         title: "Супровід реалізації | PURITY",
@@ -691,7 +1085,7 @@ export const services = [
       ru: ["Эскиз и ткань", "Макет или лекала", "Примерки до посадки"],
       en: ["Sketch and fabric", "Mock-up or patterns", "Fittings until fit"],
     },
-    mediaIds: ["generated-atelier-detail"],
+    mediaIds: ["generated-editorial-create"],
     seo: {
       uk: {
         title: "Ательє-сервіс | PURITY",
@@ -735,7 +1129,7 @@ export const services = [
       ru: ["Фото вещей", "Коллажи образов", "Памятка что с чем носить"],
       en: ["Item photos", "Look collages", "What-to-wear guide"],
     },
-    mediaIds: ["generated-portfolio-silhouette"],
+    mediaIds: ["editorial-wardrobe-archive"],
     seo: {
       uk: {
         title: "Трансформація гардероба | PURITY",
@@ -792,7 +1186,7 @@ export const services = [
         "Training cases for teams",
       ],
     },
-    mediaIds: ["generated-studio-atmosphere"],
+    mediaIds: ["editorial-corporate-tailoring"],
     seo: {
       uk: {
         title: "Корпоративний імідж | PURITY",
@@ -832,7 +1226,7 @@ export const services = [
       ru: ["Система шкафа", "Критерии покупок", "Повторяемый процесс"],
       en: ["Wardrobe system", "Buying criteria", "Repeatable process"],
     },
-    mediaIds: ["generated-school-workshop"],
+    mediaIds: ["editorial-utility-patternmaking"],
     seo: {
       uk: {
         title: "Управління гардеробом | PURITY",
@@ -877,7 +1271,7 @@ export const services = [
       ru: ["Капсула", "Материалы", "Сценарии носки"],
       en: ["Capsule", "Materials", "Wear scenarios"],
     },
-    mediaIds: ["generated-capsule-silk"],
+    mediaIds: ["editorial-collections-flatlay"],
     seo: {
       uk: {
         title: "Капсульна колекція | PURITY",
@@ -924,7 +1318,7 @@ export const courses = [
       ru: ["Аудит", "Силуэт", "Палитра", "Покупки"],
       en: ["Audit", "Silhouette", "Palette", "Buying"],
     },
-    mediaIds: ["generated-school-workshop"],
+    mediaIds: ["editorial-utility-patternmaking"],
     seo: {
       uk: {
         title: "Курс управління гардеробом | PURITY",
@@ -970,7 +1364,7 @@ export const collections = [
       ru: ["Шерсть", "Шелк", "Подкладка"],
       en: ["Wool", "Silk", "Lining"],
     },
-    mediaIds: ["generated-capsule-silk", "generated-fabric-study"],
+    mediaIds: ["editorial-collections-flatlay", "generated-fabric-study"],
     seo: {
       uk: {
         title: "PURITY Capsule | PURITY",
@@ -1014,7 +1408,7 @@ export const collections = [
       ru: ["Вечерние фактуры", "Готовые комплекты", "Наличие по запросу"],
       en: ["Evening textures", "Ready combinations", "Availability by request"],
     },
-    mediaIds: ["generated-lookbook-paper", "generated-portfolio-silhouette"],
+    mediaIds: ["generated-lookbook-paper", "editorial-collections-flatlay"],
     seo: {
       uk: {
         title: "New Year Party Collection | PURITY",
@@ -1060,7 +1454,7 @@ export const collections = [
       ru: ["Бусины", "Пайетки", "Наличие по запросу"],
       en: ["Beading", "Sequins", "Availability by request"],
     },
-    mediaIds: ["generated-atelier-detail", "generated-studio-atmosphere"],
+    mediaIds: ["generated-atelier-detail", "editorial-collections-flatlay"],
     seo: {
       uk: {
         title: "Сукня з намистинами й паєтками | PURITY",
@@ -1094,7 +1488,7 @@ export const portfolioCases = [
       ru: "Внутренний плейсхолдер до появления реальных клиентских материалов.",
       en: "An internal placeholder until real client material exists.",
     },
-    mediaIds: ["generated-portfolio-silhouette"],
+    mediaIds: ["editorial-portfolio-process"],
     isRealClientProof: false,
     seo: {
       uk: {
@@ -1155,7 +1549,7 @@ export const publicPages = [
         "For private clients it creates a system of pieces and decisions; for corporate clients it creates uniform, dress code, and brand visibility through employees.",
       ],
     },
-    mediaIds: ["generated-studio-atmosphere"],
+    mediaIds: ["editorial-studio-method"],
     cta: {
       label: {
         uk: "Почати з консультації",
@@ -1214,7 +1608,7 @@ export const publicPages = [
         "After the contact channel is confirmed, the team will confirm the next step.",
       ],
     },
-    mediaIds: ["generated-studio-atmosphere"],
+    mediaIds: ["editorial-booking-consultation"],
     cta: {
       label: {
         uk: "Перейти до контактів",
@@ -1499,11 +1893,6 @@ export const siteSettings = {
     uk: "Мова",
     ru: "Язык",
     en: "Language",
-  },
-  contrastLabel: {
-    uk: "Контраст",
-    ru: "Контраст",
-    en: "Contrast",
   },
   closeLabel: {
     uk: "Закрити",
