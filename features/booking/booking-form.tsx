@@ -240,33 +240,10 @@ function BookingForm({
       noValidate
       onSubmit={form.handleSubmit(onSubmit)}
       aria-busy={isPending}
-      className="grid min-w-0 gap-6"
+      className="grid min-w-0 gap-10"
       data-state={isPending ? "submitting" : result.status}
       data-testid="booking-form"
     >
-      <Alert>
-        <AlertTitle>{bookingCopy.routingTitle[locale]}</AlertTitle>
-        <AlertDescription>
-          {bookingCopy.routingSummary[locale]}{" "}
-          {providerLabels[provider][locale]}
-        </AlertDescription>
-      </Alert>
-
-      <ol
-        aria-label={bookingCopy.stepsTitle[locale]}
-        className="grid gap-2 border-y border-border py-4 text-xs tracking-widest text-muted-foreground uppercase sm:grid-cols-2"
-        data-testid="booking-progress"
-      >
-        <li className="text-foreground">
-          <span className="mr-2 text-muted-foreground">01</span>
-          {bookingCopy.stepDetails[locale]}
-        </li>
-        <li>
-          <span className="mr-2 text-muted-foreground">02</span>
-          {bookingCopy.stepReview[locale]}
-        </li>
-      </ol>
-
       {(result.status === "error" || hasClientErrors) && (
         <Alert>
           <AlertTitle>{bookingCopy.errorTitle[locale]}</AlertTitle>
@@ -298,10 +275,12 @@ function BookingForm({
         </Alert>
       )}
 
-      <FieldSet>
-        <FieldLegend>{bookingCopy.contactTitle[locale]}</FieldLegend>
+      <FieldSet data-testid="booking-contact-fields">
+        <FieldLegend className="w-full text-center tracking-[0.16em]">
+          {bookingCopy.contactTitle[locale]}
+        </FieldLegend>
 
-        <FieldGroup>
+        <FieldGroup className="grid gap-8 lg:grid-cols-2">
           <Controller
             control={form.control}
             name="inquiryType"
@@ -394,10 +373,15 @@ function BookingForm({
         </FieldGroup>
       </FieldSet>
 
-      <FieldSet>
-        <FieldLegend>{bookingCopy.paymentTitle[locale]}</FieldLegend>
+      <FieldSet
+        data-testid="booking-payment-fields"
+        className="border-t border-border pt-10"
+      >
+        <FieldLegend className="w-full text-center tracking-[0.16em]">
+          {bookingCopy.paymentTitle[locale]}
+        </FieldLegend>
 
-        <FieldGroup>
+        <FieldGroup className="grid gap-8 lg:grid-cols-2">
           <Controller
             control={form.control}
             name="serviceSlug"
@@ -496,39 +480,51 @@ function BookingForm({
             )}
           />
 
-          <Controller
-            control={form.control}
-            name="budgetCurrency"
-            render={({ field }) => (
-              <Field>
-                <FieldLabel>{bookingLabels.budgetCurrency[locale]}</FieldLabel>
-                <Select
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  items={currencySelectItems}
-                >
-                  <SelectTrigger
-                    aria-label={bookingLabels.budgetCurrency[locale]}
-                    className="w-full"
-                    data-testid="booking-currency-trigger"
+          <div className="grid gap-4">
+            <Controller
+              control={form.control}
+              name="budgetCurrency"
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>
+                    {bookingLabels.budgetCurrency[locale]}
+                  </FieldLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    items={currencySelectItems}
                   >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {paymentCurrencies.map((currency) => (
-                        <SelectItem key={currency} value={currency}>
-                          {currencyLabels[currency][locale]}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          />
+                    <SelectTrigger
+                      aria-label={bookingLabels.budgetCurrency[locale]}
+                      className="w-full"
+                      data-testid="booking-currency-trigger"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {paymentCurrencies.map((currency) => (
+                          <SelectItem key={currency} value={currency}>
+                            {currencyLabels[currency][locale]}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              )}
+            />
 
-          <Field>
+            <Alert data-testid="booking-routing-note">
+              <AlertTitle>{bookingCopy.routingTitle[locale]}</AlertTitle>
+              <AlertDescription>
+                {bookingCopy.routingSummary[locale]}{" "}
+                {providerLabels[provider][locale]}
+              </AlertDescription>
+            </Alert>
+          </div>
+
+          <Field className="lg:col-span-2 lg:max-w-xl">
             <FieldLabel htmlFor={fieldId("preferredAt")}>
               {bookingLabels.preferredAt[locale]}
             </FieldLabel>
@@ -539,12 +535,17 @@ function BookingForm({
             />
           </Field>
 
-          <Field data-invalid={Boolean(errorFor("message"))}>
+          <Field
+            className="lg:col-span-2"
+            data-invalid={Boolean(errorFor("message"))}
+          >
             <FieldLabel htmlFor={fieldId("message")}>
               {bookingLabels.message[locale]}
             </FieldLabel>
             <Textarea
               id={fieldId("message")}
+              rows={1}
+              className="min-h-11"
               aria-invalid={Boolean(errorFor("message"))}
               aria-describedby={
                 errorFor("message") ? fieldErrorId("message") : undefined

@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { ContentPage } from "@/components/content-page"
-import { FeatureList, ImageFrame } from "@/components/purity"
+import { EditorialHero, FeatureList, ImageFrame } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/site-shell"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -93,63 +93,42 @@ function CollectionDetailPage({
       <SiteHeader locale={locale} currentPath={currentPath} />
 
       <main>
-        <section className="mx-auto grid w-full max-w-6xl min-w-0 gap-8 px-6 py-10 md:grid-cols-[1fr_0.95fr] md:items-end md:px-10 md:py-12">
-          <div className="grid min-w-0 gap-6">
-            <p className="text-xs tracking-normal text-muted-foreground uppercase">
-              {copy.eyebrow[locale]}
-            </p>
-            <h1 className="max-w-4xl text-3xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
-              {collection.title[locale]}
-            </h1>
-            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-              {collection.summary[locale]}
-            </p>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {collection.materials[locale].map((material) => (
-                <Card
-                  key={material}
-                  size="sm"
-                  className="border-border bg-background"
-                >
-                  <CardContent className="text-sm leading-6 text-muted-foreground">
-                    {material}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <div className="flex max-w-full flex-wrap gap-3">
-              <BookingStartCta
-                href={bookingHref}
-                label={siteSettings.home.primaryCta.label[locale]}
-                serviceSlug="capsule-collection"
-              />
-              <Link
-                href={localizePath(locale, "/services/capsule-collection")}
-                className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                    size: "lg",
-                    className: "h-auto min-h-11 max-w-full whitespace-normal",
-                  })
-                )}
-              >
-                {copy.serviceLabel[locale]}
-              </Link>
-            </div>
-          </div>
-          {mediaAsset?.src && (
-            <ImageFrame
-              alt={mediaAsset.alt[locale]}
-              src={mediaAsset.src}
-              label={collection.title[locale]}
-              eager
+        <EditorialHero
+          locale={locale}
+          eyebrow={copy.eyebrow[locale]}
+          title={collection.title[locale]}
+          summary={collection.summary[locale]}
+          mediaAsset={mediaAsset}
+          composition="cinematic"
+        >
+          <p className="border-y border-border py-4 text-sm leading-7 text-muted-foreground">
+            {collection.materials[locale].join(" · ")}
+          </p>
+          <div className="flex max-w-full flex-wrap gap-3">
+            <BookingStartCta
+              href={bookingHref}
+              label={siteSettings.home.primaryCta.label[locale]}
+              serviceSlug="capsule-collection"
+              variant="secondary"
             />
-          )}
-        </section>
+            <Link
+              href={localizePath(locale, "/services/capsule-collection")}
+              className={cn(
+                buttonVariants({
+                  variant: "outline",
+                  size: "lg",
+                  className: "h-auto min-h-11 max-w-full whitespace-normal",
+                })
+              )}
+            >
+              {copy.serviceLabel[locale]}
+            </Link>
+          </div>
+        </EditorialHero>
 
         {storyAssets.length > 0 && (
           <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
-            <div className="mb-8 grid gap-4 md:grid-cols-[0.8fr_1.2fr] md:items-end">
+            <div className="mb-8 grid gap-4 md:grid-cols-[0.8fr_1.2fr] md:items-start">
               <h2 className="text-3xl leading-tight font-medium md:text-5xl">
                 {copy.stylingTitle[locale]}
               </h2>

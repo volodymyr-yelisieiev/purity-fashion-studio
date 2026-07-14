@@ -169,6 +169,7 @@ const mediaAssetSchema = z.object({
   usage: z.array(z.string().min(1)).min(1),
   internalLabel: localizedString,
   alt: localizedString,
+  heroFocalPoint: z.enum(["left", "center", "right"]).optional(),
   replacementPriority: z.enum([
     "keep-client-source",
     "replace-before-launch",
@@ -180,7 +181,6 @@ const mediaAssetSchema = z.object({
 const siteSettingsSchema = z.object({
   brandName: z.string().min(1),
   languageLabel: localizedString,
-  contrastLabel: localizedString,
   home: z.object({
     eyebrow: localizedString,
     title: localizedString,
@@ -280,7 +280,9 @@ function assertFixedOfferPlaceholder(
   ].join(" ")
 
   if (!/placeholder/i.test(searchable)) {
-    throw new Error(`${kind} ${item.slug} must expose an explicit placeholder offer`)
+    throw new Error(
+      `${kind} ${item.slug} must expose an explicit placeholder offer`
+    )
   }
 }
 

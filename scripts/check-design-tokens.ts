@@ -30,11 +30,11 @@ const forbiddenPurityTokens =
 if (
   missingThemeTokens.length ||
   forbiddenPurityTokens.test(globals) ||
-  !globals.includes(".dark {") ||
+  globals.includes(".dark {") ||
   !globals.includes("@media (prefers-reduced-motion: reduce)")
 ) {
   throw new Error(
-    `Invalid semantic theme contract: ${missingThemeTokens.join(", ") || "custom PURITY tokens or missing dark/reduced-motion rules"}`
+    `Invalid single-theme semantic contract: ${missingThemeTokens.join(", ") || "custom PURITY tokens, dark token overrides, or missing reduced-motion rules"}`
   )
 }
 
@@ -57,7 +57,11 @@ if (
 for (const path of [
   "components/purity.tsx",
   "app/[locale]/styleguide/page.tsx",
-  "public/brand/logo-purity.png",
+  "public/brand/purity/wordmark-black.png",
+  "public/brand/purity/wordmark-white.png",
+  "public/brand/purity/lockup-black.png",
+  "public/brand/purity/lockup-white.png",
+  "public/brand/purity/mark-grey.png",
 ]) {
   if (!existsSync(path)) {
     throw new Error(`Missing UI system artifact: ${path}`)
@@ -65,5 +69,5 @@ for (const path of [
 }
 
 console.log(
-  `Design tokens ok: ${requiredThemeTokens.length} semantic preset tokens`
+  `Design tokens ok: ${requiredThemeTokens.length} semantic preset tokens, single theme, and dedicated brand assets`
 )

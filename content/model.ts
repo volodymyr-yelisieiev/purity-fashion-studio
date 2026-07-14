@@ -183,6 +183,7 @@ export type MediaAsset = {
     originalPath?: string
   }
   src?: string
+  heroFocalPoint?: "left" | "center" | "right"
   usage: string[]
   internalLabel: Localized<string>
   alt: Localized<string>
@@ -196,7 +197,6 @@ export type MediaAsset = {
 export type SiteSettings = {
   brandName: string
   languageLabel: Localized<string>
-  contrastLabel: Localized<string>
   closeLabel: Localized<string>
   externalLinkLabel: Localized<string>
   home: {

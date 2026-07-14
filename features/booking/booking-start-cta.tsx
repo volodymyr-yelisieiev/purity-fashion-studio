@@ -10,15 +10,21 @@ type BookingStartCtaProps = {
   href: string
   label: string
   serviceSlug: string
+  variant?: "default" | "secondary"
 }
 
-function BookingStartCta({ href, label, serviceSlug }: BookingStartCtaProps) {
+function BookingStartCta({
+  href,
+  label,
+  serviceSlug,
+  variant = "default",
+}: BookingStartCtaProps) {
   return (
     <Link
       href={href}
       className={cn(
         buttonVariants({
-          variant: "default",
+          variant,
           size: "lg",
           className: "h-auto min-h-11 max-w-full whitespace-normal",
         })

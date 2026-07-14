@@ -23,7 +23,7 @@ function listSourceFiles(root: string): string[] {
 
 const forbiddenImports = [
   ["lucide-react", "Use Phosphor icons from the active shadcn preset."],
-  ["next-themes", "Theme state is owned by components/theme-provider.tsx."],
+  ["next-themes", "PURITY uses one canonical semantic theme."],
   [
     "components/ui/button-variants",
     "Use the canonical button contract from components/ui/button.tsx.",
@@ -70,7 +70,7 @@ const e2e = readFileSync("tests/e2e/purity.spec.ts", "utf8")
 for (const required of [
   "[320, 375, 768, 1024, 1440, 1920]",
   '"uk", "ru", "en"',
-  '"light", "dark"',
+  'const colorSchemes = ["light"] as const',
   "page.screenshot()",
   "scrollWidth",
 ]) {
@@ -86,5 +86,5 @@ if (issues.length) {
 }
 
 console.log(
-  "Architecture QA ok: Base UI, Phosphor, theme ownership, and responsive matrix contracts are intact"
+  "Architecture QA ok: Base UI, Phosphor, single-theme ownership, and responsive matrix contracts are intact"
 )

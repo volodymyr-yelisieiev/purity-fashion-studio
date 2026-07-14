@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { ImageFrame } from "@/components/purity"
+import { EditorialHero } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/site-shell"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
@@ -227,50 +227,44 @@ export default async function PortfolioPage({ params }: PortfolioPageProps) {
     notFound()
   }
 
-  const mediaAsset = getMediaAsset("generated-studio-atmosphere")
+  const mediaAsset = getMediaAsset("editorial-portfolio-process")
 
   return (
     <div className="min-h-svh bg-background text-foreground">
       <SiteHeader locale={locale} currentPath="/portfolio" />
 
       <main>
-        <section className="mx-auto grid w-full max-w-6xl min-w-0 gap-8 px-6 py-10 md:grid-cols-[1fr_0.95fr] md:items-end md:px-10 md:py-12">
-          <div className="grid min-w-0 gap-6">
-            <p className="text-xs tracking-normal text-muted-foreground uppercase">
-              {portfolioCopy.eyebrow[locale]}
-            </p>
-            <h1 className="text-4xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
-              {portfolioCopy.title[locale]}
-            </h1>
-            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-              {portfolioCopy.summary[locale]}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href={localizePath(locale, "/contacts")}
-                className={cn(buttonVariants({ size: "lg" }))}
-              >
-                {portfolioCopy.contactLabel[locale]}
-              </Link>
-              <Link
-                href={localizePath(locale, "/booking")}
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" })
-                )}
-              >
-                {portfolioCopy.bookingLabel[locale]}
-              </Link>
-            </div>
+        <EditorialHero
+          locale={locale}
+          eyebrow={portfolioCopy.eyebrow[locale]}
+          title={portfolioCopy.title[locale]}
+          summary={portfolioCopy.summary[locale]}
+          mediaAsset={mediaAsset}
+          composition="editorial"
+        >
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href={localizePath(locale, "/contacts")}
+              className={cn(
+                buttonVariants({ variant: "secondary", size: "lg" })
+              )}
+            >
+              {portfolioCopy.contactLabel[locale]}
+            </Link>
+            <Link
+              href={localizePath(locale, "/booking")}
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+            >
+              {portfolioCopy.bookingLabel[locale]}
+            </Link>
           </div>
-          {mediaAsset?.src && (
-            <ImageFrame
-              src={mediaAsset.src}
-              alt={mediaAsset.alt[locale]}
-              label={portfolioCopy.heroImageLabel[locale]}
-              eager
-            />
-          )}
-        </section>
+          <p
+            className="text-xs tracking-[0.12em] text-background/70 uppercase"
+            data-testid="portfolio-editorial-label"
+          >
+            {portfolioCopy.heroImageLabel[locale]}
+          </p>
+        </EditorialHero>
 
         <section className="bg-muted">
           <div className="mx-auto max-w-6xl min-w-0 px-6 py-14 md:px-10">

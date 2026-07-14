@@ -2,9 +2,8 @@ import type { Metadata } from "next"
 import { ArrowSquareOutIcon as ExternalLinkIcon } from "@phosphor-icons/react/dist/ssr"
 import { notFound } from "next/navigation"
 
-import { ImageFrame } from "@/components/purity"
+import { EditorialHero } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/site-shell"
-import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -200,35 +199,25 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
       slug: service.slug,
       title: service.title[locale],
     }))
-  const mediaAsset = getMediaAsset("generated-studio-atmosphere")
+  const mediaAsset = getMediaAsset("editorial-contacts-studio")
 
   return (
     <div className="min-h-svh bg-background text-foreground">
       <SiteHeader locale={locale} currentPath="/contacts" />
 
       <main>
-        <section className="mx-auto grid w-full max-w-6xl gap-8 px-6 py-10 md:grid-cols-[1fr_0.9fr] md:items-end md:px-10 md:py-12">
-          <div className="min-w-0">
-            <Badge variant="default">{category.title[locale]}</Badge>
-            <h1 className="mt-6 text-4xl leading-none font-medium text-balance break-words md:text-6xl xl:text-7xl">
-              {category.title[locale]}
-            </h1>
-            <p className="mt-6 max-w-2xl text-sm leading-7 break-words text-muted-foreground">
-              {category.summary[locale]}
-            </p>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-              {siteSettings.contacts.responseTime[locale]}
-            </p>
-          </div>
-          {mediaAsset?.src && (
-            <ImageFrame
-              alt={mediaAsset.alt[locale]}
-              src={mediaAsset.src}
-              label={category.title[locale]}
-              eager
-            />
-          )}
-        </section>
+        <EditorialHero
+          locale={locale}
+          eyebrow={category.title[locale]}
+          title={category.title[locale]}
+          summary={category.summary[locale]}
+          mediaAsset={mediaAsset}
+          composition="editorial"
+        >
+          <p className="text-sm leading-7 text-background/75">
+            {siteSettings.contacts.responseTime[locale]}
+          </p>
+        </EditorialHero>
 
         <section className="bg-muted">
           <div className="mx-auto grid w-full max-w-6xl gap-6 px-6 py-14 lg:px-10">

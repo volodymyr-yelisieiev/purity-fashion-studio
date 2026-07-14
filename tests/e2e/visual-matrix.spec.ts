@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-const themes = ["light", "dark"] as const
+const colorSchemes = ["light"] as const
 const viewports = [320, 1440] as const
 const routes = [
   "/",
@@ -36,8 +36,8 @@ test("visual matrix captures every public route family", async ({ page }) => {
   })
   page.on("pageerror", (error) => errors.push(error.message))
 
-  for (const theme of themes) {
-    await page.emulateMedia({ colorScheme: theme })
+  for (const colorScheme of colorSchemes) {
+    await page.emulateMedia({ colorScheme })
 
     for (const width of viewports) {
       await page.setViewportSize({ width, height: 900 })
@@ -48,7 +48,7 @@ test("visual matrix captures every public route family", async ({ page }) => {
           waitUntil: "domcontentloaded",
         })
 
-        expect(response?.ok(), `${theme} ${width} ${route}`).toBe(true)
+        expect(response?.ok(), `${colorScheme} ${width} ${route}`).toBe(true)
         await expect(page.locator("main h1").first()).toBeVisible()
 
         const metrics = await page.evaluate(() => {
@@ -86,22 +86,27 @@ test("visual matrix captures every public route family", async ({ page }) => {
           caret: "initial",
         })
 
-        expect(metrics.visibleHeader, `${theme} ${width} ${route}`).toBe(true)
-        expect(metrics.visibleFooter, `${theme} ${width} ${route}`).toBe(true)
-        expect(
-          metrics.scrollWidth,
-          `${theme} ${width} ${route}`
-        ).toBeLessThanOrEqual(metrics.clientWidth + 1)
-        expect(screenshot.length, `${theme} ${width} ${route}`).toBeGreaterThan(
-          15_000
+        expect(metrics.visibleHeader, `${colorScheme} ${width} ${route}`).toBe(
+          true
+        )
+        expect(metrics.visibleFooter, `${colorScheme} ${width} ${route}`).toBe(
+          true
         )
         expect(
+          metrics.scrollWidth,
+          `${colorScheme} ${width} ${route}`
+        ).toBeLessThanOrEqual(metrics.clientWidth + 1)
+        expect(
+          screenshot.length,
+          `${colorScheme} ${width} ${route}`
+        ).toBeGreaterThan(15_000)
+        expect(
           metrics.mainTextLength,
-          `${theme} ${width} ${route}`
+          `${colorScheme} ${width} ${route}`
         ).toBeGreaterThan(120)
         expect(
           metrics.loadedImages,
-          `${theme} ${width} ${route}`
+          `${colorScheme} ${width} ${route}`
         ).toBeGreaterThan(0)
       }
     }

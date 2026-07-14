@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { ContentPage } from "@/components/content-page"
-import { FeatureList, ImageFrame } from "@/components/purity"
+import { EditorialHero, FeatureList } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/site-shell"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -82,98 +82,81 @@ function ServiceDetailPage({
       <SiteHeader locale={locale} currentPath={currentPath} />
 
       <main>
-        <section className="mx-auto grid w-full max-w-6xl min-w-0 gap-8 px-6 py-10 md:grid-cols-[1fr_0.95fr] md:items-end md:px-10 md:py-12">
-          <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6">
-            <p className="text-xs tracking-normal text-muted-foreground uppercase">
-              {eyebrow}
-            </p>
-            <h1 className="max-w-4xl text-3xl leading-none font-medium text-balance sm:text-5xl md:text-7xl">
-              {service.title[locale]}
-            </h1>
-            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-              {service.summary[locale]}
-            </p>
-            <div
-              className={
-                service.outcomes[locale].length === 4
-                  ? "grid gap-3 sm:grid-cols-2"
-                  : "grid gap-3 sm:grid-cols-3"
-              }
-            >
-              {service.outcomes[locale].map((outcome) => (
-                <Card
-                  key={outcome}
-                  size="sm"
-                  className="border-border bg-background"
-                >
-                  <CardContent className="text-sm leading-6 text-muted-foreground">
-                    {outcome}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <div className="flex max-w-full flex-wrap gap-3">
-              <BookingStartCta
-                href={bookingHref}
-                label={siteSettings.home.primaryCta.label[locale]}
-                serviceSlug={service.slug}
-              />
-              {copy.contactLabel && (
-                <Link
-                  href={localizePath(locale, "/contacts")}
-                  className={cn(
-                    buttonVariants({
-                      variant: "outline",
-                      size: "lg",
-                      className: "h-auto min-h-11 max-w-full whitespace-normal",
-                    })
-                  )}
-                >
-                  {copy.contactLabel[locale]}
-                </Link>
-              )}
-              {copy.courseLabel && (
-                <Link
-                  href={localizePath(
-                    locale,
-                    coursePath("wardrobe-management-course")
-                  )}
-                  className={cn(
-                    buttonVariants({
-                      variant: "outline",
-                      size: "lg",
-                      className: "h-auto min-h-11 max-w-full whitespace-normal",
-                    })
-                  )}
-                >
-                  {copy.courseLabel[locale]}
-                </Link>
-              )}
-              {copy.collectionLabel && (
-                <Link
-                  href={localizePath(locale, collectionPath("purity-capsule"))}
-                  className={cn(
-                    buttonVariants({
-                      variant: "outline",
-                      size: "lg",
-                      className: "h-auto min-h-11 max-w-full whitespace-normal",
-                    })
-                  )}
-                >
-                  {copy.collectionLabel[locale]}
-                </Link>
-              )}
-            </div>
-          </div>
-          {mediaAsset?.src && (
-            <ImageFrame
-              alt={mediaAsset.alt[locale]}
-              src={mediaAsset.src}
-              label={service.title[locale]}
-              eager
+        <EditorialHero
+          locale={locale}
+          eyebrow={eyebrow}
+          title={service.title[locale]}
+          summary={service.summary[locale]}
+          mediaAsset={mediaAsset}
+          composition="cinematic"
+        >
+          <ol className="grid border-t border-border">
+            {service.outcomes[locale].map((outcome, index) => (
+              <li
+                key={outcome}
+                className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 border-b border-border py-3 text-sm"
+              >
+                <span className="text-xs text-muted-foreground">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                {outcome}
+              </li>
+            ))}
+          </ol>
+          <div className="flex max-w-full flex-wrap gap-3">
+            <BookingStartCta
+              href={bookingHref}
+              label={siteSettings.home.primaryCta.label[locale]}
+              serviceSlug={service.slug}
+              variant="secondary"
             />
-          )}
-        </section>
+            {copy.contactLabel && (
+              <Link
+                href={localizePath(locale, "/contacts")}
+                className={cn(
+                  buttonVariants({
+                    variant: "outline",
+                    size: "lg",
+                    className: "h-auto min-h-11 max-w-full whitespace-normal",
+                  })
+                )}
+              >
+                {copy.contactLabel[locale]}
+              </Link>
+            )}
+            {copy.courseLabel && (
+              <Link
+                href={localizePath(
+                  locale,
+                  coursePath("wardrobe-management-course")
+                )}
+                className={cn(
+                  buttonVariants({
+                    variant: "outline",
+                    size: "lg",
+                    className: "h-auto min-h-11 max-w-full whitespace-normal",
+                  })
+                )}
+              >
+                {copy.courseLabel[locale]}
+              </Link>
+            )}
+            {copy.collectionLabel && (
+              <Link
+                href={localizePath(locale, collectionPath("purity-capsule"))}
+                className={cn(
+                  buttonVariants({
+                    variant: "outline",
+                    size: "lg",
+                    className: "h-auto min-h-11 max-w-full whitespace-normal",
+                  })
+                )}
+              >
+                {copy.collectionLabel[locale]}
+              </Link>
+            )}
+          </div>
+        </EditorialHero>
 
         <section className="bg-muted">
           <div className="mx-auto grid max-w-6xl min-w-0 gap-10 px-6 py-16 md:grid-cols-[0.8fr_1.2fr] md:px-10">

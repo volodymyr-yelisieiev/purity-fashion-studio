@@ -2,6 +2,8 @@ import { expect, test } from "@playwright/test"
 
 import { getContentRoutes } from "../../content/routes"
 
+const colorSchemes = ["light"] as const
+
 const criticalRoutes = [
   "/uk",
   "/uk/studio",
@@ -43,7 +45,7 @@ const utilityRoutes = new Set([
   "/uk/styleguide",
 ])
 
-test("theme initialization stays safe across locales and navigation", async ({
+test("single theme ignores OS and persisted dark preferences", async ({
   browser,
 }) => {
   const context = await browser.newContext({ colorScheme: "dark" })
@@ -58,38 +60,116 @@ test("theme initialization stays safe across locales and navigation", async ({
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
   for (const locale of ["uk", "ru", "en"] as const) {
+    await page.addInitScript(() => localStorage.setItem("theme", "dark"))
     await page.goto(`/${locale}`, { waitUntil: "networkidle" })
-    await expect(page.locator("script#purity-theme-init")).toHaveCount(1)
-    await expect
-      .poll(() =>
-        page.locator("html").evaluate((html) => html.classList.contains("dark"))
-      )
-      .toBe(true)
-
-    await page.evaluate(() => localStorage.setItem("theme", "light"))
-    await page.reload({ waitUntil: "networkidle" })
+    await expect(page.locator("script#purity-theme-init")).toHaveCount(0)
     await expect
       .poll(() =>
         page.locator("html").evaluate((html) => html.classList.contains("dark"))
       )
       .toBe(false)
 
-    await page.evaluate(() => localStorage.removeItem("theme"))
-    await page.goto(`/${locale}`)
     await page.locator(`a[href="/${locale}/studio"]`).first().click()
     await page.waitForURL(`**/${locale}/studio`)
     await expect
       .poll(() =>
         page.locator("html").evaluate((html) => html.classList.contains("dark"))
       )
-      .toBe(true)
+      .toBe(false)
   }
 
   expect(errors).toEqual([])
   await context.close()
 })
 
-test("typography stays distinct and contained across the locale theme matrix", async ({
+test("editorial shell keeps full-screen heroes and canonical control geometry", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1386, height: 870 })
+  await page.goto("/uk", { waitUntil: "domcontentloaded" })
+
+  const shellMetrics = await page.evaluate(() => {
+    const hero = document.querySelector<HTMLElement>(
+      '[data-testid="editorial-hero"]'
+    )
+    const header = document.querySelector<HTMLElement>("header")
+    const logo = header?.querySelector<HTMLElement>("a")
+    const navigation = header?.querySelector<HTMLElement>(
+      '[data-testid="desktop-navigation"]'
+    )
+    const utilities = header?.querySelector<HTMLElement>(
+      '[data-testid="header-utilities"]'
+    )
+    const h1 = hero?.querySelector<HTMLElement>("h1")
+    const rect = (element?: HTMLElement | null) =>
+      element?.getBoundingClientRect() ?? null
+
+    return {
+      hero: rect(hero),
+      heroMinHeight: hero ? getComputedStyle(hero).minHeight : "",
+      header: rect(header),
+      logo: rect(logo),
+      navigation: rect(navigation),
+      utilities: rect(utilities),
+      h1OverflowWrap: h1 ? getComputedStyle(h1).overflowWrap : "",
+      h1WordBreak: h1 ? getComputedStyle(h1).wordBreak : "",
+    }
+  })
+
+  expect(shellMetrics.hero?.height).toBe(870)
+  expect(shellMetrics.heroMinHeight).toBe("870px")
+  expect(shellMetrics.header?.width).toBe(1386)
+  expect(shellMetrics.logo?.right).toBeLessThan(
+    shellMetrics.navigation?.left ?? 0
+  )
+  expect(shellMetrics.navigation?.right).toBeLessThan(
+    shellMetrics.utilities?.left ?? 0
+  )
+  expect(shellMetrics.h1OverflowWrap).toBe("normal")
+  expect(shellMetrics.h1WordBreak).toBe("normal")
+
+  await page.goto("/uk/collections", { waitUntil: "domcontentloaded" })
+  const collectionCard = page.locator('main [data-slot="card"]').first()
+  const cardCount = await page.locator('main [data-slot="card"]').count()
+  expect(cardCount).toBeGreaterThan(0)
+  const flushMetrics = await collectionCard.evaluate((card) => {
+    const image = card.querySelector("img")
+    const cardRect = card.getBoundingClientRect()
+    const imageContainerRect = image?.parentElement?.getBoundingClientRect()
+
+    return {
+      top: imageContainerRect?.top ?? Number.NaN,
+      left: imageContainerRect?.left ?? Number.NaN,
+      right: imageContainerRect?.right ?? Number.NaN,
+      cardTop: cardRect.top,
+      cardLeft: cardRect.left,
+      cardRight: cardRect.right,
+    }
+  })
+  expect(flushMetrics.top).toBeCloseTo(flushMetrics.cardTop, 0)
+  expect(flushMetrics.left).toBeCloseTo(flushMetrics.cardLeft, 0)
+  expect(flushMetrics.right).toBeCloseTo(flushMetrics.cardRight, 0)
+
+  await page.goto("/uk/booking", { waitUntil: "domcontentloaded" })
+  const checkedLabel = page.locator(
+    '[data-slot="field-label"]:has([data-slot="radio-group-item"][data-checked])'
+  )
+  expect(await checkedLabel.count()).toBeGreaterThan(0)
+  const selectedBackgrounds = await checkedLabel
+    .all()
+    .then((labels) =>
+      Promise.all(
+        labels.map((label) =>
+          label.evaluate((element) => getComputedStyle(element).backgroundColor)
+        )
+      )
+    )
+  expect(
+    selectedBackgrounds.every((value) => value === "rgba(0, 0, 0, 0)")
+  ).toBe(true)
+})
+
+test("typography stays distinct and contained across the locale viewport matrix", async ({
   page,
 }) => {
   const widths = [320, 375, 768, 1024, 1440, 1920]
@@ -103,7 +183,7 @@ test("typography stays distinct and contained across the locale theme matrix", a
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
   for (const locale of ["uk", "ru", "en"] as const) {
-    for (const colorScheme of ["light", "dark"] as const) {
+    for (const colorScheme of colorSchemes) {
       await page.emulateMedia({ colorScheme })
 
       for (const width of widths) {
@@ -135,7 +215,7 @@ test("typography stays distinct and contained across the locale theme matrix", a
   expect(errors).toEqual([])
 })
 
-test("semantic theme tokens stay distinct across locales and widths", async ({
+test("single-theme semantic tokens stay stable across locales and widths", async ({
   page,
 }) => {
   test.setTimeout(180_000)
@@ -159,7 +239,7 @@ test("semantic theme tokens stay distinct across locales and widths", async ({
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
   for (const locale of ["uk", "ru", "en"] as const) {
-    for (const colorScheme of ["light", "dark"] as const) {
+    for (const colorScheme of colorSchemes) {
       await page.emulateMedia({ colorScheme })
 
       for (const width of widths) {
@@ -171,7 +251,9 @@ test("semantic theme tokens stay distinct across locales and widths", async ({
           await page.locator("main h1").waitFor()
           await expect
             .poll(() =>
-              page.evaluate(() => document.documentElement.style.colorScheme)
+              page.evaluate(
+                () => getComputedStyle(document.documentElement).colorScheme
+              )
             )
             .toBe(colorScheme)
 
@@ -191,13 +273,14 @@ test("semantic theme tokens stay distinct across locales and widths", async ({
                 .getPropertyValue("--ring")
                 .trim(),
               dark: document.documentElement.classList.contains("dark"),
-              colorScheme: document.documentElement.style.colorScheme,
+              colorScheme: getComputedStyle(document.documentElement)
+                .colorScheme,
               clientWidth: document.documentElement.clientWidth,
               scrollWidth: document.documentElement.scrollWidth,
             }
           })
 
-          expect(metrics.dark).toBe(colorScheme === "dark")
+          expect(metrics.dark).toBe(false)
           expect(metrics.colorScheme).toBe(colorScheme)
           expect(metrics.bodyBackground).not.toBe(metrics.bodyColor)
           expect(metrics.ctaBackground).not.toBe(metrics.ctaColor)
@@ -253,7 +336,7 @@ test("public pages keep global landmarks and semantic theme tokens", async ({
   const widths = [320, 375, 768, 1024, 1440, 1920]
 
   for (const locale of ["uk", "ru", "en"] as const) {
-    for (const colorScheme of ["light", "dark"] as const) {
+    for (const colorScheme of colorSchemes) {
       await page.emulateMedia({ colorScheme })
 
       for (const width of widths) {
@@ -443,10 +526,9 @@ test("header navigation keeps booking, locale, and mobile controls coherent", as
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
-  for (const scheme of ["light", "dark"] as const) {
+  for (const scheme of colorSchemes) {
     await page.emulateMedia({ colorScheme: scheme })
     await page.goto("/uk", { waitUntil: "domcontentloaded" })
-    await page.evaluate((theme) => localStorage.setItem("theme", theme), scheme)
 
     for (const locale of locales) {
       for (const width of widths) {
@@ -460,7 +542,7 @@ test("header navigation keeps booking, locale, and mobile controls coherent", as
               .locator("html")
               .evaluate((html) => html.classList.contains("dark"))
           )
-          .toBe(scheme === "dark")
+          .toBe(false)
 
         await expect(page.locator("header")).toBeVisible()
         await expect(
@@ -507,7 +589,7 @@ test("header navigation keeps booking, locale, and mobile controls coherent", as
         const menuTrigger = page.getByTestId("mobile-menu-trigger")
         const desktopCta = page.getByTestId("header-booking-cta")
 
-        if (width < 768) {
+        if (width < 1280) {
           await expect(menuTrigger).toBeVisible()
           await expect(desktopCta).toBeHidden()
           const triggerBox = await menuTrigger.boundingBox()
@@ -583,10 +665,9 @@ test("footer actions keep source-backed contact facts and external affordances",
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
-  for (const scheme of ["light", "dark"] as const) {
+  for (const scheme of colorSchemes) {
     await page.emulateMedia({ colorScheme: scheme })
     await page.goto("/uk/contacts", { waitUntil: "domcontentloaded" })
-    await page.evaluate((theme) => localStorage.setItem("theme", theme), scheme)
 
     for (const locale of locales) {
       for (const width of widths) {
@@ -600,7 +681,7 @@ test("footer actions keep source-backed contact facts and external affordances",
               .locator("html")
               .evaluate((html) => html.classList.contains("dark"))
           )
-          .toBe(scheme === "dark")
+          .toBe(false)
 
         const footer = page.locator("footer")
         await expect(footer).toContainText(addressLabels[locale])
@@ -612,7 +693,7 @@ test("footer actions keep source-backed contact facts and external affordances",
           "href",
           `/${locale}/booking`
         )
-        await expect(footerBooking).toHaveClass(/bg-primary/)
+        await expect(footerBooking).toHaveClass(/bg-secondary/)
 
         const footerSocials = footer.getByTestId("footer-social-link")
         await expect(footerSocials).toHaveCount(4)
@@ -663,10 +744,9 @@ test("home hierarchy keeps editorial rhythm and a visible conversion path", asyn
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
-  for (const scheme of ["light", "dark"] as const) {
+  for (const scheme of colorSchemes) {
     await page.emulateMedia({ colorScheme: scheme })
     await page.goto("/uk", { waitUntil: "domcontentloaded" })
-    await page.evaluate((theme) => localStorage.setItem("theme", theme), scheme)
 
     for (const locale of locales) {
       for (const width of widths) {
@@ -681,9 +761,12 @@ test("home hierarchy keeps editorial rhythm and a visible conversion path", asyn
           page.locator(`main a[href="/${locale}/stylist"]`)
         ).not.toHaveCount(0)
         expect(await page.locator("main h2").count()).toBeGreaterThanOrEqual(6)
+        await expect(
+          page.locator('[data-editorial-sequence="home-method"] article')
+        ).toHaveCount(3)
         expect(
           await page.locator("main [data-slot=card]").count()
-        ).toBeGreaterThan(8)
+        ).toBeLessThanOrEqual(4)
 
         const metrics = await page.evaluate(() => {
           const visible = (element: HTMLElement) => {
@@ -728,7 +811,9 @@ test("home hierarchy keeps editorial rhythm and a visible conversion path", asyn
             firstViewportTextLength: firstViewportText.length,
             scrollWidth: document.documentElement.scrollWidth,
             clientWidth: document.documentElement.clientWidth,
-            heroImages: document.querySelectorAll("main figure img").length,
+            heroImages: document.querySelectorAll(
+              '[data-testid="editorial-hero"] img'
+            ).length,
           }
         })
 
@@ -764,10 +849,9 @@ test("studio and legal pages keep route-specific hierarchy and scanning", async 
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
-  for (const scheme of ["light", "dark"] as const) {
+  for (const scheme of colorSchemes) {
     await page.emulateMedia({ colorScheme: scheme })
     await page.goto("/uk/studio", { waitUntil: "domcontentloaded" })
-    await page.evaluate((theme) => localStorage.setItem("theme", theme), scheme)
 
     for (const locale of locales) {
       for (const width of widths) {
@@ -874,10 +958,9 @@ test("category landings keep one content-specific layout contract", async ({
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
-  for (const scheme of ["light", "dark"] as const) {
+  for (const scheme of colorSchemes) {
     await page.emulateMedia({ colorScheme: scheme })
     await page.goto("/uk/stylist", { waitUntil: "domcontentloaded" })
-    await page.evaluate((theme) => localStorage.setItem("theme", theme), scheme)
 
     for (const locale of locales) {
       for (const width of widths) {
@@ -966,12 +1049,11 @@ test("detail routes keep canonical hero, status, process, and booking anatomy", 
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
-  for (const scheme of ["light", "dark"] as const) {
+  for (const scheme of colorSchemes) {
     await page.emulateMedia({ colorScheme: scheme })
     await page.goto("/uk/services/atelier-service", {
       waitUntil: "domcontentloaded",
     })
-    await page.evaluate((theme) => localStorage.setItem("theme", theme), scheme)
 
     for (const locale of locales) {
       for (const width of widths) {
@@ -1065,10 +1147,9 @@ test("school, collections, and portfolio indices expose honest catalog states", 
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
-  for (const scheme of ["light", "dark"] as const) {
+  for (const scheme of colorSchemes) {
     await page.emulateMedia({ colorScheme: scheme })
     await page.goto("/uk/portfolio", { waitUntil: "domcontentloaded" })
-    await page.evaluate((theme) => localStorage.setItem("theme", theme), scheme)
 
     for (const locale of locales) {
       for (const width of widths) {
@@ -1093,7 +1174,9 @@ test("school, collections, and portfolio indices expose honest catalog states", 
             await expect(
               page.locator('main a[href*="/portfolio/"]')
             ).toHaveCount(0)
-            await expect(page.locator("main figure")).toContainText(
+            await expect(
+              page.getByTestId("portfolio-editorial-label")
+            ).toContainText(
               locale === "uk"
                 ? "не клієнтський кейс"
                 : locale === "ru"
@@ -1167,13 +1250,15 @@ test("page-ticket routes stay responsive across required widths", async ({
     for (const route of pageTicketRoutes) {
       const isUtilityRoute = utilityRoutes.has(route)
       const isPaymentRoute = route.includes("/payment/")
+      const isEditorialHome = route === "/uk"
+      const isStyleguide = route === "/uk/styleguide"
       const response = await page.goto(route, { waitUntil: "domcontentloaded" })
 
       expect(response?.ok(), `${viewport.name} ${route}`).toBe(true)
       await expect(page.locator("header img").first()).toBeVisible()
       await expect(page.locator("main h1").first()).toBeVisible()
-      if (!isUtilityRoute) {
-        const heroImage = page.locator("main figure img").first()
+      if (!isStyleguide) {
+        const heroImage = page.getByTestId("editorial-hero").locator("img")
         await expect(heroImage).toBeVisible()
         await heroImage.scrollIntoViewIfNeeded()
         await expect
@@ -1211,6 +1296,9 @@ test("page-ticket routes stay responsive across required widths", async ({
         const isTransparentBorder = (color: string) =>
           color === "transparent" || /^rgba\(.+,\s*0\)$/.test(color)
         const header = document.querySelector("header")
+        const hero = document.querySelector<HTMLElement>(
+          '[data-testid="editorial-hero"]'
+        )
         const headerLogo = header?.querySelector<HTMLImageElement>("img")
         const headerLogoBox = headerLogo?.getBoundingClientRect()
         const headerControls = header?.querySelector<HTMLElement>(
@@ -1384,8 +1472,11 @@ test("page-ticket routes stay responsive across required widths", async ({
             .length,
           footerSocials: document.querySelectorAll("footer a[target='_blank']")
             .length,
+          heroMinHeight: hero ? getComputedStyle(hero).minHeight : "",
           loadedHeroImages: [
-            ...document.querySelectorAll<HTMLImageElement>("main figure img"),
+            ...document.querySelectorAll<HTMLImageElement>(
+              '[data-testid="editorial-hero"] img'
+            ),
           ].filter((image) => visible(image) && image.naturalWidth > 0).length,
         }
       })
@@ -1402,12 +1493,12 @@ test("page-ticket routes stay responsive across required widths", async ({
         /Noto Serif/
       )
       expect(metrics.headerLogoSrc, `${viewport.name} ${route}`).toContain(
-        "logo-wordmark-black.png"
+        isStyleguide ? "wordmark-black.png" : "wordmark-white.png"
       )
       expect(metrics.headerLogoTransform, `${viewport.name} ${route}`).toBe(
         "none"
       )
-      if (viewport.width >= 934) {
+      if (viewport.width >= 1280) {
         expect(
           Math.abs(
             (metrics.headerLogoCenterY ?? 0) -
@@ -1419,22 +1510,33 @@ test("page-ticket routes stay responsive across required widths", async ({
       expect(
         metrics.loadedHeroImages,
         `${viewport.name} ${route}`
-      ).toBeGreaterThanOrEqual(isUtilityRoute ? 0 : 1)
+      ).toBeGreaterThanOrEqual(isStyleguide ? 0 : 1)
+      if (!isStyleguide) {
+        expect(
+          Number.parseFloat(metrics.heroMinHeight),
+          `${viewport.name} ${route}`
+        ).toBe(viewport.height)
+      }
       expect(
         metrics.mainTextLength,
         `${viewport.name} ${route}`
       ).toBeGreaterThan(isPaymentRoute ? 120 : isUtilityRoute ? 450 : 600)
-      if (!isPaymentRoute) {
+      if (!isPaymentRoute && !isEditorialHome && !isUtilityRoute) {
         expect(
           metrics.contentCards,
           `${viewport.name} ${route}`
         ).toBeGreaterThan(0)
       }
+      if (isEditorialHome) {
+        await expect(
+          page.locator('[data-editorial-sequence="home-method"] article')
+        ).toHaveCount(3)
+      }
       expect(metrics.cardGridIssues, `${viewport.name} ${route}`).toEqual([])
       expect(metrics.clippedElements, `${viewport.name} ${route}`).toEqual([])
       expect(metrics.figureGaps, `${viewport.name} ${route}`).toEqual([])
       expect(metrics.visibleH1, `${viewport.name} ${route}`).toBe(1)
-      if (route !== "/uk/styleguide") {
+      if (!isStyleguide) {
         expect(
           metrics.smallPrimaryTargets,
           `${viewport.name} ${route}`
@@ -1517,7 +1619,7 @@ test("booking form exposes keyboard, invalid, review, and submitting contracts",
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
-  for (const scheme of ["light", "dark"] as const) {
+  for (const scheme of colorSchemes) {
     await page.emulateMedia({ colorScheme: scheme })
 
     for (const locale of ["uk", "ru", "en"] as const) {
@@ -1624,7 +1726,10 @@ test("collection details keep distinct stories, facts, and hero media", async ({
       page.getByRole("heading", { name: factsTitle }).first()
     ).toBeVisible()
     heroSources.add(
-      (await page.locator("main figure img").first().getAttribute("src")) ?? ""
+      (await page
+        .getByTestId("editorial-hero")
+        .locator("img")
+        .getAttribute("src")) ?? ""
     )
   }
 
@@ -1675,7 +1780,9 @@ test("booking review keeps the service query preselected across locales", async 
 
   for (const [locale, serviceTitle] of Object.entries(localizedServiceTitles)) {
     await page.goto(`/${locale}/booking?service=atelier-service`)
-    await expect(page.getByTestId("booking-progress")).toBeVisible()
+    await expect(page.getByTestId("booking-contact-fields")).toBeVisible()
+    await expect(page.getByTestId("booking-payment-fields")).toBeVisible()
+    await expect(page.getByTestId("booking-routing-note")).toBeVisible()
     await expect(page.getByTestId("booking-review")).toContainText(serviceTitle)
     await expect(page.getByTestId("booking-service-trigger")).toContainText(
       serviceTitle
@@ -1735,10 +1842,9 @@ test("payment status pages keep provider fallbacks and localized action states",
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
 
-  for (const scheme of ["light", "dark"] as const) {
+  for (const scheme of colorSchemes) {
     await page.emulateMedia({ colorScheme: scheme })
     await page.goto("/uk/payment/success", { waitUntil: "domcontentloaded" })
-    await page.evaluate((theme) => localStorage.setItem("theme", theme), scheme)
 
     for (const locale of locales) {
       for (const width of widths) {

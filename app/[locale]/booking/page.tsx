@@ -2,12 +2,17 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { SiteFooter, SiteHeader } from "@/components/site-shell"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
 import { services } from "@/content/source"
 import { getEntryMetadata } from "@/content/metadata"
 import { getFirstMediaAsset, getPublicPageByRoute } from "@/content/queries"
-import { ImageFrame } from "@/components/purity"
+import { EditorialHero } from "@/components/purity"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { BookingForm } from "@/features/booking/booking-form"
 import { hasLocale, type Locale } from "@/i18n/routing"
 
@@ -15,6 +20,19 @@ type BookingPageProps = {
   params: Promise<{ locale: string }>
   searchParams?: Promise<{ service?: string | string[] }>
 }
+
+const bookingPageCopy = {
+  formTitle: {
+    uk: "Деталі заявки",
+    ru: "Детали заявки",
+    en: "Inquiry details",
+  },
+  formSummary: {
+    uk: "Контакти, формат роботи й оплата — в одній послідовній формі.",
+    ru: "Контакты, формат работы и оплата — в одной последовательной форме.",
+    en: "Contacts, working format, and payment in one clear form.",
+  },
+} as const
 
 export async function generateMetadata({
   params,
@@ -79,39 +97,41 @@ export default async function BookingPage({
       />
 
       <main>
-        <section className="mx-auto grid w-full max-w-6xl gap-8 px-6 py-10 md:grid-cols-[1fr_0.82fr] md:items-end md:px-10 md:py-14">
-          <div>
-            <Badge variant="default">{page.eyebrow[locale]}</Badge>
-            <h1 className="mt-6 max-w-4xl text-4xl leading-none font-medium text-balance md:text-7xl">
-              {page.title[locale]}
-            </h1>
-            <p className="mt-6 max-w-3xl text-sm leading-7 text-muted-foreground">
-              {page.summary[locale]}
-            </p>
-            <div className="mt-8 grid gap-3 md:grid-cols-2">
-              {page.body[locale].map((item) => (
-                <Card key={item} className="min-w-0 border-border bg-muted">
-                  <CardContent className="text-sm leading-7 text-muted-foreground">
-                    {item}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-          {mediaAsset?.src && (
-            <ImageFrame
-              src={mediaAsset.src}
-              alt={mediaAsset.alt[locale]}
-              label={page.eyebrow[locale]}
-              eager
-            />
-          )}
-        </section>
+        <EditorialHero
+          locale={locale}
+          eyebrow={page.eyebrow[locale]}
+          title={page.title[locale]}
+          summary={page.summary[locale]}
+          mediaAsset={mediaAsset}
+          composition="cinematic"
+        >
+          <ol className="grid max-w-3xl gap-8 border-t border-background/25 pt-6 sm:grid-cols-2 sm:gap-10">
+            {page.body[locale].map((item, index) => (
+              <li
+                key={item}
+                className="grid min-w-0 gap-3 sm:grid-cols-[3rem_minmax(0,1fr)]"
+              >
+                <span className="font-heading text-3xl leading-none text-background/45">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="text-sm leading-7 text-background/75">
+                  {item}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </EditorialHero>
 
         <section className="bg-muted">
-          <div className="mx-auto w-full max-w-6xl px-6 py-10 md:px-10 md:py-14">
-            <Card className="min-w-0 border-border bg-background">
-              <CardContent className="min-w-0 pt-6">
+          <div className="mx-auto w-full max-w-screen-xl px-6 py-16 md:px-10 md:py-24">
+            <Card className="bg-background shadow-sm">
+              <CardHeader className="justify-items-center text-center">
+                <CardTitle>{bookingPageCopy.formTitle[locale]}</CardTitle>
+                <CardDescription className="max-w-2xl">
+                  {bookingPageCopy.formSummary[locale]}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
                 <BookingForm
                   locale={locale}
                   services={serviceOptions}

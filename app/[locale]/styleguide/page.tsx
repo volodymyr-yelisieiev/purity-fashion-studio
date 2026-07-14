@@ -79,7 +79,7 @@ export default async function StyleguidePage({ params }: StyleguidePageProps) {
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      <SiteHeader locale={locale} currentPath="/styleguide" />
+      <SiteHeader locale={locale} currentPath="/styleguide" overlay={false} />
 
       <main>
         <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-12 md:px-10">

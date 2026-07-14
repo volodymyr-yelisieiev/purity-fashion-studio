@@ -14,7 +14,7 @@ The UI uses shadcn preset `b59jufTOPg` as its single design-system source:
 - neutral semantic colors;
 - Noto Sans and Noto Serif;
 - Phosphor icons;
-- standard preset radius and light/dark themes.
+- standard preset radius and a single light semantic theme.
 
 Canonical primitives live in `components/ui`. Product compositions may use
 layout utilities, but must not introduce parallel palettes, custom primitive

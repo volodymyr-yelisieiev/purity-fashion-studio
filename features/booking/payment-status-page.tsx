@@ -1,11 +1,10 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
+import { EditorialHero } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/site-shell"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { buttonVariants } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { getMediaAsset } from "@/content/queries"
 import {
   paymentStatusCopy,
   providerLabels,
@@ -59,44 +58,38 @@ function PaymentStatusPage({
     <div className="min-h-svh bg-background text-foreground">
       <SiteHeader locale={locale} currentPath={`/payment/${status}`} />
       <main>
-        <section className="mx-auto grid w-full max-w-3xl min-w-0 gap-5 px-6 py-14 md:px-10 md:py-20">
-          <Alert
-            variant={status === "failure" ? "destructive" : undefined}
+        <EditorialHero
+          locale={locale}
+          eyebrow={detailLabels.provider}
+          title={copy.title[locale]}
+          summary={copy.summary[locale]}
+          mediaAsset={getMediaAsset("editorial-utility-patternmaking")}
+          composition="quiet"
+        >
+          <dl
+            role="status"
             data-testid="payment-status-alert"
             data-status={status}
+            className="grid max-w-2xl gap-4 border-y border-background/25 py-5 text-background sm:grid-cols-2"
           >
-            <h1 className="text-lg font-semibold">{copy.title[locale]}</h1>
-            <AlertDescription>{copy.summary[locale]}</AlertDescription>
-          </Alert>
-          <Card className="min-w-0">
-            <CardContent className="grid gap-3 sm:grid-cols-2">
-              <div className="grid gap-3">
-                <Separator />
-                <div>
-                  <p className="text-xs tracking-widest text-muted-foreground uppercase">
-                    {detailLabels.provider}
-                  </p>
-                  <p className="mt-2 text-sm leading-6">{providerValue}</p>
-                </div>
-              </div>
-              <div className="grid gap-3">
-                <Separator />
-                <div>
-                  <p className="text-xs tracking-widest text-muted-foreground uppercase">
-                    {detailLabels.order}
-                  </p>
-                  <p className="mt-2 text-sm leading-6 [overflow-wrap:anywhere]">
-                    {orderValue}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            <div>
+              <dt className="text-xs tracking-widest text-background/70 uppercase">
+                {detailLabels.provider}
+              </dt>
+              <dd className="mt-2 text-sm">{providerValue}</dd>
+            </div>
+            <div>
+              <dt className="text-xs tracking-widest text-background/70 uppercase">
+                {detailLabels.order}
+              </dt>
+              <dd className="mt-2 text-sm">{orderValue}</dd>
+            </div>
+          </dl>
           <Link
             href={localizePath(locale, "/booking")}
             className={cn(
               buttonVariants({
-                variant: "default",
+                variant: "secondary",
                 size: "lg",
                 className: "w-fit",
               })
@@ -104,7 +97,7 @@ function PaymentStatusPage({
           >
             {copy.action[locale]}
           </Link>
-        </section>
+        </EditorialHero>
       </main>
       <SiteFooter locale={locale} currentPath={`/payment/${status}`} />
     </div>
