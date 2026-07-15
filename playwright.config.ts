@@ -1,5 +1,13 @@
 import { defineConfig, devices } from "@playwright/test"
 
+if (
+  process.env.NO_COLOR !== undefined &&
+  process.env.FORCE_COLOR === undefined
+) {
+  delete process.env.NO_COLOR
+  process.env.FORCE_COLOR = "0"
+}
+
 const channel =
   process.env.PLAYWRIGHT_CHANNEL ??
   (process.platform === "darwin" ? "chrome" : undefined)

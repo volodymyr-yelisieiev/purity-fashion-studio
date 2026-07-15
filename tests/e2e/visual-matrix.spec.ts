@@ -50,6 +50,28 @@ test("visual matrix captures every public route family", async ({ page }) => {
 
         expect(response?.ok(), `${colorScheme} ${width} ${route}`).toBe(true)
         await expect(page.locator("main h1").first()).toBeVisible()
+        await expect
+          .poll(
+            () =>
+              page.evaluate(
+                () =>
+                  [...document.images].filter((image) => {
+                    const rect = image.getBoundingClientRect()
+                    const style = getComputedStyle(image)
+
+                    return (
+                      rect.width > 1 &&
+                      rect.height > 1 &&
+                      style.visibility !== "hidden" &&
+                      style.display !== "none" &&
+                      image.complete &&
+                      image.naturalWidth > 0
+                    )
+                  }).length
+              ),
+            { message: `${colorScheme} ${width} ${route}` }
+          )
+          .toBeGreaterThan(0)
 
         const metrics = await page.evaluate(() => {
           const isVisible = (element: Element | null) => {
