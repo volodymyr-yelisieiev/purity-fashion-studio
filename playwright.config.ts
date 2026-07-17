@@ -13,6 +13,7 @@ const channel =
   (process.platform === "darwin" ? "chrome" : undefined)
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000"
 const usesRemoteBaseURL = process.env.PLAYWRIGHT_BASE_URL !== undefined
+const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -30,6 +31,13 @@ export default defineConfig({
       }),
   use: {
     baseURL,
+    ...(protectionBypassSecret
+      ? {
+          extraHTTPHeaders: {
+            "x-vercel-protection-bypass": protectionBypassSecret,
+          },
+        }
+      : {}),
     trace: "on-first-retry",
   },
   snapshotPathTemplate:

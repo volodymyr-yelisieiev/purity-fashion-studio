@@ -145,6 +145,10 @@ async function upsertLocalized({
       collection,
       data: initialData,
       draft: drafts ? !publish : undefined,
+      // A storage reset can leave document metadata intact while removing its
+      // Blob object. Re-submit the source file on an update so idempotent
+      // imports restore the object as well as the CMS record.
+      filePath,
       id,
       locale: "uk",
       overrideAccess: true,

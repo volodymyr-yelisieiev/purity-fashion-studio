@@ -344,6 +344,16 @@ export type HomeData = {
 
 const getPayloadClient = cache(() => getPayload({ config }))
 
+// Next persists `unstable_cache` values across deployments. Payload is imported
+// during the Vercel build, so namespace public reads by deployment to prevent a
+// previous deployment's cached draft or missing document from masking the
+// freshly imported, published content. The static fallback also cleanly breaks
+// the migration-era cache once for local and providers without Vercel metadata.
+const payloadCacheNamespace =
+  process.env.VERCEL_DEPLOYMENT_ID ??
+  process.env.VERCEL_GIT_COMMIT_SHA ??
+  "purity-payload-cache-v2"
+
 const getAuthenticatedPayloadUser = cache(async () => {
   const payload = await getPayloadClient()
   const result = await payload.auth({ headers: await headers() })
@@ -355,6 +365,23 @@ async function getPayloadAccess(draft: boolean) {
     overrideAccess: false as const,
     user: draft ? await getAuthenticatedPayloadUser() : undefined,
   }
+}
+
+function getPublicMediaURL(value: string): string {
+  try {
+    const url = new URL(value)
+
+    // Payload's protected-upload URL is generated from `serverURL`. Keep it
+    // origin-relative so Preview media uses the active protected deployment
+    // instead of a build-time localhost or an uncredentialed deployment URL.
+    if (url.pathname.startsWith("/api/media/")) {
+      return `${url.pathname}${url.search}`
+    }
+  } catch {
+    // A relative URL is already safe to render as-is.
+  }
+
+  return value
 }
 
 function payloadMediaToView(
@@ -380,7 +407,7 @@ function payloadMediaToView(
     fileName: media.filename ?? media.id,
     aspectRatio:
       media.width && media.height ? `${media.width}/${media.height}` : "4/3",
-    src,
+    src: getPublicMediaURL(src),
     heroFocalPoint: focalX < 34 ? "left" : focalX > 66 ? "right" : "center",
     usage: media.allowedUsageContexts ?? [],
     internalLabel,
@@ -599,7 +626,7 @@ async function findPayloadService(
 function cachedPayloadService(locale: Locale, slug: string) {
   return unstable_cache(
     () => findPayloadService(locale, slug, false),
-    ["cms", "service", locale, slug],
+    [payloadCacheNamespace, "cms", "service", locale, slug],
     {
       tags: ["cms:services", "cms:offers", "cms:media", `cms:services:${slug}`],
     }
@@ -675,7 +702,7 @@ export async function getOfferById(locale: Locale, id: string) {
   if (isEnabled) return findPayloadOfferByID(locale, id, true)
   return unstable_cache(
     () => findPayloadOfferByID(locale, id, false),
-    ["cms", "offer", locale, id],
+    [payloadCacheNamespace, "cms", "offer", locale, id],
     { tags: ["cms:offers", `cms:offers:${id}`] }
   )()
 }
@@ -846,7 +873,7 @@ async function findPayloadCourse(
 function cachedPayloadCourse(locale: Locale, slug: string) {
   return unstable_cache(
     () => findPayloadCourse(locale, slug, false),
-    ["cms", "course", locale, slug],
+    [payloadCacheNamespace, "cms", "course", locale, slug],
     {
       tags: ["cms:courses", "cms:offers", "cms:media", `cms:courses:${slug}`],
     }
@@ -1060,7 +1087,7 @@ async function findPayloadFashionCollection(
 function cachedPayloadFashionCollection(locale: Locale, slug: string) {
   return unstable_cache(
     () => findPayloadFashionCollection(locale, slug, false),
-    ["cms", "fashion-collection", locale, slug],
+    [payloadCacheNamespace, "cms", "fashion-collection", locale, slug],
     {
       tags: [
         "cms:fashion-collections",
@@ -1189,7 +1216,7 @@ async function findPayloadPortfolioCase(
 function cachedPayloadPortfolioCase(locale: Locale, slug: string) {
   return unstable_cache(
     () => findPayloadPortfolioCase(locale, slug, false),
-    ["cms", "portfolio-case", locale, slug],
+    [payloadCacheNamespace, "cms", "portfolio-case", locale, slug],
     {
       tags: ["cms:portfolio-cases", "cms:media", `cms:portfolio-cases:${slug}`],
     }
@@ -1242,7 +1269,7 @@ async function findPublishedPayloadPortfolioCases(locale: Locale) {
 export async function getPublishedPortfolioCases(locale: Locale) {
   return unstable_cache(
     () => findPublishedPayloadPortfolioCases(locale),
-    ["cms", "portfolio-cases", locale],
+    [payloadCacheNamespace, "cms", "portfolio-cases", locale],
     { tags: ["cms:portfolio-cases", "cms:media"] }
   )()
 }
@@ -1361,7 +1388,7 @@ export async function getPublishedServices(
   const key = JSON.stringify(filters)
   return unstable_cache(
     () => findPayloadServiceCards({ draft: false, locale, ...filters }),
-    ["cms", "services", locale, key],
+    [payloadCacheNamespace, "cms", "services", locale, key],
     { tags: ["cms:services", "cms:media"] }
   )()
 }
@@ -1489,7 +1516,7 @@ export async function getDirectionBySlug(locale: Locale, slug: string) {
   if (isEnabled) return findPayloadDirection(locale, slug, true)
   return unstable_cache(
     () => findPayloadDirection(locale, slug, false),
-    ["cms", "direction", locale, slug],
+    [payloadCacheNamespace, "cms", "direction", locale, slug],
     {
       tags: [
         "cms:directions",
@@ -1661,7 +1688,7 @@ export async function getPageBySlug(locale: Locale, slug: string) {
   if (isEnabled) return findPayloadPage(locale, slug, true)
   return unstable_cache(
     () => findPayloadPage(locale, slug, false),
-    ["cms", "page", locale, slug],
+    [payloadCacheNamespace, "cms", "page", locale, slug],
     { tags: ["cms:pages", "cms:media", `cms:pages:${slug}`] }
   )()
 }
@@ -1715,7 +1742,7 @@ export async function getHeader(locale: Locale): Promise<HeaderData> {
   if (draft) return findPayloadHeader(locale, true)
   return unstable_cache(
     () => findPayloadHeader(locale, false),
-    ["cms", "header", locale],
+    [payloadCacheNamespace, "cms", "header", locale],
     { tags: ["cms:header", "cms:navigation"] }
   )()
 }
@@ -1766,7 +1793,7 @@ export async function getFooter(locale: Locale): Promise<FooterData> {
   if (draft) return findPayloadFooter(locale, true)
   return unstable_cache(
     () => findPayloadFooter(locale, false),
-    ["cms", "footer", locale],
+    [payloadCacheNamespace, "cms", "footer", locale],
     { tags: ["cms:footer", "cms:navigation"] }
   )()
 }
@@ -1809,7 +1836,7 @@ export async function getSiteSettings(
 ): Promise<SiteSettingsData> {
   return unstable_cache(
     () => findPayloadSiteSettings(locale),
-    ["cms", "site-settings", locale],
+    [payloadCacheNamespace, "cms", "site-settings", locale],
     { tags: ["cms:site-settings", "cms:metadata"] }
   )()
 }
@@ -1933,7 +1960,7 @@ export async function getHome(locale: Locale): Promise<HomeData> {
   if (draft) return findPayloadHome(locale, true)
   return unstable_cache(
     () => findPayloadHome(locale, false),
-    ["cms", "home", locale],
+    [payloadCacheNamespace, "cms", "home", locale],
     { tags: ["cms:home", "cms:media"] }
   )()
 }
