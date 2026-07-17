@@ -2,7 +2,7 @@ import Link from "next/link"
 import type * as React from "react"
 
 import { EditorialHero } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { buttonVariants } from "@/components/ui/button"
 import type { MediaAsset } from "@/content/model"
 import type { Locale } from "@/i18n/routing"

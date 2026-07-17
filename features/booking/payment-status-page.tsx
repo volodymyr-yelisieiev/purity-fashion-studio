@@ -2,7 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { EditorialHero } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { buttonVariants } from "@/components/ui/button"
 import { getMediaAsset } from "@/content/queries"
 import {
@@ -14,6 +14,7 @@ import {
   paymentProviders,
   type PaymentProvider,
 } from "@/features/booking/schema"
+import { getVerifiedPaymentStatus } from "@/features/booking/payment-status"
 import { hasLocale, localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
@@ -28,7 +29,7 @@ function isPaymentProvider(provider?: string): provider is PaymentProvider {
   return paymentProviders.includes(provider as PaymentProvider)
 }
 
-function PaymentStatusPage({
+async function PaymentStatusPage({
   locale,
   status,
   provider,
@@ -38,14 +39,17 @@ function PaymentStatusPage({
     notFound()
   }
 
-  const copy = paymentStatusCopy[status]
-  const providerValue = isPaymentProvider(provider)
-    ? providerLabels[provider][locale]
+  const verified = await getVerifiedPaymentStatus(order, status)
+  const copy = paymentStatusCopy[verified.status]
+  const verifiedProvider = verified.provider ?? provider
+  const providerValue = isPaymentProvider(verifiedProvider)
+    ? providerLabels[verifiedProvider][locale]
     : { uk: "Не вказано", ru: "Не указан", en: "Not provided" }[locale]
   const orderValue =
-    order && !/(test|mock|adapter)/i.test(order)
-      ? order
-      : order
+    verified.orderReference &&
+      !/(test|mock|adapter)/i.test(verified.orderReference)
+      ? verified.orderReference
+      : verified.orderReference
         ? { uk: "Отримано", ru: "Получено", en: "Reference received" }[locale]
         : { uk: "Не вказано", ru: "Не указан", en: "Not provided" }[locale]
   const detailLabels = {
@@ -56,7 +60,7 @@ function PaymentStatusPage({
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      <SiteHeader locale={locale} currentPath={`/payment/${status}`} />
+      <SiteHeader locale={locale} currentPath={`/payment/${verified.status}`} />
       <main>
         <EditorialHero
           locale={locale}
@@ -69,7 +73,7 @@ function PaymentStatusPage({
           <dl
             role="status"
             data-testid="payment-status-alert"
-            data-status={status}
+            data-status={verified.status}
             className="grid max-w-2xl gap-4 border-y border-background/25 py-5 text-background sm:grid-cols-2"
           >
             <div>
@@ -99,7 +103,7 @@ function PaymentStatusPage({
           </Link>
         </EditorialHero>
       </main>
-      <SiteFooter locale={locale} currentPath={`/payment/${status}`} />
+      <SiteFooter locale={locale} currentPath={`/payment/${verified.status}`} />
     </div>
   )
 }

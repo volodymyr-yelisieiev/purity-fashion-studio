@@ -73,6 +73,7 @@ type BookingFormProps = {
   locale: Locale
   services: ServiceOption[]
   initialServiceSlug: string
+  initialOfferId?: string
 }
 
 const bookingResolver: Resolver<BookingInput> = async (values) => {
@@ -135,7 +136,10 @@ function BookingForm({
   locale,
   services,
   initialServiceSlug,
+  initialOfferId,
 }: BookingFormProps) {
+  const [submissionStartedAt] = useState(() => Date.now())
+  const [idempotencyKey] = useState(() => crypto.randomUUID())
   const [result, setResult] = useState<BookingResult>({ status: "idle" })
   const [isPending, startTransition] = useTransition()
   const defaultService = services.some(
@@ -207,6 +211,22 @@ function BookingForm({
     const formData = new FormData()
 
     formData.set("locale", locale)
+    formData.set("offerId", initialOfferId ?? "")
+    formData.set("website", "")
+    formData.set("submissionStartedAt", String(submissionStartedAt))
+    formData.set("idempotencyKey", idempotencyKey)
+    formData.set("sourcePage", `${window.location.pathname}${window.location.search}`)
+    formData.set("referrer", document.referrer)
+    const search = new URLSearchParams(window.location.search)
+    for (const key of [
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_content",
+      "utm_term",
+    ]) {
+      formData.set(key, search.get(key) ?? "")
+    }
 
     for (const [key, value] of Object.entries(values)) {
       if (key === "consent") {
@@ -258,20 +278,24 @@ function BookingForm({
           <AlertTitle>{bookingCopy.successTitle[locale]}</AlertTitle>
           <AlertDescription>
             {bookingCopy.successSummary[locale]}{" "}
-            {providerLabels[result.provider][locale]} / {result.currency}
+            {result.provider && result.currency
+              ? `${providerLabels[result.provider][locale]} / ${result.currency}`
+              : ""}
           </AlertDescription>
-          <Link
-            href={result.checkoutUrl}
-            className={cn(
-              buttonVariants({
-                variant: "default",
-                size: "lg",
-                className: "mt-4 w-fit",
-              })
-            )}
-          >
-            {bookingCopy.checkout[locale]}
-          </Link>
+          {result.checkoutUrl && (
+            <Link
+              href={result.checkoutUrl}
+              className={cn(
+                buttonVariants({
+                  variant: "default",
+                  size: "lg",
+                  className: "mt-4 w-fit",
+                })
+              )}
+            >
+              {bookingCopy.checkout[locale]}
+            </Link>
+          )}
         </Alert>
       )}
 

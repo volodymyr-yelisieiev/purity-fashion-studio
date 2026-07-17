@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 
 import { ContentPage } from "@/components/content-page"
 import { EditorialHero, FeatureList, ImageFrame } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -13,20 +13,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { collections, siteSettings } from "@/content/source"
+import { formatOfferPrice } from "@/content/commerce"
 import {
   beadedDressCopy,
   capsuleCopy,
   newYearPartyCopy,
 } from "@/content/collection-page-specs"
 import type { CollectionPageSpec } from "@/content/model"
-import { getEntryMetadata } from "@/content/metadata"
+import { getLocalizedMetadata } from "@/content/metadata"
 import {
-  getCategory,
-  getMediaAsset,
-  getFirstMediaAsset,
-  getVisibleCollection,
-} from "@/content/queries"
+  getFashionCollectionBySlug,
+  getPublishedFashionCollectionSlugs,
+  type FashionCollectionPageData,
+} from "@/content/public-api"
+import { getCategory } from "@/content/queries"
 import { collectionPath } from "@/content/routes"
 import { BookingStartCta } from "@/features/booking/booking-start-cta"
 import { hasLocale, locales, localizePath, type Locale } from "@/i18n/routing"
@@ -36,13 +36,12 @@ type CollectionPageProps = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-export const dynamicParams = false
+export const dynamicParams = true
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const slugs = await getPublishedFashionCollectionSlugs()
   return locales.flatMap((locale) =>
-    collections
-      .filter((collection) => collection.visibleInMvp)
-      .map((collection) => ({ locale, slug: collection.routeSegment }))
+    slugs.map((slug) => ({ locale, slug }))
   )
 }
 
@@ -55,17 +54,18 @@ export async function generateMetadata({
     return {}
   }
 
-  const collection = getVisibleCollection(slug)
+  const collection = await getFashionCollectionBySlug(rawLocale, slug)
 
   if (!collection) {
     return {}
   }
 
-  return getEntryMetadata(
-    collection,
-    rawLocale,
-    collectionPath(collection.routeSegment)
-  )
+  return getLocalizedMetadata({
+    locale: rawLocale,
+    path: collectionPath(collection.routeSegment),
+    title: collection.seo.title,
+    description: collection.seo.description,
+  })
 }
 
 function CollectionDetailPage({
@@ -74,15 +74,12 @@ function CollectionDetailPage({
   copy,
 }: {
   locale: Locale
-  collection: NonNullable<ReturnType<typeof getVisibleCollection>>
+  collection: FashionCollectionPageData
   copy: CollectionPageSpec
 }) {
   const currentPath = collectionPath(collection.routeSegment)
-  const mediaAsset = getFirstMediaAsset(collection.mediaIds)
-  const storyAssets = collection.mediaIds
-    .slice(1)
-    .map((mediaId) => getMediaAsset(mediaId))
-    .filter((asset): asset is NonNullable<typeof asset> => Boolean(asset?.src))
+  const mediaAsset = collection.mediaAssets[0]
+  const storyAssets = collection.mediaAssets.slice(1)
   const bookingHref = localizePath(
     locale,
     "/booking?service=capsule-collection"
@@ -96,18 +93,18 @@ function CollectionDetailPage({
         <EditorialHero
           locale={locale}
           eyebrow={copy.eyebrow[locale]}
-          title={collection.title[locale]}
-          summary={collection.summary[locale]}
+          title={collection.title}
+          summary={collection.summary}
           mediaAsset={mediaAsset}
           composition="cinematic"
         >
           <p className="border-y border-border py-4 text-sm leading-7 text-muted-foreground">
-            {collection.materials[locale].join(" · ")}
+            {collection.materials.join(" · ")}
           </p>
           <div className="flex max-w-full flex-wrap gap-3">
             <BookingStartCta
               href={bookingHref}
-              label={siteSettings.home.primaryCta.label[locale]}
+              label={collection.cta.label}
               serviceSlug="capsule-collection"
               variant="secondary"
             />
@@ -245,7 +242,7 @@ function CollectionDetailPage({
               </CardHeader>
               <CardContent className="border-t border-primary-foreground/20 pt-5">
                 <FeatureList
-                  items={collection.materials[locale]}
+                  items={collection.materials}
                   className="text-primary-foreground/80"
                 />
               </CardContent>
@@ -256,11 +253,17 @@ function CollectionDetailPage({
                   {copy.availabilityTitle[locale]}
                 </CardTitle>
                 <CardDescription className="min-w-0 break-words">
-                  {collection.commercialStatus[locale]}
+                  {collection.availability}
                 </CardDescription>
               </CardHeader>
               <CardContent className="border-t border-border pt-5 text-sm leading-7 text-muted-foreground">
-                {collection.priceNote[locale]}
+                {collection.offers.length > 0
+                  ? collection.offers
+                      .map((offer) =>
+                        `${offer.title}: ${formatOfferPrice(offer, locale)}`
+                      )
+                      .join(" · ")
+                  : collection.narrative}
               </CardContent>
             </Card>
           </div>
@@ -279,7 +282,7 @@ function CollectionDetailPage({
             <CardContent>
               <BookingStartCta
                 href={bookingHref}
-                label={siteSettings.home.primaryCta.label[locale]}
+                label={collection.cta.label}
                 serviceSlug="capsule-collection"
               />
             </CardContent>
@@ -299,7 +302,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   }
 
   const locale: Locale = rawLocale
-  const collection = getVisibleCollection(slug)
+  const collection = await getFashionCollectionBySlug(locale, slug)
 
   if (!collection) {
     notFound()
@@ -341,17 +344,17 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
     <ContentPage
       locale={locale}
       currentPath={collectionPath(collection.routeSegment)}
-      eyebrow={category?.title[locale] ?? collection.title[locale]}
-      title={collection.title[locale]}
-      summary={collection.summary[locale]}
+      eyebrow={category?.title[locale] ?? collection.title}
+      title={collection.title}
+      summary={collection.summary}
       items={[
-        collection.commercialStatus[locale],
-        collection.priceNote[locale],
-        ...collection.materials[locale],
+        collection.availability,
+        collection.narrative,
+        ...collection.materials,
       ]}
-      mediaAsset={getFirstMediaAsset(collection.mediaIds)}
+      mediaAsset={collection.mediaAssets[0]}
       action={{
-        label: siteSettings.home.primaryCta.label[locale],
+        label: collection.cta.label,
         href: localizePath(locale, "/booking?service=capsule-collection"),
       }}
     />

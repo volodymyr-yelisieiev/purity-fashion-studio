@@ -3,7 +3,7 @@ import { ArrowSquareOutIcon as ExternalLinkIcon } from "@phosphor-icons/react/di
 import { notFound } from "next/navigation"
 
 import { EditorialHero } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -13,7 +13,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { services, siteSettings } from "@/content/source"
-import { getEntryMetadata } from "@/content/metadata"
+import { getEntryMetadata, getLocalizedMetadata } from "@/content/metadata"
+import {
+  getFooter,
+  getPageBySlug,
+  getPublishedServices,
+  getSiteSettings,
+} from "@/content/public-api"
 import { getCategory, getMediaAsset } from "@/content/queries"
 import { BookingForm } from "@/features/booking/booking-form"
 import { hasLocale, type Locale } from "@/i18n/routing"
@@ -74,7 +80,20 @@ const contactEntryLabels = {
 const contactButtonClass =
   "h-auto min-h-11 w-full min-w-0 shrink justify-start overflow-hidden whitespace-normal px-4 text-left leading-5 sm:px-8"
 
-function ContactEntrypoints({ locale }: { locale: Locale }) {
+type ContactDetails = {
+  phones: string[]
+  email?: string
+  viberUrl?: string
+  socials: Array<{ label: string; url: string }>
+}
+
+function ContactEntrypoints({
+  details,
+  locale,
+}: {
+  details: ContactDetails
+  locale: Locale
+}) {
   return (
     <section
       aria-label={contactEntryLabels.socials[locale]}
@@ -84,7 +103,7 @@ function ContactEntrypoints({ locale }: { locale: Locale }) {
         {contactEntryLabels.direct[locale]}
       </h2>
       <div className="grid gap-3 sm:grid-cols-2">
-        {siteSettings.contacts.phones.map((phone) => (
+        {details.phones.map((phone) => (
           <a
             key={phone}
             href={`tel:${phone.replace(/\s+/g, "")}`}
@@ -99,11 +118,11 @@ function ContactEntrypoints({ locale }: { locale: Locale }) {
             {contactEntryLabels.phone[locale]}: {phone}
           </a>
         ))}
-        {siteSettings.contacts.email && (
+        {details.email && (
           <a
-            href={`mailto:${siteSettings.contacts.email}`}
-            aria-label={`${contactEntryLabels.email[locale]}: ${siteSettings.contacts.email}`}
-            title={siteSettings.contacts.email}
+            href={`mailto:${details.email}`}
+            aria-label={`${contactEntryLabels.email[locale]}: ${details.email}`}
+            title={details.email}
             className={cn(
               buttonVariants({
                 variant: "outline",
@@ -116,25 +135,27 @@ function ContactEntrypoints({ locale }: { locale: Locale }) {
               {contactEntryLabels.email[locale]}:
             </span>{" "}
             <span className="min-w-0 truncate">
-              {siteSettings.contacts.email}
+              {details.email}
             </span>
           </a>
         )}
-        <a
-          href={siteSettings.contacts.viberUrl}
-          className={cn(
-            buttonVariants({
-              variant: "outline",
-              size: "lg",
-              className: contactButtonClass,
-            })
-          )}
-        >
-          {contactEntryLabels.viber[locale]}: {siteSettings.contacts.phone}
-        </a>
+        {details.viberUrl && (
+          <a
+            href={details.viberUrl}
+            className={cn(
+              buttonVariants({
+                variant: "outline",
+                size: "lg",
+                className: contactButtonClass,
+              })
+            )}
+          >
+            {contactEntryLabels.viber[locale]}: {details.phones[0]}
+          </a>
+        )}
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        {siteSettings.contacts.socials.map((social) => (
+        {details.socials.map((social) => (
           <a
             key={social.url}
             href={social.url}
@@ -170,7 +191,19 @@ export async function generateMetadata({
     return {}
   }
 
-  const category = getCategory("contacts")
+  const [category, page] = await Promise.all([
+    Promise.resolve(getCategory("contacts")),
+    getPageBySlug(rawLocale, "contacts"),
+  ])
+
+  if (page) {
+    return getLocalizedMetadata({
+      locale: rawLocale,
+      path: "/contacts",
+      title: page.seo.title,
+      description: page.seo.description,
+    })
+  }
 
   if (!category) {
     return {}
@@ -193,12 +226,40 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
     notFound()
   }
 
-  const serviceOptions = services
-    .filter((service) => service.visibleInMvp)
-    .map((service) => ({
-      slug: service.slug,
-      title: service.title[locale],
-    }))
+  const [page, payloadServices, footer, settings] = await Promise.all([
+    getPageBySlug(locale, "contacts"),
+    getPublishedServices(locale),
+    getFooter(locale),
+    getSiteSettings(locale),
+  ])
+  const serviceOptions =
+    process.env.CONTENT_SOURCE === "payload"
+      ? payloadServices.map((service) => ({
+          slug: service.slug,
+          title: service.title,
+        }))
+      : services
+          .filter((service) => service.visibleInMvp)
+          .map((service) => ({
+            slug: service.slug,
+            title: service.title[locale],
+          }))
+  const details: ContactDetails =
+    process.env.CONTENT_SOURCE === "payload"
+      ? {
+          phones: [footer.phone],
+          email: footer.email,
+          socials: footer.socialLinks.map((item) => ({
+            label: item.platform,
+            url: item.url,
+          })),
+        }
+      : {
+          phones: siteSettings.contacts.phones,
+          email: siteSettings.contacts.email ?? undefined,
+          viberUrl: siteSettings.contacts.viberUrl,
+          socials: siteSettings.contacts.socials,
+        }
   const mediaAsset = getMediaAsset("editorial-contacts-studio")
 
   return (
@@ -208,14 +269,14 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={category.title[locale]}
-          title={category.title[locale]}
-          summary={category.summary[locale]}
+          eyebrow={page?.eyebrow ?? category.title[locale]}
+          title={page?.title ?? category.title[locale]}
+          summary={page?.summary ?? category.summary[locale]}
           mediaAsset={mediaAsset}
           composition="editorial"
         >
           <p className="text-sm leading-7 text-background/75">
-            {siteSettings.contacts.responseTime[locale]}
+            {footer.responseTime}
           </p>
         </EditorialHero>
 
@@ -229,11 +290,13 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
                       {contactEntryLabels.address[locale]}
                     </CardTitle>
                     <CardDescription className="min-w-0 break-words">
-                      {siteSettings.contacts.city[locale]}
+                      {process.env.CONTENT_SOURCE === "payload"
+                        ? settings.contacts.address
+                        : siteSettings.contacts.city[locale]}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="border-t border-border pt-5 text-sm leading-7 text-muted-foreground">
-                    {siteSettings.contacts.address[locale]}
+                    {settings.contacts.address}
                   </CardContent>
                 </Card>
                 <Card className="min-w-0 border-border bg-background">
@@ -242,12 +305,12 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
                       {contactEntryLabels.hours[locale]}
                     </CardTitle>
                     <CardDescription className="min-w-0 break-words">
-                      {siteSettings.contacts.hours[locale]}
+                      {settings.contacts.hours}
                     </CardDescription>
                   </CardHeader>
                 </Card>
               </div>
-              <ContactEntrypoints locale={locale} />
+              <ContactEntrypoints locale={locale} details={details} />
             </div>
 
             <Card className="min-w-0 border-border bg-background">

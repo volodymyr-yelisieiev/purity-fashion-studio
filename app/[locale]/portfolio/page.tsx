@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { EditorialHero } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -20,7 +20,9 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { getEntryMetadata } from "@/content/metadata"
+import { getPublishedPortfolioCases } from "@/content/public-api"
 import { getCategory, getMediaAsset } from "@/content/queries"
+import { portfolioCasePath } from "@/content/routes"
 import { hasLocale, localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
@@ -228,6 +230,7 @@ export default async function PortfolioPage({ params }: PortfolioPageProps) {
   }
 
   const mediaAsset = getMediaAsset("editorial-portfolio-process")
+  const portfolioCases = await getPublishedPortfolioCases(locale)
 
   return (
     <div className="min-h-svh bg-background text-foreground">
@@ -268,27 +271,59 @@ export default async function PortfolioPage({ params }: PortfolioPageProps) {
 
         <section className="bg-muted">
           <div className="mx-auto max-w-6xl min-w-0 px-6 py-14 md:px-10">
-            <Empty data-testid="portfolio-empty-state">
-              <EmptyHeader>
-                <Badge variant="outline">
-                  {portfolioCopy.emptyEyebrow[locale]}
-                </Badge>
-                <EmptyTitle>{portfolioCopy.emptyTitle[locale]}</EmptyTitle>
-                <EmptyDescription>
-                  {portfolioCopy.emptySummary[locale]}
-                </EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <Link
-                  href={localizePath(locale, "/contacts")}
-                  className={cn(
-                    buttonVariants({ variant: "default", size: "lg" })
-                  )}
-                >
-                  {portfolioCopy.emptyAction[locale]}
-                </Link>
-              </EmptyContent>
-            </Empty>
+            {portfolioCases.length === 0 ? (
+              <Empty data-testid="portfolio-empty-state">
+                <EmptyHeader>
+                  <Badge variant="outline">
+                    {portfolioCopy.emptyEyebrow[locale]}
+                  </Badge>
+                  <EmptyTitle>{portfolioCopy.emptyTitle[locale]}</EmptyTitle>
+                  <EmptyDescription>
+                    {portfolioCopy.emptySummary[locale]}
+                  </EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                  <Link
+                    href={localizePath(locale, "/contacts")}
+                    className={cn(
+                      buttonVariants({ variant: "default", size: "lg" })
+                    )}
+                  >
+                    {portfolioCopy.emptyAction[locale]}
+                  </Link>
+                </EmptyContent>
+              </Empty>
+            ) : (
+              <div className="grid auto-rows-fr gap-4 md:grid-cols-2">
+                {portfolioCases.map((portfolioCase) => (
+                  <Card
+                    key={portfolioCase.id}
+                    className="h-full min-w-0 border-border bg-background"
+                  >
+                    <CardHeader>
+                      <Badge variant="outline" className="w-fit">
+                        {portfolioCase.clientType}
+                      </Badge>
+                      <CardTitle>{portfolioCase.title}</CardTitle>
+                      <CardDescription>
+                        {portfolioCase.summary}
+                      </CardDescription>
+                      <Link
+                        href={localizePath(
+                          locale,
+                          portfolioCasePath(portfolioCase.routeSegment)
+                        )}
+                        className={cn(
+                          buttonVariants({ variant: "outline", size: "lg" })
+                        )}
+                      >
+                        {portfolioCase.title}
+                      </Link>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 

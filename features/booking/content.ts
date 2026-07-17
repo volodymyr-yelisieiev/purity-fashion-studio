@@ -9,7 +9,8 @@ import type {
 } from "./schema"
 
 type Localized<T> = Record<Locale, T>
-export type PaymentStatus = "success" | "cancel" | "failure"
+export type PaymentStatus =
+  "success" | "pending" | "cancel" | "failure" | "refunded"
 
 export const bookingCopy = {
   eyebrow: {
@@ -283,6 +284,50 @@ export const paymentStatusCopy = {
       uk: "PURITY перевірить заявку та підтвердить наступний крок окремим повідомленням.",
       ru: "PURITY проверит заявку и подтвердит следующий шаг отдельным сообщением.",
       en: "PURITY will review the request and confirm the next step in a separate message.",
+    },
+    action: {
+      uk: "Повернутися до запису",
+      ru: "Вернуться к записи",
+      en: "Return to booking",
+    },
+  },
+  pending: {
+    eyebrow: {
+      uk: "Оплата",
+      ru: "Оплата",
+      en: "Payment",
+    },
+    title: {
+      uk: "Платіж перевіряється.",
+      ru: "Платёж проверяется.",
+      en: "Payment is being verified.",
+    },
+    summary: {
+      uk: "Ми ще не отримали підтверджений статус від платіжного провайдера. Не повторюйте оплату; оновіть сторінку пізніше або звʼяжіться з PURITY.",
+      ru: "Мы ещё не получили подтверждённый статус от платёжного провайдера. Не повторяйте оплату; обновите страницу позже или свяжитесь с PURITY.",
+      en: "We have not yet received a verified status from the payment provider. Do not pay again; refresh later or contact PURITY.",
+    },
+    action: {
+      uk: "Повернутися до запису",
+      ru: "Вернуться к записи",
+      en: "Return to booking",
+    },
+  },
+  refunded: {
+    eyebrow: {
+      uk: "Повернення",
+      ru: "Возврат",
+      en: "Refund",
+    },
+    title: {
+      uk: "Повернення зафіксовано.",
+      ru: "Возврат зафиксирован.",
+      en: "Refund recorded.",
+    },
+    summary: {
+      uk: "Статус отримано від платіжного провайдера. Термін зарахування залежить від банку.",
+      ru: "Статус получен от платёжного провайдера. Срок зачисления зависит от банка.",
+      en: "The status was confirmed by the payment provider. Bank settlement timing may vary.",
     },
     action: {
       uk: "Повернутися до запису",

@@ -1,23 +1,62 @@
-# PURITY QA Checklist
+# PURITY QA and Release Checklist
 
-- Core localized routes load for `uk`, `ru`, and `en`.
-- Booking and contact forms validate localized errors and clear stale errors after success.
-- Language switches preserve the current path.
-- Navigation, CTAs, form controls, and shadcn/Base UI surfaces keep accessible names.
-- Sitemap, robots, canonical, hreflang, Open Graph, and descriptions are present.
-- First-party links point to localized routes.
-- Generated placeholders are not presented as real client proof.
-- Generated media records point at non-empty files and include generation metadata.
-- Required PURITY logo variants exist, use client logo media records, and point at real files.
-- Public content does not regress to empty/generic placeholder copy.
-- Source-backed Kyiv contacts, Viber, email, hours, and social links remain visible and accessible.
-- Service CTAs preserve booking preselect, including route-segment based links.
-- PURITY uses its own logo, copy, palette, spacing, and imagery; no protected Louis Vuitton assets, monogram imitation, public copy, pixel-copy layout, or copied trade dress are used.
-- The shadcn preset remains `b59jufTOPg` with Base Sera, neutral tokens, Phosphor icons, and Base UI; invented Prague facts and protected brand references must fail QA.
-- Icons use Phosphor with the default 2px stroke and `size-*` geometry; decorative icons are hidden from assistive technology and every icon-only control has a localized accessible name.
-- Custom UI is limited to repeated PURITY brand sections; primitives stay in shadcn/Base UI.
-- Browser checks at 320, 390, 768, 934, 1024, and 1440 px show logo, fitted imagery, meaningful content, usable 44 px primary targets, and no clipping or horizontal overflow.
-- Performance budget: total built `.next/static` JavaScript stays under 2 MB for the MVP.
-- `pnpm qa:architecture` fails on forbidden icon/theme/primitive imports, shadcn config drift, or missing responsive QA matrix contracts.
-- `pnpm test:e2e` runs the route/locale/theme/viewport visual matrix, captures screenshots, and fails on console errors, missing landmarks, overflow, or blank visual output.
-- `.github/workflows/qa.yml` runs the full `pnpm qa:all` gate on pushes and pull requests.
+## Automated gate
+
+Run `pnpm qa:all`. Warnings and failures block release. The gate covers env,
+strict types, lint, legacy import fixtures, actual Payload config, payment
+transition contract, routes/content, launch handoff, i18n, design tokens, brand,
+architecture, production build, Playwright and JS budget. Visual baselines are
+never regenerated without explicit approval.
+
+## CMS integration
+
+- Apply migrations to an empty DB and a representative restored DB.
+- Generate types/import map and verify no drift.
+- Run seed twice; relationships/counts stay stable.
+- Test public exclusion of drafts, disabled records, private fields,
+  unapproved/expired media and unapproved portfolio.
+- Test owner/editor/support/finance/developer matrix and disabled users.
+- Test preview, exit preview, all live-preview breakpoints and noindex.
+- Test publish/unpublish/delete/slug changes, cache invalidation, 301 resolution
+  and redirect loop protection.
+- Create a CMS-only entity and verify on-demand localized routing without a
+  rebuild; verify unpublished/unknown returns 404.
+
+## Booking and payments
+
+- Validate private, corporate, course, collection and general inquiry paths.
+- Verify client and server validation, honeypot, dwell, rate limit, lead match,
+  first/last touch, consent version and idempotent duplicate submit.
+- Persist before email; email failure remains visible and retryable without
+  duplicating the request.
+- Verify server-side entity/offer/amount/currency/provider resolution.
+- Reject invalid Stripe/LiqPay signatures, stale timestamps, amount/currency
+  mismatch and unknown orders.
+- Replay duplicate and out-of-order events; final paid/refunded state never
+  regresses to expired/failed.
+- Test success, async failure, expiry, late success, partial/full refund and
+  provider checkout failure.
+- Confirm public status pages never infer success from query/redirect alone.
+
+## Browser and content
+
+- UK/RU/EN home, directions, services, course, collection, portfolio, Studio,
+  Contacts, Booking, legal and payment routes.
+- Language switch keeps the equivalent entity and `html lang`.
+- Service/offer CTA preselection, keyboard flow, focus, field errors, status
+  announcements, menu and legal links.
+- 320, 390, 768, 934, 1024, 1440 and manual wide desktop; no overflow, missing
+  images, console errors or layout shifts.
+- Canonical/hreflang/OG/Twitter, schema.org, published-only sitemap, preview
+  robots closure, styleguide/booking/payment noindex and managed redirects.
+- Generated imagery remains editorial, never testimonial/before-after/client
+  evidence; all public claims, prices, contacts and policies are owner-reviewed.
+
+## External UAT and launch blockers
+
+Owner/brand, editor, support and finance each sign their domain. Before live
+traffic: legal/privacy/cookie/retention approval, merchant and fiscal readiness,
+provider live transactions and wallet eligibility, SPF/DKIM/DMARC, backup
+restore drill with approved RPO/RTO, uptime/error monitoring, GA4 consent/debug,
+Search Console/sitemap, DNS/TLS and production smoke. Developer approval cannot
+substitute for these decisions.

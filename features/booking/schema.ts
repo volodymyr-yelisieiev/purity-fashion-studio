@@ -1,7 +1,5 @@
 import { z } from "zod/v4"
 
-import { services } from "@/content/source"
-
 export const inquiryTypes = ["private", "corporate"] as const
 export const formats = ["studio", "online", "atelier"] as const
 export const paymentCurrencies = ["EUR", "UAH"] as const
@@ -14,14 +12,15 @@ export type PaymentCurrency = (typeof paymentCurrencies)[number]
 export type PaymentProvider = (typeof paymentProviders)[number]
 export type ContactMethod = (typeof contactMethods)[number]
 
-const serviceSlugs = services
-  .filter((service) => service.visibleInMvp)
-  .map((service) => service.slug) as [string, ...string[]]
-
 export const bookingSchema = z
   .object({
     inquiryType: z.enum(inquiryTypes),
-    serviceSlug: z.enum(serviceSlugs),
+    serviceSlug: z
+      .string()
+      .trim()
+      .min(1, { message: "required" })
+      .max(160)
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "required" }),
     name: z.string().trim().min(2, { message: "required" }).max(120),
     email: z.string().trim().email({ message: "email" }).max(160),
     phone: z.string().trim().max(60).optional(),
@@ -65,9 +64,10 @@ export type BookingResult =
   | {
       status: "success"
       leadId: string
-      checkoutUrl: string
-      provider: PaymentProvider
-      currency: PaymentCurrency
+      bookingRequestId?: string
+      checkoutUrl?: string
+      provider?: PaymentProvider
+      currency?: PaymentCurrency
     }
   | {
       status: "error"

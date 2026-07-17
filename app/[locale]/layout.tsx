@@ -7,9 +7,13 @@ import type * as React from "react"
 
 import "../globals.css"
 import { MotionProvider } from "@/components/motion-provider"
-import { getSiteMetadata } from "@/content/metadata"
+import { Analytics } from "@/components/analytics"
+import { StructuredData } from "@/components/structured-data"
+import { getLocalizedMetadata } from "@/content/metadata"
+import { getHome } from "@/content/public-api"
 import { hasLocale, locales } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
+import { env } from "@/lib/env"
 
 const notoSans = Noto_Sans({
   variable: "--font-sans",
@@ -42,7 +46,12 @@ export async function generateMetadata({
     return {}
   }
 
-  const metadata = getSiteMetadata(locale)
+  const home = await getHome(locale)
+  const metadata = getLocalizedMetadata({
+    locale,
+    title: home.seo.title,
+    description: home.seo.description,
+  })
 
   return {
     ...metadata,
@@ -75,9 +84,29 @@ export default async function LocaleLayout({
       )}
     >
       <body>
+        <StructuredData
+          data={[
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "PURITY Fashion Studio",
+              url: env.NEXT_PUBLIC_SITE_URL,
+              email: "voronina@purity-fashion.com",
+              telephone: "+380676561912",
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "PURITY Fashion Studio",
+              url: env.NEXT_PUBLIC_SITE_URL,
+              inLanguage: locales,
+            },
+          ]}
+        />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <MotionProvider>{children}</MotionProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   )

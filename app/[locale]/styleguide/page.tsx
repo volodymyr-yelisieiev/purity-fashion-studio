@@ -1,4 +1,5 @@
 import { ListIcon as MenuIcon, XIcon } from "@phosphor-icons/react/dist/ssr"
+import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
@@ -8,7 +9,7 @@ import {
   Section,
   ServiceCard,
 } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import {
   Accordion,
   AccordionContent,
@@ -61,6 +62,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { services } from "@/content/services"
 import { siteSettings } from "@/content/source"
 import { hasLocale, type Locale } from "@/i18n/routing"
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 type StyleguidePageProps = {
   params: Promise<{ locale: string }>

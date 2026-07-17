@@ -9,7 +9,7 @@ import {
   FeatureList,
   ImageFrame,
 } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -18,19 +18,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { publicPages, serviceCategories, siteSettings } from "@/content/source"
-import type { CategoryPageSpec } from "@/content/model"
+import { serviceCategories, siteSettings } from "@/content/source"
+import type {
+  CategoryPageSpec,
+  MediaAsset,
+  PublicPage,
+  ServiceCategory,
+} from "@/content/model"
 import {
   categoryPageCopy,
   collectionsPageCopy,
   studioPageCopy,
 } from "@/content/category-page-specs"
-import { getEntryMetadata } from "@/content/metadata"
+import { getLocalizedMetadata } from "@/content/metadata"
+import {
+  getCourseBySlug,
+  getDirectionBySlug,
+  getFashionCollectionBySlug,
+  getPageBySlug,
+  getPublishedCourseSlugs,
+  getPublishedDirectionSlugs,
+  getPublishedFashionCollectionSlugs,
+  getPublishedPageSlugs,
+  getPublishedServices,
+  type DirectionPageData,
+  type PublicPageData,
+} from "@/content/public-api"
 import {
   getCategoryByRoute,
   getFirstMediaAsset,
   getMediaAsset,
-  getPublicPageByRoute,
   getVisibleCollections,
   getVisibleCourses,
   getVisibleServicesByCategory,
@@ -48,22 +65,26 @@ type SectionPageProps = {
   params: Promise<{ locale: string; section: string }>
 }
 
-type PublicPageEntry = (typeof publicPages)[number]
+type PublicPageEntry = PublicPage
 
-export const dynamicParams = false
+type CollectionCardView = {
+  routeSegment: string
+  title: string
+  summary: string
+  materials: string[]
+  commercialStatus: string
+  priceNote: string
+  mediaAsset?: MediaAsset
+}
 
-export function generateStaticParams() {
-  const sections = [
-    ...serviceCategories
-      .filter(
-        (category) =>
-          category.slug !== "portfolio" && category.slug !== "contacts"
-      )
-      .map((category) => category.routeSegment),
-    ...publicPages
-      .filter((page) => page.slug !== "booking")
-      .map((page) => page.routeSegment),
-  ]
+export const dynamicParams = true
+
+export async function generateStaticParams() {
+  const [directions, pages] = await Promise.all([
+    getPublishedDirectionSlugs(),
+    getPublishedPageSlugs(),
+  ])
+  const sections = [...new Set([...directions, ...pages, "atelier"])]
 
   return locales.flatMap((locale) =>
     sections.map((section) => ({ locale, section }))
@@ -79,15 +100,69 @@ export async function generateMetadata({
     return {}
   }
 
-  const category = getCategoryByRoute(section)
-  const publicPage = getPublicPageByRoute(section)
-  const entry = publicPage ?? category
+  const [direction, publicPage] = await Promise.all([
+    getDirectionBySlug(rawLocale, section),
+    getPageBySlug(rawLocale, section),
+  ])
+  const entry = publicPage ?? direction
 
   if (!entry) {
     return {}
   }
 
-  return getEntryMetadata(entry, rawLocale, sectionPath(entry.routeSegment))
+  return getLocalizedMetadata({
+    locale: rawLocale,
+    path: sectionPath(entry.routeSegment),
+    title: entry.seo.title,
+    description: entry.seo.description,
+  })
+}
+
+function localized(value: string) {
+  return { uk: value, ru: value, en: value }
+}
+
+function toLegacyPublicPage(page: PublicPageData): PublicPageEntry | undefined {
+  const slug =
+    page.pageType === "studio"
+      ? "studio"
+      : page.pageType === "privacy"
+        ? "privacy"
+        : page.pageType === "terms"
+          ? "terms"
+          : undefined
+  if (!slug) return undefined
+
+  const body = page.sections.length
+    ? page.sections.map((section) => section.body)
+    : page.body.split(/\n\n+/).filter(Boolean)
+  return {
+    slug,
+    routeSegment: page.routeSegment,
+    title: localized(page.title),
+    eyebrow: localized(page.eyebrow ?? page.title),
+    summary: localized(page.summary),
+    body: { uk: body, ru: body, en: body },
+    cta: {
+      label: localized(page.cta.label),
+      path: page.cta.action === "contact" ? "/contacts" : "/booking",
+    },
+    mediaIds: page.mediaIds,
+    seo: {
+      uk: page.seo,
+      ru: page.seo,
+      en: page.seo,
+    },
+  }
+}
+
+function toLegacyCategory(direction: DirectionPageData): ServiceCategory {
+  return {
+    slug: direction.canonicalKey,
+    routeSegment: direction.routeSegment,
+    title: localized(direction.title),
+    summary: localized(direction.summary),
+  }
 }
 
 function SectionActionCard({
@@ -129,11 +204,14 @@ function SectionActionCard({
 function StudioPageView({
   locale,
   publicPage,
+  mediaAsset: mediaAssetOverride,
 }: {
   locale: Locale
   publicPage: PublicPageEntry
+  mediaAsset?: MediaAsset
 }) {
-  const mediaAsset = getFirstMediaAsset(publicPage.mediaIds)
+  const mediaAsset =
+    mediaAssetOverride ?? getFirstMediaAsset(publicPage.mediaIds)
   const privateServices = [
     ...getVisibleServicesByCategory("research"),
     ...getVisibleServicesByCategory("realisation"),
@@ -491,11 +569,11 @@ function CollectionsPageView({
   collections,
 }: {
   locale: Locale
-  category: NonNullable<ReturnType<typeof getCategoryByRoute>>
-  collections: ReturnType<typeof getVisibleCollections>
+  category: ServiceCategory
+  collections: CollectionCardView[]
 }) {
   const copy = collectionsPageCopy
-  const heroMedia = getFirstMediaAsset(collections[0]?.mediaIds ?? [])
+  const heroMedia = collections[0]?.mediaAsset
   const inquiryHref = localizePath(
     locale,
     "/booking?service=capsule-collection"
@@ -555,11 +633,11 @@ function CollectionsPageView({
             </div>
             <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {collections.map((collection) => {
-                const mediaAsset = getFirstMediaAsset(collection.mediaIds)
+                const mediaAsset = collection.mediaAsset
 
                 return (
                   <Link
-                    key={collection.slug}
+                    key={collection.routeSegment}
                     href={localizePath(
                       locale,
                       collectionPath(collection.routeSegment)
@@ -568,27 +646,25 @@ function CollectionsPageView({
                   >
                     <Card className="h-full min-w-0 overflow-hidden border-border bg-background pt-0">
                       <ImageFrame
-                        alt={
-                          mediaAsset?.alt[locale] ?? collection.title[locale]
-                        }
+                        alt={mediaAsset?.alt[locale] ?? collection.title}
                         src={mediaAsset?.src}
                         className="border-x-0 border-t-0"
                       />
                       <CardHeader className="flex-1">
                         <CardTitle className="min-w-0 break-words">
-                          {collection.title[locale]}
+                          {collection.title}
                         </CardTitle>
                         <CardDescription className="min-w-0 break-words">
-                          {collection.summary[locale]}
+                          {collection.summary}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="mt-auto grid gap-3 border-t border-border pt-5 text-xs leading-5 text-muted-foreground">
                         <p className="text-muted-foreground uppercase">
                           {copy.materialsLabel[locale]}
                         </p>
-                        <p>{collection.materials[locale].join(" · ")}</p>
-                        <p>{collection.commercialStatus[locale]}</p>
-                        <p>{collection.priceNote[locale]}</p>
+                        <p>{collection.materials.join(" · ")}</p>
+                        <p>{collection.commercialStatus}</p>
+                        <p>{collection.priceNote}</p>
                       </CardContent>
                     </Card>
                   </Link>
@@ -653,7 +729,7 @@ function OfferCategoryPageView({
   relatedCategory,
 }: {
   locale: Locale
-  category: NonNullable<ReturnType<typeof getCategoryByRoute>>
+  category: ServiceCategory
   entries: Array<{
     href: string
     title: string
@@ -661,7 +737,7 @@ function OfferCategoryPageView({
     status: string
     priceNote: string
   }>
-  mediaAsset?: NonNullable<ReturnType<typeof getFirstMediaAsset>>
+  mediaAsset?: MediaAsset
   copyKey: keyof typeof categoryPageCopy
   relatedCategory?: "research" | "realisation" | "transformation"
 }) {
@@ -862,12 +938,23 @@ export default async function SectionPage({ params }: SectionPageProps) {
   }
 
   const locale: Locale = rawLocale
-  const category = getCategoryByRoute(section)
-  const publicPage = getPublicPageByRoute(section)
+  const [directionData, publicPageData] = await Promise.all([
+    getDirectionBySlug(locale, section),
+    getPageBySlug(locale, section),
+  ])
+  const publicPage = publicPageData
+    ? toLegacyPublicPage(publicPageData)
+    : undefined
 
   if (publicPage) {
     if (publicPage.slug === "studio") {
-      return <StudioPageView locale={locale} publicPage={publicPage} />
+      return (
+        <StudioPageView
+          locale={locale}
+          publicPage={publicPage}
+          mediaAsset={publicPageData?.mediaAsset}
+        />
+      )
     }
 
     if (publicPage.slug === "privacy" || publicPage.slug === "terms") {
@@ -882,7 +969,9 @@ export default async function SectionPage({ params }: SectionPageProps) {
         title={publicPage.title[locale]}
         summary={publicPage.summary[locale]}
         items={publicPage.body[locale]}
-        mediaAsset={getFirstMediaAsset(publicPage.mediaIds)}
+        mediaAsset={
+          publicPageData?.mediaAsset ?? getFirstMediaAsset(publicPage.mediaIds)
+        }
         action={
           publicPage.cta
             ? {
@@ -895,6 +984,35 @@ export default async function SectionPage({ params }: SectionPageProps) {
     )
   }
 
+  if (publicPageData) {
+    return (
+      <ContentPage
+        locale={locale}
+        currentPath={sectionPath(publicPageData.routeSegment)}
+        eyebrow={publicPageData.eyebrow ?? publicPageData.title}
+        title={publicPageData.title}
+        summary={publicPageData.summary}
+        items={
+          publicPageData.sections.length
+            ? publicPageData.sections.map((item) => item.body)
+            : publicPageData.body.split(/\n\n+/).filter(Boolean)
+        }
+        action={{
+          label: publicPageData.cta.label,
+          href: localizePath(
+            locale,
+            publicPageData.cta.action === "contact" ? "/contacts" : "/booking"
+          ),
+        }}
+      />
+    )
+  }
+
+  const seedCategory = getCategoryByRoute(section)
+  const category = directionData
+    ? toLegacyCategory(directionData)
+    : seedCategory
+
   if (
     !category ||
     category.slug === "portfolio" ||
@@ -903,36 +1021,116 @@ export default async function SectionPage({ params }: SectionPageProps) {
     notFound()
   }
 
-  const visibleCategoryServices = getVisibleServicesByCategory(category.slug)
+  const payloadCategoryServices = directionData
+    ? directionData.services
+    : process.env.CONTENT_SOURCE === "payload" && category.slug === "atelier"
+      ? await getPublishedServices(locale, { slugs: ["atelier-service"] })
+      : undefined
+  const visibleCategoryServices = payloadCategoryServices
+    ? []
+    : getVisibleServicesByCategory(category.slug)
   const visibleCategoryCourses =
     category.slug === "school" ? getVisibleCourses() : []
   const visibleCategoryCollections =
     category.slug === "collections" ? getVisibleCollections() : []
-  const categoryMediaAsset = getFirstMediaAsset([
-    ...visibleCategoryServices.flatMap((service) => service.mediaIds),
-    ...visibleCategoryCourses.flatMap((course) => course.mediaIds),
-    ...visibleCategoryCollections.flatMap((collection) => collection.mediaIds),
-  ])
-  const serviceEntries = visibleCategoryServices.map((service) => ({
-    href: localizePath(locale, servicePath(service.routeSegment)),
-    title: service.title[locale],
-    summary: service.summary[locale],
-    status: service.commercialStatus[locale],
-    priceNote: service.priceNote[locale],
-  }))
-  const courseEntries = visibleCategoryCourses.map((course) => ({
-    href: localizePath(locale, coursePath(course.routeSegment)),
-    title: course.title[locale],
-    summary: course.summary[locale],
-    status: course.commercialStatus[locale],
-    priceNote: course.priceNote[locale],
-  }))
+  const payloadMode = process.env.CONTENT_SOURCE === "payload"
+  const [payloadCourses, payloadCollections] = payloadMode
+    ? await Promise.all([
+        category.slug === "school"
+          ? getPublishedCourseSlugs().then((slugs) =>
+              Promise.all(slugs.map((slug) => getCourseBySlug(locale, slug)))
+            )
+          : [],
+        category.slug === "collections"
+          ? getPublishedFashionCollectionSlugs().then((slugs) =>
+              Promise.all(
+                slugs.map((slug) => getFashionCollectionBySlug(locale, slug))
+              )
+            )
+          : [],
+      ])
+    : [[], []]
+  const categoryMediaAsset =
+    directionData?.mediaAsset ??
+    payloadCategoryServices?.find((service) => service.mediaAsset)
+      ?.mediaAsset ??
+    payloadCourses.find((course) => course?.mediaAsset)?.mediaAsset ??
+    payloadCollections.find((collection) => collection?.mediaAssets[0])
+      ?.mediaAssets[0] ??
+    getFirstMediaAsset([
+      ...visibleCategoryServices.flatMap((service) => service.mediaIds),
+      ...visibleCategoryCourses.flatMap((course) => course.mediaIds),
+      ...visibleCategoryCollections.flatMap(
+        (collection) => collection.mediaIds
+      ),
+    ])
+  const serviceEntries = payloadCategoryServices
+    ? payloadCategoryServices.map((service) => ({
+        href: localizePath(locale, servicePath(service.routeSegment)),
+        title: service.title,
+        summary: service.summary,
+        status: directionData?.narrative ?? service.summary,
+        priceNote: directionData?.outcomes.join(" · ") ?? "",
+      }))
+    : visibleCategoryServices.map((service) => ({
+        href: localizePath(locale, servicePath(service.routeSegment)),
+        title: service.title[locale],
+        summary: service.summary[locale],
+        status: service.commercialStatus[locale],
+        priceNote: service.priceNote[locale],
+      }))
+  const courseEntries = payloadMode
+    ? payloadCourses.flatMap((course) =>
+        course
+          ? [
+              {
+                href: localizePath(locale, coursePath(course.routeSegment)),
+                title: course.title,
+                summary: course.summary,
+                status: course.commercialStatus,
+                priceNote: course.priceNote,
+              },
+            ]
+          : []
+      )
+    : visibleCategoryCourses.map((course) => ({
+        href: localizePath(locale, coursePath(course.routeSegment)),
+        title: course.title[locale],
+        summary: course.summary[locale],
+        status: course.commercialStatus[locale],
+        priceNote: course.priceNote[locale],
+      }))
+  const collectionCards: CollectionCardView[] = payloadMode
+    ? payloadCollections.flatMap((collection) =>
+        collection
+          ? [
+              {
+                routeSegment: collection.routeSegment,
+                title: collection.title,
+                summary: collection.summary,
+                materials: collection.materials,
+                commercialStatus: collection.commercialStatus,
+                priceNote: collection.priceNote,
+                mediaAsset: collection.mediaAssets[0],
+              },
+            ]
+          : []
+      )
+    : visibleCategoryCollections.map((collection) => ({
+        routeSegment: collection.routeSegment,
+        title: collection.title[locale],
+        summary: collection.summary[locale],
+        materials: collection.materials[locale],
+        commercialStatus: collection.commercialStatus[locale],
+        priceNote: collection.priceNote[locale],
+        mediaAsset: getFirstMediaAsset(collection.mediaIds),
+      }))
   if (category.slug === "collections") {
     return (
       <CollectionsPageView
         locale={locale}
         category={category}
-        collections={visibleCategoryCollections}
+        collections={collectionCards}
       />
     )
   }
@@ -953,13 +1151,15 @@ export default async function SectionPage({ params }: SectionPageProps) {
         mediaAsset={categoryMediaAsset}
         copyKey={category.slug}
         relatedCategory={
-          category.slug === "research"
-            ? "realisation"
-            : category.slug === "realisation"
-              ? "research"
-              : category.slug === "transformation"
-                ? "realisation"
-                : undefined
+          process.env.CONTENT_SOURCE === "payload"
+            ? undefined
+            : category.slug === "research"
+              ? "realisation"
+              : category.slug === "realisation"
+                ? "research"
+                : category.slug === "transformation"
+                  ? "realisation"
+                  : undefined
         }
       />
     )

@@ -1,0 +1,39 @@
+import * as migration_20260716_223359_initial_prd_schema from "./20260716_223359_initial_prd_schema"
+import * as migration_20260716_224208_offer_polymorphic_owner from "./20260716_224208_offer_polymorphic_owner"
+import * as migration_20260716_225724 from "./20260716_225724"
+import * as migration_20260716_231615 from "./20260716_231615"
+import * as migration_20260716_233822_payment_provider_id from "./20260716_233822_payment_provider_id"
+import * as migration_20260716_234850_payment_notification_state from "./20260716_234850_payment_notification_state"
+
+export const migrations = [
+  {
+    up: migration_20260716_223359_initial_prd_schema.up,
+    down: migration_20260716_223359_initial_prd_schema.down,
+    name: "20260716_223359_initial_prd_schema",
+  },
+  {
+    up: migration_20260716_224208_offer_polymorphic_owner.up,
+    down: migration_20260716_224208_offer_polymorphic_owner.down,
+    name: "20260716_224208_offer_polymorphic_owner",
+  },
+  {
+    up: migration_20260716_225724.up,
+    down: migration_20260716_225724.down,
+    name: "20260716_225724",
+  },
+  {
+    up: migration_20260716_231615.up,
+    down: migration_20260716_231615.down,
+    name: "20260716_231615",
+  },
+  {
+    up: migration_20260716_233822_payment_provider_id.up,
+    down: migration_20260716_233822_payment_provider_id.down,
+    name: "20260716_233822_payment_provider_id",
+  },
+  {
+    up: migration_20260716_234850_payment_notification_state.up,
+    down: migration_20260716_234850_payment_notification_state.down,
+    name: "20260716_234850_payment_notification_state",
+  },
+]
