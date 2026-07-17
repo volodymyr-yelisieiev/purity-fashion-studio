@@ -349,10 +349,11 @@ const getPayloadClient = cache(() => getPayload({ config }))
 // previous deployment's cached draft or missing document from masking the
 // freshly imported, published content. The static fallback also cleanly breaks
 // the migration-era cache once for local and providers without Vercel metadata.
-const payloadCacheNamespace =
+const payloadCacheNamespace = `purity-payload-cache-v3:${
   process.env.VERCEL_DEPLOYMENT_ID ??
   process.env.VERCEL_GIT_COMMIT_SHA ??
-  "purity-payload-cache-v2"
+  "local"
+}`
 
 const getAuthenticatedPayloadUser = cache(async () => {
   const payload = await getPayloadClient()
