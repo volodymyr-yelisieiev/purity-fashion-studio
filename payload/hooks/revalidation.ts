@@ -23,6 +23,11 @@ type PublicHookOptions = {
 }
 
 function invalidate(tags: Iterable<string>, paths: Iterable<string>) {
+  // Payload Local API scripts run outside a Next request/static-generation
+  // store. The subsequent deployment builds a fresh cache, so invalidation is
+  // neither available nor necessary during a deterministic content import.
+  if (process.env.PAYLOAD_IMPORTING === "true") return
+
   for (const tag of new Set(tags)) {
     revalidateTag(tag, { expire: 0 })
   }

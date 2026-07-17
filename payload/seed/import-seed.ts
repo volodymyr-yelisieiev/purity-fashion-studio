@@ -70,6 +70,8 @@ if (productionTarget && !force) {
   throw new Error("Production seed requires the explicit --force flag.")
 }
 
+process.env.PAYLOAD_IMPORTING = "true"
+
 const { default: config } = await import("../../payload.config")
 const payload = await getPayload({ config })
 
