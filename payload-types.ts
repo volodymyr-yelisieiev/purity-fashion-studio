@@ -1139,7 +1139,10 @@ export interface PortfolioCase {
   research: string;
   process: string;
   result: string;
-  services: (string | Service)[];
+  /**
+   * Required before a portfolio case can be approved for public display.
+   */
+  services?: (string | Service)[] | null;
   media: (string | Media)[];
   hasBeforeAfter: boolean;
   /**
