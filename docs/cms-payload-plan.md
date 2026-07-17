@@ -1,53 +1,71 @@
-# PURITY CMS and Admin Plan
+# PURITY Payload CMS Contract
 
-PURITY keeps the frontend content contract in `content/model.ts` and consumes it through `content/source.ts`. The current source is the typed seed in `content/data.ts`; a future Payload adapter should return the same `ContentSnapshot` shape so page routes, metadata, booking preselection, and navigation do not need a rewrite.
+Payload 3 is embedded in the existing Next.js app. PostgreSQL uses UUID IDs;
+public React Server Components call Local API through typed functions in
+`content/public-api.ts`. REST remains available for external/browser needs,
+GraphQL is disabled, and locale fallback is disabled.
 
-## Payload Collections
+## Collections and globals
 
-The collection contract lives in `content/cms.ts` and covers:
+Content: Directions, Services, Offers, Courses, Fashion Collections, Portfolio
+Cases, Testimonials and Pages. Site: Media and managed Redirects. Operations:
+Leads, Booking Requests, Payment Orders and Webhook Events. Administration:
+Users. Globals: Home, Header, Footer, Site Settings and Booking Settings.
 
-- `service-categories`, `services`, `courses`, `collections`, `portfolio-cases`, `testimonials`
-- `media-assets`, `pages`, `settings`
-- `leads`, `booking-requests`, `payment-orders`
+`Service` owns the value/process narrative. `Offer` owns SKU, format, price in
+integer minor units, commercial/checkout mode, deposit, availability and terms
+version. Payment Orders retain an immutable offer snapshot.
 
-Localized public fields use the same required locales as the app: `uk`, `ru`, and `en`. The seed validation script checks that localized fields contain all locales and that service/media/category relations resolve.
+## Roles and access
 
-## Seed Import
+- owner: users, settings, all content and operations;
+- editor: public drafts/publish, SEO and media; no payment/PII internals;
+- support: leads and booking operations only;
+- finance: payment orders and webhook audit only;
+- developer: schema-oriented non-production access, not production PII.
 
-Export a seed JSON payload from typed content:
+Disabled users are rejected at login, API keys are disabled, login attempts are
+limited, sessions expire, and passwords must contain at least 14 characters.
+Trusted Local API bypasses are limited to named booking/webhook/import contexts.
+
+## Seed and migrations
+
+Run migrations before import:
 
 ```bash
-pnpm cms:seed
-pnpm cms:seed -- --out tmp/purity-cms-seed.json
-pnpm cms:seed -- --stdout
+pnpm payload:migrate:status
+pnpm payload:migrate
+ALLOW_CMS_SEED=true pnpm cms:import
+ALLOW_CMS_SEED=true pnpm cms:import
 ```
 
-The JSON keys match the future Payload collection slugs. A Payload import job can read each array and upsert by `id` or `slug`.
+The importer upserts in relationship order and is refused unless explicitly
+enabled. It must not overwrite edited production content without a separately
+implemented and approved force policy. Migration files and `payload-types.ts`
+are committed; schema push is limited to isolated development.
 
-## Admin Roles
+## Publish, preview and cache
 
-- `owner`: full access to content, settings, leads, booking requests, payment orders, and publish controls.
-- `editor`: create and edit public content, draft previews, and media metadata; cannot view payment order internals.
-- `support`: read and update leads and booking request statuses; cannot edit public content or settings.
-- `developer`: schema, integration, and seed migration access in non-production environments.
-- `system`: server-only writes for leads, booking requests, and payment orders created by form actions and payment adapters.
+Drafts, autosave, versions, scheduled publish support, restore, preview and
+Live Preview are configured. Draft Mode uses a 32+ character secret, an
+allowlisted localized path and open-redirect protection. Breakpoints are
+390×844, 768×1024 and 1440×900. Public queries use locale, no fallback, selected
+fields, bounded depth and public access. Cache tags and route invalidation run
+on publish, unpublish, delete and global/media/offer change. Slug changes create
+301 records; `proxy.ts` resolves them with a bounded cached chain and loop guard.
 
-## Media Storage
+## Media governance
 
-Use Payload upload fields for `media-assets.upload`, backed by S3-compatible object storage in production and local filesystem storage in development. Keep existing fields for `src`, localized `alt`, `internalLabel`, `source`, `replacementPriority`, and `isRealClientProof` so generated placeholders remain distinguishable from approved client proof.
+Production uses S3-compatible storage with direct client upload. Only JPEG,
+PNG, WebP and AVIF are accepted; upload size is limited to 20 MB and remote URL
+paste is disabled. Thumbnail, card, editorial and hero derivatives are
+generated. Public reads require visibility, approved and non-expired rights.
+Generated media cannot be real client proof.
 
-Launch rule: generated media may ship only with `replacementPriority` set to a replacement state and `isRealClientProof=false`. Portfolio cases should remain hidden unless they have approved proof.
+## Source switch
 
-## Preview and Publish
-
-Use Payload drafts for public content collections and a preview URL that maps collection + route segment to the existing localized frontend route. The frontend should resolve preview content into the same `ContentSnapshot` shape used by production pages.
-
-Recommended preview routes:
-
-- services: `/{locale}/services/{routeSegment}`
-- courses: `/{locale}/courses/{routeSegment}`
-- collections: `/{locale}/collections/{routeSegment}`
-- portfolio cases: `/{locale}/portfolio/{routeSegment}`
-- pages/categories: `/{locale}/{routeSegment}`
-
-Publishing should run `pnpm cms:check` and the route/content validation before deployment.
+`CONTENT_SOURCE=seed|payload` is the temporary migration flag. Production moves
+to `payload` only after import parity, locale review, route/metadata comparison,
+role UAT and backup verification. After editors start changing CMS content, an
+application rollback must preserve the database; seed is no longer an
+authoritative rollback source.

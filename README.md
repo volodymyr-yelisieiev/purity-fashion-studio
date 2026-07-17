@@ -3,8 +3,10 @@
 [![CI](https://github.com/volodymyr-yelisieiev/purity-fashion-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/volodymyr-yelisieiev/purity-fashion-studio/actions/workflows/ci.yml)
 [![Vercel](https://img.shields.io/badge/Vercel-production-black?logo=vercel)](https://purity-fashion-studio.vercel.app)
 
-Multilingual website for PURITY Fashion Studio, built with Next.js, TypeScript,
-Tailwind CSS and shadcn/ui.
+Multilingual product platform for PURITY Fashion Studio, built with Next.js,
+Payload CMS, PostgreSQL, TypeScript, Tailwind CSS and shadcn/ui. It includes
+managed content, leads/request booking, transactional email, Stripe/LiqPay
+checkout adapters and signed webhooks.
 
 ## Design system
 
@@ -34,23 +36,34 @@ pnpm dev
 ```
 
 The localized entry points are `/uk`, `/ru`, and `/en`.
+Seed mode works without infrastructure. Payload mode additionally requires
+PostgreSQL and the variables documented in `.env.example`; see
+`docs/launch-handoff.md` before activating it. The current PRD implementation
+and external activation boundaries are recorded in
+`docs/prd-compliance-report.md`.
 
 ## Commands
 
-| Command | Purpose |
-| --- | --- |
-| `pnpm dev` | Start the development server |
-| `pnpm build` | Create a production build |
-| `pnpm readiness:mvp` | Run types, lint, content, i18n and design-system checks |
-| `pnpm test:e2e` | Build and run Playwright route and interaction tests |
-| `pnpm qa:all` | Run the complete release gate |
+| Command                | Purpose                                                 |
+| ---------------------- | ------------------------------------------------------- |
+| `pnpm dev`             | Start the development server                            |
+| `pnpm build`           | Create a production build                               |
+| `pnpm payload:migrate` | Apply committed PostgreSQL migrations                   |
+| `pnpm cms:import`      | Run the guarded idempotent Payload importer             |
+| `pnpm cms:check`       | Validate the actual Payload config and import fixtures  |
+| `pnpm payment:check`   | Verify provider routing and payment state transitions   |
+| `pnpm readiness:mvp`   | Run types, lint, content, i18n and design-system checks |
+| `pnpm test:e2e`        | Build and run Playwright route and interaction tests    |
+| `pnpm qa:all`          | Run the complete release gate                           |
 
 ## Architecture
 
 - `app/` — localized routes and metadata.
 - `components/ui/` — canonical shadcn primitives.
 - `components/` — site shell and product compositions.
-- `content/` — typed multilingual content and CMS adapter boundary.
+- `content/` — typed public Local API query layer and migration fixtures.
+- `payload/` — collections, globals, access, hooks, migrations and seed import.
+- `features/booking/` — leads, booking, payments and status contracts.
 - `messages/` — localized interface copy.
 - `tests/e2e/` — route, interaction, accessibility and visual coverage.
 - `docs/` — launch, QA and CMS handoff documentation.

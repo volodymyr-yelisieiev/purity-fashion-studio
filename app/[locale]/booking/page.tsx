@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
-import { services } from "@/content/source"
-import { getEntryMetadata } from "@/content/metadata"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
+import { getLocalizedMetadata } from "@/content/metadata"
+import { getPageBySlug, getPublishedServices } from "@/content/public-api"
 import { getFirstMediaAsset, getPublicPageByRoute } from "@/content/queries"
 import { EditorialHero } from "@/components/purity"
 import {
@@ -18,7 +18,10 @@ import { hasLocale, type Locale } from "@/i18n/routing"
 
 type BookingPageProps = {
   params: Promise<{ locale: string }>
-  searchParams?: Promise<{ service?: string | string[] }>
+  searchParams?: Promise<{
+    service?: string | string[]
+    offer?: string | string[]
+  }>
 }
 
 const bookingPageCopy = {
@@ -43,13 +46,21 @@ export async function generateMetadata({
     return {}
   }
 
-  const page = getPublicPageByRoute("booking")
+  const page = await getPageBySlug(rawLocale, "booking")
 
   if (!page) {
     return {}
   }
 
-  return getEntryMetadata(page, rawLocale, "/booking")
+  return {
+    ...getLocalizedMetadata({
+      locale: rawLocale,
+      path: "/booking",
+      title: page.seo.title,
+      description: page.seo.description,
+    }),
+    robots: { index: false, follow: false },
+  }
 }
 
 export default async function BookingPage({
@@ -63,7 +74,7 @@ export default async function BookingPage({
   }
 
   const locale: Locale = rawLocale
-  const page = getPublicPageByRoute("booking")
+  const page = await getPageBySlug(locale, "booking")
 
   if (!page) {
     notFound()
@@ -72,7 +83,9 @@ export default async function BookingPage({
   const query = await searchParams
   const requestedServiceParam =
     typeof query?.service === "string" ? query.service : undefined
-  const visibleServices = services.filter((service) => service.visibleInMvp)
+  const requestedOfferId =
+    typeof query?.offer === "string" ? query.offer : undefined
+  const visibleServices = await getPublishedServices(locale)
   const requestedService = visibleServices.find(
     (service) =>
       service.slug === requestedServiceParam ||
@@ -80,10 +93,14 @@ export default async function BookingPage({
   )
   const serviceOptions = visibleServices.map((service) => ({
     slug: service.slug,
-    title: service.title[locale],
+    title: service.title,
   }))
   const initialServiceSlug = requestedService?.slug ?? serviceOptions[0]?.slug
-  const mediaAsset = getFirstMediaAsset(page.mediaIds)
+  const seedPage = getPublicPageByRoute("booking")
+  const mediaAsset = getFirstMediaAsset(seedPage?.mediaIds)
+  const body = page.sections.length
+    ? page.sections.map((section) => section.body)
+    : page.body.split(/\n\n+/).filter(Boolean)
 
   return (
     <div className="min-h-svh bg-background text-foreground">
@@ -99,14 +116,14 @@ export default async function BookingPage({
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={page.eyebrow[locale]}
-          title={page.title[locale]}
-          summary={page.summary[locale]}
+          eyebrow={page.eyebrow ?? page.title}
+          title={page.title}
+          summary={page.summary}
           mediaAsset={mediaAsset}
           composition="cinematic"
         >
           <ol className="grid max-w-3xl gap-8 border-t border-background/25 pt-6 sm:grid-cols-2 sm:gap-10">
-            {page.body[locale].map((item, index) => (
+            {body.map((item, index) => (
               <li
                 key={item}
                 className="grid min-w-0 gap-3 sm:grid-cols-[3rem_minmax(0,1fr)]"
@@ -136,6 +153,7 @@ export default async function BookingPage({
                   locale={locale}
                   services={serviceOptions}
                   initialServiceSlug={initialServiceSlug ?? ""}
+                  initialOfferId={requestedOfferId}
                 />
               </CardContent>
             </Card>

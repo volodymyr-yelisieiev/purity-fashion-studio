@@ -1,0 +1,272 @@
+import { postgresAdapter } from "@payloadcms/db-postgres"
+import { resendAdapter } from "@payloadcms/email-resend"
+import { lexicalEditor } from "@payloadcms/richtext-lexical"
+import { redirectsPlugin } from "@payloadcms/plugin-redirects"
+import { seoPlugin } from "@payloadcms/plugin-seo"
+import { s3Storage } from "@payloadcms/storage-s3"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+import { buildConfig } from "payload"
+import sharp from "sharp"
+
+import { BookingRequests } from "./payload/collections/BookingRequests"
+import { Courses } from "./payload/collections/Courses"
+import { Directions } from "./payload/collections/Directions"
+import { FashionCollections } from "./payload/collections/FashionCollections"
+import { Leads } from "./payload/collections/Leads"
+import { Media } from "./payload/collections/Media"
+import { Offers } from "./payload/collections/Offers"
+import { Pages } from "./payload/collections/Pages"
+import { PaymentOrders } from "./payload/collections/PaymentOrders"
+import { PortfolioCases } from "./payload/collections/PortfolioCases"
+import { Services } from "./payload/collections/Services"
+import { Testimonials } from "./payload/collections/Testimonials"
+import { Users } from "./payload/collections/Users"
+import { WebhookEvents } from "./payload/collections/WebhookEvents"
+import { contentManagers, ownerOnly } from "./payload/access"
+import { BookingSettings } from "./payload/globals/BookingSettings"
+import { Footer } from "./payload/globals/Footer"
+import { Header } from "./payload/globals/Header"
+import { Home } from "./payload/globals/Home"
+import { SiteSettings } from "./payload/globals/SiteSettings"
+
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
+const payloadEnabled = process.env.PAYLOAD_ENABLED === "true"
+
+if (payloadEnabled) {
+  const missing = [
+    "PAYLOAD_SECRET",
+    "PREVIEW_SECRET",
+    "DATABASE_URL",
+    "RESEND_API_KEY",
+    "EMAIL_FROM",
+  ].filter((name) => !process.env[name])
+
+  if (missing.length) {
+    throw new Error(`Missing Payload runtime variables: ${missing.join(", ")}`)
+  }
+
+  if ((process.env.PAYLOAD_SECRET?.length ?? 0) < 32) {
+    throw new Error("PAYLOAD_SECRET must contain at least 32 characters")
+  }
+
+  if ((process.env.PREVIEW_SECRET?.length ?? 0) < 32) {
+    throw new Error("PREVIEW_SECRET must contain at least 32 characters")
+  }
+}
+
+const payloadSecret =
+  process.env.PAYLOAD_SECRET ??
+  "cms-disabled-build-only-secret-replace-before-runtime-use"
+const databaseURL =
+  process.env.DATABASE_URL ??
+  "postgresql://postgres:postgres@127.0.0.1:5432/purity"
+
+const s3Enabled = Boolean(
+  process.env.S3_BUCKET &&
+  process.env.S3_ENDPOINT &&
+  process.env.S3_ACCESS_KEY_ID &&
+  process.env.S3_SECRET_ACCESS_KEY
+)
+
+const previewRoutes: Record<string, string> = {
+  directions: "",
+  services: "/services",
+  courses: "/courses",
+  "fashion-collections": "/collections",
+  "portfolio-cases": "/portfolio",
+  pages: "",
+}
+
+function getPublicURL({
+  collectionSlug,
+  doc,
+  locale = "uk",
+}: {
+  collectionSlug?: string
+  doc: Record<string, unknown>
+  locale?: string
+}): string {
+  if (!collectionSlug || typeof doc.slug !== "string") return `/${locale}`
+
+  return `/${locale}${previewRoutes[collectionSlug] ?? ""}/${doc.slug}`
+}
+
+function getPreviewURL(args: Parameters<typeof getPublicURL>[0]): string {
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  const url = new URL("/api/preview", origin)
+  url.searchParams.set("secret", process.env.PREVIEW_SECRET ?? "disabled")
+  url.searchParams.set("path", getPublicURL(args))
+  return url.toString()
+}
+
+export default buildConfig({
+  admin: {
+    user: Users.slug,
+    importMap: {
+      baseDir: dirname,
+    },
+    livePreview: {
+      url: ({ collectionConfig, data, locale }) =>
+        getPreviewURL({
+          collectionSlug: collectionConfig?.slug,
+          doc: data,
+          locale: locale?.code,
+        }),
+      collections: [
+        "directions",
+        "services",
+        "courses",
+        "fashion-collections",
+        "portfolio-cases",
+        "pages",
+      ],
+      globals: ["home"],
+      breakpoints: [
+        { label: "Mobile", name: "mobile", width: 390, height: 844 },
+        { label: "Tablet", name: "tablet", width: 768, height: 1024 },
+        { label: "Desktop", name: "desktop", width: 1440, height: 900 },
+      ],
+    },
+  },
+  collections: [
+    Users,
+    Media,
+    Directions,
+    Services,
+    Offers,
+    Courses,
+    FashionCollections,
+    PortfolioCases,
+    Testimonials,
+    Pages,
+    Leads,
+    BookingRequests,
+    PaymentOrders,
+    WebhookEvents,
+  ],
+  cors: [
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+    process.env.NEXT_PUBLIC_PAYLOAD_URL ?? "http://localhost:3000",
+  ],
+  csrf: [
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+    process.env.NEXT_PUBLIC_PAYLOAD_URL ?? "http://localhost:3000",
+  ],
+  db: postgresAdapter({
+    idType: "uuid",
+    migrationDir: path.resolve(dirname, "payload/migrations"),
+    pool: { connectionString: databaseURL },
+    push: process.env.NODE_ENV === "development",
+  }),
+  editor: lexicalEditor(),
+  email: resendAdapter({
+    apiKey: process.env.RESEND_API_KEY ?? "re_payload_disabled",
+    defaultFromAddress: process.env.EMAIL_FROM ?? "disabled@invalid.local",
+    defaultFromName: "PURITY Fashion Studio",
+    overrideRecipientAddress:
+      process.env.NODE_ENV === "production"
+        ? undefined
+        : process.env.EMAIL_OVERRIDE_RECIPIENT,
+  }),
+  graphQL: { disable: true },
+  globals: [Home, Header, Footer, SiteSettings, BookingSettings],
+  localization: {
+    defaultLocale: "uk",
+    defaultLocalePublishOption: "all",
+    fallback: false,
+    locales: [
+      { code: "uk", label: "Українська" },
+      { code: "ru", label: "Русский" },
+      { code: "en", label: "English" },
+    ],
+  },
+  maxDepth: 5,
+  plugins: [
+    seoPlugin({
+      collections: [
+        "directions",
+        "services",
+        "courses",
+        "fashion-collections",
+        "portfolio-cases",
+        "pages",
+      ],
+      fields: ({ defaultFields }) =>
+        defaultFields.map((field) =>
+          "name" in field && ["title", "description"].includes(field.name)
+            ? { ...field, localized: true }
+            : field
+        ),
+      generateDescription: ({ doc }) => doc.summary,
+      generateTitle: ({ doc }) => doc.title,
+      generateURL: ({ collectionConfig, doc, locale }) => {
+        const relativeURL = getPublicURL({
+          collectionSlug: collectionConfig?.slug,
+          doc,
+          locale,
+        })
+        const origin =
+          process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+        return new URL(relativeURL, origin).toString()
+      },
+      globals: ["home"],
+      tabbedUI: true,
+      uploadsCollection: "media",
+    }),
+    redirectsPlugin({
+      collections: [
+        "directions",
+        "services",
+        "courses",
+        "fashion-collections",
+        "portfolio-cases",
+        "pages",
+      ],
+      overrides: {
+        access: {
+          create: contentManagers,
+          delete: ownerOnly,
+          read: () => true,
+          update: contentManagers,
+        },
+        admin: { group: "Site" },
+      },
+      redirectTypes: ["301", "302"],
+    }),
+    s3Storage({
+      alwaysInsertFields: true,
+      bucket: process.env.S3_BUCKET ?? "purity-local-disabled",
+      clientUploads: true,
+      collections: { media: true },
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID ?? "disabled",
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? "disabled",
+        },
+        endpoint: process.env.S3_ENDPOINT,
+        forcePathStyle: true,
+        region: process.env.S3_REGION ?? "auto",
+      },
+      disableLocalStorage: s3Enabled,
+      enabled: s3Enabled,
+    }),
+  ],
+  secret: payloadSecret,
+  serverURL:
+    process.env.NEXT_PUBLIC_PAYLOAD_URL ??
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    "http://localhost:3000",
+  sharp,
+  telemetry: false,
+  upload: {
+    abortOnLimit: true,
+    limits: { fileSize: 20 * 1024 * 1024, files: 1 },
+    responseOnLimit: "Upload exceeds the 20 MB media limit.",
+    safeFileNames: true,
+  },
+  typescript: {
+    outputFile: path.resolve(dirname, "payload-types.ts"),
+  },
+})

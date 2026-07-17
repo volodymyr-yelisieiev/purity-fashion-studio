@@ -2,9 +2,9 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { ContentPage } from "@/components/content-page"
-import { EditorialHero, FeatureList } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { EditorialFaq, EditorialHero, FeatureList } from "@/components/purity"
+import { PreviewBanner } from "@/components/preview-banner"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -13,15 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { services, siteSettings } from "@/content/source"
-import { serviceDetailCopy } from "@/content/service-page-specs"
-import type { ServicePageSpec } from "@/content/model"
-import { getEntryMetadata } from "@/content/metadata"
+import { getLocalizedMetadata } from "@/content/metadata"
 import {
-  getCategory,
-  getFirstMediaAsset,
-  getVisibleService,
-} from "@/content/queries"
+  getPublishedServiceSlugs,
+  getServiceBySlug,
+  type ServicePageData,
+} from "@/content/public-api"
+import { formatOfferPrice } from "@/content/commerce"
 import { collectionPath, coursePath, servicePath } from "@/content/routes"
 import { BookingStartCta } from "@/features/booking/booking-start-cta"
 import { hasLocale, locales, localizePath, type Locale } from "@/i18n/routing"
@@ -31,13 +29,12 @@ type ServicePageProps = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-export const dynamicParams = false
+export const dynamicParams = true
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const slugs = await getPublishedServiceSlugs()
   return locales.flatMap((locale) =>
-    services
-      .filter((service) => service.visibleInMvp)
-      .map((service) => ({ locale, slug: service.routeSegment }))
+    slugs.map((slug) => ({ locale, slug }))
   )
 }
 
@@ -50,48 +47,54 @@ export async function generateMetadata({
     return {}
   }
 
-  const service = getVisibleService(slug)
+  const service = await getServiceBySlug(rawLocale, slug)
 
   if (!service) {
     return {}
   }
 
-  return getEntryMetadata(service, rawLocale, servicePath(service.routeSegment))
+  return getLocalizedMetadata({
+    locale: rawLocale,
+    path: servicePath(service.routeSegment),
+    title: service.seo.title,
+    description: service.seo.description,
+  })
 }
 
 function ServiceDetailPage({
   locale,
   service,
-  eyebrow,
-  copy,
 }: {
   locale: Locale
-  service: NonNullable<ReturnType<typeof getVisibleService>>
-  eyebrow: string
-  copy: ServicePageSpec
+  service: ServicePageData
 }) {
   const currentPath = servicePath(service.routeSegment)
-  const mediaAsset = getFirstMediaAsset(service.mediaIds)
+  const primaryOffer = service.offers.find(
+    (offer) => offer.commercialStatus === "active"
+  )
   const bookingHref = localizePath(
     locale,
-    `/booking?service=${service.routeSegment}`
+    `/booking?service=${service.routeSegment}${primaryOffer ? `&offer=${primaryOffer.id}` : ""}`
   )
 
   return (
     <div className="min-h-svh bg-background text-foreground">
+      {process.env.CONTENT_SOURCE === "payload" && (
+        <PreviewBanner locale={locale} />
+      )}
       <SiteHeader locale={locale} currentPath={currentPath} />
 
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={eyebrow}
-          title={service.title[locale]}
-          summary={service.summary[locale]}
-          mediaAsset={mediaAsset}
+          eyebrow={service.eyebrow}
+          title={service.title}
+          summary={service.summary}
+          mediaAsset={service.mediaAsset}
           composition="cinematic"
         >
           <ol className="grid border-t border-border">
-            {service.outcomes[locale].map((outcome, index) => (
+            {service.outcomes.map((outcome, index) => (
               <li
                 key={outcome}
                 className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 border-b border-border py-3 text-sm"
@@ -106,11 +109,11 @@ function ServiceDetailPage({
           <div className="flex max-w-full flex-wrap gap-3">
             <BookingStartCta
               href={bookingHref}
-              label={siteSettings.home.primaryCta.label[locale]}
+              label={service.cta.label}
               serviceSlug={service.slug}
               variant="secondary"
             />
-            {copy.contactLabel && (
+            {service.contactLabel && (
               <Link
                 href={localizePath(locale, "/contacts")}
                 className={cn(
@@ -121,10 +124,10 @@ function ServiceDetailPage({
                   })
                 )}
               >
-                {copy.contactLabel[locale]}
+                {service.contactLabel}
               </Link>
             )}
-            {copy.courseLabel && (
+            {service.courseLabel && (
               <Link
                 href={localizePath(
                   locale,
@@ -138,10 +141,10 @@ function ServiceDetailPage({
                   })
                 )}
               >
-                {copy.courseLabel[locale]}
+                {service.courseLabel}
               </Link>
             )}
-            {copy.collectionLabel && (
+            {service.collectionLabel && (
               <Link
                 href={localizePath(locale, collectionPath("purity-capsule"))}
                 className={cn(
@@ -152,7 +155,7 @@ function ServiceDetailPage({
                   })
                 )}
               >
-                {copy.collectionLabel[locale]}
+                {service.collectionLabel}
               </Link>
             )}
           </div>
@@ -162,28 +165,28 @@ function ServiceDetailPage({
           <div className="mx-auto grid max-w-6xl min-w-0 gap-10 px-6 py-16 md:grid-cols-[0.8fr_1.2fr] md:px-10">
             <div className="min-w-0">
               <p className="mb-4 text-xs tracking-normal text-muted-foreground uppercase">
-                {copy.formatsTitle[locale]}
+                {service.formatsTitle}
               </p>
               <h2 className="text-3xl leading-tight font-medium text-balance md:text-6xl">
-                {copy.formatsTitle[locale]}
+                {service.formatsTitle}
               </h2>
               <p className="mt-5 text-sm leading-7 text-muted-foreground">
-                {copy.intro[locale]}
+                {service.intro}
               </p>
             </div>
             <div className="grid min-w-0 auto-rows-fr grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {copy.formats.map((format) => (
+              {service.formats.map((format) => (
                 <Card
-                  key={format.title[locale]}
+                  key={format.title}
                   size="sm"
                   className="h-full border-border bg-background"
                 >
                   <CardHeader>
                     <CardTitle className="min-w-0 break-words">
-                      {format.title[locale]}
+                      {format.title}
                     </CardTitle>
                     <CardDescription className="min-w-0 break-words">
-                      {format.text[locale]}
+                      {format.text}
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -194,12 +197,12 @@ function ServiceDetailPage({
 
         <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
           <h2 className="mb-8 text-3xl leading-tight font-medium md:text-5xl">
-            {copy.processTitle[locale]}
+            {service.processTitle}
           </h2>
           <div className="grid min-w-0 auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {copy.process.map((step, index) => (
+            {service.process.map((step, index) => (
               <Card
-                key={step.title[locale]}
+                key={step.title}
                 size="sm"
                 className="h-full border-border bg-background"
               >
@@ -208,10 +211,10 @@ function ServiceDetailPage({
                     {String(index + 1).padStart(2, "0")}
                   </p>
                   <CardTitle className="min-w-0 break-words">
-                    {step.title[locale]}
+                    {step.title}
                   </CardTitle>
                   <CardDescription className="min-w-0 break-words">
-                    {step.text[locale]}
+                    {step.text}
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -220,36 +223,73 @@ function ServiceDetailPage({
         </section>
 
         <section className="bg-muted">
-          <div className="mx-auto grid max-w-6xl min-w-0 auto-rows-fr gap-4 px-6 py-16 md:grid-cols-2 md:px-10">
-            <Card className="h-full min-w-0 border-primary-foreground/20 bg-primary text-primary-foreground">
-              <CardHeader>
-                <CardTitle className="min-w-0 break-words">
-                  {copy.outcomeTitle[locale]}
-                </CardTitle>
-                <CardDescription className="text-secondary">
-                  {copy.outcomeSummary[locale]}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="border-t border-primary-foreground/20 pt-5">
-                <FeatureList
-                  items={service.outcomes[locale]}
-                  className="text-primary-foreground/80"
-                />
-              </CardContent>
-            </Card>
-            <Card className="h-full min-w-0 border-border bg-background">
-              <CardHeader>
-                <CardTitle className="min-w-0 break-words">
-                  {copy.commercialTitle[locale]}
-                </CardTitle>
-                <CardDescription className="min-w-0 break-words">
-                  {service.commercialStatus[locale]}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="border-t border-border pt-5 text-sm leading-7 text-muted-foreground">
-                {service.priceNote[locale]}
-              </CardContent>
-            </Card>
+          <div className="mx-auto grid max-w-6xl min-w-0 gap-4 px-6 py-16 md:px-10">
+            <div className="grid min-w-0 auto-rows-fr gap-4 md:grid-cols-2">
+              <Card className="h-full min-w-0 border-primary-foreground/20 bg-primary text-primary-foreground">
+                <CardHeader>
+                  <CardTitle className="min-w-0 break-words">
+                    {service.outcomeTitle}
+                  </CardTitle>
+                  <CardDescription className="text-secondary">
+                    {service.outcomeSummary}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="border-t border-primary-foreground/20 pt-5">
+                  <FeatureList
+                    items={service.outcomes}
+                    className="text-primary-foreground/80"
+                  />
+                </CardContent>
+              </Card>
+              <Card className="h-full min-w-0 border-border bg-background">
+                <CardHeader>
+                  <CardTitle className="min-w-0 break-words">
+                    {service.commercialTitle}
+                  </CardTitle>
+                  <CardDescription className="min-w-0 break-words">
+                    {service.commercialStatus}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="border-t border-border pt-5 text-sm leading-7 text-muted-foreground">
+                  {service.priceNote}
+                </CardContent>
+              </Card>
+            </div>
+            {service.offers.length > 0 && (
+              <div className="grid min-w-0 auto-rows-fr gap-4 md:grid-cols-2">
+                {service.offers.map((offer) => (
+                  <Card
+                    key={offer.id}
+                    className="h-full min-w-0 border-border bg-background"
+                  >
+                    <CardHeader>
+                      <CardTitle className="min-w-0 break-words">
+                        {offer.title}
+                      </CardTitle>
+                      <CardDescription>
+                        {offer.shortDescription}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid gap-4 border-t border-border pt-5">
+                      <p className="text-2xl font-medium">
+                        {formatOfferPrice(offer, locale)}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {offer.format} · {offer.checkoutMode} · {offer.commercialStatus}
+                      </p>
+                      <BookingStartCta
+                        href={localizePath(
+                          locale,
+                          `/booking?service=${service.routeSegment}&offer=${offer.id}`
+                        )}
+                        label={service.cta.label}
+                        serviceSlug={service.slug}
+                      />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
@@ -257,14 +297,28 @@ function ServiceDetailPage({
           <Card className="min-w-0 border-border bg-background">
             <CardHeader>
               <CardTitle className="min-w-0 break-words">
-                {copy.nextStepTitle[locale]}
+                {service.nextStepTitle}
               </CardTitle>
               <CardDescription className="mt-3 max-w-3xl">
-                {copy.nextStepSummary[locale]}
+                {service.nextStepSummary}
               </CardDescription>
             </CardHeader>
+            {(service.timingNote || service.qualification) && (
+              <CardContent className="grid gap-3 border-t border-border pt-5 text-sm leading-7 text-muted-foreground">
+                {service.timingNote && <p>{service.timingNote}</p>}
+                {service.qualification && <p>{service.qualification}</p>}
+              </CardContent>
+            )}
           </Card>
         </section>
+        {service.faq.length > 0 && (
+          <EditorialFaq
+            title="FAQ"
+            items={service.faq.map(
+              (item) => [item.question, item.answer] as const
+            )}
+          />
+        )}
       </main>
       <SiteFooter locale={locale} currentPath={currentPath} />
     </div>
@@ -279,50 +333,11 @@ export default async function ServicePage({ params }: ServicePageProps) {
   }
 
   const locale: Locale = rawLocale
-  const service = getVisibleService(slug)
+  const service = await getServiceBySlug(locale, slug)
 
   if (!service) {
     notFound()
   }
 
-  const category = getCategory(service.category)
-  const detailCopy = serviceDetailCopy[service.slug]
-
-  if (detailCopy) {
-    return (
-      <ServiceDetailPage
-        locale={locale}
-        service={service}
-        eyebrow={category?.title[locale] ?? service.title[locale]}
-        copy={detailCopy}
-      />
-    )
-  }
-
-  return (
-    <ContentPage
-      locale={locale}
-      currentPath={servicePath(service.routeSegment)}
-      eyebrow={category?.title[locale] ?? service.title[locale]}
-      title={service.title[locale]}
-      summary={service.summary[locale]}
-      items={[
-        service.commercialStatus[locale],
-        service.priceNote[locale],
-        ...service.outcomes[locale],
-      ]}
-      mediaAsset={getFirstMediaAsset(service.mediaIds)}
-    >
-      <div className="mt-6">
-        <BookingStartCta
-          href={localizePath(
-            locale,
-            `/booking?service=${service.routeSegment}`
-          )}
-          label={siteSettings.home.primaryCta.label[locale]}
-          serviceSlug={service.slug}
-        />
-      </div>
-    </ContentPage>
-  )
+  return <ServiceDetailPage locale={locale} service={service} />
 }

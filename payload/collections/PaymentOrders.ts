@@ -1,0 +1,166 @@
+import type { CollectionConfig } from "payload"
+
+import { financeTeam, hasRole, ownerOnly } from "../access"
+
+const financialFieldAccess = ({ req }: { req: { user?: unknown } }) =>
+  hasRole(req.user, ["owner", "finance"])
+
+export const PaymentOrders: CollectionConfig = {
+  slug: "payment-orders",
+  admin: {
+    group: "Operations",
+    useAsTitle: "orderUUID",
+    defaultColumns: [
+      "orderUUID",
+      "provider",
+      "amount",
+      "currency",
+      "status",
+      "createdAt",
+    ],
+  },
+  access: {
+    create: financeTeam,
+    delete: ownerOnly,
+    read: financeTeam,
+    update: financeTeam,
+  },
+  fields: [
+    {
+      name: "orderUUID",
+      type: "text",
+      required: true,
+      unique: true,
+      index: true,
+    },
+    {
+      name: "bookingRequest",
+      type: "relationship",
+      relationTo: "booking-requests",
+      required: true,
+      index: true,
+    },
+    {
+      name: "commercialSnapshot",
+      type: "group",
+      access: { read: financialFieldAccess, update: () => false },
+      fields: [
+        { name: "offerID", type: "text", required: true },
+        { name: "title", type: "text", required: true },
+        { name: "sku", type: "text", required: true },
+        { name: "termsVersion", type: "text", required: true },
+      ],
+    },
+    {
+      name: "provider",
+      type: "select",
+      required: true,
+      options: ["stripe", "liqpay", "fondy"],
+      access: { read: financialFieldAccess },
+    },
+    {
+      name: "providerOrderID",
+      type: "text",
+      index: true,
+      access: { read: financialFieldAccess },
+    },
+    {
+      name: "providerPaymentID",
+      type: "text",
+      index: true,
+      access: { read: financialFieldAccess },
+    },
+    {
+      name: "amount",
+      type: "number",
+      required: true,
+      min: 0,
+      access: { read: financialFieldAccess, update: () => false },
+      admin: {
+        description: "Integer minor units, immutable after order creation.",
+      },
+    },
+    {
+      name: "currency",
+      type: "select",
+      required: true,
+      options: ["EUR", "UAH"],
+      access: { read: financialFieldAccess, update: () => false },
+    },
+    { name: "mode", type: "select", required: true, options: ["test", "live"] },
+    {
+      name: "checkoutURL",
+      type: "text",
+      maxLength: 2000,
+      access: { read: financialFieldAccess },
+    },
+    {
+      name: "checkoutExpiresAt",
+      type: "date",
+      access: { read: financialFieldAccess },
+    },
+    {
+      name: "status",
+      type: "select",
+      required: true,
+      defaultValue: "created",
+      index: true,
+      access: { read: financialFieldAccess, update: () => false },
+      options: [
+        "created",
+        "pending",
+        "requires-action",
+        "paid",
+        "failed",
+        "cancelled",
+        "expired",
+        "partially-refunded",
+        "refunded",
+        "disputed",
+      ],
+    },
+    {
+      name: "idempotencyKey",
+      type: "text",
+      required: true,
+      unique: true,
+      index: true,
+      access: { read: financialFieldAccess, update: () => false },
+    },
+    {
+      name: "paidAmount",
+      type: "number",
+      min: 0,
+      access: { read: financialFieldAccess },
+    },
+    {
+      name: "refundedAmount",
+      type: "number",
+      min: 0,
+      access: { read: financialFieldAccess },
+    },
+    { name: "safeFailureCode", type: "text", maxLength: 160 },
+    { name: "paidAt", type: "date" },
+    { name: "refundedAt", type: "date" },
+    {
+      name: "notificationStatus",
+      type: "select",
+      required: true,
+      defaultValue: "pending",
+      options: ["pending", "sent", "failed"],
+    },
+    {
+      name: "notificationError",
+      type: "text",
+      maxLength: 500,
+      access: { read: financialFieldAccess },
+    },
+    {
+      name: "auditNote",
+      type: "textarea",
+      maxLength: 4000,
+      access: { read: financialFieldAccess },
+    },
+  ],
+  timestamps: true,
+}

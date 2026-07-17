@@ -172,7 +172,7 @@ export type PublicPage = {
 export type MediaAsset = {
   id: string
   kind: "logo" | "image"
-  source: "client" | "generated"
+  source: "client" | "generated" | "licensed" | "editorial"
   generated: boolean
   fileName: string
   aspectRatio: string

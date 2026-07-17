@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { EditorialHero, FeatureList } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import {
   Accordion,
   AccordionContent,
@@ -18,9 +18,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { courses } from "@/content/source"
-import { getEntryMetadata } from "@/content/metadata"
-import { getFirstMediaAsset, getVisibleCourse } from "@/content/queries"
+import { formatOfferPrice } from "@/content/commerce"
+import { getLocalizedMetadata } from "@/content/metadata"
+import { getCourseBySlug, getPublishedCourseSlugs } from "@/content/public-api"
 import { coursePath } from "@/content/routes"
 import { BookingStartCta } from "@/features/booking/booking-start-cta"
 import { hasLocale, locales, localizePath, type Locale } from "@/i18n/routing"
@@ -148,14 +148,11 @@ const courseCopy = {
   },
 } satisfies Record<string, Record<Locale, string | string[]>>
 
-export const dynamicParams = false
+export const dynamicParams = true
 
-export function generateStaticParams() {
-  return locales.flatMap((locale) =>
-    courses
-      .filter((course) => course.visibleInMvp)
-      .map((course) => ({ locale, slug: course.routeSegment }))
-  )
+export async function generateStaticParams() {
+  const slugs = await getPublishedCourseSlugs()
+  return locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })))
 }
 
 export async function generateMetadata({
@@ -167,13 +164,18 @@ export async function generateMetadata({
     return {}
   }
 
-  const course = getVisibleCourse(slug)
+  const course = await getCourseBySlug(rawLocale, slug)
 
   if (!course) {
     return {}
   }
 
-  return getEntryMetadata(course, rawLocale, coursePath(course.routeSegment))
+  return getLocalizedMetadata({
+    locale: rawLocale,
+    path: coursePath(course.routeSegment),
+    title: course.seo.title,
+    description: course.seo.description,
+  })
 }
 
 export default async function CoursePage({ params }: CoursePageProps) {
@@ -184,17 +186,19 @@ export default async function CoursePage({ params }: CoursePageProps) {
   }
 
   const locale: Locale = rawLocale
-  const course = getVisibleCourse(slug)
+  const course = await getCourseBySlug(locale, slug)
 
   if (!course) {
     notFound()
   }
 
   const currentPath = coursePath(course.routeSegment)
-  const mediaAsset = getFirstMediaAsset(course.mediaIds)
+  const primaryOffer = course.offers.find(
+    (offer) => offer.commercialStatus === "active"
+  )
   const bookingHref = localizePath(
     locale,
-    "/booking?service=wardrobe-management"
+    `/booking?service=wardrobe-management${primaryOffer ? `&offer=${primaryOffer.id}` : ""}`
   )
 
   return (
@@ -205,15 +209,15 @@ export default async function CoursePage({ params }: CoursePageProps) {
         <EditorialHero
           locale={locale}
           eyebrow={courseCopy.eyebrow[locale]}
-          title={course.title[locale]}
-          summary={courseCopy.intro[locale]}
-          mediaAsset={mediaAsset}
+          title={course.title}
+          summary={course.description}
+          mediaAsset={course.mediaAsset}
           composition="editorial"
         >
           <div className="flex max-w-full flex-wrap gap-3">
             <BookingStartCta
               href={bookingHref}
-              label={courseCopy.checkoutLabel[locale]}
+              label={course.cta.label}
               serviceSlug="wardrobe-management"
               variant="secondary"
             />
@@ -235,12 +239,16 @@ export default async function CoursePage({ params }: CoursePageProps) {
         <section className="bg-muted">
           <div className="mx-auto grid max-w-6xl min-w-0 auto-rows-fr gap-4 px-6 py-16 sm:grid-cols-2 md:px-10 lg:grid-cols-3">
             {[
-              [courseCopy.audienceTitle[locale], courseCopy.audience[locale]],
-              [courseCopy.formatTitle[locale], courseCopy.format[locale]],
-              [courseCopy.methodTitle[locale], courseCopy.method[locale]],
+              [courseCopy.audienceTitle[locale], course.audience],
+              [courseCopy.formatTitle[locale], course.formats.join(" · ")],
+              [courseCopy.methodTitle[locale], course.description],
               [
                 courseCopy.prerequisitesTitle[locale],
-                courseCopy.prerequisites[locale],
+                course.prerequisites ?? courseCopy.prerequisites[locale],
+              ],
+              [
+                courseCopy.curriculumTitle[locale],
+                `${course.sessions} sessions${course.intakeNote ? ` · ${course.intakeNote}` : ""}`,
               ],
             ].map(([title, text]) => (
               <Card
@@ -269,17 +277,18 @@ export default async function CoursePage({ params }: CoursePageProps) {
           </div>
           <Card className="min-w-0 border-border bg-background">
             <CardContent>
-              <Accordion defaultValue={[course.lessons[locale][0]]}>
-                {course.lessons[locale].map((lesson, index) => (
-                  <AccordionItem key={lesson} value={lesson}>
+              <Accordion defaultValue={[course.program[0]?.title ?? ""]}>
+                {course.program.map((lesson, index) => (
+                  <AccordionItem key={lesson.title} value={lesson.title}>
                     <AccordionTrigger>
                       <span className="mr-3 text-muted-foreground">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      {lesson}
+                      {lesson.title}
                     </AccordionTrigger>
                     <AccordionContent className="pl-9 leading-7 text-muted-foreground">
-                      {courseCopy.lessonDescriptions[locale][index]}
+                      {lesson.description ||
+                        courseCopy.lessonDescriptions[locale][index]}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -301,7 +310,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
               </CardHeader>
               <CardContent className="border-t border-primary-foreground/20 pt-5">
                 <FeatureList
-                  items={course.lessons[locale]}
+                  items={course.program.map((lesson) => lesson.title)}
                   className="text-primary-foreground/80"
                 />
               </CardContent>
@@ -312,11 +321,18 @@ export default async function CoursePage({ params }: CoursePageProps) {
                   {courseCopy.commercialTitle[locale]}
                 </CardTitle>
                 <CardDescription className="min-w-0 break-words">
-                  {course.commercialStatus[locale]}
+                  {course.commercialStatus}
                 </CardDescription>
               </CardHeader>
               <CardContent className="border-t border-border pt-5 text-sm leading-7 text-muted-foreground">
-                {course.priceNote[locale]}
+                {course.offers.length > 0
+                  ? course.offers
+                      .map(
+                        (offer) =>
+                          `${offer.title}: ${formatOfferPrice(offer, locale)}`
+                      )
+                      .join(" · ")
+                  : course.priceNote}
               </CardContent>
             </Card>
           </div>
@@ -335,7 +351,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
             <CardContent>
               <BookingStartCta
                 href={bookingHref}
-                label={courseCopy.checkoutLabel[locale]}
+                label={course.cta.label}
                 serviceSlug="wardrobe-management"
               />
             </CardContent>

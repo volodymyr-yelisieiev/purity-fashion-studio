@@ -9,7 +9,7 @@ import {
   EditorialFaq,
   ImageFrame,
 } from "@/components/purity"
-import { SiteFooter, SiteHeader } from "@/components/site-shell"
+import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { buttonVariants } from "@/components/ui/button"
 import {
   collections,
@@ -21,6 +21,14 @@ import {
   siteSettings,
 } from "@/content/source"
 import { getFirstMediaAsset, getMediaAsset } from "@/content/queries"
+import {
+  getCourseBySlug,
+  getFashionCollectionBySlug,
+  getHome,
+  getPageBySlug,
+  getPortfolioCaseBySlug,
+  getServiceBySlug,
+} from "@/content/public-api"
 import {
   collectionPath,
   coursePath,
@@ -197,13 +205,112 @@ export default async function HomePage({ params }: HomePageProps) {
   }
 
   const locale: Locale = rawLocale
+  const home = await getHome(locale)
   const navigation = getNavigation(locale)
-  const visibleServices = services.filter((service) => service.visibleInMvp)
-  const visibleCourses = courses.filter((course) => course.visibleInMvp)
-  const visibleCollections = collections.filter(
-    (collection) => collection.visibleInMvp
-  )
-  const heroImage = getMediaAsset("generated-editorial-hero-flow")
+  const payloadMode = process.env.CONTENT_SOURCE === "payload"
+  const [cmsServices, cmsCourses, cmsCollections, cmsPortfolio, cmsBooking] =
+    payloadMode
+      ? await Promise.all([
+          Promise.all(
+            home.selectedServiceSlugs.map((slug) =>
+              getServiceBySlug(locale, slug)
+            )
+          ),
+          Promise.all(
+            home.selectedCourseSlugs.map((slug) =>
+              getCourseBySlug(locale, slug)
+            )
+          ),
+          Promise.all(
+            home.selectedCollectionSlugs.map((slug) =>
+              getFashionCollectionBySlug(locale, slug)
+            )
+          ),
+          Promise.all(
+            home.selectedPortfolioSlugs.map((slug) =>
+              getPortfolioCaseBySlug(locale, slug)
+            )
+          ),
+          getPageBySlug(locale, "booking"),
+        ])
+      : [[], [], [], [], null]
+  const visibleServices = payloadMode
+    ? cmsServices.flatMap((service) =>
+        service
+          ? [
+              {
+                routeSegment: service.routeSegment,
+                title: service.title,
+                summary: service.summary,
+                categoryTitle: service.eyebrow,
+                outcomes: service.outcomes,
+                mediaAsset: service.mediaAsset,
+              },
+            ]
+          : []
+      )
+    : services
+        .filter((service) => service.visibleInMvp)
+        .map((service) => ({
+          routeSegment: service.routeSegment,
+          title: service.title[locale],
+          summary: service.summary[locale],
+          categoryTitle:
+            serviceCategories.find((item) => item.slug === service.category)
+              ?.title[locale] ?? service.title[locale],
+          outcomes: service.outcomes[locale],
+          mediaAsset: getFirstMediaAsset(service.mediaIds),
+        }))
+  const visibleCourses = payloadMode
+    ? cmsCourses.flatMap((course) =>
+        course
+          ? [
+              {
+                routeSegment: course.routeSegment,
+                title: course.title,
+                summary: course.summary,
+                audience: course.audience,
+                lessons: course.program.map((lesson) => lesson.title),
+                commercialStatus: course.commercialStatus,
+                mediaAsset: course.mediaAsset,
+              },
+            ]
+          : []
+      )
+    : courses
+        .filter((course) => course.visibleInMvp)
+        .map((course) => ({
+          routeSegment: course.routeSegment,
+          title: course.title[locale],
+          summary: course.summary[locale],
+          audience: course.audience[locale],
+          lessons: course.lessons[locale],
+          commercialStatus: course.commercialStatus[locale],
+          mediaAsset: getFirstMediaAsset(course.mediaIds),
+        }))
+  const visibleCollections = payloadMode
+    ? cmsCollections.flatMap((collection) =>
+        collection
+          ? [
+              {
+                routeSegment: collection.routeSegment,
+                title: collection.title,
+                priceNote: collection.priceNote,
+                mediaAsset: collection.mediaAssets[0],
+              },
+            ]
+          : []
+      )
+    : collections
+        .filter((collection) => collection.visibleInMvp)
+        .map((collection) => ({
+          routeSegment: collection.routeSegment,
+          title: collection.title[locale],
+          priceNote: collection.priceNote[locale],
+          mediaAsset: getFirstMediaAsset(collection.mediaIds),
+        }))
+  const heroImage =
+    home.heroMedia ?? getMediaAsset("generated-editorial-hero-flow")
   const researchImage = getMediaAsset("generated-editorial-research")
   const imagineImage = getMediaAsset("editorial-collections-flatlay")
   const createImage = getMediaAsset("generated-editorial-create")
@@ -211,14 +318,35 @@ export default async function HomePage({ params }: HomePageProps) {
   const studioImage = getMediaAsset("editorial-studio-method")
   const portfolioImage = getMediaAsset("editorial-portfolio-process")
   const atelierService = visibleServices.find(
-    (service) => service.category === "atelier"
+    (service) => service.routeSegment === "atelier-service"
   )
-  const atelierCategory = serviceCategories.find(
-    (category) => category.slug === "atelier"
-  )
-  const atelierImage = getFirstMediaAsset(atelierService?.mediaIds)
-  const bookingPage = publicPages.find((page) => page.slug === "booking")
-  const portfolioCase = portfolioCases.find((item) => item.visibleInMvp)
+  const atelierImage = atelierService?.mediaAsset
+  const bookingPage = payloadMode
+    ? cmsBooking
+      ? { title: cmsBooking.title, summary: cmsBooking.summary }
+      : undefined
+    : (() => {
+        const page = publicPages.find((item) => item.slug === "booking")
+        return page
+          ? { title: page.title[locale], summary: page.summary[locale] }
+          : undefined
+      })()
+  const portfolioCase = payloadMode
+    ? (() => {
+        const entry = cmsPortfolio.find((item) => item !== null)
+        return entry
+          ? { routeSegment: entry.routeSegment, title: entry.title }
+          : undefined
+      })()
+    : (() => {
+        const entry = portfolioCases.find((item) => item.visibleInMvp)
+        return entry
+          ? {
+              routeSegment: entry.routeSegment,
+              title: entry.title[locale],
+            }
+          : undefined
+      })()
   const researchLabel =
     navigation.find((item) => item.id === "research")?.label ??
     siteSettings.home.secondaryCta.label[locale]
@@ -246,6 +374,15 @@ export default async function HomePage({ params }: HomePageProps) {
       image: createImage,
     },
   ]
+  if (home.method.length > 0) {
+    home.method.slice(0, filmSteps.length).forEach((item, index) => {
+      filmSteps[index] = {
+        ...filmSteps[index],
+        title: item.label,
+        text: item.description,
+      }
+    })
+  }
 
   return (
     <div className="min-h-svh bg-background text-foreground">
@@ -275,17 +412,17 @@ export default async function HomePage({ params }: HomePageProps) {
           <div className="relative mx-auto flex min-h-svh w-full max-w-screen-2xl items-end px-6 pt-32 pb-12 md:px-10 md:pb-16 lg:px-16 lg:pb-20">
             <div className="grid max-w-5xl gap-6">
               <p className="text-xs tracking-[0.18em] text-background/70 uppercase">
-                {siteSettings.home.eyebrow[locale]}
+                {home.heroEyebrow}
               </p>
               <h1 className="max-w-[13ch] text-[clamp(3rem,8vw,7.5rem)] leading-[0.86] font-medium text-pretty">
-                {siteSettings.home.title[locale]}
+                {home.heroTitle}
               </h1>
               <p className="max-w-2xl text-sm leading-7 text-background/75 md:text-base">
-                {siteSettings.home.summary[locale]}
+                {home.heroSummary}
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Link
-                  href={localizePath(locale, siteSettings.home.primaryCta.path)}
+                  href={localizePath(locale, home.primaryCTA.path)}
                   className={cn(
                     buttonVariants({
                       variant: "secondary",
@@ -293,13 +430,10 @@ export default async function HomePage({ params }: HomePageProps) {
                     })
                   )}
                 >
-                  {siteSettings.home.primaryCta.label[locale]}
+                  {home.primaryCTA.label}
                 </Link>
                 <Link
-                  href={localizePath(
-                    locale,
-                    siteSettings.home.secondaryCta.path
-                  )}
+                  href={localizePath(locale, home.secondaryCTA.path)}
                   className={cn(
                     buttonVariants({
                       variant: "outline",
@@ -307,7 +441,7 @@ export default async function HomePage({ params }: HomePageProps) {
                     })
                   )}
                 >
-                  {siteSettings.home.secondaryCta.label[locale]}
+                  {home.secondaryCTA.label}
                 </Link>
               </div>
             </div>
@@ -394,13 +528,9 @@ export default async function HomePage({ params }: HomePageProps) {
             </div>
             <nav aria-label={siteSettings.home.serviceRailTitle[locale]}>
               {visibleServices.map((service, index) => {
-                const category = serviceCategories.find(
-                  (item) => item.slug === service.category
-                )
-
                 return (
                   <Link
-                    key={service.slug}
+                    key={service.routeSegment}
                     href={localizePath(
                       locale,
                       servicePath(service.routeSegment)
@@ -412,10 +542,10 @@ export default async function HomePage({ params }: HomePageProps) {
                     </span>
                     <span className="grid min-w-0 gap-2">
                       <span className="font-heading text-3xl leading-none md:text-5xl">
-                        {service.title[locale]}
+                        {service.title}
                       </span>
                       <span className="text-xs tracking-[0.12em] text-muted-foreground uppercase">
-                        {category?.title[locale]}
+                        {service.categoryTitle}
                       </span>
                     </span>
                     <ArrowRightIcon
@@ -448,7 +578,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 {siteSettings.home.studioTitle[locale]}
               </h2>
               <p className="max-w-xl text-sm leading-7 text-background/70">
-                {siteSettings.home.studioSummary[locale]}
+                {home.studioIntro}
               </p>
               <Link
                 href={localizePath(locale, "/studio")}
@@ -491,16 +621,16 @@ export default async function HomePage({ params }: HomePageProps) {
             )}
             <div className="flex flex-col justify-center gap-7 px-6 py-16 md:px-10 lg:px-16">
               <p className="text-xs tracking-[0.16em] text-primary-foreground/65 uppercase">
-                {atelierCategory?.title[locale] ?? atelierService.title[locale]}
+                {atelierService.categoryTitle}
               </p>
               <h2 className="text-5xl leading-[0.94] font-medium text-balance md:text-7xl">
-                {atelierService.title[locale]}
+                {atelierService.title}
               </h2>
               <p className="max-w-xl text-sm leading-7 text-primary-foreground/70">
-                {atelierService.summary[locale]}
+                {atelierService.summary}
               </p>
               <ol className="grid gap-4 border-t border-primary-foreground/20 pt-6 text-sm text-primary-foreground/70">
-                {atelierService.outcomes[locale].map((outcome, index) => (
+                {atelierService.outcomes.map((outcome, index) => (
                   <li key={outcome} className="grid grid-cols-[auto_1fr] gap-4">
                     <span>0{index + 1}</span>
                     <span>{outcome}</span>
@@ -520,7 +650,7 @@ export default async function HomePage({ params }: HomePageProps) {
                   })
                 )}
               >
-                {atelierService.title[locale]}
+                {atelierService.title}
               </Link>
             </div>
           </section>
@@ -537,11 +667,11 @@ export default async function HomePage({ params }: HomePageProps) {
           </div>
           <div className="grid lg:grid-cols-2">
             {visibleCourses.map((course) => {
-              const courseImage = getFirstMediaAsset(course.mediaIds)
+              const courseImage = course.mediaAsset
 
               return (
                 <Link
-                  key={course.slug}
+                  key={course.routeSegment}
                   href={localizePath(locale, coursePath(course.routeSegment))}
                   className="group grid min-w-0 gap-6 pb-10 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none lg:border-r lg:border-border"
                 >
@@ -555,16 +685,16 @@ export default async function HomePage({ params }: HomePageProps) {
                     />
                   )}
                   <h3 className="px-6 text-4xl leading-none font-medium md:px-10 md:text-5xl lg:px-16">
-                    {course.title[locale]}
+                    {course.title}
                   </h3>
                   <p className="px-6 text-sm leading-7 text-muted-foreground md:px-10 lg:px-16">
-                    {course.summary[locale]}
+                    {course.summary}
                   </p>
                   <p className="px-6 text-sm leading-7 text-muted-foreground md:px-10 lg:px-16">
-                    {course.audience[locale]}
+                    {course.audience}
                   </p>
                   <ol className="grid grid-cols-2 gap-x-6 gap-y-3 px-6 text-xs tracking-[0.12em] uppercase md:px-10 lg:px-16">
-                    {course.lessons[locale].map((lesson, index) => (
+                    {course.lessons.map((lesson, index) => (
                       <li
                         key={lesson}
                         className="grid grid-cols-[auto_1fr] gap-3"
@@ -577,7 +707,7 @@ export default async function HomePage({ params }: HomePageProps) {
                     ))}
                   </ol>
                   <span className="flex items-center gap-3 px-6 text-xs tracking-[0.14em] uppercase md:px-10 lg:px-16">
-                    {course.commercialStatus[locale]}
+                    {course.commercialStatus}
                     <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
                   </span>
                 </Link>
@@ -585,11 +715,11 @@ export default async function HomePage({ params }: HomePageProps) {
             })}
             <div className="grid min-w-0">
               {visibleCollections.map((collection, index) => {
-                const collectionImage = getFirstMediaAsset(collection.mediaIds)
+                const collectionImage = collection.mediaAsset
 
                 return (
                   <Link
-                    key={collection.slug}
+                    key={collection.routeSegment}
                     href={localizePath(
                       locale,
                       collectionPath(collection.routeSegment)
@@ -601,10 +731,11 @@ export default async function HomePage({ params }: HomePageProps) {
                         0{index + 1}
                       </span>
                       <span className="font-heading text-3xl leading-none md:text-4xl">
-                        {collection.title[locale]}
+                        {collection.title}
                       </span>
                       <span className="text-xs leading-5 text-muted-foreground">
-                        {homeEditorialCopy.priceNote[locale]}
+                        {collection.priceNote ||
+                          homeEditorialCopy.priceNote[locale]}
                       </span>
                     </span>
                     {collectionImage?.src && (
@@ -678,7 +809,7 @@ export default async function HomePage({ params }: HomePageProps) {
                       })
                     )}
                   >
-                    {portfolioCase.title[locale]}
+                    {portfolioCase.title}
                   </Link>
                 )}
               </div>
@@ -694,14 +825,9 @@ export default async function HomePage({ params }: HomePageProps) {
         />
 
         <BookingCTA
-          title={
-            bookingPage?.title[locale] ??
-            siteSettings.home.primaryCta.label[locale]
-          }
-          summary={
-            bookingPage?.summary[locale] ?? siteSettings.home.summary[locale]
-          }
-          action={siteSettings.home.primaryCta.label[locale]}
+          title={bookingPage?.title ?? home.finalCTATitle}
+          summary={bookingPage?.summary ?? home.finalCTASummary}
+          action={home.primaryCTA.label}
           href={localizePath(locale, "/booking")}
         />
       </main>

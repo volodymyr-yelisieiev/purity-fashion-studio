@@ -2,13 +2,12 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { ContentPage } from "@/components/content-page"
-import { portfolioCases } from "@/content/source"
-import { getEntryMetadata } from "@/content/metadata"
+import { getLocalizedMetadata } from "@/content/metadata"
 import {
-  getCategory,
-  getFirstMediaAsset,
-  getVisiblePortfolioCase,
-} from "@/content/queries"
+  getPortfolioCaseBySlug,
+  getPublishedPortfolioCaseSlugs,
+} from "@/content/public-api"
+import { getCategory } from "@/content/queries"
 import { portfolioCasePath } from "@/content/routes"
 import { hasLocale, locales, type Locale } from "@/i18n/routing"
 
@@ -16,16 +15,12 @@ type PortfolioCasePageProps = {
   params: Promise<{ locale: string; slug: string }>
 }
 
-export const dynamicParams = false
+export const dynamicParams = true
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const slugs = await getPublishedPortfolioCaseSlugs()
   return locales.flatMap((locale) =>
-    portfolioCases
-      .filter(
-        (portfolioCase) =>
-          portfolioCase.visibleInMvp && portfolioCase.isRealClientProof
-      )
-      .map((portfolioCase) => ({ locale, slug: portfolioCase.routeSegment }))
+    slugs.map((slug) => ({ locale, slug }))
   )
 }
 
@@ -38,17 +33,18 @@ export async function generateMetadata({
     return {}
   }
 
-  const portfolioCase = getVisiblePortfolioCase(slug)
+  const portfolioCase = await getPortfolioCaseBySlug(rawLocale, slug)
 
   if (!portfolioCase) {
     return {}
   }
 
-  return getEntryMetadata(
-    portfolioCase,
-    rawLocale,
-    portfolioCasePath(portfolioCase.routeSegment)
-  )
+  return getLocalizedMetadata({
+    locale: rawLocale,
+    path: portfolioCasePath(portfolioCase.routeSegment),
+    title: portfolioCase.seo.title,
+    description: portfolioCase.seo.description,
+  })
 }
 
 export default async function PortfolioCasePage({
@@ -61,7 +57,7 @@ export default async function PortfolioCasePage({
   }
 
   const locale: Locale = rawLocale
-  const portfolioCase = getVisiblePortfolioCase(slug)
+  const portfolioCase = await getPortfolioCaseBySlug(locale, slug)
 
   if (!portfolioCase) {
     notFound()
@@ -73,10 +69,17 @@ export default async function PortfolioCasePage({
     <ContentPage
       locale={locale}
       currentPath={portfolioCasePath(portfolioCase.routeSegment)}
-      eyebrow={category?.title[locale] ?? portfolioCase.title[locale]}
-      title={portfolioCase.title[locale]}
-      summary={portfolioCase.summary[locale]}
-      mediaAsset={getFirstMediaAsset(portfolioCase.mediaIds)}
+      eyebrow={category?.title[locale] ?? portfolioCase.title}
+      title={portfolioCase.title}
+      summary={portfolioCase.summary}
+      items={[
+        portfolioCase.brief,
+        portfolioCase.constraints,
+        portfolioCase.research,
+        portfolioCase.process,
+        portfolioCase.result,
+      ].filter(Boolean)}
+      mediaAsset={portfolioCase.mediaAssets[0]}
     />
   )
 }

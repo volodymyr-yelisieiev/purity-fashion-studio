@@ -1,92 +1,106 @@
 # PURITY Launch and Handoff
 
+This repository now contains the integrated Next.js + Payload target platform.
+`CONTENT_SOURCE=seed` is a migration/test mode only; the intended production
+source is `payload`.
+
 ## Production Deployment
 
-1. Set environment variables from `.env.example`.
-2. Run `pnpm install --frozen-lockfile`.
-3. Run `pnpm qa:all`.
-4. Deploy the Next.js app with `NEXT_PUBLIC_SITE_URL` set to the production origin.
-5. Open `/uk`, `/ru`, `/en`, `/uk/booking`, `/uk/contacts`, `/robots.txt`, and `/sitemap.xml`.
+1. Provision separate production PostgreSQL, S3-compatible storage, Resend,
+   Stripe, and LiqPay resources. Never reuse preview resources.
+2. Configure every variable from `.env.example`; use the canonical HTTPS
+   origin for both public URLs.
+3. Back up the database, then run `pnpm payload:migrate:status` and
+   `pnpm payload:migrate` before switching application traffic.
+4. Run the importer once with `ALLOW_CMS_SEED=true pnpm cms:import`; rerun it to
+   prove idempotency before editors change production content.
+5. Review all three locales in Draft Mode, publish approved records, and set
+   `CONTENT_SOURCE=payload`.
+6. Run `pnpm qa:all`, verify `/api/health`, `/robots.txt`, `/sitemap.xml`, and
+   perform signed webhook test transactions in both currencies.
+7. Enable indexing only on the canonical production deployment by setting
+   `NEXT_PUBLIC_INDEXING_ENABLED=true` after Search Console and canonical-domain
+   review.
 
-## Remediation Review Status
-
-Tasks PURITY-00 through PURITY-59 are retained as completed history. The active full-site hardening wave is PURITY-60 through PURITY-84 and uses the `b59jufTOPg` preset as the UI source of truth. Completion requires `pnpm qa:all` plus browser review at the six required widths.
-
-Core review routes:
-
-- `/uk`, `/ru`, `/en`
-- `/uk/studio`, `/uk/stylist`, `/uk/collections`
-- `/uk/services/atelier-service`
-- `/uk/booking?service=atelier-service`
-- `/uk/contacts`
-
-Review these routes on desktop and mobile. The browser QA suite checks that the logo, hero/content imagery, meaningful copy, dense footer contact facts, and mobile width constraints render on the core routes.
-
-Hardening contract:
-
-- Keep the shadcn `b59jufTOPg` Base Sera / neutral / Phosphor / Base UI baseline in `components.json`.
-- Use `components/ui/*` primitives first; custom PURITY components must be thin repeated composition, not primitive renames.
-- Do not override preset-owned radii, fonts, or primitive geometry with a parallel PURITY design system.
-- Public pages need a title, summary, useful content cluster, visible imagery where applicable, a next step, and the dense footer.
-- Generated media stays editorial filler only: `isRealClientProof=false`, real non-empty file, localized alt, source metadata, and replacement priority.
+Rollback is application-forward: keep the previous deployment, do not reverse
+destructive migrations without an approved restore, and never discard CMS
+records created after the source switch.
 
 ## Environment and Secrets
 
-- `NEXT_PUBLIC_SITE_URL`: public production origin used for canonical URLs, Open Graph, robots, and sitemap.
-- `PAYMENT_MODE`: keep `test` for the MVP stubs; set `live` only when real Stripe and LiqPay adapters are connected.
-- `STRIPE_SECRET_KEY`: required only when `PAYMENT_MODE=live`.
-- `LIQPAY_PRIVATE_KEY`: required only when `PAYMENT_MODE=live`.
+- Payload: `PAYLOAD_ENABLED=true`, `CONTENT_SOURCE=payload`, two independent
+  32+ character secrets, managed `DATABASE_URL`.
+- Media: all five S3 variables are mandatory in production; client upload is
+  enabled and the server enforces MIME/rights gates.
+- Email: verified Resend sender, SPF, DKIM, DMARC, bounce/complaint ownership,
+  and environment-safe recipient routing.
+- Payments: `PAYMENT_MODE=live` requires both provider credentials, signed
+  webhook secrets, and `PAYMENT_MERCHANT_READY=true`.
+- Analytics/indexing are fail-closed and require explicit public flags.
 
-`pnpm env:check` fails fast for invalid URLs and for missing live payment secrets when live mode is enabled.
+Secrets belong in environment stores only. Rotate Payload, webhook, database,
+storage, email, and cron credentials independently per environment.
 
 ## Payment Activation
 
-1. Keep current Stripe/LiqPay test adapters for MVP demos.
-2. Add real provider SDKs only when live credentials and webhook URLs exist.
-3. Persist `payment-orders` through the CMS/server data layer before live checkout.
-4. Verify success, cancel, and failure return URLs for every locale.
-5. Run `pnpm qa:all` with `PAYMENT_MODE=live` in a secret-backed environment.
+1. Owner/finance approves merchant entities, public offer, cancellation/refund
+   policy, fiscalization/receipt responsibility, descriptor, countries, and
+   currencies.
+2. Register Stripe webhook `/api/payments/webhooks/stripe` and LiqPay callback
+   `/api/payments/webhooks/liqpay` on the canonical HTTPS domain.
+3. Verify signed success, failure, expiry, duplicate delivery, late success,
+   partial/full refund, amount mismatch, and currency mismatch behavior.
+4. Confirm Apple Pay/Google Pay only after provider eligibility, domain
+   verification, device testing, and a live transaction.
+5. Reconcile provider dashboards against immutable `payment-orders`; never
+   edit `paid` manually.
+
+Redirects never prove payment. The public success page reads the stored order
+status written by a verified webhook.
 
 ## CMS Activation
 
-1. Use `docs/cms-payload-plan.md` as the collection map.
-2. Export seed data with `pnpm cms:seed -- --out tmp/purity-cms-seed.json`.
-3. Import by collection key and upsert by `id` or `slug`.
-4. Replace `content/source.ts` internals with the CMS adapter while preserving `ContentSnapshot`.
-5. Run `pnpm cms:check`, `pnpm content:validate`, and `pnpm qa:all`.
+Payload Admin is served at `/admin`; public Server Components use Local API.
+The code-first collections, globals, generated types, migrations, preview,
+live-preview breakpoints, role access, S3 uploads, SEO fields, redirect records,
+and revalidation hooks are committed in this repository.
+
+Before switching the source:
+
+- migrate an empty and a representative restored database;
+- run `pnpm cms:import` twice and compare counts;
+- test owner/editor/support/finance/developer access;
+- test draft, publish, unpublish, slug redirect, and old/new route behavior;
+- review UK/RU/EN without locale fallback;
+- confirm generated/restricted/expired media cannot become public proof.
 
 ## Real Media Replacement
 
-1. Replace generated placeholders before launch when approved assets exist.
-2. Keep `isRealClientProof=false` for generated media.
-3. Publish portfolio cases only when approved client proof is available.
-4. Update localized `alt` and `internalLabel` with every replacement.
-
-## MVP Content Boundaries
-
-- Source-backed content: public services, studio, contacts, social links, price/status notes, and old-shop collection signals come from the recovered PURITY source pages and must keep `sourceUrl`/`sourceLabel` metadata.
-- Logo assets: `public/brand/logo-*.png`, app icons, and social preview images are extracted from the PURITY client logo source and are tracked in `mediaAssets`.
-- Generated imagery: `public/generated/*.png` is editorial filler only. It must have `source: "generated"`, `generated: true`, generation metadata, a non-empty file, `isRealClientProof=false`, and replacement priority set to a replacement state.
-- Booking/payment: the MVP keeps test adapters for Stripe/LiqPay routing. It does not persist live orders or process live payments.
-- QA gates: `pnpm qa:all` runs readiness checks, production build, Playwright E2E/screenshot/density checks, and the static JS budget. It fails on wrong shadcn preset, `nova`, forbidden rounded classes, deleted wrapper aliases returning, invented Prague facts, missing logo/media files, empty generated files, missing media coverage for visible offers/core pages, generic public copy, protected brand references in runtime content, broken service preselect, missing contact/social entrypoints, sparse core routes, thin footer facts, horizontal overflow, and localized validation regressions.
+Every public asset requires approved rights, localized alt, allowed usage,
+credit/release metadata where applicable, and a non-expired rights window.
+Generated media is editorial filler only, remains
+`isRealClientProof=false`, and carries replacement priority. Portfolio requires
+published status, real-client proof, approved rights, approval, and visibility.
 
 ## Editable Now
 
-- Typed content in `content/data.ts`: public copy, navigation, services, courses, collections, portfolio placeholders, media manifest, settings.
-- Brand/UI tokens in `app/globals.css`.
-- Booking/payment copy in `features/booking/content.ts`.
+With Payload enabled, editors manage Directions, Services, Offers, Courses,
+Collections, Portfolio, Pages, Testimonials, Home/Header/Footer/Settings and
+Media in `/admin`. Support manages Leads and Booking Requests. Finance/owner
+can inspect Payment Orders and Webhook Events. Schema, migrations, provider
+logic, roles, secrets, and arbitrary styling remain code-owned.
 
 ## Editable After CMS Activation
 
-- Services, categories, courses, collections, portfolio cases, testimonials, public pages, settings, media assets.
-- Leads, booking requests, and payment orders through admin/system workflows.
+No additional code migration is required for the current Release A–C content
+model. Production editing starts only after database/storage/email provisioning,
+seed parity review, an owner account, role UAT, backups, and the Payload source
+switch. Seed files remain fixtures until production parity is accepted.
 
 ## Future Backlog
 
-Outside MVP scope:
-
-- School platform: lesson pages, student access, progress, payments for courses.
-- Ecommerce/productization: product catalog, inventory, cart, tax/shipping, order emails.
-- Client accounts: authentication, saved profiles, private lookbooks, order history.
-- Advanced booking: calendar availability, rescheduling, reminders, staff capacity.
-- Portfolio proof system: client approvals, release metadata, before/after media governance.
+Release D real-time scheduling is intentionally not implemented: resources,
+availability, holds, appointments, overlap constraints, reminders, and audit
+history require a separately approved operating model. LMS/student accounts,
+full ecommerce, inventory, shipping, tax, client portal, and private lookbooks
+also remain separate products.

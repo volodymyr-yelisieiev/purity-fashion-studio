@@ -1964,6 +1964,43 @@ test("contact form validates and creates checkout links", async ({ page }) => {
   await expect(page.getByText("Заповніть поле.")).toHaveCount(0)
 })
 
+test("operations, indexing, and payment endpoints fail closed", async ({
+  page,
+  request,
+}) => {
+  const health = await request.get("/api/health")
+  expect(health.status()).toBe(200)
+  expect(await health.json()).toEqual({ status: "ok", content: "seed" })
+
+  const stripe = await request.post("/api/payments/webhooks/stripe", {
+    data: "{}",
+    headers: { "stripe-signature": "invalid" },
+  })
+  expect(stripe.status()).toBe(400)
+
+  const liqpay = await request.post("/api/payments/webhooks/liqpay", {
+    form: { data: "invalid", signature: "invalid" },
+  })
+  expect(liqpay.status()).toBe(400)
+
+  const reconciliation = await request.post("/api/jobs/reconcile-payments")
+  expect(reconciliation.status()).toBe(401)
+
+  const robots = await request.get("/robots.txt")
+  expect(await robots.text()).toContain("Disallow: /")
+
+  await page.goto("/uk")
+  const structuredData = await page
+    .locator('script[type="application/ld+json"]')
+    .textContent()
+  expect(structuredData).toContain("PURITY Fashion Studio")
+  await page.goto("/uk/booking")
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    "content",
+    /noindex/
+  )
+})
+
 test("Viber contact preference requires a localized phone number", async ({
   page,
 }) => {

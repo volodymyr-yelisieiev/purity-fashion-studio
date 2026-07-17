@@ -4,6 +4,7 @@ const requiredFiles = [
   "docs/launch-handoff.md",
   "docs/cms-payload-plan.md",
   "docs/qa-checklist.md",
+  "docs/operations-runbook.md",
   ".env.example",
 ]
 
@@ -41,8 +42,15 @@ if (existsSync(".env.example")) {
 
   for (const key of [
     "NEXT_PUBLIC_SITE_URL",
+    "NEXT_PUBLIC_INDEXING_ENABLED",
+    "PAYLOAD_ENABLED",
+    "PAYLOAD_SECRET",
+    "DATABASE_URL",
+    "RESEND_API_KEY",
     "PAYMENT_MODE",
+    "PAYMENT_MERCHANT_READY",
     "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET",
     "LIQPAY_PRIVATE_KEY",
   ]) {
     if (!envExample.includes(key)) {

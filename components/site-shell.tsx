@@ -19,6 +19,11 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { siteSettings } from "@/content/source"
+import type {
+  FooterData,
+  HeaderData,
+  SiteSettingsData,
+} from "@/content/public-api"
 import { getFooterNavigation, getNavigation } from "@/content/routes"
 import { localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
@@ -91,21 +96,40 @@ function ShellLink({
   )
 }
 
-function SiteHeader({
+function SiteHeaderClient({
   locale,
   currentPath = "/",
   overlay = true,
+  headerData,
+  settingsData,
 }: {
   locale: Locale
   currentPath?: string
   overlay?: boolean
+  headerData?: HeaderData
+  settingsData?: SiteSettingsData
 }) {
-  const navigation = getNavigation(locale)
-  const bookingItem = navigation.find((item) => item.id === "booking")
-  const primaryNavigation = navigation.filter((item) => item.id !== "booking")
+  const navigation = headerData
+    ? headerData.navigation
+        .filter((item) => item.visible)
+        .map((item) => ({
+          id: item.path,
+          label: item.label,
+          href: item.external ? item.path : localizePath(locale, item.path),
+        }))
+    : getNavigation(locale)
+  const bookingItem = navigation.find(
+    (item) => item.id === "booking" || item.id === "/booking"
+  )
+  const primaryNavigation = navigation.filter(
+    (item) => item.id !== "booking" && item.id !== "/booking"
+  )
   const bookingHref = bookingItem?.href ?? localizePath(locale, "/booking")
   const bookingLabel =
-    bookingItem?.label ?? siteSettings.home.primaryCta.label[locale]
+    headerData?.bookingLabel ??
+    bookingItem?.label ??
+    siteSettings.home.primaryCta.label[locale]
+  const brandName = settingsData?.brandName ?? siteSettings.brandName
   const languageLabel = siteSettings.languageLabel[locale]
   const [menuOpen, setMenuOpen] = React.useState(false)
   const [menuClosing, setMenuClosing] = React.useState(false)
@@ -170,7 +194,7 @@ function SiteHeader({
       <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-5">
         <Link
           href={localizePath(locale)}
-          aria-label={siteSettings.brandName}
+          aria-label={brandName}
           className="flex min-h-11 w-32 shrink-0 items-center focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none sm:w-36"
         >
           <BrandLogo
@@ -180,7 +204,7 @@ function SiteHeader({
           />
         </Link>
         <nav
-          aria-label={siteSettings.brandName}
+          aria-label={brandName}
           data-testid="desktop-navigation"
           className="hidden min-w-0 flex-1 items-center justify-center gap-4 whitespace-nowrap xl:flex"
         >
@@ -254,7 +278,7 @@ function SiteHeader({
               <SheetHeader className="flex-row items-center justify-between px-6 py-4 md:px-10">
                 <Link
                   href={localizePath(locale)}
-                  aria-label={siteSettings.brandName}
+                  aria-label={brandName}
                   className="flex min-h-11 w-32 items-center focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none sm:w-36"
                 >
                   <BrandLogo locale={locale} variant="wordmark" priority />
@@ -273,7 +297,7 @@ function SiteHeader({
                   <MenuToggleIcon open />
                 </SheetClose>
                 <SheetTitle className="sr-only">
-                  {siteSettings.brandName}
+                  {brandName}
                 </SheetTitle>
                 <SheetDescription className="sr-only">
                   {menuLabel[locale]}
@@ -323,21 +347,55 @@ function SiteHeader({
   )
 }
 
-function SiteFooter({
+function SiteFooterClient({
   locale,
   currentPath = "/",
+  footerData,
+  headerData,
+  settingsData,
 }: {
   locale: Locale
   currentPath?: string
+  footerData?: FooterData
+  headerData?: HeaderData
+  settingsData?: SiteSettingsData
 }) {
-  const navigation = getNavigation(locale)
-  const footerNavigation = getFooterNavigation(locale)
+  const navigation = headerData
+    ? headerData.navigation
+        .filter((item) => item.visible && item.path !== "/booking")
+        .map((item) => ({
+          id: item.path,
+          label: item.label,
+          href: item.external ? item.path : localizePath(locale, item.path),
+        }))
+    : getNavigation(locale)
+  const footerNavigation = footerData
+    ? footerData.legalNavigation.map((item) => ({
+        id: item.path,
+        label: item.label,
+        href: localizePath(locale, item.path),
+      }))
+    : getFooterNavigation(locale)
   const languageLabel = siteSettings.languageLabel[locale]
-  const city = siteSettings.contacts.city[locale]
-  const address = siteSettings.contacts.address[locale].replace(
-    new RegExp(`^${city}\\s*`),
-    ""
-  )
+  const brandName = settingsData?.brandName ?? siteSettings.brandName
+  const city = footerData ? "" : siteSettings.contacts.city[locale]
+  const address = footerData
+    ? footerData.address
+    : siteSettings.contacts.address[locale].replace(
+        new RegExp(`^${city}\\s*`),
+        ""
+      )
+  const phones = footerData
+    ? [footerData.phone]
+    : siteSettings.contacts.phones
+  const email = footerData?.email ?? siteSettings.contacts.email
+  const hours = footerData?.hours ?? siteSettings.contacts.hours[locale]
+  const socials = footerData
+    ? footerData.socialLinks.map((item) => ({
+        label: item.platform,
+        url: item.url,
+      }))
+    : siteSettings.contacts.socials
 
   return (
     <footer className="bg-foreground px-6 py-14 text-xs text-background/65 md:px-10 md:py-20">
@@ -349,12 +407,12 @@ function SiteFooter({
             className="w-56 max-w-full"
           />
           <address className="mt-1 max-w-72 not-italic">
-            <p className="leading-6 font-semibold text-background">{city}</p>
+            {city && (
+              <p className="leading-6 font-semibold text-background">{city}</p>
+            )}
             <p className="leading-6">{address}</p>
           </address>
-          <p className="leading-6 break-words">
-            {siteSettings.contacts.hours[locale]}
-          </p>
+          <p className="leading-6 break-words">{hours}</p>
         </div>
 
         <nav
@@ -372,11 +430,11 @@ function SiteFooter({
         </nav>
 
         <nav
-          aria-label={siteSettings.brandName}
+          aria-label={brandName}
           className="grid min-w-0 content-start uppercase"
         >
           <p className="mb-6 font-semibold text-background">
-            {siteSettings.brandName}
+            {brandName}
           </p>
           {footerNavigation.map((item) => (
             <ShellLink key={item.id} href={item.href}>
@@ -389,7 +447,7 @@ function SiteFooter({
           <p className="mb-6 font-semibold text-background">
             {footerLabels.contacts[locale]}
           </p>
-          {siteSettings.contacts.phones.map((phone) => (
+          {phones.map((phone) => (
             <a
               key={phone}
               href={`tel:${phone.replace(/\s+/g, "")}`}
@@ -398,12 +456,12 @@ function SiteFooter({
               {phone}
             </a>
           ))}
-          {siteSettings.contacts.email && (
+          {email && (
             <a
-              href={`mailto:${siteSettings.contacts.email}`}
+              href={`mailto:${email}`}
               className="inline-flex min-h-11 items-center transition-opacity hover:opacity-65 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
             >
-              {siteSettings.contacts.email}
+              {email}
             </a>
           )}
           <Link
@@ -417,26 +475,29 @@ function SiteFooter({
               })
             )}
           >
-            {siteSettings.contacts.actionLabel[locale]}
+            {headerData?.bookingLabel ??
+              siteSettings.contacts.actionLabel[locale]}
           </Link>
           <div className="mt-2 flex flex-wrap gap-2">
-            <a
-              href={siteSettings.contacts.viberUrl}
-              className={cn(
-                buttonVariants({
-                  variant: "outline",
-                  size: "sm",
-                  className: "min-h-11",
-                })
-              )}
-            >
-              Viber
-              <ExternalLinkIcon aria-hidden="true" data-icon="inline-end" />
-              <span className="sr-only">
-                {siteSettings.externalLinkLabel[locale]}
-              </span>
-            </a>
-            {siteSettings.contacts.socials.map((social) => (
+            {!footerData && (
+              <a
+                href={siteSettings.contacts.viberUrl}
+                className={cn(
+                  buttonVariants({
+                    variant: "outline",
+                    size: "sm",
+                    className: "min-h-11",
+                  })
+                )}
+              >
+                Viber
+                <ExternalLinkIcon aria-hidden="true" data-icon="inline-end" />
+                <span className="sr-only">
+                  {siteSettings.externalLinkLabel[locale]}
+                </span>
+              </a>
+            )}
+            {socials.map((social) => (
               <a
                 key={social.url}
                 href={social.url}
@@ -482,4 +543,4 @@ function SiteFooter({
   )
 }
 
-export { SiteFooter, SiteHeader }
+export { SiteFooterClient, SiteHeaderClient }

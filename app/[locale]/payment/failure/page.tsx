@@ -22,12 +22,15 @@ export async function generateMetadata({
     return {}
   }
 
-  return getLocalizedMetadata({
+  return {
+    ...getLocalizedMetadata({
     locale: rawLocale,
     path: "/payment/failure",
     title: `${paymentStatusCopy.failure.title[rawLocale]} | PURITY`,
     description: paymentStatusCopy.failure.summary[rawLocale],
-  })
+    }),
+    robots: { index: false, follow: false },
+  }
 }
 
 export default async function PaymentFailurePage({
