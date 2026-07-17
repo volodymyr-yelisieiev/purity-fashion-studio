@@ -3,7 +3,7 @@ import { resendAdapter } from "@payloadcms/email-resend"
 import { lexicalEditor } from "@payloadcms/richtext-lexical"
 import { redirectsPlugin } from "@payloadcms/plugin-redirects"
 import { seoPlugin } from "@payloadcms/plugin-seo"
-import { s3Storage } from "@payloadcms/storage-s3"
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { buildConfig } from "payload"
@@ -54,20 +54,38 @@ if (payloadEnabled) {
   if ((process.env.PREVIEW_SECRET?.length ?? 0) < 32) {
     throw new Error("PREVIEW_SECRET must contain at least 32 characters")
   }
+
+  if (
+    process.env.NODE_ENV === "production" &&
+    !process.env.BLOB_READ_WRITE_TOKEN
+  ) {
+    throw new Error(
+      "BLOB_READ_WRITE_TOKEN is required for Payload media on Vercel"
+    )
+  }
 }
 
 const payloadSecret =
   process.env.PAYLOAD_SECRET ??
   "cms-disabled-build-only-secret-replace-before-runtime-use"
-const databaseURL =
-  process.env.DATABASE_URL ??
-  "postgresql://postgres:postgres@127.0.0.1:5432/purity"
 
-const s3Enabled = Boolean(
-  process.env.S3_BUCKET &&
-  process.env.S3_ENDPOINT &&
-  process.env.S3_ACCESS_KEY_ID &&
-  process.env.S3_SECRET_ACCESS_KEY
+function secureDatabaseURL(value: string): string {
+  const url = new URL(value)
+
+  if (
+    ["prefer", "require", "verify-ca"].includes(
+      url.searchParams.get("sslmode") ?? ""
+    )
+  ) {
+    url.searchParams.set("sslmode", "verify-full")
+  }
+
+  return url.toString()
+}
+
+const databaseURL = secureDatabaseURL(
+  process.env.DATABASE_URL ??
+    "postgresql://postgres:postgres@127.0.0.1:5432/purity"
 )
 
 const previewRoutes: Record<string, string> = {
@@ -235,22 +253,12 @@ export default buildConfig({
       },
       redirectTypes: ["301", "302"],
     }),
-    s3Storage({
+    vercelBlobStorage({
       alwaysInsertFields: true,
-      bucket: process.env.S3_BUCKET ?? "purity-local-disabled",
       clientUploads: true,
       collections: { media: true },
-      config: {
-        credentials: {
-          accessKeyId: process.env.S3_ACCESS_KEY_ID ?? "disabled",
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? "disabled",
-        },
-        endpoint: process.env.S3_ENDPOINT,
-        forcePathStyle: true,
-        region: process.env.S3_REGION ?? "auto",
-      },
-      disableLocalStorage: s3Enabled,
-      enabled: s3Enabled,
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     }),
   ],
   secret: payloadSecret,

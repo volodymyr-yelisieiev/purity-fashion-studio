@@ -56,7 +56,7 @@ on publish, unpublish, delete and global/media/offer change. Slug changes create
 
 ## Media governance
 
-Production uses S3-compatible storage with direct client upload. Only JPEG,
+Production uses Vercel Blob storage with direct client upload. Only JPEG,
 PNG, WebP and AVIF are accepted; upload size is limited to 20 MB and remote URL
 paste is disabled. Thumbnail, card, editorial and hero derivatives are
 generated. Public reads require visibility, approved and non-expired rights.

@@ -17,11 +17,7 @@ const envSchema = z.object({
   PAYLOAD_SECRET: z.string().optional(),
   PREVIEW_SECRET: z.string().optional(),
   DATABASE_URL: z.string().url().optional(),
-  S3_BUCKET: z.string().optional(),
-  S3_ENDPOINT: z.string().url().optional(),
-  S3_REGION: z.string().optional(),
-  S3_ACCESS_KEY_ID: z.string().optional(),
-  S3_SECRET_ACCESS_KEY: z.string().optional(),
+  BLOB_READ_WRITE_TOKEN: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().email().optional(),
   EMAIL_OVERRIDE_RECIPIENT: z.string().email().optional(),
@@ -72,18 +68,14 @@ if (
 
   if (parsed.data.NODE_ENV === "production") {
     const missingStorage = [
-      ["S3_BUCKET", parsed.data.S3_BUCKET],
-      ["S3_ENDPOINT", parsed.data.S3_ENDPOINT],
-      ["S3_REGION", parsed.data.S3_REGION],
-      ["S3_ACCESS_KEY_ID", parsed.data.S3_ACCESS_KEY_ID],
-      ["S3_SECRET_ACCESS_KEY", parsed.data.S3_SECRET_ACCESS_KEY],
+      ["BLOB_READ_WRITE_TOKEN", parsed.data.BLOB_READ_WRITE_TOKEN],
     ]
       .filter(([, value]) => !value)
       .map(([key]) => key)
 
     if (missingStorage.length) {
       throw new Error(
-        `Missing production media variables: ${missingStorage.join(", ")}`
+        `Missing Vercel Blob media variables: ${missingStorage.join(", ")}`
       )
     }
   }

@@ -223,7 +223,6 @@ export interface Media {
    * Internal provenance, license, prompt or release reference. Never public.
    */
   sourceMetadata?: string | null;
-  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -1198,7 +1197,6 @@ export interface MediaSelect<T extends boolean = true> {
   allowedUsageContexts?: T;
   rightsExpiry?: T;
   sourceMetadata?: T;
-  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
