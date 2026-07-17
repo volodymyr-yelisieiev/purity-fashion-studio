@@ -1304,7 +1304,12 @@ async function findPayloadServiceCards({
   const payload = await getPayloadClient()
   const and = []
   if (ids?.length) and.push({ id: { in: ids } })
-  if (slugs?.length) and.push({ slug: { in: slugs } })
+  if (slugs?.length) {
+    // Payload's Local API applies access-control conditions to the same where
+    // tree. An explicit equality branch keeps a one-slug public lookup (the
+    // Atelier landing) deterministic after those conditions are merged.
+    and.push({ or: slugs.map((slug) => ({ slug: { equals: slug } })) })
+  }
   const result = await payload.find({
     collection: "services",
     depth: 0,
