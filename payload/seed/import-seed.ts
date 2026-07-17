@@ -144,6 +144,7 @@ async function upsertLocalized({
       id,
       locale: "uk",
       overrideAccess: true,
+      publishAllLocales: publish,
     } as never)
     increment(`${collection}:updated`)
   } else {
@@ -168,6 +169,7 @@ async function upsertLocalized({
       id,
       locale,
       overrideAccess: true,
+      publishAllLocales: publish,
     } as never)
   }
 
@@ -1292,6 +1294,56 @@ async function linkDirections(
   }
 }
 
+async function verifyPublishedContent() {
+  if (!publish) return
+
+  const expected = {
+    directions: serviceCategories.filter((item) =>
+      [
+        "research",
+        "realisation",
+        "transformation",
+        "corporate",
+        "school",
+        "collections",
+      ].includes(item.slug)
+    ).length,
+    services: services.filter((item) => item.visibleInMvp).length,
+    offers: services.length + courses.length + collections.length,
+    courses: courses.filter((item) => item.visibleInMvp).length,
+    "fashion-collections": collections.filter((item) => item.visibleInMvp)
+      .length,
+    pages: publicPages.length,
+    media: mediaAssets.filter(
+      (asset) => asset.source === "generated" || asset.kind === "logo"
+    ).length,
+  } satisfies Partial<Record<CollectionSlug, number>>
+
+  for (const [collection, minimum] of Object.entries(expected) as Array<
+    [CollectionSlug, number]
+  >) {
+    const result = await payload.find({
+      collection,
+      depth: 0,
+      draft: false,
+      fallbackLocale: false,
+      limit: 1000,
+      locale: "uk",
+      overrideAccess: false,
+      pagination: false,
+      select: { id: true },
+    } as never)
+
+    if (result.docs.length < minimum) {
+      throw new Error(
+        `Published ${collection} mismatch: expected at least ${minimum}, found ${result.docs.length}.`
+      )
+    }
+
+    increment(`${collection}:published`)
+  }
+}
+
 async function run() {
   if (dryRun) {
     for (const asset of mediaAssets) mediaPath(asset)
@@ -1338,6 +1390,8 @@ async function run() {
     collectionIDs,
     mediaIDs,
   })
+  console.log("Verifying published content")
+  await verifyPublishedContent()
 
   for (const [label, count] of [...counts.entries()].sort(([left], [right]) =>
     left.localeCompare(right)
