@@ -395,6 +395,42 @@ function payloadMediaToView(
   }
 }
 
+async function findReadableMediaByID(
+  locale: Locale,
+  id: string,
+  draft: boolean
+): Promise<MediaAsset | undefined> {
+  const payload = await getPayloadClient()
+  const result = await payload.find({
+    collection: "media",
+    depth: 0,
+    draft,
+    fallbackLocale: false,
+    limit: 1,
+    locale,
+    ...(await getPayloadAccess(draft)),
+    pagination: false,
+    where: { id: { equals: id } },
+    select: {
+      internalLabel: true,
+      alt: true,
+      source: true,
+      allowedUsageContexts: true,
+      isRealClientProof: true,
+      replacementPriority: true,
+      url: true,
+      filename: true,
+      width: true,
+      height: true,
+      focalX: true,
+      sizes: true,
+    },
+  })
+
+  const media = result.docs[0]
+  return media ? payloadMediaToView(media as Media, locale) : undefined
+}
+
 async function findPayloadService(
   locale: Locale,
   slug: string,
@@ -1399,29 +1435,7 @@ async function findPayloadDirection(
       ? direction.heroMedia
       : direction.heroMedia?.id
   if (heroMediaID) {
-    const media = await payload.findByID({
-      collection: "media",
-      id: heroMediaID,
-      depth: 0,
-      fallbackLocale: false,
-      locale,
-      ...(await getPayloadAccess(draft)),
-      select: {
-        internalLabel: true,
-        alt: true,
-        source: true,
-        allowedUsageContexts: true,
-        isRealClientProof: true,
-        replacementPriority: true,
-        url: true,
-        filename: true,
-        width: true,
-        height: true,
-        focalX: true,
-        sizes: true,
-      },
-    })
-    mediaAsset = payloadMediaToView(media as Media, locale)
+    mediaAsset = await findReadableMediaByID(locale, heroMediaID, draft)
   }
 
   return {
@@ -1847,29 +1861,7 @@ async function findPayloadHome(locale: Locale, draft: boolean) {
   const mediaID =
     typeof home.heroMedia === "string" ? home.heroMedia : home.heroMedia?.id
   if (mediaID) {
-    const media = await payload.findByID({
-      collection: "media",
-      id: mediaID,
-      depth: 0,
-      fallbackLocale: false,
-      locale,
-      ...(await getPayloadAccess(draft)),
-      select: {
-        internalLabel: true,
-        alt: true,
-        source: true,
-        allowedUsageContexts: true,
-        isRealClientProof: true,
-        replacementPriority: true,
-        url: true,
-        filename: true,
-        width: true,
-        height: true,
-        focalX: true,
-        sizes: true,
-      },
-    })
-    heroMedia = payloadMediaToView(media as Media, locale)
+    heroMedia = await findReadableMediaByID(locale, mediaID, draft)
   }
   const sectionMediaEntries = Object.entries(home.sectionMedia ?? {}).filter(
     (entry): entry is [string, string | Media] => Boolean(entry[1])

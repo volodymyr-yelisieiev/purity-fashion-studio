@@ -240,6 +240,7 @@ async function importMedia(): Promise<Map<string, ID>> {
 
   for (const asset of mediaAssets) {
     const generated = asset.source === "generated"
+    const approvedForPublicUse = generated || asset.kind === "logo"
     const replacementPriority =
       asset.replacementPriority === "replace-before-launch"
         ? "replace-before-launch"
@@ -258,9 +259,9 @@ async function importMedia(): Promise<Map<string, ID>> {
       common: {
         internalLabel: asset.id,
         source: asset.source,
-        usageRightsStatus: generated ? "approved" : "pending",
+        usageRightsStatus: approvedForPublicUse ? "approved" : "pending",
         modelReleaseStatus: "not-applicable",
-        publicVisibility: generated,
+        publicVisibility: approvedForPublicUse,
         isRealClientProof: false,
         replacementPriority,
         allowedUsageContexts: asset.usage
