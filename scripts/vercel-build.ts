@@ -43,6 +43,9 @@ if (process.env.CONTENT_IMPORT_ON_DEPLOY === "true") {
     "--",
     `--target=${target}`,
     `--confirm=IMPORT_${target.toUpperCase()}`,
+    ...(process.env.PAYLOAD_RESET_ON_DEPLOY === "true"
+      ? ["--refresh-media"]
+      : []),
     ...(target === "production" ? ["--force"] : []),
   ])
 }

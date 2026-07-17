@@ -38,6 +38,7 @@ loadEnvConfig(process.cwd())
 const force = process.argv.includes("--force")
 const publish = !process.argv.includes("--draft")
 const dryRun = process.argv.includes("--dry-run")
+const refreshMedia = process.argv.includes("--refresh-media")
 const targetArg = process.argv.find((argument) => argument.startsWith("--target="))
 const target = targetArg?.split("=")[1]
 const productionTarget = target === "production"
@@ -146,9 +147,9 @@ async function upsertLocalized({
       data: initialData,
       draft: drafts ? !publish : undefined,
       // A storage reset can leave document metadata intact while removing its
-      // Blob object. Re-submit the source file on an update so idempotent
-      // imports restore the object as well as the CMS record.
-      filePath,
+      // Blob object. Re-submit upload files only when explicitly requested;
+      // ordinary idempotent imports must not duplicate Blob writes.
+      filePath: refreshMedia ? filePath : undefined,
       id,
       locale: "uk",
       overrideAccess: true,
