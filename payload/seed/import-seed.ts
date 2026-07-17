@@ -1347,8 +1347,8 @@ async function run() {
 
 try {
   await run()
-  await payload.destroy()
+  process.exit(0)
 } catch (error) {
-  await payload.destroy()
-  throw error
+  console.error(error)
+  process.exit(1)
 }
