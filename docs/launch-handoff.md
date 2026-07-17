@@ -6,7 +6,7 @@ source is `payload`.
 
 ## Production Deployment
 
-1. Provision separate production PostgreSQL, S3-compatible storage, Resend,
+1. Provision separate production PostgreSQL, Vercel Blob storage, Resend,
    Stripe, and LiqPay resources. Never reuse preview resources.
 2. Configure every variable from `.env.example`; use the canonical HTTPS
    origin for both public URLs.
@@ -30,7 +30,7 @@ records created after the source switch.
 
 - Payload: `PAYLOAD_ENABLED=true`, `CONTENT_SOURCE=payload`, two independent
   32+ character secrets, managed `DATABASE_URL`.
-- Media: all five S3 variables are mandatory in production; client upload is
+- Media: `BLOB_READ_WRITE_TOKEN` is mandatory when Payload serves media on
   enabled and the server enforces MIME/rights gates.
 - Email: verified Resend sender, SPF, DKIM, DMARC, bounce/complaint ownership,
   and environment-safe recipient routing.
@@ -62,7 +62,7 @@ status written by a verified webhook.
 
 Payload Admin is served at `/admin`; public Server Components use Local API.
 The code-first collections, globals, generated types, migrations, preview,
-live-preview breakpoints, role access, S3 uploads, SEO fields, redirect records,
+live-preview breakpoints, role access, Vercel Blob uploads, SEO fields, redirect records,
 and revalidation hooks are committed in this repository.
 
 Before switching the source:

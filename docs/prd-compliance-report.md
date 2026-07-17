@@ -11,7 +11,7 @@ operational merely because its code exists.
 | Multilingual public site | Implemented | UK/RU/EN routes, localized metadata and no CMS locale fallback |
 | CMS and editorial workflow | Implemented | Payload Admin, PostgreSQL schema, 15 collections, 5 globals, roles, drafts, versions, scheduled publish, preview and revalidation |
 | Content migration | Implemented, activation pending | Guarded idempotent importer and committed migrations; production database is required to execute them |
-| Media governance | Implemented | S3 storage, MIME/size limits, derivatives, rights metadata, expiry and real-client-proof publication gates |
+| Media governance | Implemented | Vercel Blob storage, MIME/size limits, derivatives, rights metadata, expiry and real-client-proof publication gates |
 | Leads and booking requests | Implemented | Server validation, anti-abuse controls, deduplication, attribution, consent version, lifecycle records and localized transactional email |
 | Paid offers | Implemented | Server-owned prices, immutable orders, Stripe Checkout, LiqPay checkout, signed raw-body webhooks and verified status pages |
 | Payment reliability | Implemented | Idempotent webhook ledger, monotonic state transitions, late-success handling, refunds received from providers, amount/currency verification and protected reconciliation job |
@@ -25,7 +25,7 @@ operational merely because its code exists.
 These are external decisions or environment operations and cannot be completed
 truthfully inside the repository:
 
-1. Provision isolated PostgreSQL, S3-compatible storage, Resend, Stripe and
+1. Provision isolated PostgreSQL, Vercel Blob storage, Resend, Stripe and
    LiqPay production resources and place secrets in the deployment platform.
 2. Run migration status and migrations against an empty and restored database;
    run the importer twice and approve record/media parity across UK/RU/EN.

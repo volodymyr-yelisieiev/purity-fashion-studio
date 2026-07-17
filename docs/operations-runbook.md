@@ -10,7 +10,7 @@ message; payment/booking writes must fail closed rather than pretend success.
 
 ## Backup and restore
 
-The owner must configure automated encrypted PostgreSQL backups and S3 object
+The owner must configure automated encrypted PostgreSQL backups and Vercel Blob object
 versioning/lifecycle in the vendor control planes. Record the agreed retention,
 RPO and RTO in the private operations register.
 
