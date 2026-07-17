@@ -1,4 +1,4 @@
-import { Forbidden, type CollectionConfig } from "payload"
+import { Forbidden, ValidationError, type CollectionConfig } from "payload"
 
 import {
   authenticatedAdmin,
@@ -43,10 +43,20 @@ export const Users: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [
-      ({ data }) => {
+      ({ data, req }) => {
         if (typeof data?.password === "string" && data.password.length < 14) {
-          throw new Error(
-            "Admin passwords must contain at least 14 characters."
+          throw new ValidationError(
+            {
+              collection: "users",
+              errors: [
+                {
+                  message: "Password must contain at least 14 characters.",
+                  path: "password",
+                },
+              ],
+              req,
+            },
+            req.t
           )
         }
         return data
