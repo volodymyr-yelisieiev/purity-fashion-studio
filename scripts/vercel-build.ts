@@ -12,6 +12,23 @@ function run(command: string, args: string[]) {
 
 const target = process.env.VERCEL_ENV === "production" ? "production" : "preview"
 
+if (process.env.PAYLOAD_RESET_ON_DEPLOY === "true") {
+  if (target !== "preview" || process.env.VERCEL_ENV !== "preview") {
+    throw new Error("PAYLOAD_RESET_ON_DEPLOY is allowed only for Vercel Preview.")
+  }
+  if (process.env.ALLOW_CMS_RESET !== "true") {
+    throw new Error("PAYLOAD_RESET_ON_DEPLOY requires ALLOW_CMS_RESET=true.")
+  }
+
+  run("pnpm", ["payload", "migrate:fresh"])
+  run("pnpm", [
+    "blob:reset-preview",
+    "--",
+    "--target=preview",
+    "--confirm=RESET_PREVIEW",
+  ])
+}
+
 if (process.env.PAYLOAD_MIGRATE_ON_DEPLOY === "true") {
   run("pnpm", ["payload:migrate"])
 }

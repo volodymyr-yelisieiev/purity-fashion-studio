@@ -1289,16 +1289,27 @@ async function run() {
     )
     return
   }
+  console.log("Importing media")
   const mediaIDs = await importMedia()
+  console.log("Importing directions")
   const directionIDs = await importDirections()
+  console.log("Importing services")
   const serviceIDs = await importServices(directionIDs, mediaIDs)
+  console.log("Importing offers")
   await importServiceOffers(serviceIDs)
+  console.log("Importing courses")
   const courseIDs = await importCourses(directionIDs, mediaIDs)
+  console.log("Importing fashion collections")
   const collectionIDs = await importFashionCollections(mediaIDs)
+  console.log("Importing portfolio cases")
   await importPortfolioCases(mediaIDs)
+  console.log("Importing pages")
   await importPages(mediaIDs)
+  console.log("Importing booking settings")
   await importBookingSettings()
+  console.log("Linking related content")
   await linkDirections(directionIDs, serviceIDs, courseIDs, collectionIDs)
+  console.log("Importing globals")
   await importGlobals({
     directionIDs,
     serviceIDs,

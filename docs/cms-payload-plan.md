@@ -50,6 +50,11 @@ On Vercel, `vercel-build` runs migrations and the guarded importer only when
 its clean import; Production stays disabled until Preview parity and QA are
 green on the reviewed release commit.
 
+A one-time Preview reset additionally requires `PAYLOAD_RESET_ON_DEPLOY=true`
+and `ALLOW_CMS_RESET=true`. It runs Payload's `migrate:fresh` and deletes only
+the Preview Blob store after exact target confirmation; the build script rejects
+this control in Production.
+
 ## Publish, preview and cache
 
 Drafts, autosave, versions, scheduled publish support, restore, preview and
