@@ -5,24 +5,15 @@ import { ContentPage } from "@/components/content-page"
 import { getLocalizedMetadata } from "@/content/metadata"
 import {
   getPortfolioCaseBySlug,
-  getPublishedPortfolioCaseSlugs,
 } from "@/content/public-api"
-import { getCategory } from "@/content/queries"
 import { portfolioCasePath } from "@/content/routes"
-import { hasLocale, locales, type Locale } from "@/i18n/routing"
+import { hasLocale, type Locale } from "@/i18n/routing"
 
 type PortfolioCasePageProps = {
   params: Promise<{ locale: string; slug: string }>
 }
 
 export const dynamicParams = true
-
-export async function generateStaticParams() {
-  const slugs = await getPublishedPortfolioCaseSlugs()
-  return locales.flatMap((locale) =>
-    slugs.map((slug) => ({ locale, slug }))
-  )
-}
 
 export async function generateMetadata({
   params,
@@ -63,13 +54,11 @@ export default async function PortfolioCasePage({
     notFound()
   }
 
-  const category = getCategory("portfolio")
-
   return (
     <ContentPage
       locale={locale}
       currentPath={portfolioCasePath(portfolioCase.routeSegment)}
-      eyebrow={category?.title[locale] ?? portfolioCase.title}
+      eyebrow={portfolioCase.title}
       title={portfolioCase.title}
       summary={portfolioCase.summary}
       items={[

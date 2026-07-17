@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 import { getLocalizedMetadata } from "@/content/metadata"
-import { paymentStatusCopy } from "@/features/booking/content"
+import { getPageBySlug } from "@/content/public-api"
 import { PaymentStatusPage } from "@/features/booking/payment-status-page"
 import { hasLocale, type Locale } from "@/i18n/routing"
 
@@ -22,12 +22,14 @@ export async function generateMetadata({
     return {}
   }
 
+  const page = await getPageBySlug(rawLocale, "payment-failure")
+  if (!page) return {}
   return {
     ...getLocalizedMetadata({
     locale: rawLocale,
     path: "/payment/failure",
-    title: `${paymentStatusCopy.failure.title[rawLocale]} | PURITY`,
-    description: paymentStatusCopy.failure.summary[rawLocale],
+    title: page.seo.title,
+    description: page.seo.description,
     }),
     robots: { index: false, follow: false },
   }

@@ -28,7 +28,22 @@ export const SiteSettings: GlobalConfig = {
         { name: "email", type: "email", required: true },
         { name: "phone", type: "text", required: true, maxLength: 80 },
         localizedText("address", "Address"),
+        localizedText("city", "City"),
         localizedText("hours", "Hours"),
+        localizedText("actionLabel", "Contact action label"),
+        { name: "actionPath", type: "text", required: true, maxLength: 500 },
+        { name: "viberURL", type: "text", maxLength: 500 },
+      ],
+    },
+    {
+      name: "uiLabels",
+      type: "group",
+      fields: [
+        localizedText("language", "Language label", { maxLength: 80 }),
+        localizedText("close", "Close label", { maxLength: 80 }),
+        localizedText("externalLink", "External link label", {
+          maxLength: 120,
+        }),
       ],
     },
     {

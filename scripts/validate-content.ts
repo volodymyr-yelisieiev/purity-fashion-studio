@@ -13,15 +13,15 @@ import {
   serviceCategories,
   services,
   siteSettings,
-} from "../content/source"
+} from "../content/data"
 import {
   collectionPath,
   coursePath,
-  getContentRoutes,
   portfolioCasePath,
   sectionPath,
   servicePath,
 } from "../content/routes"
+import { getContentRoutes } from "../content/legacy-routes"
 import {
   publicPageSlugs,
   serviceCategorySlugs,

@@ -18,13 +18,11 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { siteSettings } from "@/content/source"
 import type {
   FooterData,
   HeaderData,
   SiteSettingsData,
 } from "@/content/public-api"
-import { getFooterNavigation, getNavigation } from "@/content/routes"
 import { localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
@@ -106,18 +104,16 @@ function SiteHeaderClient({
   locale: Locale
   currentPath?: string
   overlay?: boolean
-  headerData?: HeaderData
-  settingsData?: SiteSettingsData
+  headerData: HeaderData
+  settingsData: SiteSettingsData
 }) {
-  const navigation = headerData
-    ? headerData.navigation
-        .filter((item) => item.visible)
-        .map((item) => ({
-          id: item.path,
-          label: item.label,
-          href: item.external ? item.path : localizePath(locale, item.path),
-        }))
-    : getNavigation(locale)
+  const navigation = headerData.navigation
+    .filter((item) => item.visible)
+    .map((item) => ({
+      id: item.path,
+      label: item.label,
+      href: item.external ? item.path : localizePath(locale, item.path),
+    }))
   const bookingItem = navigation.find(
     (item) => item.id === "booking" || item.id === "/booking"
   )
@@ -126,11 +122,11 @@ function SiteHeaderClient({
   )
   const bookingHref = bookingItem?.href ?? localizePath(locale, "/booking")
   const bookingLabel =
-    headerData?.bookingLabel ??
+    headerData.bookingLabel ??
     bookingItem?.label ??
-    siteSettings.home.primaryCta.label[locale]
-  const brandName = settingsData?.brandName ?? siteSettings.brandName
-  const languageLabel = siteSettings.languageLabel[locale]
+    settingsData.contacts.actionLabel
+  const brandName = settingsData.brandName
+  const languageLabel = settingsData.uiLabels.language
   const [menuOpen, setMenuOpen] = React.useState(false)
   const [menuClosing, setMenuClosing] = React.useState(false)
   const [isAtTop, setIsAtTop] = React.useState(true)
@@ -284,7 +280,7 @@ function SiteHeaderClient({
                   <BrandLogo locale={locale} variant="wordmark" priority />
                 </Link>
                 <SheetClose
-                  aria-label={siteSettings.closeLabel[locale]}
+                  aria-label={settingsData.uiLabels.close}
                   render={
                     <Button
                       type="button"
@@ -305,7 +301,7 @@ function SiteHeaderClient({
               </SheetHeader>
               <div className="grid flex-1 content-start gap-10 overflow-y-auto px-6 pt-16 pb-8 opacity-100 transition-opacity delay-150 duration-150 group-data-ending-style/menu:opacity-0 group-data-ending-style/menu:delay-0 group-data-ending-style/menu:duration-100 group-data-starting-style/menu:opacity-0 group-data-[closing=true]/menu:opacity-0 group-data-[closing=true]/menu:delay-0 md:px-10">
                 <nav
-                  aria-label={siteSettings.brandName}
+                  aria-label={brandName}
                   data-testid="mobile-navigation"
                   className="grid font-heading text-3xl leading-none uppercase"
                 >
@@ -356,46 +352,33 @@ function SiteFooterClient({
 }: {
   locale: Locale
   currentPath?: string
-  footerData?: FooterData
-  headerData?: HeaderData
-  settingsData?: SiteSettingsData
+  footerData: FooterData
+  headerData: HeaderData
+  settingsData: SiteSettingsData
 }) {
-  const navigation = headerData
-    ? headerData.navigation
-        .filter((item) => item.visible && item.path !== "/booking")
-        .map((item) => ({
-          id: item.path,
-          label: item.label,
-          href: item.external ? item.path : localizePath(locale, item.path),
-        }))
-    : getNavigation(locale)
-  const footerNavigation = footerData
-    ? footerData.legalNavigation.map((item) => ({
-        id: item.path,
-        label: item.label,
-        href: localizePath(locale, item.path),
-      }))
-    : getFooterNavigation(locale)
-  const languageLabel = siteSettings.languageLabel[locale]
-  const brandName = settingsData?.brandName ?? siteSettings.brandName
-  const city = footerData ? "" : siteSettings.contacts.city[locale]
-  const address = footerData
-    ? footerData.address
-    : siteSettings.contacts.address[locale].replace(
-        new RegExp(`^${city}\\s*`),
-        ""
-      )
-  const phones = footerData
-    ? [footerData.phone]
-    : siteSettings.contacts.phones
-  const email = footerData?.email ?? siteSettings.contacts.email
-  const hours = footerData?.hours ?? siteSettings.contacts.hours[locale]
-  const socials = footerData
-    ? footerData.socialLinks.map((item) => ({
-        label: item.platform,
-        url: item.url,
-      }))
-    : siteSettings.contacts.socials
+  const navigation = headerData.navigation
+    .filter((item) => item.visible && item.path !== "/booking")
+    .map((item) => ({
+      id: item.path,
+      label: item.label,
+      href: item.external ? item.path : localizePath(locale, item.path),
+    }))
+  const footerNavigation = footerData.legalNavigation.map((item) => ({
+    id: item.path,
+    label: item.label,
+    href: localizePath(locale, item.path),
+  }))
+  const languageLabel = settingsData.uiLabels.language
+  const brandName = settingsData.brandName
+  const city = settingsData.contacts.city
+  const address = footerData.address
+  const phones = [footerData.phone]
+  const email = footerData.email
+  const hours = footerData.hours
+  const socials = footerData.socialLinks.map((item) => ({
+    label: item.platform,
+    url: item.url,
+  }))
 
   return (
     <footer className="bg-foreground px-6 py-14 text-xs text-background/65 md:px-10 md:py-20">
@@ -465,7 +448,7 @@ function SiteFooterClient({
             </a>
           )}
           <Link
-            href={localizePath(locale, siteSettings.contacts.actionPath)}
+            href={localizePath(locale, settingsData.contacts.actionPath)}
             data-testid="footer-booking-cta"
             className={cn(
               buttonVariants({
@@ -475,13 +458,12 @@ function SiteFooterClient({
               })
             )}
           >
-            {headerData?.bookingLabel ??
-              siteSettings.contacts.actionLabel[locale]}
+            {headerData.bookingLabel ?? settingsData.contacts.actionLabel}
           </Link>
           <div className="mt-2 flex flex-wrap gap-2">
-            {!footerData && (
+            {settingsData.contacts.viberURL && (
               <a
-                href={siteSettings.contacts.viberUrl}
+                href={settingsData.contacts.viberURL}
                 className={cn(
                   buttonVariants({
                     variant: "outline",
@@ -493,7 +475,7 @@ function SiteFooterClient({
                 Viber
                 <ExternalLinkIcon aria-hidden="true" data-icon="inline-end" />
                 <span className="sr-only">
-                  {siteSettings.externalLinkLabel[locale]}
+                  {settingsData.uiLabels.externalLink}
                 </span>
               </a>
             )}
@@ -515,7 +497,7 @@ function SiteFooterClient({
                 {social.label}
                 <ExternalLinkIcon aria-hidden="true" data-icon="inline-end" />
                 <span className="sr-only">
-                  {siteSettings.externalLinkLabel[locale]}
+                  {settingsData.uiLabels.externalLink}
                 </span>
               </a>
             ))}

@@ -1,7 +1,7 @@
 import "server-only"
 
 import { unstable_cache } from "next/cache"
-import { draftMode } from "next/headers"
+import { draftMode, headers } from "next/headers"
 import { cache } from "react"
 import { getPayload } from "payload"
 
@@ -16,25 +16,7 @@ import type {
   PortfolioCase as PayloadPortfolioCase,
   Service as PayloadService,
 } from "@/payload-types"
-
-import { serviceDetailCopy } from "./service-page-specs"
-import {
-  getCategory,
-  getFirstMediaAsset,
-  getMediaAsset,
-  getVisibleService,
-} from "./queries"
-import type { MediaAsset, ServicePageSpec } from "./model"
-import {
-  collections,
-  courses,
-  navigation,
-  portfolioCases,
-  publicPages,
-  serviceCategories,
-  services,
-  siteSettings,
-} from "./source"
+import type { MediaAsset } from "./model"
 import type { Locale } from "../i18n/routing"
 
 export type ServiceOffer = Pick<
@@ -100,6 +82,19 @@ export type CoursePageData = {
   title: string
   summary: string
   description: string
+  eyebrow: string
+  serviceLabel: string
+  audienceTitle: string
+  formatTitle: string
+  methodTitle: string
+  prerequisitesTitle: string
+  curriculumTitle: string
+  curriculumSummary: string
+  outcomesTitle: string
+  outcomesSummary: string
+  commercialTitle: string
+  ctaTitle: string
+  ctaSummary: string
   audience: string
   prerequisites?: string
   sessions: number
@@ -122,9 +117,21 @@ export type FashionCollectionPageData = {
   slug: string
   routeSegment: string
   title: string
+  eyebrow: string
   summary: string
   narrative: string
   stylingNotes?: string
+  stylingTitle: string
+  styling: Array<{ title: string; text: string }>
+  factsTitle: string
+  facts: Array<{ title: string; text: string }>
+  inquiryTitle: string
+  inquirySteps: Array<{ title: string; text: string }>
+  materialsTitle: string
+  availabilityTitle: string
+  ctaTitle: string
+  ctaSummary: string
+  serviceLabel: string
   collectionType: PayloadFashionCollection["collectionType"]
   collaborationCredits?: string
   materials: string[]
@@ -176,6 +183,27 @@ export type DirectionPageData = {
   summary: string
   eyebrow?: string
   narrative: string
+  processTitle: string
+  formatsTitle: string
+  formatNotes: string[]
+  outcomesTitle: string
+  ctaTitle: string
+  ctaSummary: string
+  ctaService: string
+  ctaLabel: string
+  diagnosticLabel?: string
+  faqTitle?: string
+  faq: Array<{ question: string; answer: string }>
+  countLabel?: string
+  availabilityValue?: string
+  availabilityLabel?: string
+  fittingValue?: string
+  fittingLabel?: string
+  catalogueTitle?: string
+  catalogueSummary?: string
+  materialsLabel?: string
+  inquiryTitle?: string
+  inquirySteps: Array<{ title: string; text: string }>
   process: Array<{ title: string; description: string }>
   outcomes: string[]
   services: ServiceCardData[]
@@ -192,6 +220,34 @@ export type PublicPageData = {
   summary: string
   eyebrow?: string
   body: string
+  studioSignals: Array<{ label: string; value: string }>
+  methodEyebrow?: string
+  methodTitle?: string
+  methodSteps: Array<{ title: string; text: string }>
+  clientsTitle?: string
+  clientsSummary?: string
+  privateTitle?: string
+  corporateTitle?: string
+  directionsTitle?: string
+  ctaTitle?: string
+  ctaSummary?: string
+  formTitle?: string
+  formSummary?: string
+  heroMediaLabel?: string
+  standardsTitle?: string
+  standards: Array<{ title: string; text: string }>
+  recordTitle?: string
+  recordSummary?: string
+  recordItems: string[]
+  currentTitle?: string
+  currentItems: Array<{ title: string; text: string }>
+  flowTitle?: string
+  flowItems: string[]
+  secondaryCTALabel?: string
+  emptyEyebrow?: string
+  emptyTitle?: string
+  emptySummary?: string
+  emptyAction?: string
   sections: Array<{ heading: string; body: string; mediaAsset?: MediaAsset }>
   mediaAsset?: MediaAsset
   mediaIds?: string[]
@@ -230,8 +286,18 @@ export type FooterData = {
 export type SiteSettingsData = {
   brandName: string
   canonicalOrigin: string
-  contacts: { email: string; phone: string; address: string; hours: string }
+  contacts: {
+    email: string
+    phone: string
+    address: string
+    city: string
+    hours: string
+    actionLabel: string
+    actionPath: string
+    viberURL?: string
+  }
   localeLabels: Record<Locale, string>
+  uiLabels: { language: string; close: string; externalLink: string }
   maintenance: { enabled: boolean; message?: string }
 }
 
@@ -244,6 +310,29 @@ export type HomeData = {
   secondaryCTA: { label: string; path: string }
   method: Array<{ label: string; description: string }>
   studioIntro: string
+  serviceIntro: string
+  priceNote: string
+  methodEyebrow: string
+  methodTitle: string
+  methodDetails: string[]
+  studioEyebrow: string
+  studioTitle: string
+  serviceRailTitle: string
+  collectionRailTitle: string
+  portfolioNote: string
+  portfolioTitle: string
+  portfolioSummary: string
+  portfolioSignals: string[]
+  faqTitle: string
+  faq: Array<{ question: string; answer: string }>
+  sectionMedia: {
+    research?: MediaAsset
+    imagine?: MediaAsset
+    create?: MediaAsset
+    directions?: MediaAsset
+    studio?: MediaAsset
+    portfolio?: MediaAsset
+  }
   finalCTATitle: string
   finalCTASummary: string
   selectedServiceSlugs: string[]
@@ -255,158 +344,16 @@ export type HomeData = {
 
 const getPayloadClient = cache(() => getPayload({ config }))
 
-const genericCopy = {
-  formatsTitle: {
-    uk: "Формати роботи",
-    ru: "Форматы работы",
-    en: "Working formats",
-  },
-  processTitle: {
-    uk: "Як проходить робота",
-    ru: "Как проходит работа",
-    en: "How the work proceeds",
-  },
-  outcomeTitle: {
-    uk: "Результат",
-    ru: "Результат",
-    en: "Outcome",
-  },
-  commercialTitle: {
-    uk: "Формат і вартість",
-    ru: "Формат и стоимость",
-    en: "Format and pricing",
-  },
-  nextStepTitle: {
-    uk: "Наступний крок",
-    ru: "Следующий шаг",
-    en: "Next step",
-  },
-  nextStepSummary: {
-    uk: "Опишіть задачу, бажаний формат і строки. Команда підтвердить обсяг, актуальні умови та доступність.",
-    ru: "Опишите задачу, желаемый формат и сроки. Команда подтвердит объём, актуальные условия и доступность.",
-    en: "Describe the brief, preferred format, and timing. The team will confirm scope, current terms, and availability.",
-  },
-  bookingLabel: {
-    uk: "Надіслати запит",
-    ru: "Отправить запрос",
-    en: "Send a request",
-  },
-  availability: {
-    uk: "Актуальна доступність визначається повʼязаними пропозиціями.",
-    ru: "Актуальная доступность определяется связанными предложениями.",
-    en: "Current availability is defined by the linked offers.",
-  },
-  pricing: {
-    uk: "Вартість і режим оплати вказані у повʼязаних пропозиціях.",
-    ru: "Стоимость и режим оплаты указаны в связанных предложениях.",
-    en: "Pricing and checkout mode are defined by the linked offers.",
-  },
-} as const
+const getAuthenticatedPayloadUser = cache(async () => {
+  const payload = await getPayloadClient()
+  const result = await payload.auth({ headers: await headers() })
+  return result.user ?? undefined
+})
 
-const formatLabels: Record<
-  PayloadService["formats"][number],
-  Record<Locale, string>
-> = {
-  online: { uk: "Онлайн", ru: "Онлайн", en: "Online" },
-  studio: { uk: "У студії", ru: "В студии", en: "Studio" },
-  "remote-atelier": {
-    uk: "Дистанційне ательє",
-    ru: "Дистанционное ателье",
-    en: "Remote atelier",
-  },
-  "in-person": { uk: "Особисто", ru: "Лично", en: "In person" },
-  hybrid: { uk: "Гібридно", ru: "Гибридно", en: "Hybrid" },
-}
-
-const courseCheckoutLabel = {
-  uk: "Перейти до checkout",
-  ru: "Перейти к checkout",
-  en: "Continue to checkout",
-} as const
-
-function localizeSpec(spec: ServicePageSpec, locale: Locale) {
+async function getPayloadAccess(draft: boolean) {
   return {
-    intro: spec.intro[locale],
-    formatsTitle: spec.formatsTitle[locale],
-    formats: spec.formats.map((item) => ({
-      title: item.title[locale],
-      text: item.text[locale],
-    })),
-    processTitle: spec.processTitle[locale],
-    process: spec.process.map((item) => ({
-      title: item.title[locale],
-      text: item.text[locale],
-    })),
-    outcomeTitle: spec.outcomeTitle[locale],
-    outcomeSummary: spec.outcomeSummary[locale],
-    commercialTitle: spec.commercialTitle[locale],
-    nextStepTitle: spec.nextStepTitle[locale],
-    nextStepSummary: spec.nextStepSummary[locale],
-    contactLabel: spec.contactLabel?.[locale],
-    courseLabel: spec.courseLabel?.[locale],
-    collectionLabel: spec.collectionLabel?.[locale],
-  }
-}
-
-function seedServiceBySlug(
-  locale: Locale,
-  slug: string
-): ServicePageData | null {
-  const service = getVisibleService(slug)
-  if (!service) return null
-
-  const category = getCategory(service.category)
-  const spec = serviceDetailCopy[service.slug]
-  const copy = spec
-    ? localizeSpec(spec, locale)
-    : {
-        intro: service.summary[locale],
-        formatsTitle: genericCopy.formatsTitle[locale],
-        formats: [],
-        processTitle: genericCopy.processTitle[locale],
-        process: [],
-        outcomeTitle: genericCopy.outcomeTitle[locale],
-        outcomeSummary: service.summary[locale],
-        commercialTitle: genericCopy.commercialTitle[locale],
-        nextStepTitle: genericCopy.nextStepTitle[locale],
-        nextStepSummary: genericCopy.nextStepSummary[locale],
-        contactLabel: undefined,
-        courseLabel: undefined,
-        collectionLabel: undefined,
-      }
-
-  return {
-    id: service.slug,
-    slug: service.slug,
-    routeSegment: service.routeSegment,
-    eyebrow: category?.title[locale] ?? service.title[locale],
-    title: service.title[locale],
-    summary: service.summary[locale],
-    intro: copy.intro,
-    audience: service.summary[locale],
-    formatsTitle: copy.formatsTitle,
-    formats: copy.formats,
-    processTitle: copy.processTitle,
-    process: copy.process,
-    outcomeTitle: copy.outcomeTitle,
-    outcomeSummary: copy.outcomeSummary,
-    outcomes: service.outcomes[locale],
-    commercialTitle: copy.commercialTitle,
-    commercialStatus: service.commercialStatus[locale],
-    priceNote: service.priceNote[locale],
-    nextStepTitle: copy.nextStepTitle,
-    nextStepSummary: copy.nextStepSummary,
-    contactLabel: copy.contactLabel,
-    courseLabel: copy.courseLabel,
-    collectionLabel: copy.collectionLabel,
-    mediaAsset: getFirstMediaAsset(service.mediaIds),
-    offers: [],
-    faq: [],
-    cta: {
-      action: "booking-request",
-      label: siteSettings.home.primaryCta.label[locale],
-    },
-    seo: service.seo[locale],
+    overrideAccess: false as const,
+    user: draft ? await getAuthenticatedPayloadUser() : undefined,
   }
 }
 
@@ -461,7 +408,7 @@ async function findPayloadService(
     fallbackLocale: false,
     limit: 1,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     pagination: false,
     select: {
       id: true,
@@ -471,7 +418,16 @@ async function findPayloadService(
       primaryDirection: true,
       audience: true,
       intro: true,
+      formatsTitle: true,
+      processTitle: true,
+      outcomeTitle: true,
+      commercialTitle: true,
+      commercialStatusCopy: true,
+      priceNote: true,
+      nextStepTitle: true,
+      nextStepSummary: true,
       formats: true,
+      formatPresentation: true,
       processSteps: true,
       benefits: true,
       outcomes: true,
@@ -498,7 +454,7 @@ async function findPayloadService(
       draft,
       fallbackLocale: false,
       locale,
-      overrideAccess: draft,
+      ...(await getPayloadAccess(draft)),
       select: { title: true },
     }),
     service.gallery?.length
@@ -508,7 +464,7 @@ async function findPayloadService(
           fallbackLocale: false,
           limit: service.gallery.length,
           locale,
-          overrideAccess: draft,
+          ...(await getPayloadAccess(draft)),
           pagination: false,
           select: {
             internalLabel: true,
@@ -533,7 +489,7 @@ async function findPayloadService(
       draft,
       fallbackLocale: false,
       locale,
-      overrideAccess: draft,
+      ...(await getPayloadAccess(draft)),
       pagination: false,
       sort: "sortOrder",
       select: {
@@ -556,10 +512,7 @@ async function findPayloadService(
   ])
 
   const media = mediaResult.docs[0]
-  const formats = service.formats.map((format) => ({
-    title: formatLabels[format][locale],
-    text: service.audience,
-  }))
+  const formats = service.formatPresentation ?? []
   const outcomes = service.outcomes?.map((item) => item.text) ?? []
   const offers = offersResult.docs as ServiceOffer[]
 
@@ -572,26 +525,26 @@ async function findPayloadService(
     summary: service.summary,
     intro: service.intro,
     audience: service.audience,
-    formatsTitle: genericCopy.formatsTitle[locale],
+    formatsTitle: service.formatsTitle,
     formats,
-    processTitle: genericCopy.processTitle[locale],
+    processTitle: service.processTitle,
     process:
       service.processSteps?.map((step) => ({
         title: step.title,
         text: step.description,
       })) ?? [],
-    outcomeTitle: genericCopy.outcomeTitle[locale],
+    outcomeTitle: service.outcomeTitle,
     outcomeSummary:
       service.benefits?.map((benefit) => benefit.description).join(" ") ||
       service.summary,
     outcomes,
-    commercialTitle: genericCopy.commercialTitle[locale],
-    commercialStatus: genericCopy.availability[locale],
-    priceNote: genericCopy.pricing[locale],
+    commercialTitle: service.commercialTitle,
+    commercialStatus: service.commercialStatusCopy,
+    priceNote: service.priceNote,
     timingNote: service.timingNote ?? undefined,
     qualification: service.qualification ?? undefined,
-    nextStepTitle: genericCopy.nextStepTitle[locale],
-    nextStepSummary: genericCopy.nextStepSummary[locale],
+    nextStepTitle: service.nextStepTitle,
+    nextStepSummary: service.nextStepSummary,
     mediaAsset: media ? payloadMediaToView(media as Media, locale) : undefined,
     offers,
     faq:
@@ -621,10 +574,6 @@ export async function getServiceBySlug(
   locale: Locale,
   slug: string
 ): Promise<ServicePageData | null> {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return seedServiceBySlug(locale, slug)
-  }
-
   const { isEnabled } = await draftMode()
   return isEnabled
     ? findPayloadService(locale, slug, true)
@@ -632,12 +581,6 @@ export async function getServiceBySlug(
 }
 
 export async function getPublishedServiceSlugs(): Promise<string[]> {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return services
-      .filter((service) => service.visibleInMvp)
-      .map((service) => service.routeSegment)
-  }
-
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: "services",
@@ -668,7 +611,7 @@ async function findPayloadOfferByID(
       draft,
       fallbackLocale: false,
       locale,
-      overrideAccess: draft,
+      ...(await getPayloadAccess(draft)),
       select: {
         id: true,
         sku: true,
@@ -692,7 +635,6 @@ async function findPayloadOfferByID(
 }
 
 export async function getOfferById(locale: Locale, id: string) {
-  if (process.env.CONTENT_SOURCE !== "payload") return null
   const { isEnabled } = await draftMode()
   if (isEnabled) return findPayloadOfferByID(locale, id, true)
   return unstable_cache(
@@ -700,39 +642,6 @@ export async function getOfferById(locale: Locale, id: string) {
     ["cms", "offer", locale, id],
     { tags: ["cms:offers", `cms:offers:${id}`] }
   )()
-}
-
-function seedCourseBySlug(locale: Locale, slug: string): CoursePageData | null {
-  const course = courses.find(
-    (candidate) => candidate.visibleInMvp && candidate.routeSegment === slug
-  )
-  if (!course) return null
-
-  return {
-    id: course.slug,
-    slug: course.slug,
-    routeSegment: course.routeSegment,
-    title: course.title[locale],
-    summary: course.summary[locale],
-    description: course.summary[locale],
-    audience: course.audience[locale],
-    sessions: course.lessons[locale].length,
-    formats: ["online", "studio"],
-    program: course.lessons[locale].map((title) => ({
-      title,
-      description: title,
-    })),
-    availability: "coming-soon",
-    commercialStatus: course.commercialStatus[locale],
-    priceNote: course.priceNote[locale],
-    mediaAsset: getFirstMediaAsset(course.mediaIds),
-    offers: [],
-    cta: {
-      action: "booking-request",
-      label: courseCheckoutLabel[locale],
-    },
-    seo: course.seo[locale],
-  }
 }
 
 async function findPayloadCourse(
@@ -748,14 +657,27 @@ async function findPayloadCourse(
     fallbackLocale: false,
     limit: 1,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     pagination: false,
     select: {
       id: true,
       slug: true,
       title: true,
+      eyebrow: true,
       summary: true,
       description: true,
+      serviceLabel: true,
+      audienceTitle: true,
+      formatTitle: true,
+      methodTitle: true,
+      prerequisitesTitle: true,
+      curriculumTitle: true,
+      curriculumSummary: true,
+      outcomesTitle: true,
+      outcomesSummary: true,
+      commercialTitle: true,
+      ctaTitle: true,
+      ctaSummary: true,
       audience: true,
       prerequisites: true,
       sessions: true,
@@ -782,7 +704,7 @@ async function findPayloadCourse(
           fallbackLocale: false,
           limit: course.media.length,
           locale,
-          overrideAccess: draft,
+          ...(await getPayloadAccess(draft)),
           pagination: false,
           select: {
             internalLabel: true,
@@ -807,7 +729,7 @@ async function findPayloadCourse(
       draft,
       fallbackLocale: false,
       locale,
-      overrideAccess: draft,
+      ...(await getPayloadAccess(draft)),
       pagination: false,
       sort: "sortOrder",
       select: {
@@ -837,6 +759,19 @@ async function findPayloadCourse(
     title: course.title,
     summary: course.summary,
     description: course.description,
+    eyebrow: course.eyebrow,
+    serviceLabel: course.serviceLabel,
+    audienceTitle: course.audienceTitle,
+    formatTitle: course.formatTitle,
+    methodTitle: course.methodTitle,
+    prerequisitesTitle: course.prerequisitesTitle,
+    curriculumTitle: course.curriculumTitle,
+    curriculumSummary: course.curriculumSummary,
+    outcomesTitle: course.outcomesTitle,
+    outcomesSummary: course.outcomesSummary,
+    commercialTitle: course.commercialTitle,
+    ctaTitle: course.ctaTitle,
+    ctaSummary: course.ctaSummary,
     audience: course.audience,
     prerequisites: course.prerequisites ?? undefined,
     sessions: course.sessions,
@@ -883,10 +818,6 @@ function cachedPayloadCourse(locale: Locale, slug: string) {
 }
 
 export async function getCourseBySlug(locale: Locale, slug: string) {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return seedCourseBySlug(locale, slug)
-  }
-
   const { isEnabled } = await draftMode()
   return isEnabled
     ? findPayloadCourse(locale, slug, true)
@@ -894,12 +825,6 @@ export async function getCourseBySlug(locale: Locale, slug: string) {
 }
 
 export async function getPublishedCourseSlugs() {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return courses
-      .filter((course) => course.visibleInMvp)
-      .map((course) => course.routeSegment)
-  }
-
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: "courses",
@@ -915,42 +840,6 @@ export async function getPublishedCourseSlugs() {
   return result.docs.map((course) => course.slug)
 }
 
-function seedFashionCollectionBySlug(
-  locale: Locale,
-  slug: string
-): FashionCollectionPageData | null {
-  const collection = collections.find(
-    (candidate) => candidate.visibleInMvp && candidate.routeSegment === slug
-  )
-  if (!collection) return null
-
-  return {
-    id: collection.slug,
-    slug: collection.slug,
-    routeSegment: collection.routeSegment,
-    title: collection.title[locale],
-    summary: collection.summary[locale],
-    narrative: collection.summary[locale],
-    collectionType: "editorial",
-    materials: collection.materials[locale],
-    pieces: [],
-    availability: "inquiry",
-    commercialStatus: collection.commercialStatus[locale],
-    priceNote: collection.priceNote[locale],
-    mediaAssets: collection.mediaIds.flatMap((id) => {
-      const asset = getMediaAsset(id)
-      return asset ? [asset as MediaAsset] : []
-    }),
-    offers: [],
-    rightsAndCredits: "PURITY Fashion Studio",
-    cta: {
-      action: "inquiry",
-      label: siteSettings.home.primaryCta.label[locale],
-    },
-    seo: collection.seo[locale],
-  }
-}
-
 async function findPayloadFashionCollection(
   locale: Locale,
   slug: string,
@@ -964,15 +853,44 @@ async function findPayloadFashionCollection(
     fallbackLocale: false,
     limit: 1,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     pagination: false,
     select: {
       id: true,
       slug: true,
       title: true,
+      eyebrow: true,
       summary: true,
       narrative: true,
       stylingNotes: true,
+      stylingTitle: true,
+      styling: true,
+      factsTitle: true,
+      facts: true,
+      inquiryTitle: true,
+      inquirySteps: true,
+      materialsTitle: true,
+      availabilityTitle: true,
+      ctaTitle: true,
+      ctaSummary: true,
+      formTitle: true,
+      formSummary: true,
+      heroMediaLabel: true,
+      standardsTitle: true,
+      standards: true,
+      recordTitle: true,
+      recordSummary: true,
+      recordItems: true,
+      currentTitle: true,
+      currentItems: true,
+      flowTitle: true,
+      flowItems: true,
+      secondaryCTALabel: true,
+      emptyEyebrow: true,
+      emptyTitle: true,
+      emptySummary: true,
+      emptyAction: true,
+      serviceLabel: true,
       collectionType: true,
       collaborationCredits: true,
       materials: true,
@@ -997,7 +915,7 @@ async function findPayloadFashionCollection(
       fallbackLocale: false,
       limit: Math.max(collection.gallery.length, 1),
       locale,
-      overrideAccess: draft,
+      ...(await getPayloadAccess(draft)),
       pagination: false,
       select: {
         internalLabel: true,
@@ -1021,7 +939,7 @@ async function findPayloadFashionCollection(
       draft,
       fallbackLocale: false,
       locale,
-      overrideAccess: draft,
+      ...(await getPayloadAccess(draft)),
       pagination: false,
       sort: "sortOrder",
       select: {
@@ -1054,9 +972,21 @@ async function findPayloadFashionCollection(
     slug: collection.slug,
     routeSegment: collection.slug,
     title: collection.title,
+    eyebrow: collection.eyebrow ?? collection.title,
     summary: collection.summary,
     narrative: collection.narrative,
     stylingNotes: collection.stylingNotes ?? undefined,
+    stylingTitle: collection.stylingTitle,
+    styling: collection.styling ?? [],
+    factsTitle: collection.factsTitle,
+    facts: collection.facts ?? [],
+    inquiryTitle: collection.inquiryTitle,
+    inquirySteps: collection.inquirySteps ?? [],
+    materialsTitle: collection.materialsTitle,
+    availabilityTitle: collection.availabilityTitle,
+    ctaTitle: collection.ctaTitle,
+    ctaSummary: collection.ctaSummary,
+    serviceLabel: collection.serviceLabel,
     collectionType: collection.collectionType,
     collaborationCredits: collection.collaborationCredits ?? undefined,
     materials: collection.materials?.map((material) => material.material) ?? [],
@@ -1107,9 +1037,6 @@ function cachedPayloadFashionCollection(locale: Locale, slug: string) {
 }
 
 export async function getFashionCollectionBySlug(locale: Locale, slug: string) {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return seedFashionCollectionBySlug(locale, slug)
-  }
   const { isEnabled } = await draftMode()
   return isEnabled
     ? findPayloadFashionCollection(locale, slug, true)
@@ -1117,11 +1044,6 @@ export async function getFashionCollectionBySlug(locale: Locale, slug: string) {
 }
 
 export async function getPublishedFashionCollectionSlugs() {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return collections
-      .filter((collection) => collection.visibleInMvp)
-      .map((collection) => collection.routeSegment)
-  }
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: "fashion-collections",
@@ -1137,39 +1059,6 @@ export async function getPublishedFashionCollectionSlugs() {
   return result.docs.map((collection) => collection.slug)
 }
 
-function seedPortfolioCaseBySlug(
-  locale: Locale,
-  slug: string
-): PortfolioCasePageData | null {
-  const portfolioCase = portfolioCases.find(
-    (candidate) =>
-      candidate.visibleInMvp &&
-      candidate.isRealClientProof &&
-      candidate.routeSegment === slug
-  )
-  if (!portfolioCase) return null
-
-  return {
-    id: portfolioCase.slug,
-    slug: portfolioCase.slug,
-    routeSegment: portfolioCase.routeSegment,
-    title: portfolioCase.title[locale],
-    summary: portfolioCase.summary[locale],
-    clientType: "private",
-    brief: portfolioCase.summary[locale],
-    constraints: "",
-    research: "",
-    process: "",
-    result: portfolioCase.summary[locale],
-    hasBeforeAfter: false,
-    mediaAssets: portfolioCase.mediaIds.flatMap((id) => {
-      const asset = getMediaAsset(id)
-      return asset ? [asset as MediaAsset] : []
-    }),
-    seo: portfolioCase.seo[locale],
-  }
-}
-
 async function findPayloadPortfolioCase(
   locale: Locale,
   slug: string,
@@ -1183,7 +1072,7 @@ async function findPayloadPortfolioCase(
     fallbackLocale: false,
     limit: 1,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     pagination: false,
     select: {
       id: true,
@@ -1211,7 +1100,7 @@ async function findPayloadPortfolioCase(
     fallbackLocale: false,
     limit: Math.max(portfolioCase.media.length, 1),
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     pagination: false,
     select: {
       internalLabel: true,
@@ -1272,9 +1161,6 @@ function cachedPayloadPortfolioCase(locale: Locale, slug: string) {
 }
 
 export async function getPortfolioCaseBySlug(locale: Locale, slug: string) {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return seedPortfolioCaseBySlug(locale, slug)
-  }
   const { isEnabled } = await draftMode()
   return isEnabled
     ? findPayloadPortfolioCase(locale, slug, true)
@@ -1318,12 +1204,6 @@ async function findPublishedPayloadPortfolioCases(locale: Locale) {
 }
 
 export async function getPublishedPortfolioCases(locale: Locale) {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return portfolioCases.flatMap((portfolioCase) => {
-      const item = seedPortfolioCaseBySlug(locale, portfolioCase.routeSegment)
-      return item ? [item] : []
-    })
-  }
   return unstable_cache(
     () => findPublishedPayloadPortfolioCases(locale),
     ["cms", "portfolio-cases", locale],
@@ -1332,14 +1212,6 @@ export async function getPublishedPortfolioCases(locale: Locale) {
 }
 
 export async function getPublishedPortfolioCaseSlugs() {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return portfolioCases
-      .filter(
-        (portfolioCase) =>
-          portfolioCase.visibleInMvp && portfolioCase.isRealClientProof
-      )
-      .map((portfolioCase) => portfolioCase.routeSegment)
-  }
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: "portfolio-cases",
@@ -1353,21 +1225,6 @@ export async function getPublishedPortfolioCaseSlugs() {
     sort: "sortOrder",
   })
   return result.docs.map((portfolioCase) => portfolioCase.slug)
-}
-
-function seedServiceCard(locale: Locale, slug: string): ServiceCardData | null {
-  const service = services.find(
-    (candidate) => candidate.visibleInMvp && candidate.routeSegment === slug
-  )
-  if (!service) return null
-  return {
-    id: service.slug,
-    slug: service.slug,
-    routeSegment: service.routeSegment,
-    title: service.title[locale],
-    summary: service.summary[locale],
-    mediaAsset: getFirstMediaAsset(service.mediaIds),
-  }
 }
 
 async function findPayloadServiceCards({
@@ -1392,7 +1249,7 @@ async function findPayloadServiceCards({
     fallbackLocale: false,
     limit: 100,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     pagination: false,
     select: {
       id: true,
@@ -1421,7 +1278,7 @@ async function findPayloadServiceCards({
         fallbackLocale: false,
         limit: mediaIDs.length,
         locale,
-        overrideAccess: draft,
+        ...(await getPayloadAccess(draft)),
         pagination: false,
         select: {
           internalLabel: true,
@@ -1465,71 +1322,12 @@ export async function getPublishedServices(
   locale: Locale,
   filters: { ids?: string[]; slugs?: string[] } = {}
 ) {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return services.flatMap((service) => {
-      if (filters.ids?.length && !filters.ids.includes(service.slug)) return []
-      if (
-        filters.slugs?.length &&
-        !filters.slugs.includes(service.routeSegment)
-      )
-        return []
-      const item = seedServiceCard(locale, service.routeSegment)
-      return item ? [item] : []
-    })
-  }
   const key = JSON.stringify(filters)
   return unstable_cache(
     () => findPayloadServiceCards({ draft: false, locale, ...filters }),
     ["cms", "services", locale, key],
     { tags: ["cms:services", "cms:media"] }
   )()
-}
-
-function seedDirectionBySlug(
-  locale: Locale,
-  slug: string
-): DirectionPageData | null {
-  const direction = serviceCategories.find(
-    (candidate) => candidate.routeSegment === slug
-  )
-  if (
-    !direction ||
-    ![
-      "research",
-      "realisation",
-      "transformation",
-      "corporate",
-      "school",
-      "collections",
-    ].includes(direction.slug)
-  ) {
-    return null
-  }
-  const related = services.flatMap((service) => {
-    const matches =
-      direction.slug === "realisation"
-        ? ["realisation", "atelier"].includes(service.category)
-        : service.category === direction.slug
-    const item = matches ? seedServiceCard(locale, service.routeSegment) : null
-    return item ? [item] : []
-  })
-  return {
-    id: direction.slug,
-    slug: direction.routeSegment,
-    routeSegment: direction.routeSegment,
-    canonicalKey: direction.slug as PayloadDirection["canonicalKey"],
-    title: direction.title[locale],
-    summary: direction.summary[locale],
-    eyebrow: direction.title[locale],
-    narrative: direction.summary[locale],
-    process: [],
-    outcomes: [],
-    services: related,
-    seo: {
-      title: `${direction.title[locale]} | PURITY Fashion Studio`,
-      description: direction.summary[locale],
-    },
-  }
 }
 
 async function findPayloadDirection(
@@ -1545,7 +1343,7 @@ async function findPayloadDirection(
     fallbackLocale: false,
     limit: 1,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     pagination: false,
     select: {
       id: true,
@@ -1555,6 +1353,27 @@ async function findPayloadDirection(
       summary: true,
       eyebrow: true,
       narrative: true,
+      processTitle: true,
+      formatsTitle: true,
+      formatNotes: true,
+      outcomesTitle: true,
+      ctaTitle: true,
+      ctaSummary: true,
+      ctaService: true,
+      ctaLabel: true,
+      diagnosticLabel: true,
+      faqTitle: true,
+      faq: true,
+      countLabel: true,
+      availabilityValue: true,
+      availabilityLabel: true,
+      fittingValue: true,
+      fittingLabel: true,
+      catalogueTitle: true,
+      catalogueSummary: true,
+      materialsLabel: true,
+      inquiryTitle: true,
+      inquirySteps: true,
       heroMedia: true,
       processSteps: true,
       outcomes: true,
@@ -1586,7 +1405,7 @@ async function findPayloadDirection(
       depth: 0,
       fallbackLocale: false,
       locale,
-      overrideAccess: draft,
+      ...(await getPayloadAccess(draft)),
       select: {
         internalLabel: true,
         alt: true,
@@ -1614,6 +1433,27 @@ async function findPayloadDirection(
     summary: direction.summary,
     eyebrow: direction.eyebrow ?? undefined,
     narrative: direction.narrative,
+    processTitle: direction.processTitle,
+    formatsTitle: direction.formatsTitle,
+    formatNotes: direction.formatNotes?.map((item) => item.text) ?? [],
+    outcomesTitle: direction.outcomesTitle,
+    ctaTitle: direction.ctaTitle,
+    ctaSummary: direction.ctaSummary,
+    ctaService: direction.ctaService,
+    ctaLabel: direction.ctaLabel,
+    diagnosticLabel: direction.diagnosticLabel ?? undefined,
+    faqTitle: direction.faqTitle ?? undefined,
+    faq: direction.faq ?? [],
+    countLabel: direction.countLabel ?? undefined,
+    availabilityValue: direction.availabilityValue ?? undefined,
+    availabilityLabel: direction.availabilityLabel ?? undefined,
+    fittingValue: direction.fittingValue ?? undefined,
+    fittingLabel: direction.fittingLabel ?? undefined,
+    catalogueTitle: direction.catalogueTitle ?? undefined,
+    catalogueSummary: direction.catalogueSummary ?? undefined,
+    materialsLabel: direction.materialsLabel ?? undefined,
+    inquiryTitle: direction.inquiryTitle ?? undefined,
+    inquirySteps: direction.inquirySteps ?? [],
     process:
       direction.processSteps?.map((step) => ({
         title: step.title,
@@ -1631,9 +1471,6 @@ async function findPayloadDirection(
 }
 
 export async function getDirectionBySlug(locale: Locale, slug: string) {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return seedDirectionBySlug(locale, slug)
-  }
   const { isEnabled } = await draftMode()
   if (isEnabled) return findPayloadDirection(locale, slug, true)
   return unstable_cache(
@@ -1651,20 +1488,6 @@ export async function getDirectionBySlug(locale: Locale, slug: string) {
 }
 
 export async function getPublishedDirectionSlugs() {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return serviceCategories
-      .filter((category) =>
-        [
-          "research",
-          "realisation",
-          "transformation",
-          "corporate",
-          "school",
-          "collections",
-        ].includes(category.slug)
-      )
-      .map((category) => category.routeSegment)
-  }
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: "directions",
@@ -1680,71 +1503,6 @@ export async function getPublishedDirectionSlugs() {
   return result.docs.map((direction) => direction.slug)
 }
 
-function seedPageBySlug(locale: Locale, slug: string): PublicPageData | null {
-  const page = publicPages.find((candidate) => candidate.routeSegment === slug)
-  if (page) {
-    const pageTypes = {
-      studio: "studio",
-      privacy: "privacy",
-      terms: "terms",
-      booking: "service-state",
-    } as const
-    return {
-      id: page.slug,
-      slug: page.routeSegment,
-      routeSegment: page.routeSegment,
-      pageType: pageTypes[page.slug],
-      title: page.title[locale],
-      summary: page.summary[locale],
-      eyebrow: page.eyebrow[locale],
-      body: page.body[locale].join("\n\n"),
-      sections: page.body[locale].map((body, index) => ({
-        heading:
-          index === 0
-            ? page.title[locale]
-            : `${page.title[locale]} ${index + 1}`,
-        body,
-      })),
-      mediaAsset: getFirstMediaAsset(page.mediaIds),
-      mediaIds: page.mediaIds,
-      cta: {
-        action: "contact",
-        label: page.cta?.label[locale] ?? genericCopy.bookingLabel[locale],
-      },
-      seo: page.seo[locale],
-    }
-  }
-
-  if (slug === "contacts") {
-    const category = serviceCategories.find((item) => item.slug === "contacts")
-    if (!category) return null
-    return {
-      id: "contacts",
-      slug: "contacts",
-      routeSegment: "contacts",
-      pageType: "contacts",
-      title: category.title[locale],
-      summary: category.summary[locale],
-      eyebrow: "PURITY",
-      body: [
-        siteSettings.contacts.address[locale],
-        siteSettings.contacts.hours[locale],
-        siteSettings.contacts.responseTime[locale],
-      ].join("\n\n"),
-      sections: [],
-      cta: {
-        action: "booking-request",
-        label: siteSettings.contacts.actionLabel[locale],
-      },
-      seo: {
-        title: `${category.title[locale]} | PURITY Fashion Studio`,
-        description: category.summary[locale],
-      },
-    }
-  }
-  return null
-}
-
 async function findPayloadPage(
   locale: Locale,
   slug: string,
@@ -1758,7 +1516,7 @@ async function findPayloadPage(
     fallbackLocale: false,
     limit: 1,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     pagination: false,
     select: {
       id: true,
@@ -1768,6 +1526,17 @@ async function findPayloadPage(
       summary: true,
       eyebrow: true,
       body: true,
+      studioSignals: true,
+      methodEyebrow: true,
+      methodTitle: true,
+      methodSteps: true,
+      clientsTitle: true,
+      clientsSummary: true,
+      privateTitle: true,
+      corporateTitle: true,
+      directionsTitle: true,
+      ctaTitle: true,
+      ctaSummary: true,
       sections: true,
       cta: true,
       legalVersion: true,
@@ -1789,7 +1558,7 @@ async function findPayloadPage(
         fallbackLocale: false,
         limit: mediaIDs.length,
         locale,
-        overrideAccess: draft,
+        ...(await getPayloadAccess(draft)),
         pagination: false,
         select: {
           internalLabel: true,
@@ -1823,6 +1592,34 @@ async function findPayloadPage(
     summary: page.summary,
     eyebrow: page.eyebrow ?? undefined,
     body: page.body,
+    studioSignals: page.studioSignals ?? [],
+    methodEyebrow: page.methodEyebrow ?? undefined,
+    methodTitle: page.methodTitle ?? undefined,
+    methodSteps: page.methodSteps ?? [],
+    clientsTitle: page.clientsTitle ?? undefined,
+    clientsSummary: page.clientsSummary ?? undefined,
+    privateTitle: page.privateTitle ?? undefined,
+    corporateTitle: page.corporateTitle ?? undefined,
+    directionsTitle: page.directionsTitle ?? undefined,
+    ctaTitle: page.ctaTitle ?? undefined,
+    ctaSummary: page.ctaSummary ?? undefined,
+    formTitle: page.formTitle ?? undefined,
+    formSummary: page.formSummary ?? undefined,
+    heroMediaLabel: page.heroMediaLabel ?? undefined,
+    standardsTitle: page.standardsTitle ?? undefined,
+    standards: page.standards ?? [],
+    recordTitle: page.recordTitle ?? undefined,
+    recordSummary: page.recordSummary ?? undefined,
+    recordItems: page.recordItems?.map((item) => item.text) ?? [],
+    currentTitle: page.currentTitle ?? undefined,
+    currentItems: page.currentItems ?? [],
+    flowTitle: page.flowTitle ?? undefined,
+    flowItems: page.flowItems?.map((item) => item.text) ?? [],
+    secondaryCTALabel: page.secondaryCTALabel ?? undefined,
+    emptyEyebrow: page.emptyEyebrow ?? undefined,
+    emptyTitle: page.emptyTitle ?? undefined,
+    emptySummary: page.emptySummary ?? undefined,
+    emptyAction: page.emptyAction ?? undefined,
     sections:
       page.sections?.map((section) => ({
         heading: section.heading,
@@ -1846,8 +1643,6 @@ async function findPayloadPage(
 }
 
 export async function getPageBySlug(locale: Locale, slug: string) {
-  if (process.env.CONTENT_SOURCE !== "payload")
-    return seedPageBySlug(locale, slug)
   const { isEnabled } = await draftMode()
   if (isEnabled) return findPayloadPage(locale, slug, true)
   return unstable_cache(
@@ -1858,9 +1653,6 @@ export async function getPageBySlug(locale: Locale, slug: string) {
 }
 
 export async function getPublishedPageSlugs() {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return [...publicPages.map((page) => page.routeSegment), "contacts"]
-  }
   const payload = await getPayloadClient()
   const result = await payload.find({
     collection: "pages",
@@ -1877,7 +1669,6 @@ export async function getPublishedPageSlugs() {
 }
 
 async function getDraftFlag() {
-  if (process.env.CONTENT_SOURCE !== "payload") return false
   return (await draftMode()).isEnabled
 }
 
@@ -1889,7 +1680,7 @@ async function findPayloadHeader(locale: Locale, draft: boolean) {
     draft,
     fallbackLocale: false,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     select: { navigation: true, bookingLabel: true },
   })
   return {
@@ -1906,25 +1697,6 @@ async function findPayloadHeader(locale: Locale, draft: boolean) {
 }
 
 export async function getHeader(locale: Locale): Promise<HeaderData> {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return {
-      navigation: navigation
-        .filter((item) => item.visibleInMvp)
-        .map((item) => ({
-          label: item.label[locale],
-          path: item.path,
-          visible: true,
-          external: false,
-          accessibleLabel: item.label[locale],
-        })),
-      bookingLabel:
-        locale === "uk"
-          ? "Записатися"
-          : locale === "ru"
-            ? "Записаться"
-            : "Book now",
-    }
-  }
   const draft = await getDraftFlag()
   if (draft) return findPayloadHeader(locale, true)
   return unstable_cache(
@@ -1942,7 +1714,7 @@ async function findPayloadFooter(locale: Locale, draft: boolean) {
     draft,
     fallbackLocale: false,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     select: {
       email: true,
       phone: true,
@@ -1976,24 +1748,6 @@ async function findPayloadFooter(locale: Locale, draft: boolean) {
 }
 
 export async function getFooter(locale: Locale): Promise<FooterData> {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return {
-      email: siteSettings.contacts.email ?? "",
-      phone: siteSettings.contacts.phone ?? siteSettings.contacts.phones[0],
-      address: siteSettings.contacts.address[locale],
-      hours: siteSettings.contacts.hours[locale],
-      responseTime: siteSettings.contacts.responseTime[locale],
-      socialLinks: siteSettings.contacts.socials.map((item) => ({
-        platform: item.label,
-        url: item.url,
-        accessibleLabel: item.label,
-      })),
-      legalNavigation: navigation
-        .filter((item) => ["privacy", "terms"].includes(item.id))
-        .map((item) => ({ label: item.label[locale], path: item.path })),
-      copyright: `© ${new Date().getFullYear()} PURITY Fashion Studio`,
-    }
-  }
   const draft = await getDraftFlag()
   if (draft) return findPayloadFooter(locale, true)
   return unstable_cache(
@@ -2016,14 +1770,19 @@ async function findPayloadSiteSettings(locale: Locale) {
       canonicalOrigin: true,
       contacts: true,
       localeLabels: true,
+      uiLabels: true,
       maintenance: true,
     },
   })
   return {
     brandName: settings.brandName,
     canonicalOrigin: settings.canonicalOrigin,
-    contacts: settings.contacts,
+    contacts: {
+      ...settings.contacts,
+      viberURL: settings.contacts.viberURL ?? undefined,
+    },
     localeLabels: settings.localeLabels,
+    uiLabels: settings.uiLabels,
     maintenance: {
       enabled: settings.maintenance.enabled,
       message: settings.maintenance.message ?? undefined,
@@ -2034,25 +1793,6 @@ async function findPayloadSiteSettings(locale: Locale) {
 export async function getSiteSettings(
   locale: Locale
 ): Promise<SiteSettingsData> {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return {
-      brandName: siteSettings.brandName,
-      canonicalOrigin:
-        process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-      contacts: {
-        email: siteSettings.contacts.email ?? "",
-        phone: siteSettings.contacts.phone ?? siteSettings.contacts.phones[0],
-        address: siteSettings.contacts.address[locale],
-        hours: siteSettings.contacts.hours[locale],
-      },
-      localeLabels: {
-        uk: siteSettings.languageLabel.uk,
-        ru: siteSettings.languageLabel.ru,
-        en: siteSettings.languageLabel.en,
-      },
-      maintenance: { enabled: false },
-    }
-  }
   return unstable_cache(
     () => findPayloadSiteSettings(locale),
     ["cms", "site-settings", locale],
@@ -2068,7 +1808,7 @@ async function findPayloadHome(locale: Locale, draft: boolean) {
     draft,
     fallbackLocale: false,
     locale,
-    overrideAccess: draft,
+    ...(await getPayloadAccess(draft)),
     select: {
       heroEyebrow: true,
       heroTitle: true,
@@ -2078,6 +1818,22 @@ async function findPayloadHome(locale: Locale, draft: boolean) {
       secondaryCTA: true,
       method: true,
       studioIntro: true,
+      serviceIntro: true,
+      priceNote: true,
+      methodEyebrow: true,
+      methodTitle: true,
+      methodDetails: true,
+      studioEyebrow: true,
+      studioTitle: true,
+      serviceRailTitle: true,
+      collectionRailTitle: true,
+      portfolioNote: true,
+      portfolioTitle: true,
+      portfolioSummary: true,
+      portfolioSignals: true,
+      faqTitle: true,
+      faq: true,
+      sectionMedia: true,
       finalCTATitle: true,
       finalCTASummary: true,
       selectedServices: true,
@@ -2097,7 +1853,7 @@ async function findPayloadHome(locale: Locale, draft: boolean) {
       depth: 0,
       fallbackLocale: false,
       locale,
-      overrideAccess: draft,
+      ...(await getPayloadAccess(draft)),
       select: {
         internalLabel: true,
         alt: true,
@@ -2115,6 +1871,17 @@ async function findPayloadHome(locale: Locale, draft: boolean) {
     })
     heroMedia = payloadMediaToView(media as Media, locale)
   }
+  const sectionMediaEntries = Object.entries(home.sectionMedia ?? {}).filter(
+    (entry): entry is [string, string | Media] => Boolean(entry[1])
+  )
+  const sectionMedia = Object.fromEntries(
+    sectionMediaEntries.map(([key, value]) => [
+      key,
+      typeof value === "string"
+        ? undefined
+        : payloadMediaToView(value as Media, locale),
+    ])
+  ) as HomeData["sectionMedia"]
   return {
     heroEyebrow: home.heroEyebrow ?? undefined,
     heroTitle: home.heroTitle,
@@ -2128,6 +1895,22 @@ async function findPayloadHome(locale: Locale, draft: boolean) {
         description: item.description,
       })) ?? [],
     studioIntro: home.studioIntro,
+    serviceIntro: home.serviceIntro,
+    priceNote: home.priceNote,
+    methodEyebrow: home.methodEyebrow,
+    methodTitle: home.methodTitle,
+    methodDetails: home.methodDetails?.map((item) => item.text) ?? [],
+    studioEyebrow: home.studioEyebrow,
+    studioTitle: home.studioTitle,
+    serviceRailTitle: home.serviceRailTitle,
+    collectionRailTitle: home.collectionRailTitle,
+    portfolioNote: home.portfolioNote,
+    portfolioTitle: home.portfolioTitle,
+    portfolioSummary: home.portfolioSummary,
+    portfolioSignals: home.portfolioSignals?.map((item) => item.text) ?? [],
+    faqTitle: home.faqTitle,
+    faq: home.faq ?? [],
+    sectionMedia,
     finalCTATitle: home.finalCTATitle,
     finalCTASummary: home.finalCTASummary,
     selectedServiceSlugs:
@@ -2154,39 +1937,6 @@ async function findPayloadHome(locale: Locale, draft: boolean) {
 }
 
 export async function getHome(locale: Locale): Promise<HomeData> {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return {
-      heroEyebrow: siteSettings.home.eyebrow[locale],
-      heroTitle: siteSettings.home.title[locale],
-      heroSummary: siteSettings.home.summary[locale],
-      heroMedia: getMediaAsset("generated-editorial-hero-flow"),
-      primaryCTA: {
-        label: siteSettings.home.primaryCta.label[locale],
-        path: siteSettings.home.primaryCta.path,
-      },
-      secondaryCTA: {
-        label: siteSettings.home.secondaryCta.label[locale],
-        path: siteSettings.home.secondaryCta.path,
-      },
-      method: [],
-      studioIntro: siteSettings.home.studioSummary[locale],
-      finalCTATitle: siteSettings.home.studioTitle[locale],
-      finalCTASummary: siteSettings.home.studioSummary[locale],
-      selectedServiceSlugs: services
-        .filter((service) => service.visibleInMvp)
-        .map((service) => service.routeSegment),
-      selectedCourseSlugs: courses
-        .filter((course) => course.visibleInMvp)
-        .map((course) => course.routeSegment),
-      selectedCollectionSlugs: collections
-        .filter((collection) => collection.visibleInMvp)
-        .map((collection) => collection.routeSegment),
-      selectedPortfolioSlugs: portfolioCases
-        .filter((item) => item.visibleInMvp)
-        .map((item) => item.routeSegment),
-      seo: siteSettings.seo[locale],
-    }
-  }
   const draft = await getDraftFlag()
   if (draft) return findPayloadHome(locale, true)
   return unstable_cache(

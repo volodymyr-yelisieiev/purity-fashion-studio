@@ -30,6 +30,18 @@ const forbiddenImports = [
   ],
 ] as const
 
+const forbiddenPayloadRuntimeReferences = [
+  "content/data",
+  "content/source",
+  "content/category-page-specs",
+  "content/service-page-specs",
+  "content/collection-page-specs",
+  "content/home-page-spec",
+  "content/portfolio-page-spec",
+  "CONTENT_SOURCE",
+  "ContentSnapshot",
+] as const
+
 for (const file of sourceRoots.flatMap(listSourceFiles)) {
   const source = readFileSync(file, "utf8")
 
@@ -37,6 +49,25 @@ for (const file of sourceRoots.flatMap(listSourceFiles)) {
     if (source.includes(pattern)) {
       issues.push(
         `${file}: forbidden architecture import ${pattern}. ${guidance}`
+      )
+    }
+  }
+
+  for (const reference of forbiddenPayloadRuntimeReferences) {
+    if (source.includes(reference)) {
+      issues.push(
+        `${file}: public runtime must read business content from Payload, not ${reference}.`
+      )
+    }
+  }
+}
+
+for (const file of ["content/public-api.ts", "content/routes.ts", "content/metadata.ts", "proxy.ts"]) {
+  const source = readFileSync(file, "utf8")
+  for (const reference of forbiddenPayloadRuntimeReferences) {
+    if (source.includes(reference)) {
+      issues.push(
+        `${file}: Payload runtime must not reference static migration content (${reference}).`
       )
     }
   }

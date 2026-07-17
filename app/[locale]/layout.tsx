@@ -15,6 +15,10 @@ import { hasLocale, locales } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 import { env } from "@/lib/env"
 
+// Public content is read from Payload at request time. This avoids baking a
+// database snapshot into a build and lets revalidation hooks publish changes.
+export const dynamic = "force-dynamic"
+
 const notoSans = Noto_Sans({
   variable: "--font-sans",
   subsets: ["cyrillic", "cyrillic-ext", "latin"],

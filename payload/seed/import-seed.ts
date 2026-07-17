@@ -5,6 +5,7 @@ import { getPayload, type CollectionSlug, type Where } from "payload"
 
 import {
   categoryPageCopy,
+  collectionsPageCopy,
   studioPageCopy,
 } from "../../content/category-page-specs"
 import {
@@ -12,20 +13,47 @@ import {
   courses,
   mediaAssets,
   navigation,
+  portfolioCases,
   publicPages,
   serviceCategories,
   services,
   siteSettings,
 } from "../../content/data"
 import { serviceDetailCopy } from "../../content/service-page-specs"
+import { portfolioPageCopy } from "../../content/portfolio-page-spec"
+import { homePageCopy } from "../../content/home-page-spec"
+import { paymentStatusCopy } from "../../features/booking/content"
+import { coursePageCopy } from "../../content/course-page-spec"
+import {
+  beadedDressCopy,
+  capsuleCopy,
+  newYearPartyCopy,
+} from "../../content/collection-page-specs"
 import { locales, type Locale } from "../../i18n/routing"
+import type { CategoryPageSpec } from "../../content/model"
 
 const { loadEnvConfig } = nextEnv
 loadEnvConfig(process.cwd())
 
 const force = process.argv.includes("--force")
 const publish = !process.argv.includes("--draft")
+const dryRun = process.argv.includes("--dry-run")
+const targetArg = process.argv.find((argument) => argument.startsWith("--target="))
+const target = targetArg?.split("=")[1]
 const counts = new Map<string, number>()
+
+if (!dryRun && !["local", "preview", "production"].includes(target ?? "")) {
+  throw new Error("CMS import writes require --target=local|preview|production.")
+}
+
+if (
+  !dryRun &&
+  !process.argv.includes(`--confirm=IMPORT_${target?.toUpperCase()}`)
+) {
+  throw new Error(
+    `Confirm the selected environment with --confirm=IMPORT_${target?.toUpperCase()}.`
+  )
+}
 
 if (process.env.PAYLOAD_ENABLED !== "true") {
   throw new Error(
@@ -248,7 +276,7 @@ async function importDirections(): Promise<Map<string, ID>> {
   for (const direction of serviceCategories.filter((item) =>
     canonical.has(item.slug)
   )) {
-    const spec = isCategoryPageKey(direction.slug)
+    const spec: CategoryPageSpec | undefined = isCategoryPageKey(direction.slug)
       ? categoryPageCopy[direction.slug]
       : undefined
     const localizedData = localizedObject((locale) => ({
@@ -256,6 +284,79 @@ async function importDirections(): Promise<Map<string, ID>> {
       summary: direction.summary[locale],
       eyebrow: direction.title[locale],
       narrative: spec?.heroNote[locale] ?? direction.summary[locale],
+      processTitle:
+        spec?.processTitle[locale] ?? direction.title[locale],
+      formatsTitle:
+        spec?.formatsTitle[locale] ?? direction.title[locale],
+      formatNotes:
+        spec?.formats.map((format) => ({ text: format[locale] })) ?? [],
+      outcomesTitle:
+        spec?.outcomesTitle[locale] ?? direction.title[locale],
+      ctaTitle:
+        direction.slug === "collections"
+          ? collectionsPageCopy.ctaTitle[locale]
+          : spec?.ctaTitle[locale] ?? direction.title[locale],
+      ctaSummary:
+        direction.slug === "collections"
+          ? collectionsPageCopy.ctaSummary[locale]
+          : spec?.ctaSummary[locale] ?? direction.summary[locale],
+      ctaLabel:
+        direction.slug === "collections"
+          ? collectionsPageCopy.ctaLabel[locale]
+          : siteSettings.home.primaryCta.label[locale],
+      diagnosticLabel:
+        spec && "diagnosticLabel" in spec
+          ? spec.diagnosticLabel?.[locale]
+          : undefined,
+      faqTitle: spec?.faqTitle?.[locale],
+      faq:
+        spec?.faq?.map((item) => ({
+          question: item.question[locale],
+          answer: item.answer[locale],
+        })) ?? [],
+      countLabel:
+        direction.slug === "collections"
+          ? collectionsPageCopy.countLabel[locale]
+          : undefined,
+      availabilityValue:
+        direction.slug === "collections"
+          ? collectionsPageCopy.availabilityValue[locale]
+          : undefined,
+      availabilityLabel:
+        direction.slug === "collections"
+          ? collectionsPageCopy.availabilityLabel[locale]
+          : undefined,
+      fittingValue:
+        direction.slug === "collections"
+          ? collectionsPageCopy.fittingValue[locale]
+          : undefined,
+      fittingLabel:
+        direction.slug === "collections"
+          ? collectionsPageCopy.fittingLabel[locale]
+          : undefined,
+      catalogueTitle:
+        direction.slug === "collections"
+          ? collectionsPageCopy.catalogueTitle[locale]
+          : undefined,
+      catalogueSummary:
+        direction.slug === "collections"
+          ? collectionsPageCopy.catalogueSummary[locale]
+          : undefined,
+      materialsLabel:
+        direction.slug === "collections"
+          ? collectionsPageCopy.materialsLabel[locale]
+          : undefined,
+      inquiryTitle:
+        direction.slug === "collections"
+          ? collectionsPageCopy.inquiryTitle[locale]
+          : undefined,
+      inquirySteps:
+        direction.slug === "collections"
+          ? collectionsPageCopy.inquirySteps.map((item) => ({
+              title: item.title[locale],
+              text: item.text[locale],
+            }))
+          : [],
       processSteps:
         spec?.processSteps.map((step) => ({
           title: step.title[locale],
@@ -276,6 +377,7 @@ async function importDirections(): Promise<Map<string, ID>> {
         legacyKey: `direction:${direction.slug}`,
         slug: direction.routeSegment,
         canonicalKey: direction.slug,
+        ctaService: spec?.ctaService ?? "capsule-collection",
         enabled: true,
         featured: true,
         sortOrder: serviceCategories.indexOf(direction) * 10,
@@ -293,6 +395,17 @@ function serviceFormats(slug: string): string[] {
   if (slug.includes("atelier")) return ["studio", "remote-atelier"]
   if (slug.includes("corporate")) return ["in-person", "hybrid"]
   return ["online", "studio"]
+}
+
+function serviceFormatLabel(format: string, locale: Locale): string {
+  const labels: Record<string, Record<Locale, string>> = {
+    online: { uk: "Онлайн", ru: "Онлайн", en: "Online" },
+    studio: { uk: "У студії", ru: "В студии", en: "Studio" },
+    "remote-atelier": { uk: "Дистанційне ательє", ru: "Дистанционное ателье", en: "Remote atelier" },
+    "in-person": { uk: "Особисто", ru: "Лично", en: "In person" },
+    hybrid: { uk: "Гібридно", ru: "Гибридно", en: "Hybrid" },
+  }
+  return labels[format]?.[locale] ?? format
 }
 
 async function importServices(
@@ -314,6 +427,37 @@ async function importServices(
       summary: service.summary[locale],
       audience: service.summary[locale],
       intro: spec?.intro[locale] ?? service.summary[locale],
+      formatPresentation: serviceFormats(service.slug).map((format) => ({
+        title: serviceFormatLabel(format, locale),
+        text: service.summary[locale],
+      })),
+      formatsTitle:
+        locale === "uk" ? "Формати роботи" : locale === "ru" ? "Форматы работы" : "Working formats",
+      processTitle:
+        locale === "uk" ? "Як проходить робота" : locale === "ru" ? "Как проходит работа" : "How the work proceeds",
+      outcomeTitle: locale === "en" ? "Outcome" : "Результат",
+      commercialTitle:
+        locale === "uk" ? "Формат і вартість" : locale === "ru" ? "Формат и стоимость" : "Format and pricing",
+      commercialStatusCopy:
+        locale === "uk"
+          ? "Актуальна доступність визначається повʼязаними пропозиціями."
+          : locale === "ru"
+            ? "Актуальная доступность определяется связанными предложениями."
+            : "Current availability is defined by the linked offers.",
+      priceNote:
+        locale === "uk"
+          ? "Вартість і режим оплати вказані у повʼязаних пропозиціях."
+          : locale === "ru"
+            ? "Стоимость и режим оплаты указаны в связанных предложениях."
+            : "Pricing and checkout mode are defined by the linked offers.",
+      nextStepTitle:
+        locale === "uk" ? "Наступний крок" : locale === "ru" ? "Следующий шаг" : "Next step",
+      nextStepSummary:
+        locale === "uk"
+          ? "Опишіть задачу, бажаний формат і строки. Команда підтвердить обсяг, актуальні умови та доступність."
+          : locale === "ru"
+            ? "Опишите задачу, желаемый формат и сроки. Команда подтвердит объём, актуальные условия и доступность."
+            : "Describe the brief, preferred format, and timing. The team will confirm scope, current terms, and availability.",
       processSteps:
         spec?.process.map((step) => ({
           title: step.title[locale],
@@ -420,11 +564,24 @@ async function importCourses(
       title: course.title[locale],
       summary: course.summary[locale],
       description: course.summary[locale],
+      eyebrow: coursePageCopy.eyebrow[locale],
+      serviceLabel: coursePageCopy.serviceLabel[locale],
+      audienceTitle: coursePageCopy.audienceTitle[locale],
+      formatTitle: coursePageCopy.formatTitle[locale],
+      methodTitle: coursePageCopy.methodTitle[locale],
+      prerequisitesTitle: coursePageCopy.prerequisitesTitle[locale],
+      curriculumTitle: coursePageCopy.curriculumTitle[locale],
+      curriculumSummary: coursePageCopy.curriculumSummary[locale],
+      outcomesTitle: coursePageCopy.outcomesTitle[locale],
+      outcomesSummary: coursePageCopy.outcomesSummary[locale],
+      commercialTitle: coursePageCopy.commercialTitle[locale],
+      ctaTitle: coursePageCopy.ctaTitle[locale],
+      ctaSummary: coursePageCopy.ctaSummary[locale],
       audience: course.audience[locale],
-      prerequisites: course.commercialStatus[locale],
-      program: course.lessons[locale].map((lesson) => ({
+      prerequisites: coursePageCopy.prerequisites[locale],
+      program: course.lessons[locale].map((lesson, index) => ({
         title: lesson,
-        description: course.summary[locale],
+        description: coursePageCopy.lessonDescriptions[locale][index] ?? course.summary[locale],
       })),
       intakeNote: course.commercialStatus[locale],
       faq: [],
@@ -502,11 +659,38 @@ async function importFashionCollections(
   const ids = new Map<string, ID>()
 
   for (const item of collections) {
+    const copy =
+      item.slug === "purity-capsule"
+        ? capsuleCopy
+        : item.slug === "new-year-party-collection"
+          ? newYearPartyCopy
+          : beadedDressCopy
     const localizedData = localizedObject((locale) => ({
       title: item.title[locale],
+      eyebrow: copy.eyebrow[locale],
       summary: item.summary[locale],
-      narrative: item.summary[locale],
-      stylingNotes: item.commercialStatus[locale],
+      narrative: copy.narrative[locale],
+      stylingNotes: copy.narrative[locale],
+      stylingTitle: copy.stylingTitle[locale],
+      styling: copy.styling.map((entry) => ({
+        title: entry.title[locale],
+        text: entry.text[locale],
+      })),
+      factsTitle: copy.factsTitle[locale],
+      facts: copy.facts.map((entry) => ({
+        title: entry.title[locale],
+        text: entry.text[locale],
+      })),
+      inquiryTitle: copy.inquiryTitle[locale],
+      inquirySteps: copy.inquiry.map((entry) => ({
+        title: entry.title[locale],
+        text: entry.text[locale],
+      })),
+      materialsTitle: copy.materialsTitle[locale],
+      availabilityTitle: copy.availabilityTitle[locale],
+      ctaTitle: copy.ctaTitle[locale],
+      ctaSummary: copy.ctaSummary[locale],
+      serviceLabel: copy.serviceLabel[locale],
       collaborationCredits: item.sourceLabel ?? "PURITY",
       materials: item.materials[locale].map((material) => ({ material })),
       availability: "inquiry",
@@ -575,7 +759,67 @@ async function importFashionCollections(
   return ids
 }
 
-async function importPages(): Promise<Map<string, ID>> {
+async function importPortfolioCases(
+  mediaIDs: Map<string, ID>
+): Promise<Map<string, ID>> {
+  const ids = new Map<string, ID>()
+
+  for (const item of portfolioCases) {
+    const id = await upsertLocalized({
+      collection: "portfolio-cases",
+      key: "legacyKey",
+      value: `portfolio:${item.slug}`,
+      common: {
+        legacyKey: `portfolio:${item.slug}`,
+        slug: item.routeSegment,
+        clientType: "editorial",
+        services: [],
+        media: definedIDs(item.mediaIds.map((mediaID) => mediaIDs.get(mediaID))),
+        hasBeforeAfter: false,
+        consentReference: "migration-placeholder-no-client-proof",
+        isRealClientProof: false,
+        usageRightsStatus: "pending",
+        approvalStatus: "pending",
+        enabled: false,
+        featured: false,
+        sortOrder: portfolioCases.indexOf(item) * 10,
+      },
+      localizedData: localizedObject((locale) => ({
+        title: item.title[locale],
+        summary: item.summary[locale],
+        brief: item.summary[locale],
+        constraints: item.summary[locale],
+        research: item.summary[locale],
+        process: item.summary[locale],
+        result: item.summary[locale],
+        meta: item.seo[locale],
+      })),
+    })
+    ids.set(item.slug, id)
+  }
+
+  return ids
+}
+
+async function importBookingSettings() {
+  await payload.updateGlobal({
+    slug: "booking-settings",
+    data: {
+      timezone: "Europe/Kyiv",
+      enabledModes: ["inquiry", "booking-request"],
+      holdMinutes: 15,
+      providerRouting: [
+        { currency: "EUR", provider: "stripe", enabled: false },
+        { currency: "UAH", provider: "liqpay", enabled: false },
+      ],
+      notificationRecipients: [],
+    },
+    overrideAccess: true,
+  })
+  increment("booking-settings:updated")
+}
+
+async function importPages(mediaIDs: Map<string, ID>): Promise<Map<string, ID>> {
   const ids = new Map<string, ID>()
   const pageTypes = {
     studio: "studio",
@@ -602,7 +846,57 @@ async function importPages(): Promise<Map<string, ID>> {
             ? page.title[locale]
             : `${page.title[locale]} ${index + 1}`,
         body,
+        media:
+          index === 0 && page.mediaIds?.[0]
+            ? mediaIDs.get(page.mediaIds[0])
+            : undefined,
       })),
+      layout: page.body[locale].map((body, index) => ({
+        blockType: "richText",
+        heading: index === 0 ? page.title[locale] : `${page.title[locale]} ${index + 1}`,
+        body,
+      })),
+      ...(page.slug === "studio"
+        ? {
+            studioSignals: [
+              studioPageCopy.signals.team,
+              studioPageCopy.signals.space,
+              studioPageCopy.signals.hours,
+            ].map((signal) => ({
+              label: signal.label[locale],
+              value: signal.value,
+            })),
+            methodEyebrow: studioPageCopy.methodEyebrow[locale],
+            methodTitle: studioPageCopy.methodTitle[locale],
+            methodSteps: studioPageCopy.methodSteps.map((step) => ({
+              title: step.title[locale],
+              text: step.text[locale],
+            })),
+            clientsTitle: studioPageCopy.clientsTitle[locale],
+            clientsSummary: studioPageCopy.clientsSummary[locale],
+            privateTitle: studioPageCopy.privateTitle[locale],
+            corporateTitle: studioPageCopy.corporateTitle[locale],
+            directionsTitle: studioPageCopy.directionsTitle[locale],
+            ctaTitle: studioPageCopy.ctaTitle[locale],
+            ctaSummary: studioPageCopy.ctaSummary[locale],
+          }
+        : {}),
+      ...(page.slug === "booking"
+        ? {
+            formTitle:
+              locale === "uk"
+                ? "Деталі заявки"
+                : locale === "ru"
+                  ? "Детали заявки"
+                  : "Inquiry details",
+            formSummary:
+              locale === "uk"
+                ? "Контакти, формат роботи й оплата — в одній послідовній формі."
+                : locale === "ru"
+                  ? "Контакты, формат работы и оплата — в одной последовательной форме."
+                  : "Contacts, working format, and payment in one clear form.",
+          }
+        : {}),
       cta: page.cta
         ? { label: page.cta.label[locale], action: "contact" }
         : undefined,
@@ -655,6 +949,22 @@ async function importPages(): Promise<Map<string, ID>> {
         summary: contacts.summary[locale],
         eyebrow: "PURITY",
         body: `${siteSettings.contacts.address[locale]}\n\n${siteSettings.contacts.hours[locale]}\n\n${siteSettings.contacts.responseTime[locale]}`,
+        sections: [
+          {
+            heading: contacts.title[locale],
+            body: contacts.summary[locale],
+            media: mediaIDs.get("editorial-contacts-studio"),
+          },
+        ],
+        layout: [
+          {
+            blockType: "mediaText",
+            heading: contacts.title[locale],
+            body: contacts.summary[locale],
+            media: mediaIDs.get("editorial-contacts-studio"),
+            mediaPosition: "start",
+          },
+        ],
         cta: {
           label: siteSettings.contacts.actionLabel[locale],
           action: "booking-request",
@@ -666,6 +976,94 @@ async function importPages(): Promise<Map<string, ID>> {
       })),
     })
     ids.set("contacts", id)
+  }
+
+  const portfolioID = await upsertLocalized({
+    collection: "pages",
+    key: "legacyKey",
+    value: "page:portfolio",
+    common: {
+      legacyKey: "page:portfolio",
+      slug: "portfolio",
+      pageType: "portfolio",
+      enabled: true,
+      featured: false,
+      sortOrder: 80,
+    },
+    localizedData: localizedObject((locale) => ({
+      title: portfolioPageCopy.title[locale],
+      summary: portfolioPageCopy.summary[locale],
+      eyebrow: portfolioPageCopy.eyebrow[locale],
+      body: portfolioPageCopy.summary[locale],
+      heroMediaLabel: portfolioPageCopy.heroImageLabel[locale],
+      standardsTitle: portfolioPageCopy.standardsTitle[locale],
+      standards: portfolioPageCopy.standards.map((item) => ({
+        title: item.title[locale],
+        text: item.text[locale],
+      })),
+      recordTitle: portfolioPageCopy.recordTitle[locale],
+      recordSummary: portfolioPageCopy.recordSummary[locale],
+      recordItems: portfolioPageCopy.recordItems[locale].map((text) => ({ text })),
+      currentTitle: portfolioPageCopy.currentTitle[locale],
+      currentItems: portfolioPageCopy.current.map((item) => ({
+        title: item.title[locale],
+        text: item.text[locale],
+      })),
+      flowTitle: portfolioPageCopy.flowTitle[locale],
+      flowItems: portfolioPageCopy.flow[locale].map((text) => ({ text })),
+      ctaTitle: portfolioPageCopy.ctaTitle[locale],
+      ctaSummary: portfolioPageCopy.ctaSummary[locale],
+      secondaryCTALabel: portfolioPageCopy.bookingLabel[locale],
+      emptyEyebrow: portfolioPageCopy.emptyEyebrow[locale],
+      emptyTitle: portfolioPageCopy.emptyTitle[locale],
+      emptySummary: portfolioPageCopy.emptySummary[locale],
+      emptyAction: portfolioPageCopy.emptyAction[locale],
+      sections: [
+        {
+          heading: portfolioPageCopy.title[locale],
+          body: portfolioPageCopy.summary[locale],
+          media: mediaIDs.get("editorial-portfolio-process"),
+        },
+      ],
+      cta: { label: portfolioPageCopy.contactLabel[locale], action: "contact" },
+      meta: {
+        title: `${portfolioPageCopy.title[locale]} | PURITY Fashion Studio`,
+        description: portfolioPageCopy.summary[locale],
+      },
+    })),
+  })
+  ids.set("portfolio", portfolioID)
+
+  for (const status of ["success", "pending", "cancel", "failure", "refunded"] as const) {
+    const statusID = await upsertLocalized({
+      collection: "pages",
+      key: "legacyKey",
+      value: `page:payment-${status}`,
+      common: {
+        legacyKey: `page:payment-${status}`,
+        slug: `payment-${status}`,
+        pageType: "service-state",
+        enabled: true,
+        featured: false,
+        sortOrder: 110,
+      },
+      localizedData: localizedObject((locale) => ({
+        title: paymentStatusCopy[status].title[locale],
+        summary: paymentStatusCopy[status].summary[locale],
+        eyebrow: paymentStatusCopy[status].eyebrow[locale],
+        body: paymentStatusCopy[status].summary[locale],
+        sections: [],
+        cta: {
+          label: paymentStatusCopy[status].action[locale],
+          action: "booking-request",
+        },
+        meta: {
+          title: `${paymentStatusCopy[status].title[locale]} | PURITY`,
+          description: paymentStatusCopy[status].summary[locale],
+        },
+      })),
+    })
+    ids.set(`payment-${status}`, statusID)
   }
 
   return ids
@@ -698,6 +1096,14 @@ async function importGlobals({
       ),
       selectedCourses: [...courseIDs.values()],
       selectedCollections: [...collectionIDs.values()],
+      sectionMedia: {
+        research: mediaIDs.get("generated-editorial-research"),
+        imagine: mediaIDs.get("editorial-collections-flatlay"),
+        create: mediaIDs.get("generated-editorial-create"),
+        directions: mediaIDs.get("editorial-directions-texture"),
+        studio: mediaIDs.get("editorial-studio-method"),
+        portfolio: mediaIDs.get("editorial-portfolio-process"),
+      },
     },
     localizedObject((locale) => ({
       heroEyebrow: siteSettings.home.eyebrow[locale],
@@ -715,7 +1121,22 @@ async function importGlobals({
         label: step.title[locale],
         description: step.text[locale],
       })),
+      serviceIntro: homePageCopy.serviceIntro[locale],
+      priceNote: homePageCopy.priceNote[locale],
+      methodEyebrow: homePageCopy.methodEyebrow[locale],
+      methodTitle: homePageCopy.methodTitle[locale],
+      methodDetails: homePageCopy.methodDetails[locale].map((text) => ({ text })),
       studioIntro: siteSettings.home.studioSummary[locale],
+      studioEyebrow: siteSettings.home.studioEyebrow[locale],
+      studioTitle: siteSettings.home.studioTitle[locale],
+      serviceRailTitle: siteSettings.home.serviceRailTitle[locale],
+      collectionRailTitle: siteSettings.home.collectionRailTitle[locale],
+      portfolioNote: siteSettings.home.portfolioNote[locale],
+      portfolioTitle: homePageCopy.portfolioTitle[locale],
+      portfolioSummary: homePageCopy.portfolioSummary[locale],
+      portfolioSignals: homePageCopy.portfolioSignals[locale].map((text) => ({ text })),
+      faqTitle: homePageCopy.faqTitle[locale],
+      faq: homePageCopy.faq[locale].map(([question, answer]) => ({ question, answer })),
       finalCTATitle: studioPageCopy.ctaTitle[locale],
       finalCTASummary: studioPageCopy.ctaSummary[locale],
       meta: siteSettings.seo[locale],
@@ -786,17 +1207,27 @@ async function importGlobals({
       contacts: {
         email: siteSettings.contacts.email ?? "voronina@purity-fashion.com",
         phone: siteSettings.contacts.phone ?? siteSettings.contacts.phones[0],
+        actionPath: siteSettings.contacts.actionPath,
+        viberURL: siteSettings.contacts.viberUrl,
       },
       localeLabels: { uk: "Українська", ru: "Русский", en: "English" },
       map: { provider: "none" },
       maintenance: { enabled: false },
+      uiLabels: {},
     },
     localizedObject((locale) => ({
       contacts: {
         email: siteSettings.contacts.email ?? "voronina@purity-fashion.com",
         phone: siteSettings.contacts.phone ?? siteSettings.contacts.phones[0],
         address: siteSettings.contacts.address[locale],
+        city: siteSettings.contacts.city[locale],
         hours: siteSettings.contacts.hours[locale],
+        actionLabel: siteSettings.contacts.actionLabel[locale],
+      },
+      uiLabels: {
+        language: siteSettings.languageLabel[locale],
+        close: siteSettings.closeLabel[locale],
+        externalLink: siteSettings.externalLinkLabel[locale],
       },
       maintenance: { enabled: false, message: "" },
     })),
@@ -838,13 +1269,32 @@ async function linkDirections(
 }
 
 async function run() {
+  if (dryRun) {
+    for (const asset of mediaAssets) mediaPath(asset)
+    console.log(
+      JSON.stringify({
+        target: target ?? "unspecified",
+        publish,
+        media: mediaAssets.length,
+        directions: serviceCategories.length,
+        services: services.length,
+        courses: courses.length,
+        collections: collections.length,
+        portfolioCases: portfolioCases.length,
+        pages: publicPages.length + 1,
+      })
+    )
+    return
+  }
   const mediaIDs = await importMedia()
   const directionIDs = await importDirections()
   const serviceIDs = await importServices(directionIDs, mediaIDs)
   await importServiceOffers(serviceIDs)
   const courseIDs = await importCourses(directionIDs, mediaIDs)
   const collectionIDs = await importFashionCollections(mediaIDs)
-  await importPages()
+  await importPortfolioCases(mediaIDs)
+  await importPages(mediaIDs)
+  await importBookingSettings()
   await linkDirections(directionIDs, serviceIDs, courseIDs, collectionIDs)
   await importGlobals({
     directionIDs,

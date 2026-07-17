@@ -11,6 +11,8 @@ import {
 import { defaultLocale, locales, localizePath } from "@/i18n/routing"
 import { env } from "@/lib/env"
 
+export const dynamic = "force-dynamic"
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paths = new Set<string>()
   const [directions, pages, services, courses, collections, portfolioCases] =

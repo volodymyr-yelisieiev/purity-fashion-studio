@@ -1,8 +1,7 @@
 # PURITY Launch and Handoff
 
 This repository now contains the integrated Next.js + Payload target platform.
-`CONTENT_SOURCE=seed` is a migration/test mode only; the intended production
-source is `payload`.
+Payload is the only public runtime content source.
 
 ## Production Deployment
 
@@ -12,10 +11,10 @@ source is `payload`.
    origin for both public URLs.
 3. Back up the database, then run `pnpm payload:migrate:status` and
    `pnpm payload:migrate` before switching application traffic.
-4. Run the importer once with `ALLOW_CMS_SEED=true pnpm cms:import`; rerun it to
+4. Run the guarded importer with `--target=production
+   --confirm=IMPORT_PRODUCTION --force`; rerun it to
    prove idempotency before editors change production content.
-5. Review all three locales in Draft Mode, publish approved records, and set
-   `CONTENT_SOURCE=payload`.
+5. Review all three locales in Draft Mode and publish approved records.
 6. Run `pnpm qa:all`, verify `/api/health`, `/robots.txt`, `/sitemap.xml`, and
    perform signed webhook test transactions in both currencies.
 7. Enable indexing only on the canonical production deployment by setting
@@ -28,7 +27,7 @@ records created after the source switch.
 
 ## Environment and Secrets
 
-- Payload: `PAYLOAD_ENABLED=true`, `CONTENT_SOURCE=payload`, two independent
+- Payload: `PAYLOAD_ENABLED=true`, two independent
   32+ character secrets, managed `DATABASE_URL`.
 - Media: `BLOB_READ_WRITE_TOKEN` is mandatory when Payload serves media on
   enabled and the server enforces MIME/rights gates.

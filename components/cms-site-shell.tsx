@@ -19,15 +19,6 @@ export async function SiteHeader({
   currentPath = "/",
   overlay = true,
 }: ShellProps & { overlay?: boolean }) {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return (
-      <SiteHeaderClient
-        locale={locale}
-        currentPath={currentPath}
-        overlay={overlay}
-      />
-    )
-  }
   const [headerData, settingsData] = await Promise.all([
     getHeader(locale),
     getSiteSettings(locale),
@@ -44,9 +35,6 @@ export async function SiteHeader({
 }
 
 export async function SiteFooter({ locale, currentPath = "/" }: ShellProps) {
-  if (process.env.CONTENT_SOURCE !== "payload") {
-    return <SiteFooterClient locale={locale} currentPath={currentPath} />
-  }
   const [footerData, headerData, settingsData] = await Promise.all([
     getFooter(locale),
     getHeader(locale),

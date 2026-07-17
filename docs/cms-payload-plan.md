@@ -33,16 +33,22 @@ Trusted Local API bypasses are limited to named booking/webhook/import contexts.
 Run migrations before import:
 
 ```bash
+pnpm content:manifest -- --out tmp/purity-content-manifest.v1.json
 pnpm payload:migrate:status
 pnpm payload:migrate
-ALLOW_CMS_SEED=true pnpm cms:import
-ALLOW_CMS_SEED=true pnpm cms:import
+ALLOW_CMS_SEED=true pnpm cms:import -- --target=preview --confirm=IMPORT_PREVIEW
 ```
 
 The importer upserts in relationship order and is refused unless explicitly
 enabled. It must not overwrite edited production content without a separately
 implemented and approved force policy. Migration files and `payload-types.ts`
 are committed; schema push is limited to isolated development.
+
+On Vercel, `vercel-build` runs migrations and the guarded importer only when
+`PAYLOAD_MIGRATE_ON_DEPLOY=true`, `CONTENT_IMPORT_ON_DEPLOY=true` and
+`ALLOW_CMS_SEED=true` are all explicitly set. Preview uses those controls for
+its clean import; Production stays disabled until Preview parity and QA are
+green on the reviewed release commit.
 
 ## Publish, preview and cache
 
@@ -62,10 +68,13 @@ paste is disabled. Thumbnail, card, editorial and hero derivatives are
 generated. Public reads require visibility, approved and non-expired rights.
 Generated media cannot be real client proof.
 
-## Source switch
+## Runtime source
 
-`CONTENT_SOURCE=seed|payload` is the temporary migration flag. Production moves
-to `payload` only after import parity, locale review, route/metadata comparison,
-role UAT and backup verification. After editors start changing CMS content, an
-application rollback must preserve the database; seed is no longer an
-authoritative rollback source.
+The public runtime is Payload-only. Static content is a versioned one-time
+migration input and test fixture; public routes never import it. An application
+rollback must preserve the database because seed is not an authoritative
+runtime or rollback source.
+
+`pnpm content:manifest` writes the versioned route/localization/media checksum
+fixture used for parity review. Run the guarded importer twice in Preview and
+compare the resulting counts and checksums before Production cutover.

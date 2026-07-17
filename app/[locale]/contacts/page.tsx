@@ -12,15 +12,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { services, siteSettings } from "@/content/source"
-import { getEntryMetadata, getLocalizedMetadata } from "@/content/metadata"
+import { getLocalizedMetadata } from "@/content/metadata"
 import {
   getFooter,
   getPageBySlug,
   getPublishedServices,
   getSiteSettings,
 } from "@/content/public-api"
-import { getCategory, getMediaAsset } from "@/content/queries"
 import { BookingForm } from "@/features/booking/booking-form"
 import { hasLocale, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
@@ -74,6 +72,11 @@ const contactEntryLabels = {
     uk: "Оберіть напрям і зручний спосіб зв’язку. Форма одразу покаже відповідний платіжний маршрут.",
     ru: "Выберите направление и удобный способ связи. Форма сразу покажет подходящий платежный маршрут.",
     en: "Choose a direction and preferred contact method. The form immediately shows the matching payment route.",
+  },
+  external: {
+    uk: "Відкривається у новій вкладці",
+    ru: "Открывается в новой вкладке",
+    en: "Opens in a new tab",
   },
 } as const
 
@@ -173,7 +176,7 @@ function ContactEntrypoints({
             {social.label}
             <ExternalLinkIcon aria-hidden="true" className="size-3.5" />
             <span className="sr-only">
-              {siteSettings.externalLinkLabel[locale]}
+              {contactEntryLabels.external[locale]}
             </span>
           </a>
         ))}
@@ -191,10 +194,7 @@ export async function generateMetadata({
     return {}
   }
 
-  const [category, page] = await Promise.all([
-    Promise.resolve(getCategory("contacts")),
-    getPageBySlug(rawLocale, "contacts"),
-  ])
+  const page = await getPageBySlug(rawLocale, "contacts")
 
   if (page) {
     return getLocalizedMetadata({
@@ -205,11 +205,7 @@ export async function generateMetadata({
     })
   }
 
-  if (!category) {
-    return {}
-  }
-
-  return getEntryMetadata(category, rawLocale, "/contacts")
+  return {}
 }
 
 export default async function ContactsPage({ params }: ContactsPageProps) {
@@ -220,47 +216,26 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
   }
 
   const locale: Locale = rawLocale
-  const category = getCategory("contacts")
-
-  if (!category) {
-    notFound()
-  }
-
   const [page, payloadServices, footer, settings] = await Promise.all([
     getPageBySlug(locale, "contacts"),
     getPublishedServices(locale),
     getFooter(locale),
     getSiteSettings(locale),
   ])
-  const serviceOptions =
-    process.env.CONTENT_SOURCE === "payload"
-      ? payloadServices.map((service) => ({
-          slug: service.slug,
-          title: service.title,
-        }))
-      : services
-          .filter((service) => service.visibleInMvp)
-          .map((service) => ({
-            slug: service.slug,
-            title: service.title[locale],
-          }))
-  const details: ContactDetails =
-    process.env.CONTENT_SOURCE === "payload"
-      ? {
-          phones: [footer.phone],
-          email: footer.email,
-          socials: footer.socialLinks.map((item) => ({
-            label: item.platform,
-            url: item.url,
-          })),
-        }
-      : {
-          phones: siteSettings.contacts.phones,
-          email: siteSettings.contacts.email ?? undefined,
-          viberUrl: siteSettings.contacts.viberUrl,
-          socials: siteSettings.contacts.socials,
-        }
-  const mediaAsset = getMediaAsset("editorial-contacts-studio")
+  if (!page) notFound()
+  const serviceOptions = payloadServices.map((service) => ({
+    slug: service.slug,
+    title: service.title,
+  }))
+  const details: ContactDetails = {
+    phones: [footer.phone],
+    email: footer.email,
+    socials: footer.socialLinks.map((item) => ({
+      label: item.platform,
+      url: item.url,
+    })),
+  }
+  const mediaAsset = page.mediaAsset
 
   return (
     <div className="min-h-svh bg-background text-foreground">
@@ -269,9 +244,9 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={page?.eyebrow ?? category.title[locale]}
-          title={page?.title ?? category.title[locale]}
-          summary={page?.summary ?? category.summary[locale]}
+          eyebrow={page.eyebrow ?? page.title}
+          title={page.title}
+          summary={page.summary}
           mediaAsset={mediaAsset}
           composition="editorial"
         >
@@ -290,9 +265,7 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
                       {contactEntryLabels.address[locale]}
                     </CardTitle>
                     <CardDescription className="min-w-0 break-words">
-                      {process.env.CONTENT_SOURCE === "payload"
-                        ? settings.contacts.address
-                        : siteSettings.contacts.city[locale]}
+                      {settings.contacts.address}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="border-t border-border pt-5 text-sm leading-7 text-muted-foreground">

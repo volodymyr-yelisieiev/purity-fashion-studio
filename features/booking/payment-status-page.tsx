@@ -4,12 +4,8 @@ import { notFound } from "next/navigation"
 import { EditorialHero } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { buttonVariants } from "@/components/ui/button"
-import { getMediaAsset } from "@/content/queries"
-import {
-  paymentStatusCopy,
-  providerLabels,
-  type PaymentStatus,
-} from "@/features/booking/content"
+import { providerLabels, type PaymentStatus } from "@/features/booking/content"
+import { getPageBySlug } from "@/content/public-api"
 import {
   paymentProviders,
   type PaymentProvider,
@@ -40,7 +36,8 @@ async function PaymentStatusPage({
   }
 
   const verified = await getVerifiedPaymentStatus(order, status)
-  const copy = paymentStatusCopy[verified.status]
+  const page = await getPageBySlug(locale, `payment-${verified.status}`)
+  if (!page) notFound()
   const verifiedProvider = verified.provider ?? provider
   const providerValue = isPaymentProvider(verifiedProvider)
     ? providerLabels[verifiedProvider][locale]
@@ -64,10 +61,9 @@ async function PaymentStatusPage({
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={detailLabels.provider}
-          title={copy.title[locale]}
-          summary={copy.summary[locale]}
-          mediaAsset={getMediaAsset("editorial-utility-patternmaking")}
+          eyebrow={page.eyebrow ?? detailLabels.provider}
+          title={page.title}
+          summary={page.summary}
           composition="quiet"
         >
           <dl
@@ -99,7 +95,7 @@ async function PaymentStatusPage({
               })
             )}
           >
-            {copy.action[locale]}
+            {page.cta?.label ?? page.title}
           </Link>
         </EditorialHero>
       </main>

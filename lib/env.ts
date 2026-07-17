@@ -12,7 +12,6 @@ const envSchema = z.object({
     .string()
     .regex(/^G-[A-Z0-9]+$/)
     .optional(),
-  CONTENT_SOURCE: z.enum(["seed", "payload"]).default("seed"),
   PAYLOAD_ENABLED: z.enum(["true", "false"]).default("false"),
   PAYLOAD_SECRET: z.string().optional(),
   PREVIEW_SECRET: z.string().optional(),
@@ -37,10 +36,7 @@ if (!parsed.success) {
   throw new Error(z.prettifyError(parsed.error))
 }
 
-if (
-  parsed.data.PAYLOAD_ENABLED === "true" ||
-  parsed.data.CONTENT_SOURCE === "payload"
-) {
+if (parsed.data.PAYLOAD_ENABLED === "true") {
   const missing = [
     ["PAYLOAD_SECRET", parsed.data.PAYLOAD_SECRET],
     ["PREVIEW_SECRET", parsed.data.PREVIEW_SECRET],

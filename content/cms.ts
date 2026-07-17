@@ -1,6 +1,28 @@
 import { locales } from "@/i18n/routing"
 
-import { getContentSnapshot, type ContentSnapshot } from "./source"
+import {
+  collections,
+  courses,
+  mediaAssets,
+  navigation,
+  portfolioCases,
+  publicPages,
+  serviceCategories,
+  services,
+  siteSettings,
+} from "./data"
+
+const migrationContent = {
+  serviceCategories,
+  services,
+  courses,
+  collections,
+  portfolioCases,
+  publicPages,
+  navigation,
+  mediaAssets,
+  siteSettings,
+}
 
 export const cmsCollectionSlugs = [
   "service-categories",
@@ -406,9 +428,7 @@ function withCmsId<T extends { slug?: string; id?: string }>(entry: T) {
   }
 }
 
-export function buildCmsSeed(
-  snapshot: ContentSnapshot = getContentSnapshot()
-): CmsSeed {
+export function buildCmsSeed(snapshot = migrationContent): CmsSeed {
   return {
     "service-categories": snapshot.serviceCategories.map(withCmsId),
     services: snapshot.services.map(withCmsId),

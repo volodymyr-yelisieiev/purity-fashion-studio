@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "tsx scripts/vercel-build.ts",
     "start": "next start",
     "setup": "tsx scripts/setup-project.ts",
     "lint": "eslint --max-warnings=0",
@@ -15,7 +16,8 @@
     "env:check": "tsx scripts/check-env.ts",
     "content:validate": "tsx scripts/validate-content.ts",
     "cms:check": "tsx scripts/check-cms-contract.ts",
-    "cms:seed": "tsx scripts/export-cms-seed.ts",
+    "cms:seed": "tsx scripts/export-content-manifest.ts",
+    "content:manifest": "tsx scripts/export-content-manifest.ts",
     "cms:import": "tsx payload/seed/import-seed.ts",
     "payload": "payload",
     "payload:types": "payload generate:types",

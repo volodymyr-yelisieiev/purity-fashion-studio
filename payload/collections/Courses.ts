@@ -12,6 +12,7 @@ import {
   publicRead,
 } from "../fields/shared"
 import { publicCollectionHooks } from "../hooks/revalidation"
+import { supplementaryLayoutField } from "../blocks/editorial"
 
 export const Courses: CollectionConfig = {
   slug: "courses",
@@ -39,6 +40,19 @@ export const Courses: CollectionConfig = {
       required: true,
     },
     localizedTextarea("description", "Description"),
+    localizedText("eyebrow", "Eyebrow"),
+    localizedText("serviceLabel", "Related service label"),
+    localizedText("audienceTitle", "Audience title"),
+    localizedText("formatTitle", "Format title"),
+    localizedText("methodTitle", "Method title"),
+    localizedText("prerequisitesTitle", "Prerequisites title"),
+    localizedText("curriculumTitle", "Curriculum title"),
+    localizedTextarea("curriculumSummary", "Curriculum summary"),
+    localizedText("outcomesTitle", "Outcomes title"),
+    localizedTextarea("outcomesSummary", "Outcomes summary"),
+    localizedText("commercialTitle", "Commercial title"),
+    localizedText("ctaTitle", "CTA title"),
+    localizedTextarea("ctaSummary", "CTA summary"),
     localizedTextarea("audience", "Audience"),
     localizedTextarea("prerequisites", "Prerequisites", { required: false }),
     { name: "sessions", type: "number", required: true, min: 1 },
@@ -98,6 +112,7 @@ export const Courses: CollectionConfig = {
     },
     faqField,
     ctaField,
+    supplementaryLayoutField,
   ],
   versions: draftVersions,
   timestamps: true,

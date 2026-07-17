@@ -59,8 +59,6 @@ import {
 } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
-import { services } from "@/content/services"
-import { siteSettings } from "@/content/source"
 import { hasLocale, type Locale } from "@/i18n/routing"
 
 export const metadata: Metadata = {
@@ -71,6 +69,16 @@ type StyleguidePageProps = {
   params: Promise<{ locale: string }>
 }
 
+const closeLabel = { uk: "Закрити", ru: "Закрыть", en: "Close" } as const
+const serviceDemo = {
+  title: { uk: "Назва послуги", ru: "Название услуги", en: "Service title" },
+  summary: {
+    uk: "Демонстраційний опис компонента.",
+    ru: "Демонстрационное описание компонента.",
+    en: "Demonstration component summary.",
+  },
+} as const
+
 export default async function StyleguidePage({ params }: StyleguidePageProps) {
   const { locale: rawLocale } = await params
 
@@ -80,7 +88,7 @@ export default async function StyleguidePage({ params }: StyleguidePageProps) {
 
   const locale: Locale = rawLocale
   const t = await getTranslations("Styleguide")
-  const service = services[0]
+  const service = serviceDemo
 
   return (
     <div className="min-h-svh bg-background text-foreground">
@@ -408,7 +416,7 @@ export default async function StyleguidePage({ params }: StyleguidePageProps) {
                       >
                         <XIcon />
                         <span className="sr-only">
-                          {siteSettings.closeLabel[locale]}
+                          {closeLabel[locale]}
                         </span>
                       </DialogClose>
                       <DialogHeader>
@@ -436,7 +444,7 @@ export default async function StyleguidePage({ params }: StyleguidePageProps) {
                       >
                         <XIcon />
                         <span className="sr-only">
-                          {siteSettings.closeLabel[locale]}
+                          {closeLabel[locale]}
                         </span>
                       </SheetClose>
                       <SheetHeader>

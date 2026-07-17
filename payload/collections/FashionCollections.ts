@@ -10,6 +10,7 @@ import {
   publicRead,
 } from "../fields/shared"
 import { publicCollectionHooks } from "../hooks/revalidation"
+import { supplementaryLayoutField } from "../blocks/editorial"
 
 export const FashionCollections: CollectionConfig = {
   slug: "fashion-collections",
@@ -36,8 +37,44 @@ export const FashionCollections: CollectionConfig = {
   }),
   fields: [
     ...commonPublicFields,
+    localizedText("eyebrow", "Eyebrow", { required: false, maxLength: 100 }),
     localizedTextarea("narrative", "Narrative"),
     localizedTextarea("stylingNotes", "Styling notes", { required: false }),
+    localizedText("stylingTitle", "Styling section title"),
+    {
+      name: "styling",
+      type: "array",
+      localized: true,
+      fields: [
+        { name: "title", type: "text", required: true, maxLength: 160 },
+        { name: "text", type: "textarea", required: true, maxLength: 1200 },
+      ],
+    },
+    localizedText("factsTitle", "Facts section title"),
+    {
+      name: "facts",
+      type: "array",
+      localized: true,
+      fields: [
+        { name: "title", type: "text", required: true, maxLength: 160 },
+        { name: "text", type: "textarea", required: true, maxLength: 1200 },
+      ],
+    },
+    localizedText("inquiryTitle", "Inquiry section title"),
+    {
+      name: "inquirySteps",
+      type: "array",
+      localized: true,
+      fields: [
+        { name: "title", type: "text", required: true, maxLength: 160 },
+        { name: "text", type: "textarea", required: true, maxLength: 1200 },
+      ],
+    },
+    localizedText("materialsTitle", "Materials section title"),
+    localizedText("availabilityTitle", "Availability section title"),
+    localizedText("ctaTitle", "CTA title"),
+    localizedTextarea("ctaSummary", "CTA summary", { maxLength: 1000 }),
+    localizedText("serviceLabel", "Related service label", { maxLength: 120 }),
     {
       name: "collectionType",
       type: "select",
@@ -116,6 +153,7 @@ export const FashionCollections: CollectionConfig = {
       required: true,
     }),
     ctaField,
+    supplementaryLayoutField,
   ],
   versions: draftVersions,
   timestamps: true,

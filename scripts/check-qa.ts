@@ -10,8 +10,8 @@ import {
   serviceCategories,
   services,
   siteSettings,
-} from "../content/source"
-import { getContentRoutes } from "../content/routes"
+} from "../content/data"
+import { getContentRoutes } from "../content/legacy-routes"
 import { locales } from "../i18n/routing"
 
 const requiredPreset = "b59jufTOPg"

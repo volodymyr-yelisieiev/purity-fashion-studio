@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { getContentRoutes } from "../../content/routes"
+import { getContentRoutes } from "../../content/legacy-routes"
 
 const colorSchemes = ["light"] as const
 
