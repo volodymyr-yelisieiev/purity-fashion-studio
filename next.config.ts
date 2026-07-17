@@ -2,9 +2,14 @@ import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin"
 import { withPayload } from "@payloadcms/next/withPayload"
 
+const previewLiveFeedbackOrigin =
+  process.env.VERCEL_ENV === "preview" ? " https://vercel.live" : ""
+const developmentUnsafeEval =
+  process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""
+
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com${previewLiveFeedbackOrigin}${developmentUnsafeEval}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "media-src 'self' data: blob: https:",
