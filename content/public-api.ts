@@ -1304,12 +1304,6 @@ async function findPayloadServiceCards({
   const payload = await getPayloadClient()
   const and = []
   if (ids?.length) and.push({ id: { in: ids } })
-  if (slugs?.length) {
-    // Payload's Local API applies access-control conditions to the same where
-    // tree. An explicit equality branch keeps a one-slug public lookup (the
-    // Atelier landing) deterministic after those conditions are merged.
-    and.push({ or: slugs.map((slug) => ({ slug: { equals: slug } })) })
-  }
   const result = await payload.find({
     collection: "services",
     depth: 0,
@@ -1372,18 +1366,21 @@ async function findPayloadServiceCards({
     ])
   )
 
-  return result.docs.map((service) => {
-    const firstMedia = service.gallery?.[0]
-    const mediaID = typeof firstMedia === "string" ? firstMedia : firstMedia?.id
-    return {
-      id: service.id,
-      slug: service.slug,
-      routeSegment: service.slug,
-      title: service.title,
-      summary: service.summary,
-      mediaAsset: mediaID ? mediaByID.get(mediaID) : undefined,
-    }
-  })
+  return result.docs
+    .filter((service) => !slugs?.length || slugs.includes(service.slug))
+    .map((service) => {
+      const firstMedia = service.gallery?.[0]
+      const mediaID =
+        typeof firstMedia === "string" ? firstMedia : firstMedia?.id
+      return {
+        id: service.id,
+        slug: service.slug,
+        routeSegment: service.slug,
+        title: service.title,
+        summary: service.summary,
+        mediaAsset: mediaID ? mediaByID.get(mediaID) : undefined,
+      }
+    })
 }
 
 export async function getPublishedServices(
