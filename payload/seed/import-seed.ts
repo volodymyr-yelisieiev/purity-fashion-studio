@@ -188,13 +188,33 @@ async function updateGlobalLocalized(
   for (const locale of locales) {
     await payload.updateGlobal({
       slug,
-      data: { ...common, ...localizedData[locale] },
+      data: mergeGlobalData(common, localizedData[locale]),
       draft: drafts ? !publish : undefined,
       locale,
       overrideAccess: true,
     } as never)
   }
   increment(`${slug}:updated`)
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+}
+
+function mergeGlobalData(
+  common: Record<string, unknown>,
+  localized: Record<string, unknown>
+) {
+  const data = { ...common, ...localized }
+
+  for (const [key, localizedValue] of Object.entries(localized)) {
+    const commonValue = common[key]
+    if (isRecord(commonValue) && isRecord(localizedValue)) {
+      data[key] = { ...commonValue, ...localizedValue }
+    }
+  }
+
+  return data
 }
 
 function mediaPath(asset: (typeof mediaAssets)[number]): string {
