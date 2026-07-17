@@ -134,7 +134,11 @@ async function upsertLocalized({
   }
 
   let id = existing.docs[0]?.id
-  const initialData = { ...common, ...localizedData.uk }
+  // Payload's Local API does not infer a transition from an existing draft to
+  // published simply from `draft: false`. Persist the version status with the
+  // import data so a deterministic published import is also publicly readable.
+  const publicationStatus = drafts && publish ? { _status: "published" } : {}
+  const initialData = { ...common, ...localizedData.uk, ...publicationStatus }
 
   if (id) {
     await payload.update({
