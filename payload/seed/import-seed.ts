@@ -1120,7 +1120,10 @@ async function importGlobals({
   await updateGlobalLocalized(
     "home",
     {
-      heroMedia: mediaIDs.get(siteSettings.defaultOgImageId),
+      // Open Graph artwork is intentionally separate from the public homepage
+      // hero. Preserve the authored cinematic hero rather than promoting the
+      // social-card logo into the rendered page.
+      heroMedia: mediaIDs.get("generated-editorial-hero-flow"),
       primaryCTA: { path: siteSettings.home.primaryCta.path },
       secondaryCTA: { path: siteSettings.home.secondaryCta.path },
       selectedDirections: [...directionIDs.values()],
