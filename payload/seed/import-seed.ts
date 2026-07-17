@@ -40,6 +40,7 @@ const publish = !process.argv.includes("--draft")
 const dryRun = process.argv.includes("--dry-run")
 const targetArg = process.argv.find((argument) => argument.startsWith("--target="))
 const target = targetArg?.split("=")[1]
+const productionTarget = target === "production"
 const counts = new Map<string, number>()
 
 if (!dryRun && !["local", "preview", "production"].includes(target ?? "")) {
@@ -65,7 +66,7 @@ if (process.env.ALLOW_CMS_SEED !== "true") {
   throw new Error("Set ALLOW_CMS_SEED=true to acknowledge CMS seed writes.")
 }
 
-if (process.env.NODE_ENV === "production" && !force) {
+if (productionTarget && !force) {
   throw new Error("Production seed requires the explicit --force flag.")
 }
 
@@ -125,7 +126,7 @@ async function upsertLocalized({
     where,
   })
 
-  if (existing.docs[0] && process.env.NODE_ENV === "production" && !force) {
+  if (existing.docs[0] && productionTarget && !force) {
     increment(`${collection}:skipped`)
     return existing.docs[0].id
   }
@@ -177,7 +178,7 @@ async function updateGlobalLocalized(
   localizedData: LocaleData,
   drafts: boolean
 ) {
-  if (process.env.NODE_ENV === "production" && !force) {
+  if (productionTarget && !force) {
     increment(`${slug}:skipped`)
     return
   }
