@@ -1398,8 +1398,9 @@ export async function getPublishedServices(
 
 async function findPayloadDirection(
   locale: Locale,
-  slug: string,
-  draft: boolean
+  value: string,
+  draft: boolean,
+  field: "slug" | "canonicalKey" = "slug"
 ): Promise<DirectionPageData | null> {
   const payload = await getPayloadClient()
   const result = await payload.find({
@@ -1446,7 +1447,7 @@ async function findPayloadDirection(
       relatedServices: true,
       meta: true,
     },
-    where: { slug: { equals: slug } },
+    where: { [field]: { equals: value } },
   })
   const direction = result.docs[0]
   if (!direction) return null
@@ -1526,6 +1527,29 @@ export async function getDirectionBySlug(locale: Locale, slug: string) {
         "cms:services",
         "cms:media",
         `cms:directions:${slug}`,
+      ],
+    }
+  )()
+}
+
+export async function getDirectionByCanonicalKey(
+  locale: Locale,
+  canonicalKey: string
+) {
+  const { isEnabled } = await draftMode()
+  if (isEnabled) {
+    return findPayloadDirection(locale, canonicalKey, true, "canonicalKey")
+  }
+
+  return unstable_cache(
+    () => findPayloadDirection(locale, canonicalKey, false, "canonicalKey"),
+    [payloadCacheNamespace, "cms", "direction-canonical", locale, canonicalKey],
+    {
+      tags: [
+        "cms:directions",
+        "cms:services",
+        "cms:media",
+        `cms:directions:canonical:${canonicalKey}`,
       ],
     }
   )()

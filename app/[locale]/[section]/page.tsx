@@ -27,6 +27,7 @@ import type {
 import { getLocalizedMetadata } from "@/content/metadata"
 import {
   getCourseBySlug,
+  getDirectionByCanonicalKey,
   getDirectionBySlug,
   getFashionCollectionBySlug,
   getPageBySlug,
@@ -1004,7 +1005,7 @@ export default async function SectionPage({ params }: SectionPageProps) {
   const presentationDirection =
     directionData ??
     (section === "atelier"
-      ? await getDirectionBySlug(locale, "realisation")
+      ? await getDirectionByCanonicalKey(locale, "realisation")
       : null)
   const atelierService = atelierServices[0]
   const category: ServiceCategory | undefined = directionData
