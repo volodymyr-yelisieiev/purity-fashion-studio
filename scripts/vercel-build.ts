@@ -20,7 +20,7 @@ if (process.env.PAYLOAD_RESET_ON_DEPLOY === "true") {
     throw new Error("PAYLOAD_RESET_ON_DEPLOY requires ALLOW_CMS_RESET=true.")
   }
 
-  run("pnpm", ["payload", "migrate:fresh"])
+  run("pnpm", ["payload", "migrate:fresh", "--force-accept-warning"])
   run("pnpm", [
     "blob:reset-preview",
     "--",
