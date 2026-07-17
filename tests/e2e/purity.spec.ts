@@ -61,7 +61,8 @@ test("single theme ignores OS and persisted dark preferences", async ({
 
   for (const locale of ["uk", "ru", "en"] as const) {
     await page.addInitScript(() => localStorage.setItem("theme", "dark"))
-    await page.goto(`/${locale}`, { waitUntil: "networkidle" })
+    await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" })
+    await expect(page.locator("main h1").first()).toBeVisible()
     await expect(page.locator("script#purity-theme-init")).toHaveCount(0)
     await expect
       .poll(() =>
