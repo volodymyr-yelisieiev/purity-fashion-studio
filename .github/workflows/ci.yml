@@ -32,9 +32,31 @@ jobs:
   verify:
     name: Verify
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: purity
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d purity"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
     env:
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_PAYLOAD_URL: http://localhost:3000
+      PAYLOAD_ENABLED: "true"
+      PAYLOAD_SECRET: ci-payload-secret-that-is-longer-than-thirty-two-characters
+      PREVIEW_SECRET: ci-preview-secret-that-is-longer-than-thirty-two-characters
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/purity
+      RESEND_API_KEY: re_ci_disabled
+      EMAIL_FROM: studio@example.com
+      ALLOW_CMS_SEED: "true"
       PAYMENT_MODE: test
       NEXT_TELEMETRY_DISABLED: "1"
     steps:
@@ -53,5 +75,9 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
+      - name: Migrate and import Payload test data
+        run: |
+          pnpm payload:migrate
+          pnpm cms:import -- --target=local --confirm=IMPORT_LOCAL
       - name: Verify
         run: pnpm qa:all
