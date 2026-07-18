@@ -1,4 +1,9 @@
-import type { Access, FieldAccess, PayloadRequest } from "payload"
+import type {
+  Access,
+  FieldAccess,
+  GlobalBeforeOperationHook,
+  PayloadRequest,
+} from "payload"
 
 export const roles = [
   "owner",
@@ -53,6 +58,17 @@ export const contentManagers: Access = ({ req }) =>
 
 export const contentOrDeveloper: Access = ({ req }) =>
   hasRole(req.user, ["owner", "editor", "developer"])
+
+export const enforcePublishedGlobalRead: GlobalBeforeOperationHook = ({
+  args,
+  operation,
+  req,
+}) =>
+  operation === "read" &&
+  args?.draft &&
+  !hasRole(req.user, ["owner", "editor", "developer"])
+    ? { ...args, draft: false }
+    : args
 
 export const operationsTeam: Access = ({ req }) =>
   hasRole(req.user, ["owner", "support"])

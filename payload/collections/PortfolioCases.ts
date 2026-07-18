@@ -1,6 +1,11 @@
 import type { Access, CollectionConfig, Where } from "payload"
 
-import { contentManagers, hasRole, ownerOnly } from "../access"
+import {
+  contentManagers,
+  contentOrDeveloper,
+  hasRole,
+  ownerOnly,
+} from "../access"
 import {
   commonPublicFields,
   draftVersions,
@@ -47,6 +52,7 @@ export const PortfolioCases: CollectionConfig = {
     create: contentManagers,
     delete: ownerOnly,
     read: approvedPortfolioRead,
+    readVersions: contentOrDeveloper,
     update: contentManagers,
   },
   hooks: {
@@ -61,14 +67,14 @@ export const PortfolioCases: CollectionConfig = {
               "Approved portfolio must be real client/editorial proof."
             )
           }
-        if (data.usageRightsStatus !== "approved") {
-          throw new Error(
-            "Approved portfolio requires approved usage rights."
-          )
-        }
-        if (!Array.isArray(data.services) || data.services.length === 0) {
-          throw new Error("Approved portfolio requires at least one service.")
-        }
+          if (data.usageRightsStatus !== "approved") {
+            throw new Error(
+              "Approved portfolio requires approved usage rights."
+            )
+          }
+          if (!Array.isArray(data.services) || data.services.length === 0) {
+            throw new Error("Approved portfolio requires at least one service.")
+          }
         }
 
         return data

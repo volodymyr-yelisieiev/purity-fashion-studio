@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload"
 
-import { contentManagers, ownerOnly } from "../access"
+import { contentManagers, contentOrDeveloper, ownerOnly } from "../access"
 import {
   draftVersions,
   enabledField,
@@ -36,6 +36,7 @@ export const Offers: CollectionConfig = {
     create: contentManagers,
     delete: ownerOnly,
     read: publicRead,
+    readVersions: contentOrDeveloper,
     update: contentManagers,
   },
   hooks: {

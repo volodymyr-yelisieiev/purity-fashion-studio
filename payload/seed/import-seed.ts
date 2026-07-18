@@ -5,6 +5,7 @@ import { getPayload, type CollectionSlug, type Where } from "payload"
 
 import { locales, type Locale } from "../../i18n/routing"
 import { getSiteURL } from "../../lib/site-url"
+import { assertTargetResourceIdentity } from "../../scripts/resource-identity"
 import manifest from "./manifests/purity-content-manifest.v1.json"
 
 const { loadEnvConfig } = nextEnv
@@ -13,6 +14,9 @@ loadEnvConfig(process.cwd())
 const force = process.argv.includes("--force")
 const publish = !process.argv.includes("--draft")
 const dryRun = process.argv.includes("--dry-run")
+const bootstrap = process.argv.includes("--bootstrap")
+const restore = process.argv.includes("--restore")
+const verifyOnly = process.argv.includes("--verify")
 const refreshMedia = process.argv.includes("--refresh-media")
 const targetArg = process.argv.find((argument) =>
   argument.startsWith("--target=")
@@ -21,18 +25,35 @@ const target = targetArg?.split("=")[1]
 const productionTarget = target === "production"
 const counts = new Map<string, number>()
 
-if (!dryRun && !["local", "preview", "production"].includes(target ?? "")) {
+if (target === "preview" || target === "production") {
+  assertTargetResourceIdentity(target)
+}
+
+if (
+  !dryRun &&
+  !verifyOnly &&
+  !["local", "preview", "production"].includes(target ?? "")
+) {
   throw new Error(
     "CMS import writes require --target=local|preview|production."
   )
 }
 
+if (!dryRun && !verifyOnly && bootstrap === restore) {
+  throw new Error("Choose exactly one write mode: --bootstrap or --restore.")
+}
+
+const expectedConfirmation = restore
+  ? `RESTORE_${target?.toUpperCase()}`
+  : `BOOTSTRAP_${target?.toUpperCase()}`
+
 if (
   !dryRun &&
-  !process.argv.includes(`--confirm=IMPORT_${target?.toUpperCase()}`)
+  !verifyOnly &&
+  !process.argv.includes(`--confirm=${expectedConfirmation}`)
 ) {
   throw new Error(
-    `Confirm the selected environment with --confirm=IMPORT_${target?.toUpperCase()}.`
+    `Confirm the selected environment with --confirm=${expectedConfirmation}.`
   )
 }
 
@@ -42,12 +63,14 @@ if (process.env.PAYLOAD_ENABLED !== "true") {
   )
 }
 
-if (process.env.ALLOW_CMS_SEED !== "true") {
+if (!verifyOnly && process.env.ALLOW_CMS_SEED !== "true") {
   throw new Error("Set ALLOW_CMS_SEED=true to acknowledge CMS seed writes.")
 }
 
-if (productionTarget && !force) {
-  throw new Error("Production seed requires the explicit --force flag.")
+if (restore && (!force || process.env.ALLOW_CMS_RESTORE !== "true")) {
+  throw new Error(
+    "Restore requires ALLOW_CMS_RESTORE=true and the explicit --force flag."
+  )
 }
 
 process.env.PAYLOAD_IMPORTING = "true"
@@ -1627,6 +1650,39 @@ async function verifyPublishedContent() {
   }
 }
 
+async function assertBootstrapDatabaseIsEmpty() {
+  if (!bootstrap) return
+
+  const collections: CollectionSlug[] = [
+    "users",
+    "media",
+    "directions",
+    "services",
+    "offers",
+    "courses",
+    "fashion-collections",
+    "portfolio-cases",
+    "testimonials",
+    "pages",
+    "leads",
+    "booking-requests",
+    "payment-orders",
+    "webhook-events",
+  ]
+
+  for (const collection of collections) {
+    const { totalDocs } = await payload.count({
+      collection,
+      overrideAccess: true,
+    })
+    if (totalDocs !== 0) {
+      throw new Error(
+        `CMS bootstrap requires an empty database; ${collection} contains ${totalDocs} document(s).`
+      )
+    }
+  }
+}
+
 async function run() {
   if (dryRun) {
     for (const asset of mediaAssets) mediaPath(asset)
@@ -1645,6 +1701,11 @@ async function run() {
     )
     return
   }
+  if (verifyOnly) {
+    await verifyPublishedContent()
+    return
+  }
+  await assertBootstrapDatabaseIsEmpty()
   console.log("Importing media")
   const mediaIDs = await retryDatabaseStage("media", importMedia)
   console.log("Importing directions")

@@ -30,30 +30,26 @@ Trusted Local API bypasses are limited to named booking/webhook/import contexts.
 
 ## Seed and migrations
 
-Run migrations before import:
+Bootstrap is allowed only against an empty database. Run it through the
+serialized `CMS release operation` workflow, or locally with exact resource
+identity variables:
 
 ```bash
 pnpm content:manifest:verify
 pnpm payload:migrate:status
 pnpm payload:migrate
-ALLOW_CMS_SEED=true pnpm cms:import -- --target=preview --confirm=IMPORT_PREVIEW
+ALLOW_CMS_SEED=true pnpm cms:bootstrap -- --target=preview --confirm=BOOTSTRAP_PREVIEW
 ```
 
-The importer upserts in relationship order and is refused unless explicitly
-enabled. It must not overwrite edited production content without a separately
-implemented and approved force policy. Migration files and `payload-types.ts`
-are committed; schema push is limited to isolated development.
+The bootstrap importer writes in relationship order and refuses any non-empty
+database. A restore is a separate, explicitly confirmed operation. Migration
+files and `payload-types.ts` are committed; schema push is limited to isolated
+development.
 
-On Vercel, `vercel-build` runs migrations and the guarded importer only when
-`PAYLOAD_MIGRATE_ON_DEPLOY=true`, `CONTENT_IMPORT_ON_DEPLOY=true` and
-`ALLOW_CMS_SEED=true` are all explicitly set. Preview uses those controls for
-its clean import; Production stays disabled until Preview parity and QA are
-green on the reviewed release commit.
-
-A one-time Preview reset additionally requires `PAYLOAD_RESET_ON_DEPLOY=true`
-and `ALLOW_CMS_RESET=true`. It runs Payload's `migrate:fresh` and deletes only
-the Preview Blob store after exact target confirmation; the build script rejects
-this control in Production.
+Vercel builds verify the manifest and build the application only. Migrations,
+bootstrap, restore and Preview reset are manual release operations serialized by
+GitHub environment. Preview reset also requires exact database and Blob store
+identity matches before the first destructive call.
 
 ## Publish, preview and cache
 

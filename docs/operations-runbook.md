@@ -2,17 +2,18 @@
 
 ## Health and incident triage
 
-Monitor `GET /api/health` without caching. `503` means the app cannot reach the
-Payload data plane. Check application errors, managed PostgreSQL, storage,
+Monitor `GET /api/health/live` and `GET /api/health/ready` without caching.
+Readiness returns `503` when migrations, required published content or its
+public media probe is unavailable. Check application errors, managed PostgreSQL, storage,
 Resend and provider status pages without logging secrets, raw webhooks, form
 messages or client PII. Site Settings can publish a localized maintenance
 message; payment/booking writes must fail closed rather than pretend success.
 
 ## Backup and restore
 
-The owner must configure automated encrypted PostgreSQL backups and Vercel Blob object
-versioning/lifecycle in the vendor control planes. Record the agreed retention,
-RPO and RTO in the private operations register.
+The owner must configure automated encrypted PostgreSQL backups and a separate
+recoverable media backup. Vercel Blob deletion is not assumed reversible.
+Record the agreed retention, RPO and RTO in the private operations register.
 
 Quarterly and before destructive migration:
 

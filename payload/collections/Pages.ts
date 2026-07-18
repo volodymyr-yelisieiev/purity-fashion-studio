@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload"
 
-import { contentManagers, ownerOnly } from "../access"
+import { contentManagers, contentOrDeveloper, ownerOnly } from "../access"
 import {
   commonPublicFields,
   ctaField,
@@ -23,6 +23,7 @@ export const Pages: CollectionConfig = {
     create: contentManagers,
     delete: ownerOnly,
     read: publicRead,
+    readVersions: contentOrDeveloper,
     update: contentManagers,
   },
   hooks: publicCollectionHooks({
@@ -56,7 +57,9 @@ export const Pages: CollectionConfig = {
       type: "array",
       localized: true,
       maxRows: 3,
-      admin: { condition: (_, siblingData) => siblingData?.pageType === "studio" },
+      admin: {
+        condition: (_, siblingData) => siblingData?.pageType === "studio",
+      },
       fields: [
         { name: "label", type: "text", required: true, maxLength: 100 },
         { name: "value", type: "text", required: true, maxLength: 100 },
@@ -76,7 +79,9 @@ export const Pages: CollectionConfig = {
     localizedText("clientsTitle", "Clients title", { required: false }),
     localizedTextarea("clientsSummary", "Clients summary", { required: false }),
     localizedText("privateTitle", "Private clients title", { required: false }),
-    localizedText("corporateTitle", "Corporate clients title", { required: false }),
+    localizedText("corporateTitle", "Corporate clients title", {
+      required: false,
+    }),
     localizedText("directionsTitle", "Directions title", { required: false }),
     localizedText("ctaTitle", "CTA title", { required: false }),
     localizedTextarea("ctaSummary", "CTA summary", { required: false }),
@@ -94,14 +99,18 @@ export const Pages: CollectionConfig = {
       ],
     },
     localizedText("recordTitle", "Record structure title", { required: false }),
-    localizedTextarea("recordSummary", "Record structure summary", { required: false }),
+    localizedTextarea("recordSummary", "Record structure summary", {
+      required: false,
+    }),
     {
       name: "recordItems",
       type: "array",
       localized: true,
       fields: [{ name: "text", type: "text", required: true, maxLength: 240 }],
     },
-    localizedText("currentTitle", "Current evidence title", { required: false }),
+    localizedText("currentTitle", "Current evidence title", {
+      required: false,
+    }),
     {
       name: "currentItems",
       type: "array",
@@ -118,10 +127,14 @@ export const Pages: CollectionConfig = {
       localized: true,
       fields: [{ name: "text", type: "text", required: true, maxLength: 240 }],
     },
-    localizedText("secondaryCTALabel", "Secondary CTA label", { required: false }),
+    localizedText("secondaryCTALabel", "Secondary CTA label", {
+      required: false,
+    }),
     localizedText("emptyEyebrow", "Empty state eyebrow", { required: false }),
     localizedText("emptyTitle", "Empty state title", { required: false }),
-    localizedTextarea("emptySummary", "Empty state summary", { required: false }),
+    localizedTextarea("emptySummary", "Empty state summary", {
+      required: false,
+    }),
     localizedText("emptyAction", "Empty state action", { required: false }),
     {
       name: "layout",
@@ -168,9 +181,14 @@ export const Pages: CollectionConfig = {
       maxLength: 120,
       admin: {
         condition: (_, siblingData) =>
-          ["privacy", "terms", "cookies", "payments", "cancellation-refunds", "consent"].includes(
-            siblingData?.pageType
-          ),
+          [
+            "privacy",
+            "terms",
+            "cookies",
+            "payments",
+            "cancellation-refunds",
+            "consent",
+          ].includes(siblingData?.pageType),
       },
     }),
     localizedText("effectiveDateLabel", "Effective date label", {
@@ -178,9 +196,14 @@ export const Pages: CollectionConfig = {
       maxLength: 120,
       admin: {
         condition: (_, siblingData) =>
-          ["privacy", "terms", "cookies", "payments", "cancellation-refunds", "consent"].includes(
-            siblingData?.pageType
-          ),
+          [
+            "privacy",
+            "terms",
+            "cookies",
+            "payments",
+            "cancellation-refunds",
+            "consent",
+          ].includes(siblingData?.pageType),
       },
     }),
     {

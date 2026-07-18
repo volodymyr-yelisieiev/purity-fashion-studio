@@ -1,6 +1,10 @@
 import type { GlobalConfig } from "payload"
 
-import { hasRole } from "../access"
+import {
+  contentOrDeveloper,
+  enforcePublishedGlobalRead,
+  hasRole,
+} from "../access"
 import {
   draftVersions,
   localizedText,
@@ -16,9 +20,13 @@ export const Home: GlobalConfig = {
   admin: { group: "Site" },
   access: {
     read: () => true,
+    readVersions: contentOrDeveloper,
     update: canManage,
   },
-  hooks: { afterChange: [revalidateGlobal("home")] },
+  hooks: {
+    afterChange: [revalidateGlobal("home")],
+    beforeOperation: [enforcePublishedGlobalRead],
+  },
   fields: [
     localizedText("heroEyebrow", "Hero eyebrow", {
       required: false,
@@ -106,7 +114,9 @@ export const Home: GlobalConfig = {
       localized: true,
       minRows: 2,
       maxRows: 2,
-      fields: [{ name: "text", type: "textarea", required: true, maxLength: 1200 }],
+      fields: [
+        { name: "text", type: "textarea", required: true, maxLength: 1200 },
+      ],
     },
     localizedText("studioEyebrow", "Studio eyebrow"),
     localizedText("studioTitle", "Studio title"),

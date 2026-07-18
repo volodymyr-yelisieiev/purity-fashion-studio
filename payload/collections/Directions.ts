@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload"
 
-import { contentManagers, ownerOnly } from "../access"
+import { contentManagers, contentOrDeveloper, ownerOnly } from "../access"
 import {
   commonPublicFields,
   draftVersions,
@@ -23,6 +23,7 @@ export const Directions: CollectionConfig = {
     create: contentManagers,
     delete: ownerOnly,
     read: publicRead,
+    readVersions: contentOrDeveloper,
     update: contentManagers,
   },
   hooks: publicCollectionHooks({
@@ -74,12 +75,18 @@ export const Directions: CollectionConfig = {
       ],
     },
     localizedText("countLabel", "Catalogue count label", { required: false }),
-    localizedText("availabilityValue", "Availability value", { required: false }),
-    localizedText("availabilityLabel", "Availability label", { required: false }),
+    localizedText("availabilityValue", "Availability value", {
+      required: false,
+    }),
+    localizedText("availabilityLabel", "Availability label", {
+      required: false,
+    }),
     localizedText("fittingValue", "Fitting value", { required: false }),
     localizedText("fittingLabel", "Fitting label", { required: false }),
     localizedText("catalogueTitle", "Catalogue title", { required: false }),
-    localizedTextarea("catalogueSummary", "Catalogue summary", { required: false }),
+    localizedTextarea("catalogueSummary", "Catalogue summary", {
+      required: false,
+    }),
     localizedText("materialsLabel", "Materials label", { required: false }),
     localizedText("inquiryTitle", "Inquiry title", { required: false }),
     {

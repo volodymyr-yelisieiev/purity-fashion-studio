@@ -1,6 +1,6 @@
 import type { GlobalConfig } from "payload"
 
-import { hasRole } from "../access"
+import { hasRole, isActiveUser } from "../access"
 import { localizedText } from "../fields/shared"
 import { revalidateGlobal } from "../hooks/revalidation"
 
@@ -10,7 +10,7 @@ const ownerOnly = ({ req }: { req: { user?: unknown } }) =>
 export const BookingSettings: GlobalConfig = {
   slug: "booking-settings",
   admin: { group: "Site" },
-  access: { read: ({ req }) => Boolean(req.user), update: ownerOnly },
+  access: { read: ({ req }) => isActiveUser(req.user), update: ownerOnly },
   hooks: { afterChange: [revalidateGlobal("booking-settings")] },
   fields: [
     {
