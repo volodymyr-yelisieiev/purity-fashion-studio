@@ -94,6 +94,9 @@ const siteURL =
 const payloadURL =
   previewDeploymentURL ?? process.env.NEXT_PUBLIC_PAYLOAD_URL ?? siteURL
 const allowedOrigins = [...new Set([siteURL, payloadURL])]
+const blobStorageEnabled =
+  Boolean(process.env.BLOB_READ_WRITE_TOKEN) &&
+  process.env.PAYLOAD_DISABLE_BLOB_STORAGE !== "true"
 
 function secureDatabaseURL(value: string): string {
   const url = new URL(value)
@@ -274,7 +277,7 @@ export default buildConfig({
       alwaysInsertFields: true,
       clientUploads: true,
       collections: { media: true },
-      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      enabled: blobStorageEnabled,
       token: process.env.BLOB_READ_WRITE_TOKEN,
     }),
   ],

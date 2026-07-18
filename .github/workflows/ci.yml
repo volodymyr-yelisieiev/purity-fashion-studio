@@ -83,4 +83,5 @@ jobs:
       - name: Verify
         env:
           BLOB_READ_WRITE_TOKEN: vercel_blob_rw_ci_ci
+          PAYLOAD_DISABLE_BLOB_STORAGE: "true"
         run: pnpm qa:all
