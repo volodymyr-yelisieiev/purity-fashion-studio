@@ -255,6 +255,7 @@ export type PublicPageData = {
   cta: PayloadPage["cta"]
   legalVersion?: string
   contentsTitle?: string
+  effectiveDateLabel?: string
   effectiveDate?: string
   seo: { title: string; description: string }
 }
@@ -273,6 +274,7 @@ export type HeaderData = {
 export type FooterData = {
   email: string
   phone: string
+  phones: string[]
   address: string
   hours: string
   responseTime: string
@@ -1626,10 +1628,28 @@ async function findPayloadPage(
       directionsTitle: true,
       ctaTitle: true,
       ctaSummary: true,
+      formTitle: true,
+      formSummary: true,
+      heroMediaLabel: true,
+      standardsTitle: true,
+      standards: true,
+      recordTitle: true,
+      recordSummary: true,
+      recordItems: true,
+      currentTitle: true,
+      currentItems: true,
+      flowTitle: true,
+      flowItems: true,
+      secondaryCTALabel: true,
+      emptyEyebrow: true,
+      emptyTitle: true,
+      emptySummary: true,
+      emptyAction: true,
       sections: true,
       cta: true,
       legalVersion: true,
       contentsTitle: true,
+      effectiveDateLabel: true,
       effectiveDate: true,
       meta: true,
     },
@@ -1725,6 +1745,7 @@ async function findPayloadPage(
     cta: page.cta,
     legalVersion: page.legalVersion ?? undefined,
     contentsTitle: page.contentsTitle ?? undefined,
+    effectiveDateLabel: page.effectiveDateLabel ?? undefined,
     effectiveDate: page.effectiveDate ?? undefined,
     seo: {
       title: page.meta?.title || `${page.title} | PURITY Fashion Studio`,
@@ -1809,6 +1830,7 @@ async function findPayloadFooter(locale: Locale, draft: boolean) {
     select: {
       email: true,
       phone: true,
+      phones: true,
       address: true,
       hours: true,
       responseTime: true,
@@ -1820,6 +1842,7 @@ async function findPayloadFooter(locale: Locale, draft: boolean) {
   return {
     email: footer.email,
     phone: footer.phone,
+    phones: footer.phones?.map((item) => item.number) ?? [footer.phone],
     address: footer.address,
     hours: footer.hours,
     responseTime: footer.responseTime,

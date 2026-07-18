@@ -67,12 +67,9 @@ export default async function CoursePage({ params }: CoursePageProps) {
   }
 
   const currentPath = coursePath(course.routeSegment)
-  const primaryOffer = course.offers.find(
-    (offer) => offer.commercialStatus === "active"
-  )
   const bookingHref = localizePath(
     locale,
-    `/booking?service=wardrobe-management${primaryOffer ? `&offer=${primaryOffer.id}` : ""}`
+    "/booking?service=wardrobe-management"
   )
 
   return (
@@ -198,14 +195,13 @@ export default async function CoursePage({ params }: CoursePageProps) {
                 </CardDescription>
               </CardHeader>
               <CardContent className="border-t border-border pt-5 text-sm leading-7 text-muted-foreground">
-                {course.offers.length > 0
-                  ? course.offers
-                      .map(
-                        (offer) =>
-                          `${offer.title}: ${formatOfferPrice(offer, locale)}`
-                      )
-                      .join(" · ")
-                  : course.priceNote}
+                {course.priceNote ||
+                  course.offers
+                    .map(
+                      (offer) =>
+                        `${offer.title}: ${formatOfferPrice(offer, locale)}`
+                    )
+                    .join(" · ")}
               </CardContent>
             </Card>
           </div>

@@ -45,7 +45,7 @@ const logoSources = {
   wordmark: "/brand/logo-wordmark-black.png",
   lockup: "/brand/logo-lockup-black.png",
   mark: "/brand/logo-mark-grey.png",
-  reversedWordmark: "/brand/logo-wordmark-reversed.png",
+  reversedWordmark: "/brand/purity/wordmark-white.png",
   reversedLockup: "/brand/logo-lockup-reversed.png",
 } as const
 

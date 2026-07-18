@@ -173,6 +173,16 @@ export const Pages: CollectionConfig = {
           ),
       },
     }),
+    localizedText("effectiveDateLabel", "Effective date label", {
+      required: false,
+      maxLength: 120,
+      admin: {
+        condition: (_, siblingData) =>
+          ["privacy", "terms", "cookies", "payments", "cancellation-refunds", "consent"].includes(
+            siblingData?.pageType
+          ),
+      },
+    }),
     {
       name: "effectiveDate",
       type: "date",

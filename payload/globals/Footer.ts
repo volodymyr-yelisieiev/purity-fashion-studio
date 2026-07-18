@@ -19,6 +19,12 @@ export const Footer: GlobalConfig = {
   fields: [
     { name: "email", type: "email", required: true },
     { name: "phone", type: "text", required: true, maxLength: 80 },
+    {
+      name: "phones",
+      type: "array",
+      minRows: 1,
+      fields: [{ name: "number", type: "text", required: true, maxLength: 80 }],
+    },
     localizedText("address", "Address"),
     localizedText("hours", "Hours"),
     localizedText("responseTime", "Expected response time"),

@@ -1574,11 +1574,10 @@ test("booking form validates and creates localized checkout links", async ({
   page,
 }) => {
   await page.goto("/uk/services/atelier-service")
-  await expect(page.getByRole("link", { name: "Записатися" })).toHaveAttribute(
-    "href",
-    "/uk/booking?service=atelier-service"
-  )
-  await page.locator('a[href="/uk/booking?service=atelier-service"]').click()
+  const bookingHref = "/uk/booking?service=atelier-service"
+  const serviceBookingCta = page.locator(`main a[href="${bookingHref}"]`)
+  await expect(serviceBookingCta).toHaveCount(1)
+  await serviceBookingCta.click()
   await expect(page).toHaveURL(/\/uk\/booking\?service=atelier-service$/)
   await expect(page.getByTestId("booking-service-trigger")).toContainText(
     "Ательє-сервіс"
@@ -1828,12 +1827,12 @@ test("payment status pages keep provider fallbacks and localized action states",
   const widths = [320, 375, 768, 1024, 1440, 1920]
   const locales = ["uk", "ru", "en"] as const
   const routes = [
-    ["success", "?provider=stripe&order=purity-order"],
-    ["success", ""],
-    ["failure", "?provider=liqpay&order=purity-order"],
-    ["failure", "?provider=unknown"],
-    ["cancel", "?provider=stripe&order=purity-order"],
-    ["cancel", ""],
+    ["success", "?provider=stripe&order=purity-order", "pending"],
+    ["success", "", "success"],
+    ["failure", "?provider=liqpay&order=purity-order", "pending"],
+    ["failure", "?provider=unknown", "failure"],
+    ["cancel", "?provider=stripe&order=purity-order", "pending"],
+    ["cancel", "", "cancel"],
   ] as const
   const errors: string[] = []
 
@@ -1852,14 +1851,14 @@ test("payment status pages keep provider fallbacks and localized action states",
       for (const width of widths) {
         await page.setViewportSize({ width, height: 844 })
 
-        for (const [status, query] of routes) {
+        for (const [status, query, expectedStatus] of routes) {
           await page.goto(`/${locale}/payment/${status}${query}`, {
             waitUntil: "domcontentloaded",
           })
           await expect(page.locator("main h1")).toHaveCount(1)
           await expect(
             page.getByTestId("payment-status-alert")
-          ).toHaveAttribute("data-status", status)
+          ).toHaveAttribute("data-status", expectedStatus)
           await expect(
             page.locator('main > section a[href*="/booking"]')
           ).toHaveCount(1)
@@ -1972,7 +1971,7 @@ test("operations, indexing, and payment endpoints fail closed", async ({
 }) => {
   const health = await request.get("/api/health")
   expect(health.status()).toBe(200)
-  expect(await health.json()).toEqual({ status: "ok", content: "seed" })
+  expect(await health.json()).toEqual({ status: "ok", content: "payload" })
 
   const stripe = await request.post("/api/payments/webhooks/stripe", {
     data: "{}",

@@ -136,6 +136,11 @@ const contactLabels = {
 
 const legalPageLabels = {
   contentsTitle: { uk: "Зміст", ru: "Содержание", en: "Contents" },
+  effectiveDate: {
+    uk: "Чинна редакція",
+    ru: "Действующая редакция",
+    en: "Effective date",
+  },
 } as const
 
 function localizedObject(
@@ -262,6 +267,7 @@ async function updateGlobalLocalized(
       draft: drafts ? !publish : undefined,
       locale,
       overrideAccess: true,
+      publishAllLocales: publish,
     } as never)
   }
   increment(`${slug}:updated`)
@@ -1021,7 +1027,10 @@ async function importPages(
           }
         : {}),
       ...(page.slug === "privacy" || page.slug === "terms"
-        ? { contentsTitle: legalPageLabels.contentsTitle[locale] }
+        ? {
+            contentsTitle: legalPageLabels.contentsTitle[locale],
+            effectiveDateLabel: legalPageLabels.effectiveDate[locale],
+          }
         : {}),
       cta: page.cta
         ? { label: page.cta.label[locale], action: "contact" }
@@ -1316,6 +1325,7 @@ async function importGlobals({
     {
       email: siteSettings.contacts.email ?? "voronina@purity-fashion.com",
       phone: siteSettings.contacts.phone ?? siteSettings.contacts.phones[0],
+      phones: siteSettings.contacts.phones.map((number) => ({ number })),
       socialLinks: siteSettings.contacts.socials.map((social) => ({
         platform: social.label,
         url: social.url,
@@ -1351,6 +1361,7 @@ async function importGlobals({
       contacts: {
         email: siteSettings.contacts.email ?? "voronina@purity-fashion.com",
         phone: siteSettings.contacts.phone ?? siteSettings.contacts.phones[0],
+        phones: siteSettings.contacts.phones.map((number) => ({ number })),
         actionPath: siteSettings.contacts.actionPath,
         viberURL: siteSettings.contacts.viberUrl,
       },

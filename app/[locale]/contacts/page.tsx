@@ -172,8 +172,9 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
     title: service.title,
   }))
   const details: ContactDetails = {
-    phones: [footer.phone],
+    phones: footer.phones,
     email: footer.email,
+    viberUrl: settings.contacts.viberURL,
     socials: footer.socialLinks.map((item) => ({
       label: item.platform,
       url: item.url,

@@ -61,12 +61,9 @@ function ServiceDetailPage({
   service: ServicePageData
 }) {
   const currentPath = servicePath(service.routeSegment)
-  const primaryOffer = service.offers.find(
-    (offer) => offer.commercialStatus === "active"
-  )
   const bookingHref = localizePath(
     locale,
-    `/booking?service=${service.routeSegment}${primaryOffer ? `&offer=${primaryOffer.id}` : ""}`
+    `/booking?service=${service.routeSegment}`
   )
 
   return (

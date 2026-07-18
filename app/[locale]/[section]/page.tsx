@@ -435,9 +435,10 @@ function LegalPageView({
   const currentPath = sectionPath(publicPage.routeSegment)
   const sectionTitles = pageData.sections.map((section) => section.heading)
   const effectiveDate = pageData.effectiveDate
-    ? new Intl.DateTimeFormat(locale === "uk" ? "uk-UA" : locale, {
-        dateStyle: "long",
-      }).format(new Date(pageData.effectiveDate))
+    ? `${pageData.effectiveDateLabel ?? pageData.legalVersion ?? ""}: ${new Intl.DateTimeFormat(
+        locale === "uk" ? "uk-UA" : locale,
+        { dateStyle: "long" }
+      ).format(new Date(pageData.effectiveDate))}`
     : pageData.legalVersion
 
   return (

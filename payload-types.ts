@@ -1404,6 +1404,7 @@ export interface Page {
   };
   legalVersion?: string | null;
   contentsTitle?: string | null;
+  effectiveDateLabel?: string | null;
   effectiveDate?: string | null;
   cta: {
     label: string;
@@ -2951,6 +2952,7 @@ export interface PagesSelect<T extends boolean = true> {
       };
   legalVersion?: T;
   contentsTitle?: T;
+  effectiveDateLabel?: T;
   effectiveDate?: T;
   cta?:
     | T
@@ -3315,6 +3317,12 @@ export interface Footer {
   id: string;
   email: string;
   phone: string;
+  phones?:
+    | {
+        number: string;
+        id?: string | null;
+      }[]
+    | null;
   address: string;
   hours: string;
   responseTime: string;
@@ -3350,6 +3358,12 @@ export interface SiteSetting {
   contacts: {
     email: string;
     phone: string;
+    phones?:
+      | {
+          number: string;
+          id?: string | null;
+        }[]
+      | null;
     address: string;
     city: string;
     hours: string;
@@ -3619,6 +3633,12 @@ export interface HeaderSelect<T extends boolean = true> {
 export interface FooterSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
+  phones?:
+    | T
+    | {
+        number?: T;
+        id?: T;
+      };
   address?: T;
   hours?: T;
   responseTime?: T;
@@ -3656,6 +3676,12 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         email?: T;
         phone?: T;
+        phones?:
+          | T
+          | {
+              number?: T;
+              id?: T;
+            };
         address?: T;
         city?: T;
         hours?: T;

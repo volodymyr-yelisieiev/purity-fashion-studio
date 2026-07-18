@@ -360,7 +360,7 @@ function SiteFooterClient({
   const brandName = settingsData.brandName
   const city = settingsData.contacts.city
   const address = footerData.address
-  const phones = [footerData.phone]
+  const phones = footerData.phones
   const email = footerData.email
   const hours = footerData.hours
   const socials = footerData.socialLinks.map((item) => ({
