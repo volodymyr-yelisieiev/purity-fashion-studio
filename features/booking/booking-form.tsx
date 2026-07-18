@@ -41,6 +41,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
 import { submitBooking } from "@/features/booking/actions"
+import { trackBookingEvent } from "@/features/booking/analytics"
 import {
   localizeBookingError,
   type BookingPublicCopy,
@@ -241,6 +242,22 @@ function BookingForm({
 
     startTransition(async () => {
       const nextResult = await submitBooking(result, formData)
+      if (nextResult.status === "success") {
+        trackBookingEvent({
+          event: "booking_submit",
+          serviceSlug: values.serviceSlug,
+          provider: nextResult.provider,
+          currency: nextResult.currency,
+        })
+        if (nextResult.provider && nextResult.currency) {
+          trackBookingEvent({
+            event: "checkout_start",
+            serviceSlug: values.serviceSlug,
+            provider: nextResult.provider,
+            currency: nextResult.currency,
+          })
+        }
+      }
       setResult(nextResult)
     })
   }

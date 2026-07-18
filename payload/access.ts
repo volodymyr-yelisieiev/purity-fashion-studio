@@ -40,8 +40,6 @@ export function hasRole(user: unknown, allowed: readonly Role[]): boolean {
   return userRoles(user).some((role) => allowed.includes(role))
 }
 
-export const authenticated: Access = ({ req }) => Boolean(req.user)
-
 export const authenticatedAdmin = ({ req }: { req: PayloadRequest }): boolean =>
   isActiveUser(req.user)
 

@@ -708,53 +708,6 @@ export async function getPublishedServiceSlugs(): Promise<string[]> {
   return result.docs.map((service) => service.slug)
 }
 
-async function findPayloadOfferByID(
-  locale: Locale,
-  id: string,
-  draft: boolean
-): Promise<ServiceOffer | null> {
-  const payload = await getPayloadClient()
-  try {
-    const offer = await payload.findByID({
-      collection: "offers",
-      id,
-      depth: 0,
-      draft,
-      fallbackLocale: false,
-      locale,
-      ...(await getPayloadAccess(draft)),
-      select: {
-        id: true,
-        sku: true,
-        title: true,
-        shortDescription: true,
-        format: true,
-        pricingMode: true,
-        checkoutMode: true,
-        commercialStatus: true,
-        prices: true,
-        durationMinutes: true,
-        sessions: true,
-        deposit: true,
-        termsVersion: true,
-      },
-    })
-    return offer as ServiceOffer
-  } catch {
-    return null
-  }
-}
-
-export async function getOfferById(locale: Locale, id: string) {
-  const { isEnabled } = await draftMode()
-  if (isEnabled) return findPayloadOfferByID(locale, id, true)
-  return unstable_cache(
-    () => findPayloadOfferByID(locale, id, false),
-    [payloadCacheNamespace, "cms", "offer", locale, id],
-    { tags: ["cms:offers", `cms:offers:${id}`] }
-  )()
-}
-
 async function findPayloadCourse(
   locale: Locale,
   slug: string,
