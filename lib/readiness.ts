@@ -45,11 +45,17 @@ export async function checkReadiness() {
     }),
   ])
 
-  const mediaURL = media.docs.find(
-    (item) =>
-      item.url &&
-      (!item.rightsExpiry || new Date(item.rightsExpiry).valueOf() > Date.now())
-  )?.url
+  const mediaURL = media.docs
+    .filter(
+      (item) =>
+        !item.rightsExpiry || new Date(item.rightsExpiry).valueOf() > Date.now()
+    )
+    .map(
+      (item) =>
+        item.url ??
+        Object.values(item.sizes ?? {}).find((size) => size?.url)?.url
+    )
+    .find(Boolean)
   if (migration.totalDocs !== 1) throw new Error("migration-head")
   if (!home.heroTitle) throw new Error("home-global")
   if (!settings.brandName) throw new Error("site-settings")
