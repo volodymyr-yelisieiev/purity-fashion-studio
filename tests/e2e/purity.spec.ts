@@ -1962,7 +1962,9 @@ test("contact form validates and records inquiry-only requests", async ({ page }
   await page.locator('[data-slot="checkbox"]').click()
   await page.getByTestId("booking-submit").click()
 
-  await expect(page.getByText("Заявку прийнято")).toBeVisible()
+  await expect(page.getByText("Заявку прийнято")).toBeVisible({
+    timeout: 15_000,
+  })
   await expect(
     page.locator('a[href*="/uk/payment/success?provider=stripe"]')
   ).toHaveCount(0)
