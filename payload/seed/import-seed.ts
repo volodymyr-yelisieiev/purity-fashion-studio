@@ -243,6 +243,7 @@ async function upsertLocalized({
       locale,
       overrideAccess: true,
       publishAllLocales: publish,
+      publishSpecificLocale: locale,
     } as never)
   }
 
