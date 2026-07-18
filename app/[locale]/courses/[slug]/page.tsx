@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card"
 import { formatOfferPrice } from "@/content/commerce"
 import { getLocalizedMetadata } from "@/content/metadata"
-import { getCourseBySlug } from "@/content/public-api"
+import { getCourseBySlug, getSiteSettings } from "@/content/public-api"
 import { coursePath } from "@/content/routes"
 import { BookingStartCta } from "@/features/booking/booking-start-cta"
 import { hasLocale, localizePath, type Locale } from "@/i18n/routing"
@@ -60,7 +60,10 @@ export default async function CoursePage({ params }: CoursePageProps) {
   }
 
   const locale: Locale = rawLocale
-  const course = await getCourseBySlug(locale, slug)
+  const [course, settings] = await Promise.all([
+    getCourseBySlug(locale, slug),
+    getSiteSettings(locale),
+  ])
 
   if (!course) {
     notFound()
@@ -199,7 +202,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
                   course.offers
                     .map(
                       (offer) =>
-                        `${offer.title}: ${formatOfferPrice(offer, locale)}`
+                        `${offer.title}: ${formatOfferPrice(offer, locale, settings.booking.pricing)}`
                     )
                     .join(" · ")}
               </CardContent>

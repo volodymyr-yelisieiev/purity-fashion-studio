@@ -12,10 +12,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { formatOfferPrice } from "@/content/commerce"
+import { formatOfferPrice, type OfferPriceLabels } from "@/content/commerce"
 import { getLocalizedMetadata } from "@/content/metadata"
 import {
   getFashionCollectionBySlug,
+  getSiteSettings,
   type FashionCollectionPageData,
 } from "@/content/public-api"
 import { collectionPath } from "@/content/routes"
@@ -55,9 +56,11 @@ export async function generateMetadata({
 function CollectionDetailPage({
   locale,
   collection,
+  pricingLabels,
 }: {
   locale: Locale
   collection: FashionCollectionPageData
+  pricingLabels: OfferPriceLabels
 }) {
   const currentPath = collectionPath(collection.routeSegment)
   const mediaAsset = collection.mediaAssets[0]
@@ -241,8 +244,9 @@ function CollectionDetailPage({
               <CardContent className="border-t border-border pt-5 text-sm leading-7 text-muted-foreground">
                 {collection.offers.length > 0
                   ? collection.offers
-                      .map((offer) =>
-                        `${offer.title}: ${formatOfferPrice(offer, locale)}`
+                      .map(
+                        (offer) =>
+                          `${offer.title}: ${formatOfferPrice(offer, locale, pricingLabels)}`
                       )
                       .join(" · ")
                   : collection.narrative}
@@ -284,11 +288,20 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   }
 
   const locale: Locale = rawLocale
-  const collection = await getFashionCollectionBySlug(locale, slug)
+  const [collection, settings] = await Promise.all([
+    getFashionCollectionBySlug(locale, slug),
+    getSiteSettings(locale),
+  ])
 
   if (!collection) {
     notFound()
   }
 
-  return <CollectionDetailPage locale={locale} collection={collection} />
+  return (
+    <CollectionDetailPage
+      locale={locale}
+      collection={collection}
+      pricingLabels={settings.booking.pricing}
+    />
+  )
 }

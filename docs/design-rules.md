@@ -16,7 +16,7 @@ Source reference: Louis Vuitton homepage, observed 2026-07-08, used only for str
 - `BrandLogo` and `LanguageSwitcher` form the header utility row.
 - `ImageFrame`, `ServiceCard`, `OfferCard`, and `FeatureList` carry the hero, rails, and grids.
 - `ContentPage` and `Footer` keep shared page shell behavior consistent across localized routes.
-- Source-backed content in `content/data.ts` keeps public copy tied to old PURITY pages and social links.
+- Payload provides all public copy, contacts, navigation, commercial labels and media metadata at runtime.
 
 ## Guardrails
 

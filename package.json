@@ -16,7 +16,6 @@
     "env:check": "tsx scripts/check-env.ts",
     "content:validate": "tsx scripts/validate-content.ts",
     "cms:check": "tsx scripts/check-cms-contract.ts",
-    "cms:seed": "tsx scripts/export-content-manifest.ts",
     "content:manifest": "tsx scripts/export-content-manifest.ts",
     "content:manifest:verify": "tsx scripts/export-content-manifest.ts --verify",
     "cms:import": "tsx payload/seed/import-seed.ts",

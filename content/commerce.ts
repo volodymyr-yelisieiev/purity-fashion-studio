@@ -7,14 +7,18 @@ const numberLocales: Record<Locale, string> = {
   en: "en-IE",
 }
 
-const pricingLabels = {
-  from: { uk: "від", ru: "от", en: "from" },
-  custom: { uk: "за запитом", ru: "по запросу", en: "by request" },
-} as const
+export type OfferPriceLabels = {
+  from: string
+  custom: string
+}
 
-export function formatOfferPrice(offer: ServiceOffer, locale: Locale) {
+export function formatOfferPrice(
+  offer: ServiceOffer,
+  locale: Locale,
+  labels: OfferPriceLabels
+) {
   if (offer.pricingMode === "custom") {
-    return pricingLabels.custom[locale]
+    return labels.custom
   }
 
   const formatAmount = (amount: number, currency: "EUR" | "UAH") =>
@@ -30,7 +34,7 @@ export function formatOfferPrice(offer: ServiceOffer, locale: Locale) {
           return formatAmount(price.amount, price.currency)
         }
         if (offer.pricingMode === "from" && price.minAmount != null) {
-          return `${pricingLabels.from[locale]} ${formatAmount(price.minAmount, price.currency)}`
+          return `${labels.from} ${formatAmount(price.minAmount, price.currency)}`
         }
         if (
           offer.pricingMode === "range" &&
@@ -39,8 +43,8 @@ export function formatOfferPrice(offer: ServiceOffer, locale: Locale) {
         ) {
           return `${formatAmount(price.minAmount, price.currency)}–${formatAmount(price.maxAmount, price.currency)}`
         }
-        return pricingLabels.custom[locale]
+        return labels.custom
       })
-      .join(" · ") || pricingLabels.custom[locale]
+      .join(" · ") || labels.custom
   )
 }

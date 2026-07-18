@@ -13,12 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { formatOfferPrice, type OfferPriceLabels } from "@/content/commerce"
 import { getLocalizedMetadata } from "@/content/metadata"
 import {
   getServiceBySlug,
+  getSiteSettings,
   type ServicePageData,
 } from "@/content/public-api"
-import { formatOfferPrice } from "@/content/commerce"
 import { collectionPath, coursePath, servicePath } from "@/content/routes"
 import { BookingStartCta } from "@/features/booking/booking-start-cta"
 import { hasLocale, localizePath, type Locale } from "@/i18n/routing"
@@ -56,9 +57,11 @@ export async function generateMetadata({
 function ServiceDetailPage({
   locale,
   service,
+  pricingLabels,
 }: {
   locale: Locale
   service: ServicePageData
+  pricingLabels: OfferPriceLabels
 }) {
   const currentPath = servicePath(service.routeSegment)
   const bookingHref = localizePath(
@@ -259,10 +262,11 @@ function ServiceDetailPage({
                     </CardHeader>
                     <CardContent className="grid gap-4 border-t border-border pt-5">
                       <p className="text-2xl font-medium">
-                        {formatOfferPrice(offer, locale)}
+                        {formatOfferPrice(offer, locale, pricingLabels)}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {offer.format} · {offer.checkoutMode} · {offer.commercialStatus}
+                        {offer.format} · {offer.checkoutMode} ·{" "}
+                        {offer.commercialStatus}
                       </p>
                       <BookingStartCta
                         href={localizePath(
@@ -320,11 +324,20 @@ export default async function ServicePage({ params }: ServicePageProps) {
   }
 
   const locale: Locale = rawLocale
-  const service = await getServiceBySlug(locale, slug)
+  const [service, settings] = await Promise.all([
+    getServiceBySlug(locale, slug),
+    getSiteSettings(locale),
+  ])
 
   if (!service) {
     notFound()
   }
 
-  return <ServiceDetailPage locale={locale} service={service} />
+  return (
+    <ServiceDetailPage
+      locale={locale}
+      service={service}
+      pricingLabels={settings.booking.pricing}
+    />
+  )
 }

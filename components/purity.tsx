@@ -19,7 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import type { MediaAsset } from "@/content/model"
+import type { MediaAsset } from "@/content/media"
 import { locales, localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 

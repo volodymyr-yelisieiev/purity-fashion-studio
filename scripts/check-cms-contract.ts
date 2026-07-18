@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs"
 
 import configPromise from "../payload.config"
-import { buildCmsSeed, cmsSeedCounts, validateCmsSeed } from "../content/cms"
+import { purityContentManifest } from "../payload/seed/manifest"
 
 const config = await configPromise
 const expectedCollections = [
@@ -55,19 +55,52 @@ if (!existsSync("payload/migrations/index.ts")) {
   issues.push("Missing committed Payload migrations")
 }
 
-const seed = buildCmsSeed()
-const seedResult = validateCmsSeed(seed)
-if (!seedResult.ok) issues.push(...seedResult.issues)
+const requiredManifestCollections = [
+  "service-categories",
+  "services",
+  "courses",
+  "collections",
+  "portfolio-cases",
+  "testimonials",
+  "media-assets",
+  "pages",
+  "settings",
+  "leads",
+  "booking-requests",
+  "payment-orders",
+] as const
+
+for (const collection of requiredManifestCollections) {
+  const records = purityContentManifest.source[collection]
+  const checksums = purityContentManifest.checksums.records[collection]
+
+  if (!Array.isArray(records) || !Array.isArray(checksums)) {
+    issues.push(`Manifest collection is incomplete: ${collection}`)
+    continue
+  }
+
+  if (records.length !== checksums.length) {
+    issues.push(`Manifest checksum count drifted: ${collection}`)
+  }
+}
+
+if (
+  purityContentManifest.checksums.media.length !==
+  purityContentManifest.source["media-assets"].length
+) {
+  issues.push("Manifest media checksum count drifted")
+}
+
 if (issues.length) {
   throw new Error(`CMS contract invalid:\n${issues.join("\n")}`)
 }
 
-const counts = cmsSeedCounts(seed)
+const counts = purityContentManifest.source
 console.log(
   [
     `Payload contract ok: ${expectedCollections.length} collections`,
     `${expectedGlobals.length} globals`,
-    `${counts.services} legacy services ready for import`,
-    `${counts["media-assets"]} legacy media records`,
+    `${counts.services.length} services ready for import`,
+    `${counts["media-assets"].length} media records`,
   ].join(", ")
 )

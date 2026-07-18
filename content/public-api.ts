@@ -17,7 +17,7 @@ import type {
   Service as PayloadService,
 } from "@/payload-types"
 import type { BookingPublicCopy } from "@/features/booking/public-copy"
-import type { MediaAsset } from "./model"
+import type { MediaAsset } from "./media"
 import type { Locale } from "../i18n/routing"
 
 export type ServiceOffer = Pick<

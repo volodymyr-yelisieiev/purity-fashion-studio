@@ -1,18 +1,22 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs"
 import { join } from "node:path"
 
+import { locales } from "../i18n/routing"
 import {
+  getManifestRoutes,
+  purityContentManifest,
+} from "../payload/seed/manifest"
+
+const {
   collections,
   courses,
-  mediaAssets,
-  portfolioCases,
-  publicPages,
-  serviceCategories,
+  "media-assets": mediaAssets,
+  "portfolio-cases": portfolioCases,
+  pages: publicPages,
+  "service-categories": serviceCategories,
   services,
-  siteSettings,
-} from "../content/data"
-import { getContentRoutes } from "../content/legacy-routes"
-import { locales } from "../i18n/routing"
+  settings: [siteSettings],
+} = purityContentManifest.source
 
 const requiredPreset = "b59jufTOPg"
 const requiredFiles = [
@@ -277,7 +281,7 @@ if (
   issues.push("font-sans utility must resolve to the Noto Sans variable")
 }
 
-const routes = locales.flatMap((locale) => getContentRoutes(locale))
+const routes = locales.flatMap((locale) => getManifestRoutes(locale))
 const routeHrefs = new Set(routes.map((route) => route.href))
 
 for (const route of routes) {

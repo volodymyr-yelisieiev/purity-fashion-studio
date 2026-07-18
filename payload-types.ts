@@ -3464,6 +3464,10 @@ export interface SiteSetting {
       notProvided: string;
       referenceReceived: string;
     };
+    pricing: {
+      from: string;
+      custom: string;
+    };
   };
   localeLabels: {
     uk: string;
@@ -3803,6 +3807,12 @@ export interface SiteSettingsSelect<T extends boolean = true> {
               order?: T;
               notProvided?: T;
               referenceReceived?: T;
+            };
+        pricing?:
+          | T
+          | {
+              from?: T;
+              custom?: T;
             };
       };
   localeLabels?:

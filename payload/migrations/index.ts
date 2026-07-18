@@ -10,6 +10,7 @@ import * as migration_20260717_160309 from './20260717_160309';
 import * as migration_20260718_025411_payload_public_copy from './20260718_025411_payload_public_copy';
 import * as migration_20260718_025854_page_legal_contents_title from './20260718_025854_page_legal_contents_title';
 import * as migration_20260718_035452_add_contact_phones_and_legal_label from './20260718_035452_add_contact_phones_and_legal_label';
+import * as migration_20260718_083000_site_settings_pricing_labels from './20260718_083000_site_settings_pricing_labels';
 
 export const migrations = [
   {
@@ -71,5 +72,10 @@ export const migrations = [
     up: migration_20260718_035452_add_contact_phones_and_legal_label.up,
     down: migration_20260718_035452_add_contact_phones_and_legal_label.down,
     name: '20260718_035452_add_contact_phones_and_legal_label'
+  },
+  {
+    up: migration_20260718_083000_site_settings_pricing_labels.up,
+    down: migration_20260718_083000_site_settings_pricing_labels.down,
+    name: '20260718_083000_site_settings_pricing_labels'
   },
 ];
