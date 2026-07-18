@@ -78,13 +78,9 @@ and failed-event recovery.
 
 ## Error monitoring
 
-Preview and production require matching `SENTRY_DSN` and
-`NEXT_PUBLIC_SENTRY_DSN`. The official Payload and Next.js integrations capture
-server, edge and browser failures with environment/release metadata. Default
-PII collection is disabled; structured operation logs contain correlation IDs,
-safe codes and sanitized error names/messages, never raw webhook bodies or
-lead fields. Alert ownership and retention must be configured in Sentry before
-merchant activation.
+Use Vercel runtime logs, Payload structured logs and the correlation ID returned
+by API operations. Logs contain safe codes and sanitized error names/messages,
+never raw webhook bodies or lead fields.
 
 ## Security and privacy
 

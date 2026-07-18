@@ -33,8 +33,6 @@ records created after the source switch.
   enabled and the server enforces MIME/rights gates.
 - Email: verified Resend sender, SPF, DKIM, DMARC, bounce/complaint ownership,
   environment-safe recipient routing and a protected notification-outbox job.
-- Monitoring: matching server/public Sentry DSNs, an approved data region,
-  alert ownership and PII-disabled event review.
 - Payments: `PAYMENT_MODE=live` requires both provider credentials, signed
   webhook secrets, and `PAYMENT_MERCHANT_READY=true`.
 - Analytics/indexing are fail-closed and require explicit public flags.

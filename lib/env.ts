@@ -22,8 +22,6 @@ const envSchema = z.object({
   EMAIL_FROM: z.string().email().optional(),
   EMAIL_OVERRIDE_RECIPIENT: z.string().email().optional(),
   RESEND_DOMAIN_VERIFIED: z.enum(["true", "false"]).default("false"),
-  SENTRY_DSN: z.string().url().optional(),
-  NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
   CRON_SECRET: z.string().min(32).optional(),
   PAYMENT_MODE: z.enum(["test", "live"]).default("test"),
   PAYMENT_MERCHANT_READY: z.enum(["true", "false"]).default("false"),
@@ -78,20 +76,6 @@ if (parsed.data.PAYLOAD_ENABLED === "true") {
     }
     if (parsed.data.RESEND_DOMAIN_VERIFIED !== "true") {
       throw new Error("RESEND_DOMAIN_VERIFIED must be true in Production")
-    }
-  }
-
-  if (
-    parsed.data.VERCEL_ENV === "preview" ||
-    parsed.data.VERCEL_ENV === "production"
-  ) {
-    if (!parsed.data.SENTRY_DSN || !parsed.data.NEXT_PUBLIC_SENTRY_DSN) {
-      throw new Error(
-        "SENTRY_DSN and NEXT_PUBLIC_SENTRY_DSN are required on Vercel"
-      )
-    }
-    if (parsed.data.SENTRY_DSN !== parsed.data.NEXT_PUBLIC_SENTRY_DSN) {
-      throw new Error("Server and public Sentry DSNs must identify one project")
     }
   }
 

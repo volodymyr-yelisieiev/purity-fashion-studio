@@ -1,7 +1,6 @@
 import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin"
 import { withPayload } from "@payloadcms/next/withPayload"
-import { withSentryConfig } from "@sentry/nextjs"
 
 const previewLiveFeedbackOrigin =
   process.env.VERCEL_ENV === "preview" ? " https://vercel.live" : ""
@@ -15,7 +14,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "media-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.sentry.io",
+  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com",
   `frame-src 'self' https://www.google.com https://www.openstreetmap.org${previewLiveFeedbackOrigin}`,
   "form-action 'self' https://checkout.stripe.com https://www.liqpay.ua https://pay.fondy.eu",
   "object-src 'none'",
@@ -68,9 +67,6 @@ const nextConfig: NextConfig = {
 
 const withNextIntl = createNextIntlPlugin()
 
-export default withSentryConfig(
-  withPayload(withNextIntl(nextConfig), {
-    devBundleServerPackages: false,
-  }),
-  { silent: true }
-)
+export default withPayload(withNextIntl(nextConfig), {
+  devBundleServerPackages: false,
+})
