@@ -420,6 +420,14 @@ function payloadMediaToView(
   media: Media,
   locale: Locale
 ): MediaAsset | undefined {
+  if (
+    media.usageRightsStatus !== "approved" ||
+    media.publicVisibility !== true ||
+    (media.rightsExpiry && new Date(media.rightsExpiry).valueOf() <= Date.now())
+  ) {
+    return undefined
+  }
+
   const preferredSize = media.sizes?.hero
   const src = preferredSize?.url ?? media.url ?? undefined
   if (!src) return undefined
@@ -477,6 +485,9 @@ async function findReadableMediaByID(
       source: true,
       allowedUsageContexts: true,
       isRealClientProof: true,
+      publicVisibility: true,
+      usageRightsStatus: true,
+      rightsExpiry: true,
       replacementPriority: true,
       url: true,
       filename: true,
@@ -568,6 +579,9 @@ async function findPayloadService(
             source: true,
             allowedUsageContexts: true,
             isRealClientProof: true,
+            publicVisibility: true,
+            usageRightsStatus: true,
+            rightsExpiry: true,
             replacementPriority: true,
             url: true,
             filename: true,
@@ -661,6 +675,7 @@ function cachedPayloadService(locale: Locale, slug: string) {
     () => findPayloadService(locale, slug, false),
     [payloadCacheNamespace, "cms", "service", locale, slug],
     {
+      revalidate: 60,
       tags: ["cms:services", "cms:offers", "cms:media", `cms:services:${slug}`],
     }
   )()
@@ -808,6 +823,9 @@ async function findPayloadCourse(
             source: true,
             allowedUsageContexts: true,
             isRealClientProof: true,
+            publicVisibility: true,
+            usageRightsStatus: true,
+            rightsExpiry: true,
             replacementPriority: true,
             url: true,
             filename: true,
@@ -904,6 +922,7 @@ function cachedPayloadCourse(locale: Locale, slug: string) {
     () => findPayloadCourse(locale, slug, false),
     [payloadCacheNamespace, "cms", "course", locale, slug],
     {
+      revalidate: 60,
       tags: ["cms:courses", "cms:offers", "cms:media", `cms:courses:${slug}`],
     }
   )()
@@ -1015,6 +1034,9 @@ async function findPayloadFashionCollection(
         source: true,
         allowedUsageContexts: true,
         isRealClientProof: true,
+        publicVisibility: true,
+        usageRightsStatus: true,
+        rightsExpiry: true,
         replacementPriority: true,
         url: true,
         filename: true,
@@ -1118,6 +1140,7 @@ function cachedPayloadFashionCollection(locale: Locale, slug: string) {
     () => findPayloadFashionCollection(locale, slug, false),
     [payloadCacheNamespace, "cms", "fashion-collection", locale, slug],
     {
+      revalidate: 60,
       tags: [
         "cms:fashion-collections",
         "cms:offers",
@@ -1200,6 +1223,9 @@ async function findPayloadPortfolioCase(
       source: true,
       allowedUsageContexts: true,
       isRealClientProof: true,
+      publicVisibility: true,
+      usageRightsStatus: true,
+      rightsExpiry: true,
       replacementPriority: true,
       url: true,
       filename: true,
@@ -1247,6 +1273,7 @@ function cachedPayloadPortfolioCase(locale: Locale, slug: string) {
     () => findPayloadPortfolioCase(locale, slug, false),
     [payloadCacheNamespace, "cms", "portfolio-case", locale, slug],
     {
+      revalidate: 60,
       tags: ["cms:portfolio-cases", "cms:media", `cms:portfolio-cases:${slug}`],
     }
   )()
@@ -1299,7 +1326,7 @@ export async function getPublishedPortfolioCases(locale: Locale) {
   return unstable_cache(
     () => findPublishedPayloadPortfolioCases(locale),
     [payloadCacheNamespace, "cms", "portfolio-cases", locale],
-    { tags: ["cms:portfolio-cases", "cms:media"] }
+    { revalidate: 60, tags: ["cms:portfolio-cases", "cms:media"] }
   )()
 }
 
@@ -1377,6 +1404,9 @@ async function findPayloadServiceCards({
           source: true,
           allowedUsageContexts: true,
           isRealClientProof: true,
+          publicVisibility: true,
+          usageRightsStatus: true,
+          rightsExpiry: true,
           replacementPriority: true,
           url: true,
           filename: true,
@@ -1420,7 +1450,7 @@ export async function getPublishedServices(
   return unstable_cache(
     () => findPayloadServiceCards({ draft: false, locale, ...filters }),
     [payloadCacheNamespace, "cms", "services", locale, key],
-    { tags: ["cms:services", "cms:media"] }
+    { revalidate: 60, tags: ["cms:services", "cms:media"] }
   )()
 }
 
@@ -1550,6 +1580,7 @@ export async function getDirectionBySlug(locale: Locale, slug: string) {
     () => findPayloadDirection(locale, slug, false),
     [payloadCacheNamespace, "cms", "direction", locale, slug],
     {
+      revalidate: 60,
       tags: [
         "cms:directions",
         "cms:services",
@@ -1573,6 +1604,7 @@ export async function getDirectionByCanonicalKey(
     () => findPayloadDirection(locale, canonicalKey, false, "canonicalKey"),
     [payloadCacheNamespace, "cms", "direction-canonical", locale, canonicalKey],
     {
+      revalidate: 60,
       tags: [
         "cms:directions",
         "cms:services",
@@ -1681,6 +1713,9 @@ async function findPayloadPage(
           source: true,
           allowedUsageContexts: true,
           isRealClientProof: true,
+          publicVisibility: true,
+          usageRightsStatus: true,
+          rightsExpiry: true,
           replacementPriority: true,
           url: true,
           filename: true,
@@ -1765,7 +1800,10 @@ export async function getPageBySlug(locale: Locale, slug: string) {
   return unstable_cache(
     () => findPayloadPage(locale, slug, false),
     [payloadCacheNamespace, "cms", "page", locale, slug],
-    { tags: ["cms:pages", "cms:media", `cms:pages:${slug}`] }
+    {
+      revalidate: 60,
+      tags: ["cms:pages", "cms:media", `cms:pages:${slug}`],
+    }
   )()
 }
 
@@ -2043,6 +2081,6 @@ export async function getHome(locale: Locale): Promise<HomeData> {
   return unstable_cache(
     () => findPayloadHome(locale, false),
     [payloadCacheNamespace, "cms", "home", locale],
-    { tags: ["cms:home", "cms:media"] }
+    { revalidate: 60, tags: ["cms:home", "cms:media"] }
   )()
 }

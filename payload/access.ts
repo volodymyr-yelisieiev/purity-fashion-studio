@@ -64,9 +64,7 @@ export const enforcePublishedGlobalRead: GlobalBeforeOperationHook = ({
   operation,
   req,
 }) =>
-  operation === "read" &&
-  args?.draft &&
-  !hasRole(req.user, ["owner", "editor", "developer"])
+  operation === "read" && !hasRole(req.user, ["owner", "editor", "developer"])
     ? { ...args, draft: false }
     : args
 
