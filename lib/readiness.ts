@@ -45,27 +45,40 @@ export async function checkReadiness() {
     }),
   ])
 
-  const mediaURL = media.docs
+  const mediaURLs = media.docs
     .filter(
       (item) =>
         !item.rightsExpiry || new Date(item.rightsExpiry).valueOf() > Date.now()
     )
-    .map(
-      (item) =>
-        item.url ??
-        Object.values(item.sizes ?? {}).find((size) => size?.url)?.url
-    )
-    .find(Boolean)
+    .flatMap((item) => [
+      item.url,
+      ...Object.values(item.sizes ?? {}).map((size) => size?.url),
+    ])
+    .filter((url): url is string => Boolean(url))
   if (migration.totalDocs !== 1) throw new Error("migration-head")
   if (!home.heroTitle) throw new Error("home-global")
   if (!settings.brandName) throw new Error("site-settings")
   if (pages.totalDocs === 0) throw new Error("published-pages")
-  if (!mediaURL) throw new Error("published-media")
+  if (!mediaURLs.length) throw new Error("published-media")
 
-  const response = await fetch(new URL(mediaURL, env.NEXT_PUBLIC_SITE_URL), {
-    headers: { Range: "bytes=0-0" },
-    signal: AbortSignal.timeout(3000),
-  })
-  await response.body?.cancel()
-  if (!response.ok) throw new Error("media-backend")
+  let mediaReady = false
+  for (const mediaURL of mediaURLs) {
+    try {
+      const response = await fetch(
+        new URL(mediaURL, env.NEXT_PUBLIC_SITE_URL),
+        {
+          headers: { Range: "bytes=0-0" },
+          signal: AbortSignal.timeout(3000),
+        }
+      )
+      await response.body?.cancel()
+      if (response.ok) {
+        mediaReady = true
+        break
+      }
+    } catch {
+      // Try the next derivative; readiness only needs one public media object.
+    }
+  }
+  if (!mediaReady) throw new Error("media-backend")
 }
