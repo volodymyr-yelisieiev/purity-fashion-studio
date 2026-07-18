@@ -166,6 +166,38 @@ function increment(label: string) {
   counts.set(label, (counts.get(label) ?? 0) + 1)
 }
 
+function postgresErrorCode(error: unknown): string | undefined {
+  if (!error || typeof error !== "object") return undefined
+
+  const candidate = error as { cause?: unknown; code?: unknown }
+  if (typeof candidate.code === "string") return candidate.code
+
+  return postgresErrorCode(candidate.cause)
+}
+
+async function retryDatabaseStage<T>(label: string, operation: () => Promise<T>) {
+  const attempts = 5
+
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      return await operation()
+    } catch (error) {
+      const code = postgresErrorCode(error)
+      const retryable = code === "40P01" || code === "40001"
+
+      if (!retryable || attempt === attempts - 1) throw error
+
+      const delay = 500 * 2 ** attempt
+      console.warn(
+        `Retrying ${label} after PostgreSQL ${code} (${attempt + 1}/${attempts - 1}) in ${delay}ms.`
+      )
+      await new Promise<void>((resolve) => setTimeout(resolve, delay))
+    }
+  }
+
+  throw new Error(`Retry attempts exhausted for ${label}.`)
+}
+
 async function upsertLocalized({
   collection,
   key,
@@ -1605,33 +1637,45 @@ async function run() {
     return
   }
   console.log("Importing media")
-  const mediaIDs = await importMedia()
+  const mediaIDs = await retryDatabaseStage("media", importMedia)
   console.log("Importing directions")
-  const directionIDs = await importDirections()
+  const directionIDs = await retryDatabaseStage("directions", importDirections)
   console.log("Importing services")
-  const serviceIDs = await importServices(directionIDs, mediaIDs)
+  const serviceIDs = await retryDatabaseStage("services", () =>
+    importServices(directionIDs, mediaIDs)
+  )
   console.log("Importing offers")
-  await importServiceOffers(serviceIDs)
+  await retryDatabaseStage("offers", () => importServiceOffers(serviceIDs))
   console.log("Importing courses")
-  const courseIDs = await importCourses(directionIDs, mediaIDs)
+  const courseIDs = await retryDatabaseStage("courses", () =>
+    importCourses(directionIDs, mediaIDs)
+  )
   console.log("Importing fashion collections")
-  const collectionIDs = await importFashionCollections(mediaIDs)
+  const collectionIDs = await retryDatabaseStage("fashion collections", () =>
+    importFashionCollections(mediaIDs)
+  )
   console.log("Importing portfolio cases")
-  await importPortfolioCases(mediaIDs)
+  await retryDatabaseStage("portfolio cases", () =>
+    importPortfolioCases(mediaIDs)
+  )
   console.log("Importing pages")
-  await importPages(mediaIDs)
+  await retryDatabaseStage("pages", () => importPages(mediaIDs))
   console.log("Importing booking settings")
-  await importBookingSettings()
+  await retryDatabaseStage("booking settings", importBookingSettings)
   console.log("Linking related content")
-  await linkDirections(directionIDs, serviceIDs, courseIDs, collectionIDs)
+  await retryDatabaseStage("related content", () =>
+    linkDirections(directionIDs, serviceIDs, courseIDs, collectionIDs)
+  )
   console.log("Importing globals")
-  await importGlobals({
-    directionIDs,
-    serviceIDs,
-    courseIDs,
-    collectionIDs,
-    mediaIDs,
-  })
+  await retryDatabaseStage("globals", () =>
+    importGlobals({
+      directionIDs,
+      serviceIDs,
+      courseIDs,
+      collectionIDs,
+      mediaIDs,
+    })
+  )
   console.log("Verifying published content")
   await verifyPublishedContent()
 
