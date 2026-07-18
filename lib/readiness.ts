@@ -2,7 +2,7 @@ import { getPayload } from "payload"
 
 import config from "@payload-config"
 import { env } from "@/lib/env"
-import { migrationHead } from "@/payload/migrations/head"
+import { migrationHead } from "@/payload/migration-head"
 
 export async function checkReadiness() {
   if (env.PAYLOAD_ENABLED !== "true") {

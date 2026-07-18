@@ -6,7 +6,7 @@ import {
   databaseIdentity,
 } from "./resource-identity"
 import { migrations } from "../payload/migrations"
-import { migrationHead } from "../payload/migrations/head"
+import { migrationHead } from "../payload/migration-head"
 import { publicGlobalRead } from "../payload/access"
 
 const preview = {
