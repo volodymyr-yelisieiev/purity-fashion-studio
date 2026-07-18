@@ -1403,6 +1403,7 @@ export interface Page {
     corporateContext?: boolean | null;
   };
   legalVersion?: string | null;
+  contentsTitle?: string | null;
   effectiveDate?: string | null;
   cta: {
     label: string;
@@ -2949,6 +2950,7 @@ export interface PagesSelect<T extends boolean = true> {
         corporateContext?: T;
       };
   legalVersion?: T;
+  contentsTitle?: T;
   effectiveDate?: T;
   cta?:
     | T

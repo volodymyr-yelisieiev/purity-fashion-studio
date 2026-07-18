@@ -131,6 +131,10 @@ const contactLabels = {
   },
 } as const
 
+const legalPageLabels = {
+  contentsTitle: { uk: "Зміст", ru: "Содержание", en: "Contents" },
+} as const
+
 function localizedObject(
   builder: (locale: Locale) => Record<string, unknown>
 ): LocaleData {
@@ -1010,6 +1014,9 @@ async function importPages(
                   : "Contacts, working format, and payment in one clear form.",
           }
         : {}),
+      ...(page.slug === "privacy" || page.slug === "terms"
+        ? { contentsTitle: legalPageLabels.contentsTitle[locale] }
+        : {}),
       cta: page.cta
         ? { label: page.cta.label[locale], action: "contact" }
         : undefined,
@@ -1029,7 +1036,7 @@ async function importPages(
             : undefined,
         effectiveDate:
           page.slug === "privacy" || page.slug === "terms"
-            ? new Date().toISOString()
+            ? "2026-07-10T00:00:00.000Z"
             : undefined,
         enabled: true,
         featured: page.slug === "studio",

@@ -254,6 +254,7 @@ export type PublicPageData = {
   mediaIds?: string[]
   cta: PayloadPage["cta"]
   legalVersion?: string
+  contentsTitle?: string
   effectiveDate?: string
   seo: { title: string; description: string }
 }
@@ -1628,6 +1629,7 @@ async function findPayloadPage(
       sections: true,
       cta: true,
       legalVersion: true,
+      contentsTitle: true,
       effectiveDate: true,
       meta: true,
     },
@@ -1722,6 +1724,7 @@ async function findPayloadPage(
       : undefined,
     cta: page.cta,
     legalVersion: page.legalVersion ?? undefined,
+    contentsTitle: page.contentsTitle ?? undefined,
     effectiveDate: page.effectiveDate ?? undefined,
     seo: {
       title: page.meta?.title || `${page.title} | PURITY Fashion Studio`,

@@ -433,24 +433,12 @@ function LegalPageView({
   pageData: PublicPageData
 }) {
   const currentPath = sectionPath(publicPage.routeSegment)
-  const copy = {
-    effectiveDate: {
-      uk: "Чинна редакція: 10 липня 2026",
-      ru: "Действующая редакция: 10 июля 2026",
-      en: "Effective date: 10 July 2026",
-    },
-    contentsTitle: {
-      uk: "Зміст",
-      ru: "Содержание",
-      en: "Contents",
-    },
-  }
   const sectionTitles = pageData.sections.map((section) => section.heading)
   const effectiveDate = pageData.effectiveDate
     ? new Intl.DateTimeFormat(locale === "uk" ? "uk-UA" : locale, {
         dateStyle: "long",
       }).format(new Date(pageData.effectiveDate))
-    : copy.effectiveDate[locale]
+    : pageData.legalVersion
 
   return (
     <div className="min-h-svh bg-background text-foreground">
@@ -474,7 +462,7 @@ function LegalPageView({
           <div className="mx-auto grid w-full max-w-4xl min-w-0 gap-12 px-6 py-16 md:px-10 md:py-24">
             <div>
               <h2 className="text-2xl font-medium md:text-3xl">
-                {copy.contentsTitle[locale]}
+                {pageData.contentsTitle}
               </h2>
               <ol className="mt-5 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
                 {sectionTitles.map((title, index) => (

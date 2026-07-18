@@ -163,6 +163,16 @@ export const Pages: CollectionConfig = {
         condition: (_, siblingData) => siblingData?.pageType !== "studio",
       },
     },
+    localizedText("contentsTitle", "Table of contents title", {
+      required: false,
+      maxLength: 120,
+      admin: {
+        condition: (_, siblingData) =>
+          ["privacy", "terms", "cookies", "payments", "cancellation-refunds", "consent"].includes(
+            siblingData?.pageType
+          ),
+      },
+    }),
     {
       name: "effectiveDate",
       type: "date",
