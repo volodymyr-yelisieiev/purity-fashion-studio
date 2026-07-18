@@ -12,6 +12,8 @@ function run(command: string, args: string[]) {
 
 const target = process.env.VERCEL_ENV === "production" ? "production" : "preview"
 
+run("pnpm", ["content:manifest:verify"])
+
 if (process.env.PAYLOAD_RESET_ON_DEPLOY === "true") {
   if (target !== "preview" || process.env.VERCEL_ENV !== "preview") {
     throw new Error("PAYLOAD_RESET_ON_DEPLOY is allowed only for Vercel Preview.")

@@ -3,8 +3,33 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, resolve } from "node:path"
 
 import { buildCmsSeed, validateCmsSeed } from "../content/cms"
+import {
+  categoryPageCopy,
+  collectionsPageCopy,
+  studioPageCopy,
+} from "../content/category-page-specs"
+import { coursePageCopy } from "../content/course-page-spec"
 import { getContentRoutes } from "../content/legacy-routes"
 import { mediaAssets } from "../content/data"
+import {
+  beadedDressCopy,
+  capsuleCopy,
+  newYearPartyCopy,
+} from "../content/collection-page-specs"
+import { homePageCopy } from "../content/home-page-spec"
+import { portfolioPageCopy } from "../content/portfolio-page-spec"
+import { serviceDetailCopy } from "../content/service-page-specs"
+import {
+  bookingCopy,
+  bookingErrors,
+  bookingLabels,
+  contactMethodLabels,
+  currencyLabels,
+  formatLabels,
+  inquiryTypeLabels,
+  paymentStatusCopy,
+  providerLabels,
+} from "../features/booking/content"
 import { locales } from "../i18n/routing"
 
 const manifestVersion = 1
@@ -57,20 +82,55 @@ const mediaChecksums = mediaAssets.map((asset) => {
 
 const manifest = {
   version: manifestVersion,
-  generatedAt: new Date().toISOString(),
   locales,
   routes: Object.fromEntries(locales.map((locale) => [locale, getContentRoutes(locale)])),
   source: seed,
+  migrationCopy: {
+    categoryPageCopy,
+    collectionsPageCopy,
+    studioPageCopy,
+    coursePageCopy,
+    beadedDressCopy,
+    capsuleCopy,
+    newYearPartyCopy,
+    homePageCopy,
+    portfolioPageCopy,
+    serviceDetailCopy,
+    bookingCopy,
+    bookingLabels,
+    inquiryTypeLabels,
+    formatLabels,
+    contactMethodLabels,
+    currencyLabels,
+    providerLabels,
+    paymentStatusCopy,
+    bookingErrors,
+  },
   checksums: { records: recordChecksums, media: mediaChecksums },
 }
 const json = `${JSON.stringify(manifest, null, 2)}\n`
 const outputIndex = process.argv.indexOf("--out")
-const outputPath = outputIndex >= 0 ? process.argv[outputIndex + 1] : "tmp/purity-content-manifest.v1.json"
+const outputPath =
+  outputIndex >= 0
+    ? process.argv[outputIndex + 1]
+    : "payload/seed/manifests/purity-content-manifest.v1.json"
+const absolutePath = resolve(outputPath)
 
 if (process.argv.includes("--stdout")) {
   process.stdout.write(json)
+} else if (process.argv.includes("--verify")) {
+  if (!existsSync(absolutePath)) {
+    throw new Error(`Missing versioned migration manifest: ${absolutePath}`)
+  }
+
+  if (readFileSync(absolutePath, "utf8") !== json) {
+    throw new Error(
+      `Migration manifest drifted. Run pnpm content:manifest -- --out ${outputPath}`
+    )
+  }
+
+  console.log(`Verified content manifest v${manifestVersion} at ${absolutePath}`)
 } else {
-  const absolutePath = resolve(outputPath)
   mkdirSync(dirname(absolutePath), { recursive: true })
   writeFileSync(absolutePath, json)
   console.log(`Wrote content manifest v${manifestVersion} to ${absolutePath}`)

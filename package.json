@@ -18,6 +18,7 @@
     "cms:check": "tsx scripts/check-cms-contract.ts",
     "cms:seed": "tsx scripts/export-content-manifest.ts",
     "content:manifest": "tsx scripts/export-content-manifest.ts",
+    "content:manifest:verify": "tsx scripts/export-content-manifest.ts --verify",
     "cms:import": "tsx payload/seed/import-seed.ts",
     "blob:reset-preview": "tsx scripts/reset-preview-blob.ts",
     "payload": "payload",
@@ -36,7 +37,7 @@
     "i18n:check": "tsx scripts/check-i18n.ts",
     "tokens:check": "tsx scripts/check-design-tokens.ts",
     "brand:check": "tsx scripts/check-brand-assets.ts",
-    "readiness:mvp": "pnpm env:check && pnpm typecheck && pnpm lint && pnpm content:validate && pnpm cms:check && pnpm payment:check && pnpm qa:static && pnpm handoff:check && pnpm i18n:check && pnpm tokens:check && pnpm brand:check"
+    "readiness:mvp": "pnpm env:check && pnpm typecheck && pnpm lint && pnpm content:validate && pnpm content:manifest:verify && pnpm cms:check && pnpm payment:check && pnpm qa:static && pnpm handoff:check && pnpm i18n:check && pnpm tokens:check && pnpm brand:check"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
