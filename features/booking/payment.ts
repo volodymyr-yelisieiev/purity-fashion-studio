@@ -5,7 +5,7 @@ import { env } from "@/lib/env"
 import type { BookingValues, PaymentCurrency, PaymentProvider } from "./schema"
 import type { Locale } from "@/i18n/routing"
 
-export type PaymentOrder = {
+type PaymentOrder = {
   id: string
   provider: PaymentProvider
   currency: PaymentCurrency
@@ -24,7 +24,7 @@ type CreatePaymentOrderInput = {
   title: string
 }
 
-export interface PaymentAdapter {
+interface PaymentAdapter {
   provider: PaymentProvider
   createOrder(input: CreatePaymentOrderInput): Promise<PaymentOrder>
   getPaymentStatus(input: {
@@ -103,7 +103,7 @@ async function createStripeOrder({
   }
 }
 
-export const stripeAdapter: PaymentAdapter = {
+const stripeAdapter: PaymentAdapter = {
   provider: "stripe",
   async createOrder(input) {
     if (env.PAYMENT_MODE === "live") return createStripeOrder(input)
@@ -149,7 +149,7 @@ export const stripeAdapter: PaymentAdapter = {
   },
 }
 
-export const liqpayAdapter: PaymentAdapter = {
+const liqpayAdapter: PaymentAdapter = {
   provider: "liqpay",
   async createOrder(input) {
     if (

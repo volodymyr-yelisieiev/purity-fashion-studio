@@ -58,7 +58,7 @@ export function localizedTextarea(
   } as Field
 }
 
-export const legacyKeyField: TextField = {
+const legacyKeyField: TextField = {
   name: "legacyKey",
   type: "text",
   required: true,
@@ -70,7 +70,7 @@ export const legacyKeyField: TextField = {
   },
 }
 
-export const slugField: TextField = {
+const slugField: TextField = {
   name: "slug",
   type: "text",
   required: true,
@@ -87,7 +87,7 @@ export const enabledField: Field = {
   defaultValue: true,
 }
 
-export const featuredField: Field = {
+const featuredField: Field = {
   name: "featured",
   type: "checkbox",
   required: true,

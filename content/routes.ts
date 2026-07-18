@@ -1,4 +1,4 @@
-export type ContentRouteKind =
+type ContentRouteKind =
   | "navigation"
   | "section"
   | "service"
