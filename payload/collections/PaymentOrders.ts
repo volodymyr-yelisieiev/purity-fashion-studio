@@ -161,6 +161,15 @@ export const PaymentOrders: CollectionConfig = {
       maxLength: 4000,
       access: { read: financialFieldAccess },
     },
+    { name: "lastReconciledAt", type: "date", index: true },
+    { name: "nextReconcileAt", type: "date", index: true },
+    {
+      name: "reconciliationAttempts",
+      type: "number",
+      required: true,
+      defaultValue: 0,
+      min: 0,
+    },
   ],
   timestamps: true,
 }

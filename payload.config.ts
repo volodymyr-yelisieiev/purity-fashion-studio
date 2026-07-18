@@ -15,6 +15,7 @@ import { Directions } from "./payload/collections/Directions"
 import { FashionCollections } from "./payload/collections/FashionCollections"
 import { Leads } from "./payload/collections/Leads"
 import { Media } from "./payload/collections/Media"
+import { NotificationOutbox } from "./payload/collections/NotificationOutbox"
 import { Offers } from "./payload/collections/Offers"
 import { Pages } from "./payload/collections/Pages"
 import { PaymentOrders } from "./payload/collections/PaymentOrders"
@@ -170,6 +171,7 @@ export default buildConfig({
     BookingRequests,
     PaymentOrders,
     WebhookEvents,
+    NotificationOutbox,
   ],
   cors: allowedOrigins,
   csrf: allowedOrigins,

@@ -14,7 +14,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "media-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.sentry.io",
+  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com",
   `frame-src 'self' https://www.google.com https://www.openstreetmap.org${previewLiveFeedbackOrigin}`,
   "form-action 'self' https://checkout.stripe.com https://www.liqpay.ua https://pay.fondy.eu",
   "object-src 'none'",

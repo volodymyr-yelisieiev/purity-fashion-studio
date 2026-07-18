@@ -81,6 +81,7 @@ export interface Config {
     'booking-requests': BookingRequest;
     'payment-orders': PaymentOrder;
     'webhook-events': WebhookEvent;
+    'notification-outbox': NotificationOutbox;
     redirects: Redirect;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -104,6 +105,7 @@ export interface Config {
     'booking-requests': BookingRequestsSelect<false> | BookingRequestsSelect<true>;
     'payment-orders': PaymentOrdersSelect<false> | PaymentOrdersSelect<true>;
     'webhook-events': WebhookEventsSelect<false> | WebhookEventsSelect<true>;
+    'notification-outbox': NotificationOutboxSelect<false> | NotificationOutboxSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -1428,6 +1430,8 @@ export interface Page {
  */
 export interface Lead {
   id: string;
+  identityKey?: string | null;
+  phoneIdentityKey?: string | null;
   name: string;
   email?: string | null;
   phone?: string | null;
@@ -1564,6 +1568,9 @@ export interface PaymentOrder {
   notificationStatus: 'pending' | 'sent' | 'failed';
   notificationError?: string | null;
   auditNote?: string | null;
+  lastReconciledAt?: string | null;
+  nextReconcileAt?: string | null;
+  reconciliationAttempts: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -1575,13 +1582,47 @@ export interface WebhookEvent {
   id: string;
   provider: 'stripe' | 'liqpay' | 'fondy';
   providerEventID: string;
+  deduplicationKey: string;
   eventType: string;
   receivedAt: string;
   processingStatus: 'received' | 'processed' | 'ignored' | 'failed';
   paymentOrder?: (string | null) | PaymentOrder;
-  retryCount: number;
+  normalizedPayload:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  attempts: number;
+  nextRetryAt?: string | null;
+  lockedAt?: string | null;
   sanitizedError?: string | null;
   payloadHash: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-outbox".
+ */
+export interface NotificationOutbox {
+  id: string;
+  deduplicationKey: string;
+  recipientType: 'client' | 'internal';
+  recipient: string;
+  subject: string;
+  text: string;
+  status: 'pending' | 'processing' | 'retryable' | 'sent' | 'dead';
+  attempts: number;
+  nextAttemptAt: string;
+  lockedAt?: string | null;
+  providerMessageID?: string | null;
+  sanitizedError?: string | null;
+  bookingRequest?: (string | null) | BookingRequest;
+  paymentOrder?: (string | null) | PaymentOrder;
   updatedAt: string;
   createdAt: string;
 }
@@ -1796,6 +1837,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'webhook-events';
         value: string | WebhookEvent;
+      } | null)
+    | ({
+        relationTo: 'notification-outbox';
+        value: string | NotificationOutbox;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2976,6 +3021,8 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "leads_select".
  */
 export interface LeadsSelect<T extends boolean = true> {
+  identityKey?: T;
+  phoneIdentityKey?: T;
   name?: T;
   email?: T;
   phone?: T;
@@ -3095,6 +3142,9 @@ export interface PaymentOrdersSelect<T extends boolean = true> {
   notificationStatus?: T;
   notificationError?: T;
   auditNote?: T;
+  lastReconciledAt?: T;
+  nextReconcileAt?: T;
+  reconciliationAttempts?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3105,13 +3155,38 @@ export interface PaymentOrdersSelect<T extends boolean = true> {
 export interface WebhookEventsSelect<T extends boolean = true> {
   provider?: T;
   providerEventID?: T;
+  deduplicationKey?: T;
   eventType?: T;
   receivedAt?: T;
   processingStatus?: T;
   paymentOrder?: T;
-  retryCount?: T;
+  normalizedPayload?: T;
+  attempts?: T;
+  nextRetryAt?: T;
+  lockedAt?: T;
   sanitizedError?: T;
   payloadHash?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-outbox_select".
+ */
+export interface NotificationOutboxSelect<T extends boolean = true> {
+  deduplicationKey?: T;
+  recipientType?: T;
+  recipient?: T;
+  subject?: T;
+  text?: T;
+  status?: T;
+  attempts?: T;
+  nextAttemptAt?: T;
+  lockedAt?: T;
+  providerMessageID?: T;
+  sanitizedError?: T;
+  bookingRequest?: T;
+  paymentOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }

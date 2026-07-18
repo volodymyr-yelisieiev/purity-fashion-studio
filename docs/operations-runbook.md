@@ -43,20 +43,44 @@ database unless the approved recovery plan says otherwise.
 
 ## Payments and webhook operations
 
-Provider endpoints retry safely through unique Webhook Events. Investigate
-failed events by payload hash, safe error, order UUID and provider dashboard;
-do not paste raw payloads into tickets. Finance never edits `paid` manually.
+Provider endpoints retry safely through provider-scoped Webhook Events. A
+`processed` event is acknowledged without repeating side effects; a
+`failed`/`retryable` event is claimable again and records attempts, next retry
+and a sanitized error. Investigate by payload hash, correlation ID, safe error,
+order UUID and provider dashboard; do not paste raw payloads into tickets.
+Finance never edits `paid` manually.
 Refund actions require owner/finance authorization, reason, amount, provider
 reference and policy evidence. Reconcile pending orders and provider totals on
-an agreed schedule; escalate amount/currency mismatches immediately.
+an agreed schedule; escalate amount/currency mismatches immediately. The
+authenticated `/api/jobs/reconcile-payments` endpoint rotates due orders and
+uses per-order locks, so concurrent invocations do not double-process one
+order. Vercel invokes the recovery job daily; merchant activation must provide
+a more frequent external schedule when the chosen Vercel plan cannot run the
+required interval.
 
 ## Email operations
 
-Booking persistence precedes email. `notificationStatus=failed` requires a
-controlled retry; it does not justify recreating the booking. Monitor domain
-verification, bounces and complaints. Preview/local mail must use an override
-recipient. Client messages distinguish request received, booking confirmed and
-payment confirmed.
+Booking/payment state and one persistent outbox row per recipient commit in one
+database transaction. `/api/jobs/process-notifications` claims due rows,
+records the provider message ID, retries transient failures with exponential
+backoff and marks an item dead after ten attempts. A partial two-recipient
+delivery therefore retries only the missing recipient. `notificationStatus`
+is a summary; failed delivery never justifies recreating the booking. Vercel
+runs a daily recovery pass, while normal booking/webhook requests trigger an
+immediate bounded drain. Preview mail requires `EMAIL_OVERRIDE_RECIPIENT` and
+must never address the submitted client email. Monitor domain verification,
+bounces and complaints.
+
+Both job endpoints require `Authorization: Bearer $CRON_SECRET`. Run
+`pnpm payment:integration` against an isolated PostgreSQL database after fresh
+migrations to exercise 20-way payment transitions, concurrent webhook replay
+and failed-event recovery.
+
+## Error monitoring
+
+Use Vercel runtime logs, Payload structured logs and the correlation ID returned
+by API operations. Logs contain safe codes and sanitized error names/messages,
+never raw webhook bodies or lead fields.
 
 ## Security and privacy
 

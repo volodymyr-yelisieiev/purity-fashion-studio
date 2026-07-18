@@ -22,7 +22,6 @@ const envSchema = z.object({
   EMAIL_FROM: z.string().email().optional(),
   EMAIL_OVERRIDE_RECIPIENT: z.string().email().optional(),
   RESEND_DOMAIN_VERIFIED: z.enum(["true", "false"]).default("false"),
-  SENTRY_DSN: z.string().url().optional(),
   CRON_SECRET: z.string().min(32).optional(),
   PAYMENT_MODE: z.enum(["test", "live"]).default("test"),
   PAYMENT_MERCHANT_READY: z.enum(["true", "false"]).default("false"),

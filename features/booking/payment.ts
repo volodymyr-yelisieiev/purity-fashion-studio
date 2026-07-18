@@ -16,7 +16,7 @@ export type PaymentOrder = {
 
 type CreatePaymentOrderInput = {
   amount: number
-  booking: BookingValues
+  booking: Pick<BookingValues, "email" | "budgetCurrency">
   idempotencyKey: string
   locale: Locale
   orderUUID: string
@@ -80,6 +80,7 @@ async function createStripeOrder({
     },
     body,
     cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
   })
   const session = (await response.json()) as {
     id?: string

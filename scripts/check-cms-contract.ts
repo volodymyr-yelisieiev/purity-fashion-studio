@@ -19,6 +19,7 @@ const expectedCollections = [
   "booking-requests",
   "payment-orders",
   "webhook-events",
+  "notification-outbox",
   "redirects",
 ]
 const expectedGlobals = [
