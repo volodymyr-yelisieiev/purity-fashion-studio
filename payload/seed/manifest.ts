@@ -13,8 +13,6 @@ const manifest =
  */
 export const purityContentManifest = manifest
 
-export type PurityContentManifest = typeof purityContentManifest
-
 export function getManifestRoutes(locale: Locale): ContentRoute[] {
   return purityContentManifest.routes[locale].map((route) => ({
     ...route,

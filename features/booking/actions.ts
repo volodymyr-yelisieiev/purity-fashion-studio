@@ -22,7 +22,6 @@ import type {
 } from "@/payload-types"
 
 import { acquireAdvisoryLock, withAdvisoryLock } from "./advisory-lock"
-import { trackBookingEvent } from "./analytics"
 import { requestReceivedEmail } from "./email-copy"
 import {
   deliverNotificationBatch,
@@ -695,21 +694,6 @@ export async function submitBooking(
     }
 
     after(() => deliverNotificationBatch(payload, 10))
-
-    trackBookingEvent({
-      event: "booking_submit",
-      serviceSlug: service.slug,
-      provider: checkout?.provider,
-      currency: booking.budgetCurrency,
-    })
-    if (checkout) {
-      trackBookingEvent({
-        event: "checkout_start",
-        serviceSlug: service.slug,
-        provider: checkout.provider,
-        currency: checkout.currency,
-      })
-    }
 
     return {
       status: "success",
