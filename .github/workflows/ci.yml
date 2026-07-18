@@ -54,7 +54,6 @@ jobs:
       PAYLOAD_SECRET: ci-payload-secret-that-is-longer-than-thirty-two-characters
       PREVIEW_SECRET: ci-preview-secret-that-is-longer-than-thirty-two-characters
       CRON_SECRET: ci-cron-secret-that-is-longer-than-thirty-two-characters
-      BLOB_READ_WRITE_TOKEN: ci-vercel-blob-token-disabled-for-integration-tests
       DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/purity
       RESEND_API_KEY: re_ci_disabled
       EMAIL_FROM: studio@example.com
@@ -82,4 +81,6 @@ jobs:
           pnpm payload:migrate
           pnpm cms:import -- --target=local --confirm=IMPORT_LOCAL
       - name: Verify
+        env:
+          BLOB_READ_WRITE_TOKEN: vercel_blob_rw_ci_ci
         run: pnpm qa:all
