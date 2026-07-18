@@ -9,9 +9,13 @@ export async function GET() {
       { status: "ok", content: "payload" },
       { headers: { "Cache-Control": "no-store" } }
     )
-  } catch {
+  } catch (error) {
+    const check =
+      error instanceof Error && /^[a-z-]+$/.test(error.message)
+        ? error.message
+        : "unknown"
     return Response.json(
-      { status: "unavailable" },
+      { status: "unavailable", check },
       { status: 503, headers: { "Cache-Control": "no-store" } }
     )
   }

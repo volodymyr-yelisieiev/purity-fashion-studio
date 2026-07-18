@@ -1990,8 +1990,9 @@ test("operations, indexing, and payment endpoints fail closed", async ({
   request,
 }) => {
   const health = await request.get("/api/health")
-  expect(health.status()).toBe(200)
-  expect(await health.json()).toEqual({ status: "ok", content: "payload" })
+  const healthBody = await health.json()
+  expect(health.status(), JSON.stringify(healthBody)).toBe(200)
+  expect(healthBody).toEqual({ status: "ok", content: "payload" })
 
   const stripe = await request.post("/api/payments/webhooks/stripe", {
     data: "{}",

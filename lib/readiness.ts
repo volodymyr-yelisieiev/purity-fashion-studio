@@ -6,7 +6,7 @@ import { migrationHead } from "@/payload/migration-head"
 
 export async function checkReadiness() {
   if (env.PAYLOAD_ENABLED !== "true") {
-    throw new Error("Payload is disabled")
+    throw new Error("payload-disabled")
   }
 
   const payload = await getPayload({ config })
@@ -41,20 +41,16 @@ export async function checkReadiness() {
   ])
 
   const mediaURL = media.docs[0]?.url
-  if (
-    migration.totalDocs !== 1 ||
-    !home.heroTitle ||
-    !settings.brandName ||
-    pages.totalDocs === 0 ||
-    !mediaURL
-  ) {
-    throw new Error("Required Payload content is unavailable")
-  }
+  if (migration.totalDocs !== 1) throw new Error("migration-head")
+  if (!home.heroTitle) throw new Error("home-global")
+  if (!settings.brandName) throw new Error("site-settings")
+  if (pages.totalDocs === 0) throw new Error("published-pages")
+  if (!mediaURL) throw new Error("published-media")
 
   const response = await fetch(new URL(mediaURL, env.NEXT_PUBLIC_SITE_URL), {
     headers: { Range: "bytes=0-0" },
     signal: AbortSignal.timeout(3000),
   })
   await response.body?.cancel()
-  if (!response.ok) throw new Error("Published media is unavailable")
+  if (!response.ok) throw new Error("media-backend")
 }
