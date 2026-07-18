@@ -73,11 +73,6 @@ const contactEntryLabels = {
     ru: "Выберите направление и удобный способ связи. Форма сразу покажет подходящий платежный маршрут.",
     en: "Choose a direction and preferred contact method. The form immediately shows the matching payment route.",
   },
-  external: {
-    uk: "Відкривається у новій вкладці",
-    ru: "Открывается в новой вкладке",
-    en: "Opens in a new tab",
-  },
 } as const
 
 const contactButtonClass =
@@ -92,9 +87,11 @@ type ContactDetails = {
 
 function ContactEntrypoints({
   details,
+  externalLinkLabel,
   locale,
 }: {
   details: ContactDetails
+  externalLinkLabel: string
   locale: Locale
 }) {
   return (
@@ -176,7 +173,7 @@ function ContactEntrypoints({
             {social.label}
             <ExternalLinkIcon aria-hidden="true" className="size-3.5" />
             <span className="sr-only">
-              {contactEntryLabels.external[locale]}
+              {externalLinkLabel}
             </span>
           </a>
         ))}
@@ -283,7 +280,11 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
                   </CardHeader>
                 </Card>
               </div>
-              <ContactEntrypoints locale={locale} details={details} />
+              <ContactEntrypoints
+                locale={locale}
+                details={details}
+                externalLinkLabel={settings.uiLabels.externalLink}
+              />
             </div>
 
             <Card className="min-w-0 border-border bg-background">

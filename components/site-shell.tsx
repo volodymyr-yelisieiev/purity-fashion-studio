@@ -305,7 +305,7 @@ function SiteHeaderClient({
                   data-testid="mobile-navigation"
                   className="grid font-heading text-3xl leading-none uppercase"
                 >
-                  {primaryNavigation.map((item) => (
+                  {primaryNavigation.slice(0, 8).map((item) => (
                     <ShellLink
                       key={item.id}
                       href={item.href}
