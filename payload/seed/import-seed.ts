@@ -4,6 +4,7 @@ import path from "node:path"
 import { getPayload, type CollectionSlug, type Where } from "payload"
 
 import { locales, type Locale } from "../../i18n/routing"
+import { getSiteURL } from "../../lib/site-url"
 import manifest from "./manifests/purity-content-manifest.v1.json"
 
 const { loadEnvConfig } = nextEnv
@@ -1359,8 +1360,7 @@ async function importGlobals({
     "site-settings",
     {
       brandName: siteSettings.brandName,
-      canonicalOrigin:
-        process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+      canonicalOrigin: getSiteURL(),
       defaultSocialImage: mediaIDs.get(siteSettings.defaultOgImageId),
       contacts: {
         email: siteSettings.contacts.email ?? "voronina@purity-fashion.com",

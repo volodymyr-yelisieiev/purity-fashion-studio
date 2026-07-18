@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import { env } from "@/lib/env"
+import { getSiteURL } from "@/lib/site-url"
 
 import { locales, localizePath, type Locale } from "../i18n/routing"
 
@@ -28,7 +28,7 @@ export function getLocalizedMetadata({
   description: string
 }): Metadata {
   return {
-    metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
+    metadataBase: new URL(getSiteURL()),
     title,
     description,
     alternates: localizedAlternates(locale, path),

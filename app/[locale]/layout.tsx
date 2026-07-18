@@ -12,8 +12,8 @@ import { StructuredData } from "@/components/structured-data"
 import { getLocalizedMetadata } from "@/content/metadata"
 import { getHome } from "@/content/public-api"
 import { hasLocale, locales } from "@/i18n/routing"
+import { getSiteURL } from "@/lib/site-url"
 import { cn } from "@/lib/utils"
-import { env } from "@/lib/env"
 
 // Public content is read from Payload at request time. This avoids baking a
 // database snapshot into a build and lets revalidation hooks publish changes.
@@ -77,6 +77,7 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages({ locale })
+  const siteURL = getSiteURL()
 
   return (
     <html
@@ -94,7 +95,7 @@ export default async function LocaleLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "PURITY Fashion Studio",
-              url: env.NEXT_PUBLIC_SITE_URL,
+              url: siteURL,
               email: "voronina@purity-fashion.com",
               telephone: "+380676561912",
             },
@@ -102,7 +103,7 @@ export default async function LocaleLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "PURITY Fashion Studio",
-              url: env.NEXT_PUBLIC_SITE_URL,
+              url: siteURL,
               inLanguage: locales,
             },
           ]}

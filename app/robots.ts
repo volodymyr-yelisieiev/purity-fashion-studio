@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next"
 
 import { env } from "@/lib/env"
+import { getSiteURL } from "@/lib/site-url"
 
 export default function robots(): MetadataRoute.Robots {
   if (env.NEXT_PUBLIC_INDEXING_ENABLED !== "true") {
@@ -13,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/api", "/*/styleguide", "/*/payment"],
     },
-    sitemap: `${env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`,
+    sitemap: `${getSiteURL()}/sitemap.xml`,
   }
 }

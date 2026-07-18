@@ -9,11 +9,12 @@ import {
   getPublishedServiceSlugs,
 } from "@/content/public-api"
 import { defaultLocale, locales, localizePath } from "@/i18n/routing"
-import { env } from "@/lib/env"
+import { getSiteURL } from "@/lib/site-url"
 
 export const dynamic = "force-dynamic"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const siteURL = getSiteURL()
   const paths = new Set<string>()
   const [directions, pages, services, courses, collections, portfolioCases] =
     await Promise.all([
@@ -46,12 +47,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   return [...paths].sort().map((path) => ({
-    url: `${env.NEXT_PUBLIC_SITE_URL}${path}`,
+    url: `${siteURL}${path}`,
     alternates: {
       languages: Object.fromEntries(
         locales.map((locale) => [
           locale,
-          `${env.NEXT_PUBLIC_SITE_URL}${localizePath(locale, path)}`,
+          `${siteURL}${localizePath(locale, path)}`,
         ])
       ),
     },
