@@ -1,6 +1,10 @@
 import type { GlobalConfig } from "payload"
 
-import { contentOrDeveloper, hasRole, publicGlobalRead } from "../access"
+import {
+  contentOrDeveloper,
+  enforcePublishedGlobalRead,
+  hasRole,
+} from "../access"
 import { draftVersions, localizedText } from "../fields/shared"
 import { revalidateGlobal } from "../hooks/revalidation"
 
@@ -11,11 +15,14 @@ export const Header: GlobalConfig = {
   slug: "header",
   admin: { group: "Site" },
   access: {
-    read: publicGlobalRead,
+    read: () => true,
     readVersions: contentOrDeveloper,
     update: canManage,
   },
-  hooks: { afterChange: [revalidateGlobal("header")] },
+  hooks: {
+    afterChange: [revalidateGlobal("header")],
+    beforeOperation: [enforcePublishedGlobalRead],
+  },
   fields: [
     {
       name: "navigation",

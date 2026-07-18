@@ -7,7 +7,7 @@ import {
 } from "./resource-identity"
 import { migrations } from "../payload/migrations"
 import { migrationHead } from "../payload/migration-head"
-import { publicGlobalRead } from "../payload/access"
+import { enforcePublishedGlobalRead } from "../payload/access"
 
 const preview = {
   VERCEL_ENV: "preview",
@@ -31,20 +31,29 @@ assert.throws(() =>
   })
 )
 assert.equal(migrations.at(-1)?.name, migrationHead)
-assert.deepEqual(await publicGlobalRead({ req: { user: null } } as never), {
-  _status: { equals: "published" },
-})
-assert.equal(
-  await publicGlobalRead({
-    req: { user: { active: true, roles: ["editor"] } },
+assert.deepEqual(
+  await enforcePublishedGlobalRead({
+    args: { draft: true },
+    operation: "read",
+    req: { user: null },
   } as never),
-  true
+  { draft: false }
 )
 assert.deepEqual(
-  await publicGlobalRead({
+  await enforcePublishedGlobalRead({
+    args: { draft: true },
+    operation: "read",
     req: { user: { active: false, roles: ["editor"] } },
   } as never),
-  { _status: { equals: "published" } }
+  { draft: false }
+)
+assert.deepEqual(
+  await enforcePublishedGlobalRead({
+    args: { draft: true },
+    operation: "read",
+    req: { user: { active: true, roles: ["editor"] } },
+  } as never),
+  { draft: true }
 )
 assert.throws(() =>
   assertTargetResourceIdentity("preview", {

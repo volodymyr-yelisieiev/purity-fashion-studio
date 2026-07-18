@@ -1,6 +1,10 @@
 import type { GlobalConfig } from "payload"
 
-import { contentOrDeveloper, hasRole, publicGlobalRead } from "../access"
+import {
+  contentOrDeveloper,
+  enforcePublishedGlobalRead,
+  hasRole,
+} from "../access"
 import {
   draftVersions,
   localizedText,
@@ -15,11 +19,14 @@ export const Home: GlobalConfig = {
   slug: "home",
   admin: { group: "Site" },
   access: {
-    read: publicGlobalRead,
+    read: () => true,
     readVersions: contentOrDeveloper,
     update: canManage,
   },
-  hooks: { afterChange: [revalidateGlobal("home")] },
+  hooks: {
+    afterChange: [revalidateGlobal("home")],
+    beforeOperation: [enforcePublishedGlobalRead],
+  },
   fields: [
     localizedText("heroEyebrow", "Hero eyebrow", {
       required: false,
