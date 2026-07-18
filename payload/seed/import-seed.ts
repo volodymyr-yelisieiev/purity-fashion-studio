@@ -3,44 +3,8 @@ import { existsSync } from "node:fs"
 import path from "node:path"
 import { getPayload, type CollectionSlug, type Where } from "payload"
 
-import {
-  categoryPageCopy,
-  collectionsPageCopy,
-  studioPageCopy,
-} from "../../content/category-page-specs"
-import {
-  collections,
-  courses,
-  mediaAssets,
-  navigation,
-  portfolioCases,
-  publicPages,
-  serviceCategories,
-  services,
-  siteSettings,
-} from "../../content/data"
-import { serviceDetailCopy } from "../../content/service-page-specs"
-import { portfolioPageCopy } from "../../content/portfolio-page-spec"
-import { homePageCopy } from "../../content/home-page-spec"
-import {
-  bookingCopy,
-  bookingErrors,
-  bookingLabels,
-  contactMethodLabels,
-  currencyLabels,
-  formatLabels,
-  inquiryTypeLabels,
-  paymentStatusCopy,
-  providerLabels,
-} from "../../features/booking/content"
-import { coursePageCopy } from "../../content/course-page-spec"
-import {
-  beadedDressCopy,
-  capsuleCopy,
-  newYearPartyCopy,
-} from "../../content/collection-page-specs"
 import { locales, type Locale } from "../../i18n/routing"
-import type { CategoryPageSpec } from "../../content/model"
+import manifest from "./manifests/purity-content-manifest.v1.json"
 
 const { loadEnvConfig } = nextEnv
 loadEnvConfig(process.cwd())
@@ -92,6 +56,45 @@ const payload = await getPayload({ config })
 
 type ID = string
 type LocaleData = Record<Locale, Record<string, unknown>>
+type CategoryPageSpec =
+  (typeof manifest.migrationCopy.categoryPageCopy)[keyof typeof manifest.migrationCopy.categoryPageCopy]
+
+const {
+  collections,
+  courses,
+  "media-assets": mediaAssets,
+  "portfolio-cases": portfolioCases,
+  pages: publicPages,
+  "service-categories": serviceCategories,
+  services,
+  settings: [siteSettings],
+} = manifest.source
+const {
+  beadedDressCopy,
+  bookingCopy,
+  bookingErrors,
+  bookingLabels,
+  capsuleCopy,
+  categoryPageCopy,
+  collectionsPageCopy,
+  contactMethodLabels,
+  coursePageCopy,
+  currencyLabels,
+  formatLabels,
+  homePageCopy,
+  inquiryTypeLabels,
+  navigation,
+  newYearPartyCopy,
+  paymentStatusCopy,
+  portfolioPageCopy,
+  providerLabels,
+  serviceDetailCopy,
+  studioPageCopy,
+} = manifest.migrationCopy
+
+if (!siteSettings) {
+  throw new Error("Content manifest is missing site settings.")
+}
 
 const publicUiLabels = {
   menu: { uk: "Меню", ru: "Меню", en: "Menu" },
@@ -394,7 +397,9 @@ async function importDirections(): Promise<Map<string, ID>> {
           : siteSettings.home.primaryCta.label[locale],
       diagnosticLabel:
         spec && "diagnosticLabel" in spec
-          ? spec.diagnosticLabel?.[locale]
+          ? (spec.diagnosticLabel as
+              | Partial<Record<Locale, string>>
+              | undefined)?.[locale]
           : undefined,
       faqTitle: spec?.faqTitle?.[locale],
       faq:
@@ -513,7 +518,8 @@ async function importServices(
     if (!directionID)
       throw new Error(`Missing direction ${directionKey} for ${service.slug}`)
 
-    const spec = serviceDetailCopy[service.slug]
+    const spec =
+      serviceDetailCopy[service.slug as keyof typeof serviceDetailCopy]
     const localizedData = localizedObject((locale) => ({
       title: service.title[locale],
       summary: service.summary[locale],

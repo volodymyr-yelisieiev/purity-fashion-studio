@@ -6392,7 +6392,149 @@
         "ru": "Для телефона или Viber укажите номер.",
         "en": "Enter a phone number for phone or Viber."
       }
-    }
+    },
+    "navigation": [
+      {
+        "id": "home",
+        "path": "/",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Головна",
+          "ru": "Главная",
+          "en": "Home"
+        }
+      },
+      {
+        "id": "research",
+        "path": "/stylist",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Стиліст",
+          "ru": "Стилист",
+          "en": "Stylist"
+        }
+      },
+      {
+        "id": "realisation",
+        "path": "/shopping",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Шопінг",
+          "ru": "Шопинг",
+          "en": "Shopping"
+        }
+      },
+      {
+        "id": "atelier",
+        "path": "/atelier",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Ательє",
+          "ru": "Ателье",
+          "en": "Atelier"
+        }
+      },
+      {
+        "id": "transformation",
+        "path": "/wardrobe",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Гардероб",
+          "ru": "Гардероб",
+          "en": "Wardrobe"
+        }
+      },
+      {
+        "id": "corporate",
+        "path": "/corporate",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Корпоратив",
+          "ru": "Корпоратив",
+          "en": "Corporate"
+        }
+      },
+      {
+        "id": "school",
+        "path": "/school",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Школа",
+          "ru": "Школа",
+          "en": "School"
+        }
+      },
+      {
+        "id": "collections",
+        "path": "/collections",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Колекції",
+          "ru": "Коллекции",
+          "en": "Collections"
+        }
+      },
+      {
+        "id": "portfolio",
+        "path": "/portfolio",
+        "visibleInMvp": false,
+        "label": {
+          "uk": "Портфоліо",
+          "ru": "Портфолио",
+          "en": "Portfolio"
+        }
+      },
+      {
+        "id": "contacts",
+        "path": "/contacts",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Контакти",
+          "ru": "Контакты",
+          "en": "Contacts"
+        }
+      },
+      {
+        "id": "studio",
+        "path": "/studio",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Студія",
+          "ru": "Студия",
+          "en": "Studio"
+        }
+      },
+      {
+        "id": "booking",
+        "path": "/booking",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Запис",
+          "ru": "Запись",
+          "en": "Booking"
+        }
+      },
+      {
+        "id": "privacy",
+        "path": "/privacy",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Приватність",
+          "ru": "Приватность",
+          "en": "Privacy"
+        }
+      },
+      {
+        "id": "terms",
+        "path": "/terms",
+        "visibleInMvp": true,
+        "label": {
+          "uk": "Умови",
+          "ru": "Условия",
+          "en": "Terms"
+        }
+      }
+    ]
   },
   "checksums": {
     "records": {

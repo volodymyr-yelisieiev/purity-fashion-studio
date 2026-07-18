@@ -10,7 +10,7 @@ import {
 } from "../content/category-page-specs"
 import { coursePageCopy } from "../content/course-page-spec"
 import { getContentRoutes } from "../content/legacy-routes"
-import { mediaAssets } from "../content/data"
+import { mediaAssets, navigation } from "../content/data"
 import {
   beadedDressCopy,
   capsuleCopy,
@@ -105,6 +105,7 @@ const manifest = {
     providerLabels,
     paymentStatusCopy,
     bookingErrors,
+    navigation,
   },
   checksums: { records: recordChecksums, media: mediaChecksums },
 }

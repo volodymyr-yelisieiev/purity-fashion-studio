@@ -73,6 +73,20 @@ for (const file of ["content/public-api.ts", "content/routes.ts", "content/metad
   }
 }
 
+for (const file of ["payload/seed/import-seed.ts"]) {
+  const source = readFileSync(file, "utf8")
+  for (const reference of [
+    ...forbiddenPayloadRuntimeReferences.slice(0, 7),
+    "features/booking/content",
+  ]) {
+    if (source.includes(reference)) {
+      issues.push(
+        `${file}: the deterministic importer must consume the versioned manifest, not ${reference}.`
+      )
+    }
+  }
+}
+
 if (existsSync("components/ui/button-variants.ts")) {
   issues.push(
     "components/ui/button-variants.ts must not return; components/ui/button.tsx is canonical."
