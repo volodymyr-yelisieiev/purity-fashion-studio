@@ -41,6 +41,11 @@ async function PaymentStatusPage({
   ])
   const page = await getPageBySlug(locale, `payment-${verified.status}`)
   if (!page) notFound()
+  // The verified payment state can be pending or refunded while the browser
+  // remains on one of the three public status routes. Navigation must retain
+  // that physical route so Next never prefetches an unimplemented
+  // /payment/pending or /payment/refunded page.
+  const currentPath = `/payment/${status}`
   const verifiedProvider = verified.provider ?? provider
   const providerValue = isPaymentProvider(verifiedProvider)
     ? settings.booking.providers[verifiedProvider]
@@ -56,7 +61,7 @@ async function PaymentStatusPage({
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      <SiteHeader locale={locale} currentPath={`/payment/${verified.status}`} />
+      <SiteHeader locale={locale} currentPath={currentPath} />
       <main>
         <EditorialHero
           locale={locale}
@@ -98,7 +103,7 @@ async function PaymentStatusPage({
           </Link>
         </EditorialHero>
       </main>
-      <SiteFooter locale={locale} currentPath={`/payment/${verified.status}`} />
+      <SiteFooter locale={locale} currentPath={currentPath} />
     </div>
   )
 }

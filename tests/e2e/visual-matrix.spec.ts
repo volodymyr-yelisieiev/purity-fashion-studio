@@ -31,8 +31,7 @@ test("visual matrix captures every public route family", async ({ page }) => {
 
   page.on("console", (message) => {
     if (message.type() === "error") {
-      const location = message.location()
-      errors.push(`${message.text()} (${location.url}:${location.lineNumber})`)
+      errors.push(message.text())
     }
   })
   page.on("pageerror", (error) => errors.push(error.message))

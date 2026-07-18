@@ -1856,10 +1856,7 @@ test("payment status pages keep provider fallbacks and localized action states",
 
   page.on("console", (message) => {
     if (message.type() === "error") {
-      const location = message.location()
-      errors.push(
-        `console: ${message.text()} (${location.url}:${location.lineNumber})`
-      )
+      errors.push(`console: ${message.text()}`)
     }
   })
   page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`))
