@@ -1512,8 +1512,8 @@ test("page-ticket routes stay responsive across required widths", async ({
       expect(
         metrics.loadedHeroImages,
         `${viewport.name} ${route}`
-      ).toBeGreaterThanOrEqual(isStyleguide ? 0 : 1)
-      if (!isStyleguide) {
+      ).toBeGreaterThanOrEqual(isUtilityRoute ? 0 : 1)
+      if (!isUtilityRoute) {
         expect(
           Number.parseFloat(metrics.heroMinHeight),
           `${viewport.name} ${route}`
