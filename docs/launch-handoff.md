@@ -32,7 +32,9 @@ records created after the source switch.
 - Media: `BLOB_READ_WRITE_TOKEN` is mandatory when Payload serves media on
   enabled and the server enforces MIME/rights gates.
 - Email: verified Resend sender, SPF, DKIM, DMARC, bounce/complaint ownership,
-  and environment-safe recipient routing.
+  environment-safe recipient routing and a protected notification-outbox job.
+- Monitoring: matching server/public Sentry DSNs, an approved data region,
+  alert ownership and PII-disabled event review.
 - Payments: `PAYMENT_MODE=live` requires both provider credentials, signed
   webhook secrets, and `PAYMENT_MERCHANT_READY=true`.
 - Analytics/indexing are fail-closed and require explicit public flags.
@@ -53,6 +55,10 @@ storage, email, and cron credentials independently per environment.
    verification, device testing, and a live transaction.
 5. Reconcile provider dashboards against immutable `payment-orders`; never
    edit `paid` manually.
+6. Invoke both `/api/jobs/reconcile-payments` and
+   `/api/jobs/process-notifications` with `CRON_SECRET`; retain a daily Vercel
+   recovery run and configure the merchant-approved higher frequency externally
+   if the Vercel plan cannot provide it.
 
 Redirects never prove payment. The public success page reads the stored order
 status written by a verified webhook.

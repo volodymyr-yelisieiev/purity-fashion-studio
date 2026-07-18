@@ -23,6 +23,22 @@ export const Leads: CollectionConfig = {
     update: operationsTeam,
   },
   fields: [
+    {
+      name: "identityKey",
+      type: "text",
+      unique: true,
+      index: true,
+      admin: { hidden: true },
+      access: { read: ({ req }) => hasRole(req.user, ["owner", "developer"]) },
+    },
+    {
+      name: "phoneIdentityKey",
+      type: "text",
+      unique: true,
+      index: true,
+      admin: { hidden: true },
+      access: { read: ({ req }) => hasRole(req.user, ["owner", "developer"]) },
+    },
     { name: "name", type: "text", required: true, maxLength: 160 },
     { name: "email", type: "email", index: true },
     { name: "phone", type: "text", index: true, maxLength: 80 },

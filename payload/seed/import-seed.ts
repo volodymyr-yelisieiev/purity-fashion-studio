@@ -1668,6 +1668,7 @@ async function assertBootstrapDatabaseIsEmpty() {
     "booking-requests",
     "payment-orders",
     "webhook-events",
+    "notification-outbox",
   ]
 
   for (const collection of collections) {

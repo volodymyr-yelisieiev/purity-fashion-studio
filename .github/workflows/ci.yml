@@ -80,6 +80,8 @@ jobs:
         run: |
           pnpm payload:migrate
           pnpm cms:bootstrap -- --target=local --confirm=BOOTSTRAP_LOCAL
+      - name: Verify payment concurrency and replay
+        run: pnpm payment:integration
       - name: Verify
         env:
           BLOB_READ_WRITE_TOKEN: vercel_blob_rw_ci_ci

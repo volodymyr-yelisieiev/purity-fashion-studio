@@ -1,6 +1,7 @@
 import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin"
 import { withPayload } from "@payloadcms/next/withPayload"
+import { withSentryConfig } from "@sentry/nextjs"
 
 const previewLiveFeedbackOrigin =
   process.env.VERCEL_ENV === "preview" ? " https://vercel.live" : ""
@@ -67,6 +68,9 @@ const nextConfig: NextConfig = {
 
 const withNextIntl = createNextIntlPlugin()
 
-export default withPayload(withNextIntl(nextConfig), {
-  devBundleServerPackages: false,
-})
+export default withSentryConfig(
+  withPayload(withNextIntl(nextConfig), {
+    devBundleServerPackages: false,
+  }),
+  { silent: true }
+)
