@@ -33,14 +33,23 @@ export async function checkReadiness() {
     payload.find({
       collection: "media",
       depth: 0,
-      limit: 1,
-      overrideAccess: false,
+      limit: 10,
+      overrideAccess: true,
       pagination: false,
-      select: { url: true },
+      where: {
+        and: [
+          { usageRightsStatus: { equals: "approved" } },
+          { publicVisibility: { equals: true } },
+        ],
+      },
     }),
   ])
 
-  const mediaURL = media.docs[0]?.url
+  const mediaURL = media.docs.find(
+    (item) =>
+      item.url &&
+      (!item.rightsExpiry || new Date(item.rightsExpiry).valueOf() > Date.now())
+  )?.url
   if (migration.totalDocs !== 1) throw new Error("migration-head")
   if (!home.heroTitle) throw new Error("home-global")
   if (!settings.brandName) throw new Error("site-settings")
