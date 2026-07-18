@@ -592,6 +592,7 @@ test("header navigation keeps booking, locale, and mobile controls coherent", as
 
         if (width < 1280) {
           await expect(menuTrigger).toBeVisible()
+          await expect(menuTrigger).toHaveAttribute("data-interactive", "true")
           await expect(desktopCta).toBeHidden()
           const triggerBox = await menuTrigger.boundingBox()
           expect(triggerBox?.width).toBeGreaterThanOrEqual(44)

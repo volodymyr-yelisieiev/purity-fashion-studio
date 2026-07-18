@@ -26,6 +26,8 @@ import type {
 import { localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
+const subscribe = () => () => undefined
+
 function MenuToggleIcon({ open }: { open: boolean }) {
   return (
     <span className="relative flex size-6 items-center justify-center text-2xl">
@@ -112,6 +114,11 @@ function SiteHeaderClient({
   const [menuOpen, setMenuOpen] = React.useState(false)
   const [menuClosing, setMenuClosing] = React.useState(false)
   const [isAtTop, setIsAtTop] = React.useState(true)
+  const isInteractive = React.useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false
+  )
   const menuContentRef = React.useRef<HTMLDivElement>(null)
   const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const transparent = overlay && isAtTop
@@ -232,6 +239,7 @@ function SiteHeaderClient({
               aria-hidden={menuOpen || undefined}
               aria-controls="mobile-site-menu"
               aria-expanded={menuOpen}
+              data-interactive={isInteractive}
               data-testid="mobile-menu-trigger"
               variant="ghost"
               size="icon-lg"
