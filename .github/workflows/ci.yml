@@ -53,6 +53,7 @@ jobs:
       PAYLOAD_ENABLED: "true"
       PAYLOAD_SECRET: ci-payload-secret-that-is-longer-than-thirty-two-characters
       PREVIEW_SECRET: ci-preview-secret-that-is-longer-than-thirty-two-characters
+      CRON_SECRET: ci-cron-secret-that-is-longer-than-thirty-two-characters
       DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/purity
       RESEND_API_KEY: re_ci_disabled
       EMAIL_FROM: studio@example.com
