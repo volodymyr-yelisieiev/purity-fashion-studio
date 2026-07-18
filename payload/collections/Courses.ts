@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload"
 
-import { contentManagers, ownerOnly } from "../access"
+import { contentManagers, contentOrDeveloper, ownerOnly } from "../access"
 import {
   commonPublicFields,
   ctaField,
@@ -25,6 +25,7 @@ export const Courses: CollectionConfig = {
     create: contentManagers,
     delete: ownerOnly,
     read: publicRead,
+    readVersions: contentOrDeveloper,
     update: contentManagers,
   },
   hooks: publicCollectionHooks({

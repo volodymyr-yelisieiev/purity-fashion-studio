@@ -1,11 +1,8 @@
 import { del, list } from "@vercel/blob"
 
-const targetArg = process.argv.find((argument) => argument.startsWith("--target="))
-const target = targetArg?.split("=")[1]
+import { assertTargetResourceIdentity } from "./resource-identity"
 
-if (target !== "preview" || process.env.VERCEL_ENV !== "preview") {
-  throw new Error("Blob reset is permitted only in a Vercel Preview deployment.")
-}
+assertTargetResourceIdentity("preview")
 
 if (!process.argv.includes("--confirm=RESET_PREVIEW")) {
   throw new Error("Confirm Preview Blob deletion with --confirm=RESET_PREVIEW.")

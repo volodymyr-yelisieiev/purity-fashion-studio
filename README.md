@@ -49,7 +49,9 @@ and external activation boundaries are recorded in
 | `pnpm dev`             | Start the development server                            |
 | `pnpm build`           | Create a production build                               |
 | `pnpm payload:migrate` | Apply committed PostgreSQL migrations                   |
-| `pnpm cms:import`      | Run the guarded idempotent Payload importer             |
+| `pnpm cms:bootstrap`   | Populate an empty Payload database from the manifest    |
+| `pnpm cms:verify`      | Verify published Payload content without writing        |
+| `pnpm cms:restore`     | Explicitly restore manifest-owned content               |
 | `pnpm cms:check`       | Validate the actual Payload config and import fixtures  |
 | `pnpm payment:check`   | Verify provider routing and payment state transitions   |
 | `pnpm readiness:mvp`   | Run types, lint, content, i18n and design-system checks |

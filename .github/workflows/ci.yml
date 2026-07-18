@@ -79,7 +79,7 @@ jobs:
       - name: Migrate and import Payload test data
         run: |
           pnpm payload:migrate
-          pnpm cms:import -- --target=local --confirm=IMPORT_LOCAL
+          pnpm cms:bootstrap -- --target=local --confirm=BOOTSTRAP_LOCAL
       - name: Verify
         env:
           BLOB_READ_WRITE_TOKEN: vercel_blob_rw_ci_ci

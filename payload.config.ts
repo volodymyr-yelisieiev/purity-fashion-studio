@@ -185,7 +185,7 @@ export default buildConfig({
     defaultFromAddress: process.env.EMAIL_FROM ?? "disabled@invalid.local",
     defaultFromName: "PURITY Fashion Studio",
     overrideRecipientAddress:
-      process.env.NODE_ENV === "production"
+      process.env.VERCEL_ENV === "production"
         ? undefined
         : process.env.EMAIL_OVERRIDE_RECIPIENT,
   }),

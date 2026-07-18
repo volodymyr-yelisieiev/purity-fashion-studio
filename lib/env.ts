@@ -4,6 +4,7 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
+  VERCEL_ENV: z.enum(["development", "preview", "production"]).optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000"),
   NEXT_PUBLIC_PAYLOAD_URL: z.string().url().default("http://localhost:3000"),
   NEXT_PUBLIC_INDEXING_ENABLED: z.enum(["true", "false"]).default("false"),
@@ -20,6 +21,7 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().email().optional(),
   EMAIL_OVERRIDE_RECIPIENT: z.string().email().optional(),
+  RESEND_DOMAIN_VERIFIED: z.enum(["true", "false"]).default("false"),
   SENTRY_DSN: z.string().url().optional(),
   CRON_SECRET: z.string().min(32).optional(),
   PAYMENT_MODE: z.enum(["test", "live"]).default("test"),
@@ -60,6 +62,22 @@ if (parsed.data.PAYLOAD_ENABLED === "true") {
 
   if ((parsed.data.PREVIEW_SECRET?.length ?? 0) < 32) {
     throw new Error("PREVIEW_SECRET must contain at least 32 characters")
+  }
+
+  if (
+    parsed.data.VERCEL_ENV === "preview" &&
+    !parsed.data.EMAIL_OVERRIDE_RECIPIENT
+  ) {
+    throw new Error("EMAIL_OVERRIDE_RECIPIENT is required in Vercel Preview")
+  }
+
+  if (parsed.data.VERCEL_ENV === "production") {
+    if (parsed.data.EMAIL_OVERRIDE_RECIPIENT) {
+      throw new Error("EMAIL_OVERRIDE_RECIPIENT must be unset in Production")
+    }
+    if (parsed.data.RESEND_DOMAIN_VERIFIED !== "true") {
+      throw new Error("RESEND_DOMAIN_VERIFIED must be true in Production")
+    }
   }
 
   if (parsed.data.NODE_ENV === "production") {

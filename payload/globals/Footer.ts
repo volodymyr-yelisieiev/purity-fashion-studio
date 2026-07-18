@@ -1,6 +1,6 @@
 import type { GlobalConfig } from "payload"
 
-import { hasRole } from "../access"
+import { contentOrDeveloper, hasRole, publicGlobalRead } from "../access"
 import {
   draftVersions,
   localizedText,
@@ -14,7 +14,11 @@ const canManage = ({ req }: { req: { user?: unknown } }) =>
 export const Footer: GlobalConfig = {
   slug: "footer",
   admin: { group: "Site" },
-  access: { read: () => true, update: canManage },
+  access: {
+    read: publicGlobalRead,
+    readVersions: contentOrDeveloper,
+    update: canManage,
+  },
   hooks: { afterChange: [revalidateGlobal("footer")] },
   fields: [
     { name: "email", type: "email", required: true },

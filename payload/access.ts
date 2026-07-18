@@ -54,6 +54,11 @@ export const contentManagers: Access = ({ req }) =>
 export const contentOrDeveloper: Access = ({ req }) =>
   hasRole(req.user, ["owner", "editor", "developer"])
 
+export const publicGlobalRead: Access = ({ req }) =>
+  hasRole(req.user, ["owner", "editor", "developer"])
+    ? true
+    : { _status: { equals: "published" } }
+
 export const operationsTeam: Access = ({ req }) =>
   hasRole(req.user, ["owner", "support"])
 

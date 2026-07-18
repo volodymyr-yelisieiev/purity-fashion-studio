@@ -1,6 +1,11 @@
 import type { Access, CollectionConfig, Where } from "payload"
 
-import { contentManagers, hasRole, ownerOnly } from "../access"
+import {
+  contentManagers,
+  contentOrDeveloper,
+  hasRole,
+  ownerOnly,
+} from "../access"
 import {
   draftVersions,
   enabledField,
@@ -39,6 +44,7 @@ export const Testimonials: CollectionConfig = {
     create: contentManagers,
     delete: ownerOnly,
     read: approvedTestimonialRead,
+    readVersions: contentOrDeveloper,
     update: contentManagers,
   },
   hooks: {

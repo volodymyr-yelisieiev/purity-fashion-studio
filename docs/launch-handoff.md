@@ -11,11 +11,11 @@ Payload is the only public runtime content source.
    origin for both public URLs.
 3. Back up the database, then run `pnpm payload:migrate:status` and
    `pnpm payload:migrate` before switching application traffic.
-4. Run the guarded importer with `--target=production
-   --confirm=IMPORT_PRODUCTION --force`; rerun it to
-   prove idempotency before editors change production content.
+4. Run the reviewed SHA through the `CMS release operation` workflow with
+   `BOOTSTRAP_PRODUCTION`; then run `pnpm cms:verify` before editors change
+   production content.
 5. Review all three locales in Draft Mode and publish approved records.
-6. Run `pnpm qa:all`, verify `/api/health`, `/robots.txt`, `/sitemap.xml`, and
+6. Run `pnpm qa:all`, verify `/api/health/live`, `/api/health/ready`, `/robots.txt`, `/sitemap.xml`, and
    perform signed webhook test transactions in both currencies.
 7. Enable indexing only on the canonical production deployment by setting
    `NEXT_PUBLIC_INDEXING_ENABLED=true` after Search Console and canonical-domain
@@ -67,7 +67,7 @@ and revalidation hooks are committed in this repository.
 Before switching the source:
 
 - migrate an empty and a representative restored database;
-- run `pnpm cms:import` twice and compare counts;
+- run `pnpm cms:verify` and compare counts with the reviewed manifest;
 - test owner/editor/support/finance/developer access;
 - test draft, publish, unpublish, slug redirect, and old/new route behavior;
 - review UK/RU/EN without locale fallback;
