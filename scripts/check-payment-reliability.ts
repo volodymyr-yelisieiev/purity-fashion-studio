@@ -20,6 +20,7 @@ const created = {
   paymentOrder: "",
   webhookEvents: [] as string[],
 }
+let failure: unknown
 
 try {
   const services = await payload.find({
@@ -254,41 +255,48 @@ try {
   console.log(
     "Payment reliability ok: 20-way transition/event concurrency, replay, outbox dedupe and monotonic refunds"
   )
+} catch (error) {
+  failure = error
 } finally {
-  if (created.paymentOrder) {
-    await payload.delete({
-      collection: "notification-outbox",
-      overrideAccess: true,
-      where: { paymentOrder: { equals: created.paymentOrder } },
-    })
+  try {
+    if (created.paymentOrder) {
+      await payload.delete({
+        collection: "notification-outbox",
+        overrideAccess: true,
+        where: { paymentOrder: { equals: created.paymentOrder } },
+      })
+    }
+    for (const id of created.webhookEvents) {
+      await payload.delete({
+        collection: "webhook-events",
+        id,
+        overrideAccess: true,
+      })
+    }
+    if (created.paymentOrder) {
+      await payload.delete({
+        collection: "payment-orders",
+        id: created.paymentOrder,
+        overrideAccess: true,
+      })
+    }
+    if (created.bookingRequest) {
+      await payload.delete({
+        collection: "booking-requests",
+        id: created.bookingRequest,
+        overrideAccess: true,
+      })
+    }
+    if (created.lead) {
+      await payload.delete({
+        collection: "leads",
+        id: created.lead,
+        overrideAccess: true,
+      })
+    }
+  } catch (error) {
+    failure ??= error
   }
-  for (const id of created.webhookEvents) {
-    await payload.delete({
-      collection: "webhook-events",
-      id,
-      overrideAccess: true,
-    })
-  }
-  if (created.paymentOrder) {
-    await payload.delete({
-      collection: "payment-orders",
-      id: created.paymentOrder,
-      overrideAccess: true,
-    })
-  }
-  if (created.bookingRequest) {
-    await payload.delete({
-      collection: "booking-requests",
-      id: created.bookingRequest,
-      overrideAccess: true,
-    })
-  }
-  if (created.lead) {
-    await payload.delete({
-      collection: "leads",
-      id: created.lead,
-      overrideAccess: true,
-    })
-  }
-  await payload.destroy()
+  if (failure) console.error(failure)
+  process.exit(failure ? 1 : 0)
 }
