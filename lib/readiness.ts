@@ -52,8 +52,9 @@ export async function checkReadiness() {
   }
 
   const response = await fetch(new URL(mediaURL, env.NEXT_PUBLIC_SITE_URL), {
-    method: "HEAD",
+    headers: { Range: "bytes=0-0" },
     signal: AbortSignal.timeout(3000),
   })
+  await response.body?.cancel()
   if (!response.ok) throw new Error("Published media is unavailable")
 }
