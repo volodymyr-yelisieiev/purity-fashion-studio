@@ -41,6 +41,14 @@ assert.deepEqual(
 )
 assert.deepEqual(
   await enforcePublishedGlobalRead({
+    args: {},
+    operation: "read",
+    req: { user: null },
+  } as never),
+  { draft: false }
+)
+assert.deepEqual(
+  await enforcePublishedGlobalRead({
     args: { draft: true },
     operation: "read",
     req: { user: { active: false, roles: ["editor"] } },

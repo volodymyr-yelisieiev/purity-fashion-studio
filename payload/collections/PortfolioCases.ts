@@ -58,7 +58,7 @@ export const PortfolioCases: CollectionConfig = {
   hooks: {
     ...revalidationHooks,
     beforeValidate: [
-      ({ data }) => {
+      async ({ data, req }) => {
         if (!data) return data
 
         if (data.approvalStatus === "approved") {
@@ -74,6 +74,34 @@ export const PortfolioCases: CollectionConfig = {
           }
           if (!Array.isArray(data.services) || data.services.length === 0) {
             throw new Error("Approved portfolio requires at least one service.")
+          }
+          if (!Array.isArray(data.media) || data.media.length === 0) {
+            throw new Error("Approved portfolio requires public proof media.")
+          }
+
+          const media = await Promise.all(
+            data.media.map((item) =>
+              req.payload.findByID({
+                collection: "media",
+                depth: 0,
+                id: typeof item === "string" ? item : item.id,
+                overrideAccess: true,
+              })
+            )
+          )
+          const now = Date.now()
+          if (
+            media.some(
+              (item) =>
+                item.usageRightsStatus !== "approved" ||
+                item.publicVisibility !== true ||
+                (item.rightsExpiry &&
+                  new Date(item.rightsExpiry).valueOf() <= now)
+            )
+          ) {
+            throw new Error(
+              "Approved portfolio requires non-expired public media with approved rights."
+            )
           }
         }
 
