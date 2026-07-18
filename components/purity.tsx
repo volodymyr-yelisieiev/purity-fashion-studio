@@ -20,7 +20,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import type { MediaAsset } from "@/content/model"
-import { mediaAssets } from "@/content/source"
 import { locales, localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
@@ -42,12 +41,18 @@ type EditorialHeroProps = {
   titleClassName?: string
 }
 
-const logoVariantIds = {
-  wordmark: "logo-wordmark-black",
-  lockup: "logo-lockup-black",
-  mark: "logo-mark-grey",
-  reversedWordmark: "logo-wordmark-reversed",
-  reversedLockup: "logo-lockup-reversed",
+const logoSources = {
+  wordmark: "/brand/logo-wordmark-black.png",
+  lockup: "/brand/logo-lockup-black.png",
+  mark: "/brand/logo-mark-grey.png",
+  reversedWordmark: "/brand/purity/wordmark-white.png",
+  reversedLockup: "/brand/logo-lockup-reversed.png",
+} as const
+
+const logoAlt = {
+  uk: "PURITY Fashion Studio",
+  ru: "PURITY Fashion Studio",
+  en: "PURITY Fashion Studio",
 } as const
 
 const logoDimensions = {
@@ -66,21 +71,15 @@ function BrandLogo({
   decorative = false,
 }: {
   locale: Locale
-  variant?: keyof typeof logoVariantIds
+  variant?: keyof typeof logoSources
   className?: string
   priority?: boolean
   decorative?: boolean
 }) {
-  const logo = mediaAssets.find((asset) => asset.id === logoVariantIds[variant])
-
-  if (!logo?.src) {
-    return null
-  }
-
   return (
     <Image
-      alt={decorative ? "" : logo.alt[locale]}
-      src={logo.src}
+      alt={decorative ? "" : logoAlt[locale]}
+      src={logoSources[variant]}
       {...logoDimensions[variant]}
       className={cn("h-auto w-full object-contain", className)}
       loading={priority ? undefined : "eager"}

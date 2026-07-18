@@ -2,6 +2,7 @@
 
 import { createHmac, randomUUID } from "node:crypto"
 import { headers } from "next/headers"
+import { after } from "next/server"
 import {
   commitTransaction,
   createLocalReq,
@@ -501,38 +502,43 @@ export async function submitBooking(
     }
   }
 
-  try {
-    const clientEmail = requestReceivedEmail(locale, bookingRequest.id)
-    await Promise.all([
-      payload.sendEmail({
-        to: normalizedEmail,
-        ...clientEmail,
-      }),
-      payload.sendEmail({
-        to: env.EMAIL_FROM ?? "disabled@invalid.local",
-        subject: "PURITY — new booking request",
-        text: `Booking request ${bookingRequest.id} for ${service.slug} requires review: ${origin}/admin/collections/booking-requests/${bookingRequest.id}`,
-      }),
-    ])
-    await payload.update({
-      collection: "booking-requests",
-      id: bookingRequest.id,
-      context: { service: "public-booking" },
-      data: { notificationStatus: "sent" },
-      overrideAccess: true,
-    })
-  } catch {
-    await payload.update({
-      collection: "booking-requests",
-      id: bookingRequest.id,
-      context: { service: "public-booking" },
-      data: {
-        notificationStatus: "failed",
-        notificationError: "Transactional email delivery failed.",
-      },
-      overrideAccess: true,
-    })
-  }
+  // Delivering transactional email must not hold a confirmed booking in the
+  // submitting state. Vercel keeps this callback alive after the Server
+  // Action response, while Payload retains the eventual delivery outcome.
+  after(async () => {
+    try {
+      const clientEmail = requestReceivedEmail(locale, bookingRequest.id)
+      await Promise.all([
+        payload.sendEmail({
+          to: normalizedEmail,
+          ...clientEmail,
+        }),
+        payload.sendEmail({
+          to: env.EMAIL_FROM ?? "disabled@invalid.local",
+          subject: "PURITY — new booking request",
+          text: `Booking request ${bookingRequest.id} for ${service.slug} requires review: ${origin}/admin/collections/booking-requests/${bookingRequest.id}`,
+        }),
+      ])
+      await payload.update({
+        collection: "booking-requests",
+        id: bookingRequest.id,
+        context: { service: "public-booking" },
+        data: { notificationStatus: "sent" },
+        overrideAccess: true,
+      })
+    } catch {
+      await payload.update({
+        collection: "booking-requests",
+        id: bookingRequest.id,
+        context: { service: "public-booking" },
+        data: {
+          notificationStatus: "failed",
+          notificationError: "Transactional email delivery failed.",
+        },
+        overrideAccess: true,
+      })
+    }
+  })
 
   trackBookingEvent({
     event: "booking_submit",

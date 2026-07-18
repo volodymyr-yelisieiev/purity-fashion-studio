@@ -223,6 +223,7 @@ export interface Media {
    * Internal provenance, license, prompt or release reference. Never public.
    */
   sourceMetadata?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -295,6 +296,44 @@ export interface Direction {
   canonicalKey: 'research' | 'realisation' | 'transformation' | 'corporate' | 'school' | 'collections';
   eyebrow?: string | null;
   narrative: string;
+  processTitle: string;
+  formatsTitle: string;
+  formatNotes?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  outcomesTitle: string;
+  ctaTitle: string;
+  ctaSummary: string;
+  ctaService: string;
+  ctaLabel: string;
+  diagnosticLabel?: string | null;
+  faqTitle?: string | null;
+  faq?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  countLabel?: string | null;
+  availabilityValue?: string | null;
+  availabilityLabel?: string | null;
+  fittingValue?: string | null;
+  fittingLabel?: string | null;
+  catalogueTitle?: string | null;
+  catalogueSummary?: string | null;
+  materialsLabel?: string | null;
+  inquiryTitle?: string | null;
+  inquirySteps?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
   heroMedia?: (string | null) | Media;
   processSteps?:
     | {
@@ -313,6 +352,111 @@ export interface Direction {
   relatedCourses?: (string | Course)[] | null;
   relatedCollections?: (string | FashionCollection)[] | null;
   navigationVisible: boolean;
+  /**
+   * Controlled sections inside the fixed PURITY template. No raw HTML or CSS.
+   */
+  supplementaryLayout?:
+    | (
+        | {
+            heading: string;
+            body: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            heading: string;
+            body: string;
+            media: string | Media;
+            mediaPosition: 'start' | 'end';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaText';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'featureGrid';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps';
+          }
+        | {
+            heading: string;
+            items?:
+              | (
+                  | {
+                      relationTo: 'services';
+                      value: string | Service;
+                    }
+                  | {
+                      relationTo: 'courses';
+                      value: string | Course;
+                    }
+                  | {
+                      relationTo: 'fashion-collections';
+                      value: string | FashionCollection;
+                    }
+                  | {
+                      relationTo: 'portfolio-cases';
+                      value: string | PortfolioCase;
+                    }
+                )[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'relationGrid';
+          }
+        | {
+            heading: string;
+            media: (string | Media)[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            heading: string;
+            items?: (string | Testimonial)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+        | {
+            heading: string;
+            items: {
+              question: string;
+              answer: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            heading: string;
+            body: string;
+            label: string;
+            path: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -352,7 +496,22 @@ export interface Service {
   secondaryDirections?: (string | Direction)[] | null;
   audience: string;
   intro: string;
+  formatsTitle: string;
+  processTitle: string;
+  outcomeTitle: string;
+  commercialTitle: string;
+  commercialStatusCopy: string;
+  priceNote: string;
+  nextStepTitle: string;
+  nextStepSummary: string;
   formats: ('online' | 'studio' | 'remote-atelier' | 'in-person' | 'hybrid')[];
+  formatPresentation?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
   processSteps?:
     | {
         title: string;
@@ -392,6 +551,111 @@ export interface Service {
     label: string;
     action: 'inquiry' | 'booking-request' | 'deposit' | 'instant-payment' | 'waitlist' | 'contact';
   };
+  /**
+   * Controlled sections inside the fixed PURITY template. No raw HTML or CSS.
+   */
+  supplementaryLayout?:
+    | (
+        | {
+            heading: string;
+            body: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            heading: string;
+            body: string;
+            media: string | Media;
+            mediaPosition: 'start' | 'end';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaText';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'featureGrid';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps';
+          }
+        | {
+            heading: string;
+            items?:
+              | (
+                  | {
+                      relationTo: 'services';
+                      value: string | Service;
+                    }
+                  | {
+                      relationTo: 'courses';
+                      value: string | Course;
+                    }
+                  | {
+                      relationTo: 'fashion-collections';
+                      value: string | FashionCollection;
+                    }
+                  | {
+                      relationTo: 'portfolio-cases';
+                      value: string | PortfolioCase;
+                    }
+                )[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'relationGrid';
+          }
+        | {
+            heading: string;
+            media: (string | Media)[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            heading: string;
+            items?: (string | Testimonial)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+        | {
+            heading: string;
+            items: {
+              question: string;
+              answer: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            heading: string;
+            body: string;
+            label: string;
+            path: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -483,6 +747,19 @@ export interface Course {
   publishedAt?: string | null;
   direction: string | Direction;
   description: string;
+  eyebrow: string;
+  serviceLabel: string;
+  audienceTitle: string;
+  formatTitle: string;
+  methodTitle: string;
+  prerequisitesTitle: string;
+  curriculumTitle: string;
+  curriculumSummary: string;
+  outcomesTitle: string;
+  outcomesSummary: string;
+  commercialTitle: string;
+  ctaTitle: string;
+  ctaSummary: string;
   audience: string;
   prerequisites?: string | null;
   sessions: number;
@@ -513,6 +790,111 @@ export interface Course {
     label: string;
     action: 'inquiry' | 'booking-request' | 'deposit' | 'instant-payment' | 'waitlist' | 'contact';
   };
+  /**
+   * Controlled sections inside the fixed PURITY template. No raw HTML or CSS.
+   */
+  supplementaryLayout?:
+    | (
+        | {
+            heading: string;
+            body: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            heading: string;
+            body: string;
+            media: string | Media;
+            mediaPosition: 'start' | 'end';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaText';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'featureGrid';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps';
+          }
+        | {
+            heading: string;
+            items?:
+              | (
+                  | {
+                      relationTo: 'services';
+                      value: string | Service;
+                    }
+                  | {
+                      relationTo: 'courses';
+                      value: string | Course;
+                    }
+                  | {
+                      relationTo: 'fashion-collections';
+                      value: string | FashionCollection;
+                    }
+                  | {
+                      relationTo: 'portfolio-cases';
+                      value: string | PortfolioCase;
+                    }
+                )[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'relationGrid';
+          }
+        | {
+            heading: string;
+            media: (string | Media)[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            heading: string;
+            items?: (string | Testimonial)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+        | {
+            heading: string;
+            items: {
+              question: string;
+              answer: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            heading: string;
+            body: string;
+            label: string;
+            path: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -548,8 +930,38 @@ export interface FashionCollection {
    * Set automatically on first publication.
    */
   publishedAt?: string | null;
+  eyebrow?: string | null;
   narrative: string;
   stylingNotes?: string | null;
+  stylingTitle: string;
+  styling?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  factsTitle: string;
+  facts?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  inquiryTitle: string;
+  inquirySteps?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  materialsTitle: string;
+  availabilityTitle: string;
+  ctaTitle: string;
+  ctaSummary: string;
+  serviceLabel: string;
   collectionType: 'editorial' | 'commercial' | 'capsule' | 'collaboration' | 'seasonal';
   collaborationCredits?: string | null;
   materials?:
@@ -581,6 +993,111 @@ export interface FashionCollection {
     label: string;
     action: 'inquiry' | 'booking-request' | 'deposit' | 'instant-payment' | 'waitlist' | 'contact';
   };
+  /**
+   * Controlled sections inside the fixed PURITY template. No raw HTML or CSS.
+   */
+  supplementaryLayout?:
+    | (
+        | {
+            heading: string;
+            body: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            heading: string;
+            body: string;
+            media: string | Media;
+            mediaPosition: 'start' | 'end';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaText';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'featureGrid';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps';
+          }
+        | {
+            heading: string;
+            items?:
+              | (
+                  | {
+                      relationTo: 'services';
+                      value: string | Service;
+                    }
+                  | {
+                      relationTo: 'courses';
+                      value: string | Course;
+                    }
+                  | {
+                      relationTo: 'fashion-collections';
+                      value: string | FashionCollection;
+                    }
+                  | {
+                      relationTo: 'portfolio-cases';
+                      value: string | PortfolioCase;
+                    }
+                )[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'relationGrid';
+          }
+        | {
+            heading: string;
+            media: (string | Media)[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            heading: string;
+            items?: (string | Testimonial)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+        | {
+            heading: string;
+            items: {
+              question: string;
+              answer: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            heading: string;
+            body: string;
+            label: string;
+            path: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -622,7 +1139,10 @@ export interface PortfolioCase {
   research: string;
   process: string;
   result: string;
-  services: (string | Service)[];
+  /**
+   * Required before a portfolio case can be approved for public display.
+   */
+  services?: (string | Service)[] | null;
   media: (string | Media)[];
   hasBeforeAfter: boolean;
   /**
@@ -692,6 +1212,7 @@ export interface Page {
   publishedAt?: string | null;
   pageType:
     | 'studio'
+    | 'portfolio'
     | 'contacts'
     | 'privacy'
     | 'terms'
@@ -702,6 +1223,173 @@ export interface Page {
     | 'service-state';
   eyebrow?: string | null;
   body: string;
+  studioSignals?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  methodEyebrow?: string | null;
+  methodTitle?: string | null;
+  methodSteps?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  clientsTitle?: string | null;
+  clientsSummary?: string | null;
+  privateTitle?: string | null;
+  corporateTitle?: string | null;
+  directionsTitle?: string | null;
+  ctaTitle?: string | null;
+  ctaSummary?: string | null;
+  formTitle?: string | null;
+  formSummary?: string | null;
+  heroMediaLabel?: string | null;
+  standardsTitle?: string | null;
+  standards?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  recordTitle?: string | null;
+  recordSummary?: string | null;
+  recordItems?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  currentTitle?: string | null;
+  currentItems?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  flowTitle?: string | null;
+  flowItems?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  secondaryCTALabel?: string | null;
+  emptyEyebrow?: string | null;
+  emptyTitle?: string | null;
+  emptySummary?: string | null;
+  emptyAction?: string | null;
+  /**
+   * Controlled PURITY sections. Raw HTML, CSS and arbitrary components are not supported.
+   */
+  layout?:
+    | (
+        | {
+            heading: string;
+            body: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            heading: string;
+            body: string;
+            media: string | Media;
+            mediaPosition: 'start' | 'end';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaText';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'featureGrid';
+          }
+        | {
+            heading: string;
+            items: {
+              title: string;
+              text: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps';
+          }
+        | {
+            heading: string;
+            items?:
+              | (
+                  | {
+                      relationTo: 'services';
+                      value: string | Service;
+                    }
+                  | {
+                      relationTo: 'courses';
+                      value: string | Course;
+                    }
+                  | {
+                      relationTo: 'fashion-collections';
+                      value: string | FashionCollection;
+                    }
+                  | {
+                      relationTo: 'portfolio-cases';
+                      value: string | PortfolioCase;
+                    }
+                )[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'relationGrid';
+          }
+        | {
+            heading: string;
+            media: (string | Media)[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
+            heading: string;
+            items?: (string | Testimonial)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+        | {
+            heading: string;
+            items: {
+              question: string;
+              answer: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            heading: string;
+            body: string;
+            label: string;
+            path: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
   sections?:
     | {
         heading: string;
@@ -715,6 +1403,8 @@ export interface Page {
     corporateContext?: boolean | null;
   };
   legalVersion?: string | null;
+  contentsTitle?: string | null;
+  effectiveDateLabel?: string | null;
   effectiveDate?: string | null;
   cta: {
     label: string;
@@ -1197,6 +1887,7 @@ export interface MediaSelect<T extends boolean = true> {
   allowedUsageContexts?: T;
   rightsExpiry?: T;
   sourceMetadata?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1269,6 +1960,44 @@ export interface DirectionsSelect<T extends boolean = true> {
   canonicalKey?: T;
   eyebrow?: T;
   narrative?: T;
+  processTitle?: T;
+  formatsTitle?: T;
+  formatNotes?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  outcomesTitle?: T;
+  ctaTitle?: T;
+  ctaSummary?: T;
+  ctaService?: T;
+  ctaLabel?: T;
+  diagnosticLabel?: T;
+  faqTitle?: T;
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  countLabel?: T;
+  availabilityValue?: T;
+  availabilityLabel?: T;
+  fittingValue?: T;
+  fittingLabel?: T;
+  catalogueTitle?: T;
+  catalogueSummary?: T;
+  materialsLabel?: T;
+  inquiryTitle?: T;
+  inquirySteps?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
   heroMedia?: T;
   processSteps?:
     | T
@@ -1287,6 +2016,104 @@ export interface DirectionsSelect<T extends boolean = true> {
   relatedCourses?: T;
   relatedCollections?: T;
   navigationVisible?: T;
+  supplementaryLayout?:
+    | T
+    | {
+        richText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              media?: T;
+              mediaPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        featureGrid?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        steps?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        relationGrid?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              heading?: T;
+              media?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              label?: T;
+              path?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   meta?:
     | T
     | {
@@ -1315,7 +2142,22 @@ export interface ServicesSelect<T extends boolean = true> {
   secondaryDirections?: T;
   audience?: T;
   intro?: T;
+  formatsTitle?: T;
+  processTitle?: T;
+  outcomeTitle?: T;
+  commercialTitle?: T;
+  commercialStatusCopy?: T;
+  priceNote?: T;
+  nextStepTitle?: T;
+  nextStepSummary?: T;
   formats?: T;
+  formatPresentation?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
   processSteps?:
     | T
     | {
@@ -1356,6 +2198,104 @@ export interface ServicesSelect<T extends boolean = true> {
     | {
         label?: T;
         action?: T;
+      };
+  supplementaryLayout?:
+    | T
+    | {
+        richText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              media?: T;
+              mediaPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        featureGrid?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        steps?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        relationGrid?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              heading?: T;
+              media?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              label?: T;
+              path?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1426,6 +2366,19 @@ export interface CoursesSelect<T extends boolean = true> {
   publishedAt?: T;
   direction?: T;
   description?: T;
+  eyebrow?: T;
+  serviceLabel?: T;
+  audienceTitle?: T;
+  formatTitle?: T;
+  methodTitle?: T;
+  prerequisitesTitle?: T;
+  curriculumTitle?: T;
+  curriculumSummary?: T;
+  outcomesTitle?: T;
+  outcomesSummary?: T;
+  commercialTitle?: T;
+  ctaTitle?: T;
+  ctaSummary?: T;
   audience?: T;
   prerequisites?: T;
   sessions?: T;
@@ -1458,6 +2411,104 @@ export interface CoursesSelect<T extends boolean = true> {
         label?: T;
         action?: T;
       };
+  supplementaryLayout?:
+    | T
+    | {
+        richText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              media?: T;
+              mediaPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        featureGrid?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        steps?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        relationGrid?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              heading?: T;
+              media?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              label?: T;
+              path?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   meta?:
     | T
     | {
@@ -1482,8 +2533,38 @@ export interface FashionCollectionsSelect<T extends boolean = true> {
   featured?: T;
   sortOrder?: T;
   publishedAt?: T;
+  eyebrow?: T;
   narrative?: T;
   stylingNotes?: T;
+  stylingTitle?: T;
+  styling?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  factsTitle?: T;
+  facts?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  inquiryTitle?: T;
+  inquirySteps?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  materialsTitle?: T;
+  availabilityTitle?: T;
+  ctaTitle?: T;
+  ctaSummary?: T;
+  serviceLabel?: T;
   collectionType?: T;
   collaborationCredits?: T;
   materials?:
@@ -1513,6 +2594,104 @@ export interface FashionCollectionsSelect<T extends boolean = true> {
     | {
         label?: T;
         action?: T;
+      };
+  supplementaryLayout?:
+    | T
+    | {
+        richText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              media?: T;
+              mediaPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        featureGrid?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        steps?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        relationGrid?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              heading?: T;
+              media?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              label?: T;
+              path?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1597,6 +2776,166 @@ export interface PagesSelect<T extends boolean = true> {
   pageType?: T;
   eyebrow?: T;
   body?: T;
+  studioSignals?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  methodEyebrow?: T;
+  methodTitle?: T;
+  methodSteps?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  clientsTitle?: T;
+  clientsSummary?: T;
+  privateTitle?: T;
+  corporateTitle?: T;
+  directionsTitle?: T;
+  ctaTitle?: T;
+  ctaSummary?: T;
+  formTitle?: T;
+  formSummary?: T;
+  heroMediaLabel?: T;
+  standardsTitle?: T;
+  standards?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  recordTitle?: T;
+  recordSummary?: T;
+  recordItems?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  currentTitle?: T;
+  currentItems?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  flowTitle?: T;
+  flowItems?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  secondaryCTALabel?: T;
+  emptyEyebrow?: T;
+  emptyTitle?: T;
+  emptySummary?: T;
+  emptyAction?: T;
+  layout?:
+    | T
+    | {
+        richText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaText?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              media?: T;
+              mediaPosition?: T;
+              id?: T;
+              blockName?: T;
+            };
+        featureGrid?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        steps?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        relationGrid?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              heading?: T;
+              media?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              heading?: T;
+              items?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              body?: T;
+              label?: T;
+              path?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   sections?:
     | T
     | {
@@ -1612,6 +2951,8 @@ export interface PagesSelect<T extends boolean = true> {
         corporateContext?: T;
       };
   legalVersion?: T;
+  contentsTitle?: T;
+  effectiveDateLabel?: T;
   effectiveDate?: T;
   cta?:
     | T
@@ -1894,6 +3235,45 @@ export interface Home {
   selectedCollections?: (string | FashionCollection)[] | null;
   selectedPortfolio?: (string | PortfolioCase)[] | null;
   studioIntro: string;
+  serviceIntro: string;
+  priceNote: string;
+  methodEyebrow: string;
+  methodTitle: string;
+  methodDetails?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  studioEyebrow: string;
+  studioTitle: string;
+  serviceRailTitle: string;
+  collectionRailTitle: string;
+  portfolioNote: string;
+  portfolioTitle: string;
+  portfolioSummary: string;
+  portfolioSignals?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  faqTitle: string;
+  faq?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  sectionMedia?: {
+    research?: (string | null) | Media;
+    imagine?: (string | null) | Media;
+    create?: (string | null) | Media;
+    directions?: (string | null) | Media;
+    studio?: (string | null) | Media;
+    portfolio?: (string | null) | Media;
+  };
   finalCTATitle: string;
   finalCTASummary: string;
   meta?: {
@@ -1937,6 +3317,12 @@ export interface Footer {
   id: string;
   email: string;
   phone: string;
+  phones?:
+    | {
+        number: string;
+        id?: string | null;
+      }[]
+    | null;
   address: string;
   hours: string;
   responseTime: string;
@@ -1972,8 +3358,112 @@ export interface SiteSetting {
   contacts: {
     email: string;
     phone: string;
+    phones?:
+      | {
+          number: string;
+          id?: string | null;
+        }[]
+      | null;
+    address: string;
+    city: string;
+    hours: string;
+    actionLabel: string;
+    actionPath: string;
+    viberURL?: string | null;
+  };
+  uiLabels: {
+    language: string;
+    close: string;
+    externalLink: string;
+    menu: string;
+    footerDirections: string;
+    footerContacts: string;
+  };
+  contactLabels: {
+    phone: string;
+    email: string;
+    viber: string;
+    socials: string;
+    direct: string;
     address: string;
     hours: string;
+    request: string;
+    requestSummary: string;
+  };
+  booking: {
+    eyebrow: string;
+    title: string;
+    summary: string;
+    privateInquiry: string;
+    corporateInquiry: string;
+    submit: string;
+    submitting: string;
+    emptyService: string;
+    successTitle: string;
+    successSummary: string;
+    errorTitle: string;
+    validationError: string;
+    checkout: string;
+    routingTitle: string;
+    routingSummary: string;
+    contactTitle: string;
+    paymentTitle: string;
+    stepsTitle: string;
+    stepDetails: string;
+    stepReview: string;
+    reviewTitle: string;
+    reviewSummary: string;
+    notSpecified: string;
+    labels: {
+      inquiryType: string;
+      serviceSlug: string;
+      name: string;
+      email: string;
+      phone: string;
+      company: string;
+      format: string;
+      contactMethod: string;
+      budgetCurrency: string;
+      preferredAt: string;
+      message: string;
+      consent: string;
+    };
+    inquiryTypes: {
+      private: string;
+      corporate: string;
+    };
+    formats: {
+      studio: string;
+      online: string;
+      atelier: string;
+    };
+    contactMethods: {
+      email: string;
+      phone: string;
+      viber: string;
+    };
+    currencies: {
+      EUR: string;
+      UAH: string;
+    };
+    providers: {
+      stripe: string;
+      liqpay: string;
+    };
+    errors: {
+      required: string;
+      email: string;
+      message: string;
+      consent: string;
+      companyRequired: string;
+      phoneRequired: string;
+    };
+    paymentStatus: {
+      provider: string;
+      order: string;
+      notProvided: string;
+      referenceReceived: string;
+    };
   };
   localeLabels: {
     uk: string;
@@ -2060,6 +3550,47 @@ export interface HomeSelect<T extends boolean = true> {
   selectedCollections?: T;
   selectedPortfolio?: T;
   studioIntro?: T;
+  serviceIntro?: T;
+  priceNote?: T;
+  methodEyebrow?: T;
+  methodTitle?: T;
+  methodDetails?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  studioEyebrow?: T;
+  studioTitle?: T;
+  serviceRailTitle?: T;
+  collectionRailTitle?: T;
+  portfolioNote?: T;
+  portfolioTitle?: T;
+  portfolioSummary?: T;
+  portfolioSignals?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  faqTitle?: T;
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  sectionMedia?:
+    | T
+    | {
+        research?: T;
+        imagine?: T;
+        create?: T;
+        directions?: T;
+        studio?: T;
+        portfolio?: T;
+      };
   finalCTATitle?: T;
   finalCTASummary?: T;
   meta?:
@@ -2102,6 +3633,12 @@ export interface HeaderSelect<T extends boolean = true> {
 export interface FooterSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
+  phones?:
+    | T
+    | {
+        number?: T;
+        id?: T;
+      };
   address?: T;
   hours?: T;
   responseTime?: T;
@@ -2139,8 +3676,134 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         email?: T;
         phone?: T;
+        phones?:
+          | T
+          | {
+              number?: T;
+              id?: T;
+            };
+        address?: T;
+        city?: T;
+        hours?: T;
+        actionLabel?: T;
+        actionPath?: T;
+        viberURL?: T;
+      };
+  uiLabels?:
+    | T
+    | {
+        language?: T;
+        close?: T;
+        externalLink?: T;
+        menu?: T;
+        footerDirections?: T;
+        footerContacts?: T;
+      };
+  contactLabels?:
+    | T
+    | {
+        phone?: T;
+        email?: T;
+        viber?: T;
+        socials?: T;
+        direct?: T;
         address?: T;
         hours?: T;
+        request?: T;
+        requestSummary?: T;
+      };
+  booking?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        summary?: T;
+        privateInquiry?: T;
+        corporateInquiry?: T;
+        submit?: T;
+        submitting?: T;
+        emptyService?: T;
+        successTitle?: T;
+        successSummary?: T;
+        errorTitle?: T;
+        validationError?: T;
+        checkout?: T;
+        routingTitle?: T;
+        routingSummary?: T;
+        contactTitle?: T;
+        paymentTitle?: T;
+        stepsTitle?: T;
+        stepDetails?: T;
+        stepReview?: T;
+        reviewTitle?: T;
+        reviewSummary?: T;
+        notSpecified?: T;
+        labels?:
+          | T
+          | {
+              inquiryType?: T;
+              serviceSlug?: T;
+              name?: T;
+              email?: T;
+              phone?: T;
+              company?: T;
+              format?: T;
+              contactMethod?: T;
+              budgetCurrency?: T;
+              preferredAt?: T;
+              message?: T;
+              consent?: T;
+            };
+        inquiryTypes?:
+          | T
+          | {
+              private?: T;
+              corporate?: T;
+            };
+        formats?:
+          | T
+          | {
+              studio?: T;
+              online?: T;
+              atelier?: T;
+            };
+        contactMethods?:
+          | T
+          | {
+              email?: T;
+              phone?: T;
+              viber?: T;
+            };
+        currencies?:
+          | T
+          | {
+              EUR?: T;
+              UAH?: T;
+            };
+        providers?:
+          | T
+          | {
+              stripe?: T;
+              liqpay?: T;
+            };
+        errors?:
+          | T
+          | {
+              required?: T;
+              email?: T;
+              message?: T;
+              consent?: T;
+              companyRequired?: T;
+              phoneRequired?: T;
+            };
+        paymentStatus?:
+          | T
+          | {
+              provider?: T;
+              order?: T;
+              notProvided?: T;
+              referenceReceived?: T;
+            };
       };
   localeLabels?:
     | T

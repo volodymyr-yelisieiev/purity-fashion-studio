@@ -39,12 +39,7 @@ function referencePath(document: RedirectDocument, locale: string) {
 }
 
 async function getRedirects(request: NextRequest) {
-  if (
-    process.env.PAYLOAD_ENABLED !== "true" ||
-    process.env.CONTENT_SOURCE !== "payload"
-  ) {
-    return []
-  }
+  if (process.env.PAYLOAD_ENABLED !== "true") return []
   if (redirectCache && redirectCache.expiresAt > Date.now()) {
     return redirectCache.documents
   }

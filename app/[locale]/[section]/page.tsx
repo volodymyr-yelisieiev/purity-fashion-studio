@@ -18,47 +18,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { serviceCategories, siteSettings } from "@/content/source"
 import type {
   CategoryPageSpec,
   MediaAsset,
   PublicPage,
   ServiceCategory,
 } from "@/content/model"
-import {
-  categoryPageCopy,
-  collectionsPageCopy,
-  studioPageCopy,
-} from "@/content/category-page-specs"
 import { getLocalizedMetadata } from "@/content/metadata"
 import {
   getCourseBySlug,
+  getDirectionByCanonicalKey,
   getDirectionBySlug,
   getFashionCollectionBySlug,
   getPageBySlug,
   getPublishedCourseSlugs,
   getPublishedDirectionSlugs,
   getPublishedFashionCollectionSlugs,
-  getPublishedPageSlugs,
   getPublishedServices,
   type DirectionPageData,
   type PublicPageData,
 } from "@/content/public-api"
-import {
-  getCategoryByRoute,
-  getFirstMediaAsset,
-  getMediaAsset,
-  getVisibleCollections,
-  getVisibleCourses,
-  getVisibleServicesByCategory,
-} from "@/content/queries"
 import {
   collectionPath,
   coursePath,
   sectionPath,
   servicePath,
 } from "@/content/routes"
-import { hasLocale, locales, localizePath, type Locale } from "@/i18n/routing"
+import { hasLocale, localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
 type SectionPageProps = {
@@ -78,18 +64,6 @@ type CollectionCardView = {
 }
 
 export const dynamicParams = true
-
-export async function generateStaticParams() {
-  const [directions, pages] = await Promise.all([
-    getPublishedDirectionSlugs(),
-    getPublishedPageSlugs(),
-  ])
-  const sections = [...new Set([...directions, ...pages, "atelier"])]
-
-  return locales.flatMap((locale) =>
-    sections.map((section) => ({ locale, section }))
-  )
-}
 
 export async function generateMetadata({
   params,
@@ -120,6 +94,32 @@ export async function generateMetadata({
 
 function localized(value: string) {
   return { uk: value, ru: value, en: value }
+}
+
+function toCategoryPageSpec(direction: DirectionPageData): CategoryPageSpec {
+  return {
+    ctaService: direction.ctaService,
+    heroNote: localized(direction.narrative),
+    processTitle: localized(direction.processTitle),
+    processSteps: direction.process.map((step) => ({
+      title: localized(step.title),
+      text: localized(step.description),
+    })),
+    formatsTitle: localized(direction.formatsTitle),
+    formats: direction.formatNotes.map(localized),
+    outcomesTitle: localized(direction.outcomesTitle),
+    outcomes: direction.outcomes.map(localized),
+    ctaTitle: localized(direction.ctaTitle),
+    ctaSummary: localized(direction.ctaSummary),
+    diagnosticLabel: direction.diagnosticLabel
+      ? localized(direction.diagnosticLabel)
+      : undefined,
+    faqTitle: direction.faqTitle ? localized(direction.faqTitle) : undefined,
+    faq: direction.faq.map((item) => ({
+      question: localized(item.question),
+      answer: localized(item.answer),
+    })),
+  }
 }
 
 function toLegacyPublicPage(page: PublicPageData): PublicPageEntry | undefined {
@@ -204,37 +204,23 @@ function SectionActionCard({
 function StudioPageView({
   locale,
   publicPage,
+  pageData,
+  privateServices,
+  corporateServices,
+  directions,
   mediaAsset: mediaAssetOverride,
 }: {
   locale: Locale
   publicPage: PublicPageEntry
+  pageData: PublicPageData
+  privateServices: Array<{ title: string; summary: string }>
+  corporateServices: Array<{ title: string; summary: string }>
+  directions: DirectionPageData[]
   mediaAsset?: MediaAsset
 }) {
   const mediaAsset =
-    mediaAssetOverride ?? getFirstMediaAsset(publicPage.mediaIds)
-  const privateServices = [
-    ...getVisibleServicesByCategory("research"),
-    ...getVisibleServicesByCategory("realisation"),
-    ...getVisibleServicesByCategory("transformation"),
-    ...getVisibleServicesByCategory("atelier"),
-  ]
-  const corporateServices = getVisibleServicesByCategory("corporate")
-  const directionCategories = serviceCategories.filter((category) =>
-    [
-      "research",
-      "realisation",
-      "atelier",
-      "transformation",
-      "corporate",
-      "school",
-      "collections",
-    ].includes(category.slug)
-  )
-  const signalCards = [
-    studioPageCopy.signals.team,
-    studioPageCopy.signals.space,
-    studioPageCopy.signals.hours,
-  ]
+    mediaAssetOverride
+  const signalCards = pageData.studioSignals
 
   return (
     <div className="min-h-svh bg-background text-foreground">
@@ -253,11 +239,11 @@ function StudioPageView({
           <dl className="grid grid-cols-3 border-y border-border py-5">
             {signalCards.map((signal) => (
               <div
-                key={signal.label[locale]}
+                key={signal.label}
                 className="grid content-start gap-2 pr-4"
               >
                 <dt className="text-xs text-muted-foreground">
-                  {signal.label[locale]}
+                  {signal.label}
                 </dt>
                 <dd className="text-lg font-medium">{signal.value}</dd>
               </div>
@@ -273,7 +259,7 @@ function StudioPageView({
               })
             )}
           >
-            {siteSettings.home.primaryCta.label[locale]}
+            {publicPage.cta?.label[locale] ?? pageData.title}
           </Link>
         </EditorialHero>
 
@@ -281,10 +267,10 @@ function StudioPageView({
           <div className="mx-auto grid max-w-6xl min-w-0 gap-10 px-6 py-16 md:grid-cols-[0.8fr_1.2fr] md:px-10">
             <div>
               <p className="mb-4 text-xs tracking-normal text-muted-foreground uppercase">
-                {studioPageCopy.methodEyebrow[locale]}
+                {pageData.methodEyebrow}
               </p>
               <h2 className="text-[clamp(2rem,9vw,3.75rem)] leading-tight font-medium text-balance">
-                {studioPageCopy.methodTitle[locale]}
+                {pageData.methodTitle}
               </h2>
             </div>
             <div className="grid gap-4">
@@ -302,18 +288,18 @@ function StudioPageView({
                 ))}
               </div>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {studioPageCopy.methodSteps.map((step) => (
+                {pageData.methodSteps.map((step) => (
                   <Card
-                    key={step.title[locale]}
+                    key={step.title}
                     size="sm"
                     className="border-border bg-background"
                   >
                     <CardHeader>
                       <CardTitle className="min-w-0 break-words">
-                        {step.title[locale]}
+                        {step.title}
                       </CardTitle>
                       <CardDescription className="min-w-0 break-words">
-                        {step.text[locale]}
+                        {step.text}
                       </CardDescription>
                     </CardHeader>
                   </Card>
@@ -326,22 +312,22 @@ function StudioPageView({
         <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
           <div className="mb-8 grid gap-4 md:grid-cols-[0.85fr_1.15fr] md:items-start">
             <h2 className="text-3xl leading-tight font-medium md:text-5xl">
-              {studioPageCopy.clientsTitle[locale]}
+              {pageData.clientsTitle}
             </h2>
             <p className="text-sm leading-7 text-muted-foreground md:self-center">
-              {studioPageCopy.clientsSummary[locale]}
+              {pageData.clientsSummary}
             </p>
           </div>
           <div className="grid min-w-0 auto-rows-fr gap-4 md:grid-cols-2">
             <Card className="min-w-0 border-border bg-background">
               <CardHeader>
                 <CardTitle className="min-w-0 break-words">
-                  {studioPageCopy.privateTitle[locale]}
+                  {pageData.privateTitle}
                 </CardTitle>
                 <CardDescription className="min-w-0 break-words">
                   {privateServices
                     .slice(0, 2)
-                    .map((service) => service.summary[locale])
+                    .map((service) => service.summary)
                     .join(" ")}
                 </CardDescription>
               </CardHeader>
@@ -349,26 +335,25 @@ function StudioPageView({
                 <FeatureList
                   items={privateServices
                     .slice(0, 4)
-                    .map((service) => service.title[locale])}
+                    .map((service) => service.title)}
                 />
               </CardContent>
             </Card>
             <Card className="min-w-0 border-primary-foreground/20 bg-primary text-primary-foreground">
               <CardHeader>
                 <CardTitle className="min-w-0 break-words">
-                  {studioPageCopy.corporateTitle[locale]}
+                  {pageData.corporateTitle}
                 </CardTitle>
                 <CardDescription className="text-secondary">
-                  {corporateServices[0]?.summary[locale] ??
-                    studioPageCopy.clientsSummary[locale]}
+                  {corporateServices[0]?.summary ?? pageData.clientsSummary}
                 </CardDescription>
               </CardHeader>
               <CardContent className="border-t border-primary-foreground/20 pt-5">
                 <FeatureList
                   items={
-                    corporateServices[0]?.outcomes[locale] ?? [
-                      studioPageCopy.corporateTitle[locale],
-                    ]
+                    corporateServices.map((service) => service.title).length
+                      ? corporateServices.map((service) => service.title)
+                      : [pageData.corporateTitle ?? pageData.title]
                   }
                   className="text-primary-foreground/80"
                 />
@@ -381,7 +366,7 @@ function StudioPageView({
           <div className="mx-auto max-w-6xl min-w-0 px-6 py-16 md:px-10">
             <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <h2 className="text-3xl leading-tight font-medium md:text-5xl">
-                {studioPageCopy.directionsTitle[locale]}
+                {pageData.directionsTitle}
               </h2>
               <Link
                 href={localizePath(locale, "/booking")}
@@ -389,11 +374,11 @@ function StudioPageView({
                   buttonVariants({ variant: "default", size: "lg" })
                 )}
               >
-                {siteSettings.home.primaryCta.label[locale]}
+                {publicPage.cta?.label[locale] ?? pageData.title}
               </Link>
             </div>
             <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {directionCategories.map((category) => (
+              {directions.map((category) => (
                 <Link
                   key={category.slug}
                   href={localizePath(
@@ -408,10 +393,10 @@ function StudioPageView({
                   >
                     <CardHeader>
                       <CardTitle className="min-w-0 break-words">
-                        {category.title[locale]}
+                        {category.title}
                       </CardTitle>
                       <CardDescription className="min-w-0 break-words">
-                        {category.summary[locale]}
+                        {category.summary}
                       </CardDescription>
                     </CardHeader>
                   </Card>
@@ -423,11 +408,11 @@ function StudioPageView({
 
         <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
           <SectionActionCard
-            title={studioPageCopy.ctaTitle[locale]}
-            summary={studioPageCopy.ctaSummary[locale]}
+            title={pageData.ctaTitle ?? pageData.title}
+            summary={pageData.ctaSummary ?? pageData.summary}
             label={
               publicPage.cta?.label[locale] ??
-              siteSettings.home.primaryCta.label[locale]
+              pageData.title
             }
             href={localizePath(locale, publicPage.cta?.path ?? "/booking")}
           />
@@ -441,37 +426,20 @@ function StudioPageView({
 function LegalPageView({
   locale,
   publicPage,
+  pageData,
 }: {
   locale: Locale
   publicPage: PublicPageEntry
+  pageData: PublicPageData
 }) {
   const currentPath = sectionPath(publicPage.routeSegment)
-  const copy = {
-    effectiveDate: {
-      uk: "Чинна редакція: 10 липня 2026",
-      ru: "Действующая редакция: 10 июля 2026",
-      en: "Effective date: 10 July 2026",
-    },
-    contentsTitle: {
-      uk: "Зміст",
-      ru: "Содержание",
-      en: "Contents",
-    },
-    sectionTitles: {
-      privacy: {
-        uk: ["Дані та мета", "Обмеження обробки"],
-        ru: ["Данные и цель", "Ограничения обработки"],
-        en: ["Data and purpose", "Processing limits"],
-      },
-      terms: {
-        uk: ["Інформаційний характер", "Узгодження роботи"],
-        ru: ["Информационный характер", "Согласование работы"],
-        en: ["Informational scope", "Agreement before work"],
-      },
-    },
-  }
-  const legalSlug = publicPage.slug === "terms" ? "terms" : "privacy"
-  const sectionTitles = copy.sectionTitles[legalSlug]
+  const sectionTitles = pageData.sections.map((section) => section.heading)
+  const effectiveDate = pageData.effectiveDate
+    ? `${pageData.effectiveDateLabel ?? pageData.legalVersion ?? ""}: ${new Intl.DateTimeFormat(
+        locale === "uk" ? "uk-UA" : locale,
+        { dateStyle: "long" }
+      ).format(new Date(pageData.effectiveDate))}`
+    : pageData.legalVersion
 
   return (
     <div className="min-h-svh bg-background text-foreground">
@@ -483,11 +451,11 @@ function LegalPageView({
           eyebrow={publicPage.eyebrow[locale]}
           title={publicPage.title[locale]}
           summary={publicPage.summary[locale]}
-          mediaAsset={getMediaAsset("editorial-utility-patternmaking")}
+          mediaAsset={pageData.mediaAsset}
           composition="quiet"
         >
           <p className="text-xs tracking-widest text-background/70 uppercase">
-            {copy.effectiveDate[locale]}
+            {effectiveDate}
           </p>
         </EditorialHero>
 
@@ -495,10 +463,10 @@ function LegalPageView({
           <div className="mx-auto grid w-full max-w-4xl min-w-0 gap-12 px-6 py-16 md:px-10 md:py-24">
             <div>
               <h2 className="text-2xl font-medium md:text-3xl">
-                {copy.contentsTitle[locale]}
+                {pageData.contentsTitle}
               </h2>
               <ol className="mt-5 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-                {sectionTitles[locale].map((title, index) => (
+                {sectionTitles.map((title, index) => (
                   <li key={title}>
                     <a
                       href={`#legal-section-${index + 1}`}
@@ -511,9 +479,9 @@ function LegalPageView({
               </ol>
             </div>
             <div className="grid gap-12">
-              {publicPage.body[locale].map((item, index) => (
+              {pageData.sections.map((section, index) => (
                 <article
-                  key={item}
+                  key={`${section.heading}-${index}`}
                   id={`legal-section-${index + 1}`}
                   className="grid scroll-mt-24 gap-4"
                 >
@@ -521,10 +489,10 @@ function LegalPageView({
                     {String(index + 1).padStart(2, "0")}
                   </p>
                   <h2 className="text-3xl font-medium text-pretty md:text-4xl">
-                    {sectionTitles[locale][index]}
+                    {sectionTitles[index] ?? pageData.title}
                   </h2>
                   <p className="max-w-3xl text-sm leading-7 text-muted-foreground">
-                    {item}
+                    {section.body}
                   </p>
                 </article>
               ))}
@@ -567,12 +535,13 @@ function CollectionsPageView({
   locale,
   category,
   collections,
+  direction,
 }: {
   locale: Locale
   category: ServiceCategory
   collections: CollectionCardView[]
+  direction: DirectionPageData
 }) {
-  const copy = collectionsPageCopy
   const heroMedia = collections[0]?.mediaAsset
   const inquiryHref = localizePath(
     locale,
@@ -591,15 +560,15 @@ function CollectionsPageView({
           locale={locale}
           eyebrow={category.title[locale]}
           title={category.title[locale]}
-          summary={copy.heroNote[locale]}
+          summary={direction.narrative}
           mediaAsset={heroMedia}
           composition="editorial"
         >
           <dl className="grid grid-cols-3 border-y border-border py-5">
             {[
-              [collections.length, copy.countLabel[locale]],
-              [copy.availabilityValue[locale], copy.availabilityLabel[locale]],
-              [copy.fittingValue[locale], copy.fittingLabel[locale]],
+              [collections.length, direction.countLabel ?? ""],
+              [direction.availabilityValue ?? "", direction.availabilityLabel ?? ""],
+              [direction.fittingValue ?? "", direction.fittingLabel ?? ""],
             ].map(([value, label]) => (
               <div key={label} className="grid gap-2 pr-4">
                 <dt className="text-xs text-muted-foreground">{label}</dt>
@@ -617,7 +586,7 @@ function CollectionsPageView({
               })
             )}
           >
-            {copy.ctaLabel[locale]}
+            {direction.ctaLabel}
           </Link>
         </EditorialHero>
 
@@ -625,10 +594,10 @@ function CollectionsPageView({
           <div className="mx-auto w-full max-w-6xl px-6 py-16 md:px-10">
             <div className="mb-8 grid gap-4 md:grid-cols-[0.85fr_1.15fr] md:items-start">
               <h2 className="text-4xl leading-tight font-medium text-balance md:text-6xl">
-                {copy.catalogueTitle[locale]}
+                {direction.catalogueTitle}
               </h2>
               <p className="text-sm leading-7 text-muted-foreground">
-                {copy.catalogueSummary[locale]}
+                {direction.catalogueSummary}
               </p>
             </div>
             <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -660,7 +629,7 @@ function CollectionsPageView({
                       </CardHeader>
                       <CardContent className="mt-auto grid gap-3 border-t border-border pt-5 text-xs leading-5 text-muted-foreground">
                         <p className="text-muted-foreground uppercase">
-                          {copy.materialsLabel[locale]}
+                          {direction.materialsLabel}
                         </p>
                         <p>{collection.materials.join(" · ")}</p>
                         <p>{collection.commercialStatus}</p>
@@ -677,25 +646,25 @@ function CollectionsPageView({
         <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
           <div className="mb-8 grid gap-4 md:grid-cols-[0.85fr_1.15fr] md:items-start">
             <h2 className="text-3xl leading-tight font-medium md:text-5xl">
-              {copy.inquiryTitle[locale]}
+              {direction.inquiryTitle}
             </h2>
             <p className="text-sm leading-7 text-muted-foreground">
-              {copy.ctaSummary[locale]}
+              {direction.ctaSummary}
             </p>
           </div>
           <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {copy.inquirySteps.map((step) => (
+            {direction.inquirySteps.map((step) => (
               <Card
-                key={step.title[locale]}
+                key={step.title}
                 size="sm"
                 className="h-full border-border bg-background"
               >
                 <CardHeader>
                   <CardTitle className="min-w-0 break-words">
-                    {step.title[locale]}
+                    {step.title}
                   </CardTitle>
                   <CardDescription className="min-w-0 break-words">
-                    {step.text[locale]}
+                    {step.text}
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -705,9 +674,9 @@ function CollectionsPageView({
 
         <section className="mx-auto w-full max-w-6xl px-6 pb-14 md:px-10">
           <SectionActionCard
-            title={copy.ctaTitle[locale]}
-            summary={copy.ctaSummary[locale]}
-            label={copy.ctaLabel[locale]}
+            title={direction.ctaTitle}
+            summary={direction.ctaSummary}
+            label={direction.ctaLabel}
             href={inquiryHref}
           />
         </section>
@@ -725,8 +694,8 @@ function OfferCategoryPageView({
   category,
   entries,
   mediaAsset,
-  copyKey,
-  relatedCategory,
+  copy,
+  ctaLabel,
 }: {
   locale: Locale
   category: ServiceCategory
@@ -738,24 +707,10 @@ function OfferCategoryPageView({
     priceNote: string
   }>
   mediaAsset?: MediaAsset
-  copyKey: keyof typeof categoryPageCopy
-  relatedCategory?: "research" | "realisation" | "transformation"
+  copy: CategoryPageSpec
+  ctaLabel: string
 }) {
-  const copy: CategoryPageSpec = categoryPageCopy[copyKey]
-  const relatedEntries = [
-    ...entries,
-    ...(relatedCategory
-      ? getVisibleServicesByCategory(relatedCategory)
-          .slice(0, 1)
-          .map((service) => ({
-            href: localizePath(locale, servicePath(service.routeSegment)),
-            title: service.title[locale],
-            summary: service.summary[locale],
-            status: service.commercialStatus[locale],
-            priceNote: service.priceNote[locale],
-          }))
-      : []),
-  ]
+  const relatedEntries = entries
   return (
     <div className="min-h-svh bg-background text-foreground">
       <SiteHeader
@@ -766,7 +721,7 @@ function OfferCategoryPageView({
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={siteSettings.home.serviceRailTitle[locale]}
+          eyebrow={category.title[locale]}
           title={category.title[locale]}
           summary={copy.heroNote[locale]}
           mediaAsset={mediaAsset}
@@ -795,7 +750,7 @@ function OfferCategoryPageView({
               })
             )}
           >
-            {siteSettings.home.primaryCta.label[locale]}
+            {ctaLabel}
           </Link>
           {copy.diagnosticLabel && (
             <p className="text-xs leading-5 text-muted-foreground">
@@ -917,7 +872,7 @@ function OfferCategoryPageView({
           <SectionActionCard
             title={copy.ctaTitle[locale]}
             summary={copy.ctaSummary[locale]}
-            label={siteSettings.home.primaryCta.label[locale]}
+            label={ctaLabel}
             href={localizePath(locale, `/booking?service=${copy.ctaService}`)}
           />
         </section>
@@ -948,17 +903,43 @@ export default async function SectionPage({ params }: SectionPageProps) {
 
   if (publicPage) {
     if (publicPage.slug === "studio") {
+      const directionSlugs = await getPublishedDirectionSlugs()
+      const directions = (
+        await Promise.all(
+          directionSlugs.map((slug) => getDirectionBySlug(locale, slug))
+        )
+      ).filter((item): item is DirectionPageData => Boolean(item))
+      const corporateServices =
+        directions.find((item) => item.canonicalKey === "corporate")
+          ?.services ?? []
+      const privateServices = directions
+        .filter(
+          (item) =>
+            item.canonicalKey !== "corporate" &&
+            item.canonicalKey !== "collections"
+        )
+        .flatMap((item) => item.services)
       return (
         <StudioPageView
           locale={locale}
           publicPage={publicPage}
+          pageData={publicPageData!}
+          privateServices={privateServices}
+          corporateServices={corporateServices}
+          directions={directions}
           mediaAsset={publicPageData?.mediaAsset}
         />
       )
     }
 
     if (publicPage.slug === "privacy" || publicPage.slug === "terms") {
-      return <LegalPageView locale={locale} publicPage={publicPage} />
+      return (
+        <LegalPageView
+          locale={locale}
+          publicPage={publicPage}
+          pageData={publicPageData!}
+        />
+      )
     }
 
     return (
@@ -969,9 +950,7 @@ export default async function SectionPage({ params }: SectionPageProps) {
         title={publicPage.title[locale]}
         summary={publicPage.summary[locale]}
         items={publicPage.body[locale]}
-        mediaAsset={
-          publicPageData?.mediaAsset ?? getFirstMediaAsset(publicPage.mediaIds)
-        }
+        mediaAsset={publicPageData?.mediaAsset}
         action={
           publicPage.cta
             ? {
@@ -1008,10 +987,26 @@ export default async function SectionPage({ params }: SectionPageProps) {
     )
   }
 
-  const seedCategory = getCategoryByRoute(section)
-  const category = directionData
+  const atelierServices =
+    section === "atelier"
+      ? await getPublishedServices(locale, { slugs: ["atelier-service"] })
+      : []
+  const presentationDirection =
+    directionData ??
+    (section === "atelier"
+      ? await getDirectionByCanonicalKey(locale, "realisation")
+      : null)
+  const atelierService = atelierServices[0]
+  const category: ServiceCategory | undefined = directionData
     ? toLegacyCategory(directionData)
-    : seedCategory
+    : section === "atelier" && atelierService
+      ? {
+          slug: "atelier",
+          routeSegment: "atelier",
+          title: localized(atelierService.title),
+          summary: localized(atelierService.summary),
+        }
+      : undefined
 
   if (
     !category ||
@@ -1023,19 +1018,11 @@ export default async function SectionPage({ params }: SectionPageProps) {
 
   const payloadCategoryServices = directionData
     ? directionData.services
-    : process.env.CONTENT_SOURCE === "payload" && category.slug === "atelier"
-      ? await getPublishedServices(locale, { slugs: ["atelier-service"] })
+    : category.slug === "atelier"
+      ? atelierServices
       : undefined
-  const visibleCategoryServices = payloadCategoryServices
-    ? []
-    : getVisibleServicesByCategory(category.slug)
-  const visibleCategoryCourses =
-    category.slug === "school" ? getVisibleCourses() : []
-  const visibleCategoryCollections =
-    category.slug === "collections" ? getVisibleCollections() : []
-  const payloadMode = process.env.CONTENT_SOURCE === "payload"
-  const [payloadCourses, payloadCollections] = payloadMode
-    ? await Promise.all([
+  const [payloadCourses, payloadCollections] =
+    await Promise.all([
         category.slug === "school"
           ? getPublishedCourseSlugs().then((slugs) =>
               Promise.all(slugs.map((slug) => getCourseBySlug(locale, slug)))
@@ -1049,38 +1036,21 @@ export default async function SectionPage({ params }: SectionPageProps) {
             )
           : [],
       ])
-    : [[], []]
   const categoryMediaAsset =
     directionData?.mediaAsset ??
     payloadCategoryServices?.find((service) => service.mediaAsset)
       ?.mediaAsset ??
     payloadCourses.find((course) => course?.mediaAsset)?.mediaAsset ??
     payloadCollections.find((collection) => collection?.mediaAssets[0])
-      ?.mediaAssets[0] ??
-    getFirstMediaAsset([
-      ...visibleCategoryServices.flatMap((service) => service.mediaIds),
-      ...visibleCategoryCourses.flatMap((course) => course.mediaIds),
-      ...visibleCategoryCollections.flatMap(
-        (collection) => collection.mediaIds
-      ),
-    ])
-  const serviceEntries = payloadCategoryServices
-    ? payloadCategoryServices.map((service) => ({
+      ?.mediaAssets[0]
+  const serviceEntries = (payloadCategoryServices ?? []).map((service) => ({
         href: localizePath(locale, servicePath(service.routeSegment)),
         title: service.title,
         summary: service.summary,
-        status: directionData?.narrative ?? service.summary,
-        priceNote: directionData?.outcomes.join(" · ") ?? "",
+        status: presentationDirection?.narrative ?? service.summary,
+        priceNote: presentationDirection?.outcomes.join(" · ") ?? "",
       }))
-    : visibleCategoryServices.map((service) => ({
-        href: localizePath(locale, servicePath(service.routeSegment)),
-        title: service.title[locale],
-        summary: service.summary[locale],
-        status: service.commercialStatus[locale],
-        priceNote: service.priceNote[locale],
-      }))
-  const courseEntries = payloadMode
-    ? payloadCourses.flatMap((course) =>
+  const courseEntries = payloadCourses.flatMap((course) =>
         course
           ? [
               {
@@ -1093,15 +1063,7 @@ export default async function SectionPage({ params }: SectionPageProps) {
             ]
           : []
       )
-    : visibleCategoryCourses.map((course) => ({
-        href: localizePath(locale, coursePath(course.routeSegment)),
-        title: course.title[locale],
-        summary: course.summary[locale],
-        status: course.commercialStatus[locale],
-        priceNote: course.priceNote[locale],
-      }))
-  const collectionCards: CollectionCardView[] = payloadMode
-    ? payloadCollections.flatMap((collection) =>
+  const collectionCards: CollectionCardView[] = payloadCollections.flatMap((collection) =>
         collection
           ? [
               {
@@ -1116,21 +1078,13 @@ export default async function SectionPage({ params }: SectionPageProps) {
             ]
           : []
       )
-    : visibleCategoryCollections.map((collection) => ({
-        routeSegment: collection.routeSegment,
-        title: collection.title[locale],
-        summary: collection.summary[locale],
-        materials: collection.materials[locale],
-        commercialStatus: collection.commercialStatus[locale],
-        priceNote: collection.priceNote[locale],
-        mediaAsset: getFirstMediaAsset(collection.mediaIds),
-      }))
-  if (category.slug === "collections") {
+  if (category.slug === "collections" && directionData) {
     return (
       <CollectionsPageView
         locale={locale}
         category={category}
         collections={collectionCards}
+        direction={directionData}
       />
     )
   }
@@ -1143,24 +1097,15 @@ export default async function SectionPage({ params }: SectionPageProps) {
     category.slug === "corporate" ||
     category.slug === "school"
   ) {
+    if (!presentationDirection) notFound()
     return (
       <OfferCategoryPageView
         locale={locale}
         category={category}
         entries={[...serviceEntries, ...courseEntries]}
         mediaAsset={categoryMediaAsset}
-        copyKey={category.slug}
-        relatedCategory={
-          process.env.CONTENT_SOURCE === "payload"
-            ? undefined
-            : category.slug === "research"
-              ? "realisation"
-              : category.slug === "realisation"
-                ? "research"
-                : category.slug === "transformation"
-                  ? "realisation"
-                  : undefined
-        }
+        copy={toCategoryPageSpec(presentationDirection)}
+        ctaLabel={presentationDirection.ctaLabel}
       />
     )
   }

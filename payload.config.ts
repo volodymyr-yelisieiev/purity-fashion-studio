@@ -29,6 +29,7 @@ import { Footer } from "./payload/globals/Footer"
 import { Header } from "./payload/globals/Header"
 import { Home } from "./payload/globals/Home"
 import { SiteSettings } from "./payload/globals/SiteSettings"
+import { getPayloadURL, getSiteURL } from "./lib/site-url"
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -68,6 +69,13 @@ if (payloadEnabled) {
 const payloadSecret =
   process.env.PAYLOAD_SECRET ??
   "cms-disabled-build-only-secret-replace-before-runtime-use"
+
+const siteURL = getSiteURL()
+const payloadURL = getPayloadURL()
+const allowedOrigins = [...new Set([siteURL, payloadURL])]
+const blobStorageEnabled =
+  Boolean(process.env.BLOB_READ_WRITE_TOKEN) &&
+  process.env.PAYLOAD_DISABLE_BLOB_STORAGE !== "true"
 
 function secureDatabaseURL(value: string): string {
   const url = new URL(value)
@@ -112,8 +120,7 @@ function getPublicURL({
 }
 
 function getPreviewURL(args: Parameters<typeof getPublicURL>[0]): string {
-  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-  const url = new URL("/api/preview", origin)
+  const url = new URL("/api/preview", siteURL)
   url.searchParams.set("secret", process.env.PREVIEW_SECRET ?? "disabled")
   url.searchParams.set("path", getPublicURL(args))
   return url.toString()
@@ -164,14 +171,8 @@ export default buildConfig({
     PaymentOrders,
     WebhookEvents,
   ],
-  cors: [
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-    process.env.NEXT_PUBLIC_PAYLOAD_URL ?? "http://localhost:3000",
-  ],
-  csrf: [
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-    process.env.NEXT_PUBLIC_PAYLOAD_URL ?? "http://localhost:3000",
-  ],
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
   db: postgresAdapter({
     idType: "uuid",
     migrationDir: path.resolve(dirname, "payload/migrations"),
@@ -225,9 +226,7 @@ export default buildConfig({
           doc,
           locale,
         })
-        const origin =
-          process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-        return new URL(relativeURL, origin).toString()
+        return new URL(relativeURL, siteURL).toString()
       },
       globals: ["home"],
       tabbedUI: true,
@@ -257,15 +256,12 @@ export default buildConfig({
       alwaysInsertFields: true,
       clientUploads: true,
       collections: { media: true },
-      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      enabled: blobStorageEnabled,
       token: process.env.BLOB_READ_WRITE_TOKEN,
     }),
   ],
   secret: payloadSecret,
-  serverURL:
-    process.env.NEXT_PUBLIC_PAYLOAD_URL ??
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    "http://localhost:3000",
+  serverURL: payloadURL,
   sharp,
   telemetry: false,
   upload: {

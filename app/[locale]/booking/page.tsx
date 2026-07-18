@@ -3,8 +3,11 @@ import { notFound } from "next/navigation"
 
 import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { getLocalizedMetadata } from "@/content/metadata"
-import { getPageBySlug, getPublishedServices } from "@/content/public-api"
-import { getFirstMediaAsset, getPublicPageByRoute } from "@/content/queries"
+import {
+  getPageBySlug,
+  getPublishedServices,
+  getSiteSettings,
+} from "@/content/public-api"
 import { EditorialHero } from "@/components/purity"
 import {
   Card,
@@ -23,19 +26,6 @@ type BookingPageProps = {
     offer?: string | string[]
   }>
 }
-
-const bookingPageCopy = {
-  formTitle: {
-    uk: "Деталі заявки",
-    ru: "Детали заявки",
-    en: "Inquiry details",
-  },
-  formSummary: {
-    uk: "Контакти, формат роботи й оплата — в одній послідовній формі.",
-    ru: "Контакты, формат работы и оплата — в одной последовательной форме.",
-    en: "Contacts, working format, and payment in one clear form.",
-  },
-} as const
 
 export async function generateMetadata({
   params,
@@ -74,7 +64,10 @@ export default async function BookingPage({
   }
 
   const locale: Locale = rawLocale
-  const page = await getPageBySlug(locale, "booking")
+  const [page, settings] = await Promise.all([
+    getPageBySlug(locale, "booking"),
+    getSiteSettings(locale),
+  ])
 
   if (!page) {
     notFound()
@@ -96,8 +89,7 @@ export default async function BookingPage({
     title: service.title,
   }))
   const initialServiceSlug = requestedService?.slug ?? serviceOptions[0]?.slug
-  const seedPage = getPublicPageByRoute("booking")
-  const mediaAsset = getFirstMediaAsset(seedPage?.mediaIds)
+  const mediaAsset = page.mediaAsset
   const body = page.sections.length
     ? page.sections.map((section) => section.body)
     : page.body.split(/\n\n+/).filter(Boolean)
@@ -143,9 +135,9 @@ export default async function BookingPage({
           <div className="mx-auto w-full max-w-screen-xl px-6 py-16 md:px-10 md:py-24">
             <Card className="bg-background shadow-sm">
               <CardHeader className="justify-items-center text-center">
-                <CardTitle>{bookingPageCopy.formTitle[locale]}</CardTitle>
+                <CardTitle>{page.formTitle ?? page.title}</CardTitle>
                 <CardDescription className="max-w-2xl">
-                  {bookingPageCopy.formSummary[locale]}
+                  {page.formSummary ?? page.summary}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -154,6 +146,7 @@ export default async function BookingPage({
                   services={serviceOptions}
                   initialServiceSlug={initialServiceSlug ?? ""}
                   initialOfferId={requestedOfferId}
+                  copy={settings.booking}
                 />
               </CardContent>
             </Card>

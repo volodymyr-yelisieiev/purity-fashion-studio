@@ -8,10 +8,12 @@ import {
   faqField,
   formatsField,
   localizedTextarea,
+  localizedText,
   publicRead,
   stepsField,
 } from "../fields/shared"
 import { publicCollectionHooks } from "../hooks/revalidation"
+import { supplementaryLayoutField } from "../blocks/editorial"
 
 export const Services: CollectionConfig = {
   slug: "services",
@@ -53,7 +55,24 @@ export const Services: CollectionConfig = {
     },
     localizedTextarea("audience", "Audience"),
     localizedTextarea("intro", "Introduction"),
+    localizedText("formatsTitle", "Formats title"),
+    localizedText("processTitle", "Process title"),
+    localizedText("outcomeTitle", "Outcome title"),
+    localizedText("commercialTitle", "Commercial title"),
+    localizedTextarea("commercialStatusCopy", "Commercial status copy"),
+    localizedTextarea("priceNote", "Price note"),
+    localizedText("nextStepTitle", "Next step title"),
+    localizedTextarea("nextStepSummary", "Next step summary"),
     formatsField,
+    {
+      name: "formatPresentation",
+      type: "array",
+      localized: true,
+      fields: [
+        { name: "title", type: "text", required: true, maxLength: 160 },
+        { name: "text", type: "textarea", required: true, maxLength: 1200 },
+      ],
+    },
     stepsField,
     {
       name: "benefits",
@@ -121,6 +140,7 @@ export const Services: CollectionConfig = {
     },
     faqField,
     ctaField,
+    supplementaryLayoutField,
   ],
   versions: draftVersions,
   timestamps: true,

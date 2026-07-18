@@ -83,7 +83,10 @@ export const Media: CollectionConfig = {
     ],
   },
   upload: {
-    staticDir: "media",
+    // When the Blob adapter is intentionally disabled (local development and
+    // CI), Next serves Payload's generated upload variants from /public.
+    // Vercel Blob keeps local storage disabled in deployed environments.
+    staticDir: "public/media",
     focalPoint: true,
     mimeTypes: ["image/jpeg", "image/png", "image/webp", "image/avif"],
     pasteURL: false,

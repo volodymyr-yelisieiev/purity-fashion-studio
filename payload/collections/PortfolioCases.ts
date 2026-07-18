@@ -61,11 +61,14 @@ export const PortfolioCases: CollectionConfig = {
               "Approved portfolio must be real client/editorial proof."
             )
           }
-          if (data.usageRightsStatus !== "approved") {
-            throw new Error(
-              "Approved portfolio requires approved usage rights."
-            )
-          }
+        if (data.usageRightsStatus !== "approved") {
+          throw new Error(
+            "Approved portfolio requires approved usage rights."
+          )
+        }
+        if (!Array.isArray(data.services) || data.services.length === 0) {
+          throw new Error("Approved portfolio requires at least one service.")
+        }
         }
 
         return data
@@ -90,7 +93,10 @@ export const PortfolioCases: CollectionConfig = {
       type: "relationship",
       relationTo: "services",
       hasMany: true,
-      required: true,
+      admin: {
+        description:
+          "Required before a portfolio case can be approved for public display.",
+      },
     },
     {
       name: "media",

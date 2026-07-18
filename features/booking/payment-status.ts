@@ -5,7 +5,7 @@ import { getPayload } from "payload"
 import config from "@payload-config"
 import { env } from "@/lib/env"
 
-import type { PaymentStatus } from "./content"
+import type { PaymentStatus } from "./public-copy"
 import type { PaymentProvider } from "./schema"
 
 export type VerifiedPaymentStatus = {

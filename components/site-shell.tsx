@@ -18,34 +18,15 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { siteSettings } from "@/content/source"
 import type {
   FooterData,
   HeaderData,
   SiteSettingsData,
 } from "@/content/public-api"
-import { getFooterNavigation, getNavigation } from "@/content/routes"
 import { localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
-const menuLabel = {
-  uk: "Меню",
-  ru: "Меню",
-  en: "Menu",
-} as const
-
-const footerLabels = {
-  directions: {
-    uk: "Напрями",
-    ru: "Направления",
-    en: "Directions",
-  },
-  contacts: {
-    uk: "Контакти",
-    ru: "Контакты",
-    en: "Contacts",
-  },
-} as const
+const subscribe = () => () => undefined
 
 function MenuToggleIcon({ open }: { open: boolean }) {
   return (
@@ -106,18 +87,16 @@ function SiteHeaderClient({
   locale: Locale
   currentPath?: string
   overlay?: boolean
-  headerData?: HeaderData
-  settingsData?: SiteSettingsData
+  headerData: HeaderData
+  settingsData: SiteSettingsData
 }) {
-  const navigation = headerData
-    ? headerData.navigation
-        .filter((item) => item.visible)
-        .map((item) => ({
-          id: item.path,
-          label: item.label,
-          href: item.external ? item.path : localizePath(locale, item.path),
-        }))
-    : getNavigation(locale)
+  const navigation = headerData.navigation
+    .filter((item) => item.visible)
+    .map((item) => ({
+      id: item.path,
+      label: item.label,
+      href: item.external ? item.path : localizePath(locale, item.path),
+    }))
   const bookingItem = navigation.find(
     (item) => item.id === "booking" || item.id === "/booking"
   )
@@ -126,14 +105,20 @@ function SiteHeaderClient({
   )
   const bookingHref = bookingItem?.href ?? localizePath(locale, "/booking")
   const bookingLabel =
-    headerData?.bookingLabel ??
+    headerData.bookingLabel ??
     bookingItem?.label ??
-    siteSettings.home.primaryCta.label[locale]
-  const brandName = settingsData?.brandName ?? siteSettings.brandName
-  const languageLabel = siteSettings.languageLabel[locale]
+    settingsData.contacts.actionLabel
+  const brandName = settingsData.brandName
+  const languageLabel = settingsData.uiLabels.language
+  const menuLabel = settingsData.uiLabels.menu
   const [menuOpen, setMenuOpen] = React.useState(false)
   const [menuClosing, setMenuClosing] = React.useState(false)
   const [isAtTop, setIsAtTop] = React.useState(true)
+  const isInteractive = React.useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false
+  )
   const menuContentRef = React.useRef<HTMLDivElement>(null)
   const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const transparent = overlay && isAtTop
@@ -250,10 +235,11 @@ function SiteHeaderClient({
           >
             <Button
               type="button"
-              aria-label={menuLabel[locale]}
+              aria-label={menuLabel}
               aria-hidden={menuOpen || undefined}
               aria-controls="mobile-site-menu"
               aria-expanded={menuOpen}
+              data-interactive={isInteractive}
               data-testid="mobile-menu-trigger"
               variant="ghost"
               size="icon-lg"
@@ -284,7 +270,7 @@ function SiteHeaderClient({
                   <BrandLogo locale={locale} variant="wordmark" priority />
                 </Link>
                 <SheetClose
-                  aria-label={siteSettings.closeLabel[locale]}
+                  aria-label={settingsData.uiLabels.close}
                   render={
                     <Button
                       type="button"
@@ -296,20 +282,18 @@ function SiteHeaderClient({
                 >
                   <MenuToggleIcon open />
                 </SheetClose>
-                <SheetTitle className="sr-only">
-                  {brandName}
-                </SheetTitle>
+                <SheetTitle className="sr-only">{brandName}</SheetTitle>
                 <SheetDescription className="sr-only">
-                  {menuLabel[locale]}
+                  {menuLabel}
                 </SheetDescription>
               </SheetHeader>
               <div className="grid flex-1 content-start gap-10 overflow-y-auto px-6 pt-16 pb-8 opacity-100 transition-opacity delay-150 duration-150 group-data-ending-style/menu:opacity-0 group-data-ending-style/menu:delay-0 group-data-ending-style/menu:duration-100 group-data-starting-style/menu:opacity-0 group-data-[closing=true]/menu:opacity-0 group-data-[closing=true]/menu:delay-0 md:px-10">
                 <nav
-                  aria-label={siteSettings.brandName}
+                  aria-label={brandName}
                   data-testid="mobile-navigation"
                   className="grid font-heading text-3xl leading-none uppercase"
                 >
-                  {primaryNavigation.map((item) => (
+                  {primaryNavigation.slice(0, 8).map((item) => (
                     <ShellLink
                       key={item.id}
                       href={item.href}
@@ -356,46 +340,33 @@ function SiteFooterClient({
 }: {
   locale: Locale
   currentPath?: string
-  footerData?: FooterData
-  headerData?: HeaderData
-  settingsData?: SiteSettingsData
+  footerData: FooterData
+  headerData: HeaderData
+  settingsData: SiteSettingsData
 }) {
-  const navigation = headerData
-    ? headerData.navigation
-        .filter((item) => item.visible && item.path !== "/booking")
-        .map((item) => ({
-          id: item.path,
-          label: item.label,
-          href: item.external ? item.path : localizePath(locale, item.path),
-        }))
-    : getNavigation(locale)
-  const footerNavigation = footerData
-    ? footerData.legalNavigation.map((item) => ({
-        id: item.path,
-        label: item.label,
-        href: localizePath(locale, item.path),
-      }))
-    : getFooterNavigation(locale)
-  const languageLabel = siteSettings.languageLabel[locale]
-  const brandName = settingsData?.brandName ?? siteSettings.brandName
-  const city = footerData ? "" : siteSettings.contacts.city[locale]
-  const address = footerData
-    ? footerData.address
-    : siteSettings.contacts.address[locale].replace(
-        new RegExp(`^${city}\\s*`),
-        ""
-      )
-  const phones = footerData
-    ? [footerData.phone]
-    : siteSettings.contacts.phones
-  const email = footerData?.email ?? siteSettings.contacts.email
-  const hours = footerData?.hours ?? siteSettings.contacts.hours[locale]
-  const socials = footerData
-    ? footerData.socialLinks.map((item) => ({
-        label: item.platform,
-        url: item.url,
-      }))
-    : siteSettings.contacts.socials
+  const navigation = headerData.navigation
+    .filter((item) => item.visible && item.path !== "/booking")
+    .map((item) => ({
+      id: item.path,
+      label: item.label,
+      href: item.external ? item.path : localizePath(locale, item.path),
+    }))
+  const footerNavigation = footerData.legalNavigation.map((item) => ({
+    id: item.path,
+    label: item.label,
+    href: localizePath(locale, item.path),
+  }))
+  const languageLabel = settingsData.uiLabels.language
+  const brandName = settingsData.brandName
+  const city = settingsData.contacts.city
+  const address = footerData.address
+  const phones = footerData.phones
+  const email = footerData.email
+  const hours = footerData.hours
+  const socials = footerData.socialLinks.map((item) => ({
+    label: item.platform,
+    url: item.url,
+  }))
 
   return (
     <footer className="bg-foreground px-6 py-14 text-xs text-background/65 md:px-10 md:py-20">
@@ -416,11 +387,11 @@ function SiteFooterClient({
         </div>
 
         <nav
-          aria-label={footerLabels.directions[locale]}
+          aria-label={settingsData.uiLabels.footerDirections}
           className="grid min-w-0 content-start uppercase"
         >
           <p className="mb-6 font-semibold text-background">
-            {footerLabels.directions[locale]}
+            {settingsData.uiLabels.footerDirections}
           </p>
           {navigation.slice(0, 8).map((item) => (
             <ShellLink key={item.id} href={item.href}>
@@ -433,9 +404,7 @@ function SiteFooterClient({
           aria-label={brandName}
           className="grid min-w-0 content-start uppercase"
         >
-          <p className="mb-6 font-semibold text-background">
-            {brandName}
-          </p>
+          <p className="mb-6 font-semibold text-background">{brandName}</p>
           {footerNavigation.map((item) => (
             <ShellLink key={item.id} href={item.href}>
               {item.label}
@@ -445,7 +414,7 @@ function SiteFooterClient({
 
         <div className="grid min-w-0 content-start uppercase">
           <p className="mb-6 font-semibold text-background">
-            {footerLabels.contacts[locale]}
+            {settingsData.uiLabels.footerContacts}
           </p>
           {phones.map((phone) => (
             <a
@@ -465,7 +434,7 @@ function SiteFooterClient({
             </a>
           )}
           <Link
-            href={localizePath(locale, siteSettings.contacts.actionPath)}
+            href={localizePath(locale, settingsData.contacts.actionPath)}
             data-testid="footer-booking-cta"
             className={cn(
               buttonVariants({
@@ -475,13 +444,12 @@ function SiteFooterClient({
               })
             )}
           >
-            {headerData?.bookingLabel ??
-              siteSettings.contacts.actionLabel[locale]}
+            {headerData.bookingLabel ?? settingsData.contacts.actionLabel}
           </Link>
           <div className="mt-2 flex flex-wrap gap-2">
-            {!footerData && (
+            {settingsData.contacts.viberURL && (
               <a
-                href={siteSettings.contacts.viberUrl}
+                href={settingsData.contacts.viberURL}
                 className={cn(
                   buttonVariants({
                     variant: "outline",
@@ -493,7 +461,7 @@ function SiteFooterClient({
                 Viber
                 <ExternalLinkIcon aria-hidden="true" data-icon="inline-end" />
                 <span className="sr-only">
-                  {siteSettings.externalLinkLabel[locale]}
+                  {settingsData.uiLabels.externalLink}
                 </span>
               </a>
             )}
@@ -515,7 +483,7 @@ function SiteFooterClient({
                 {social.label}
                 <ExternalLinkIcon aria-hidden="true" data-icon="inline-end" />
                 <span className="sr-only">
-                  {siteSettings.externalLinkLabel[locale]}
+                  {settingsData.uiLabels.externalLink}
                 </span>
               </a>
             ))}

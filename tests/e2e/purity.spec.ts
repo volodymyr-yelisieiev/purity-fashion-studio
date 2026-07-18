@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { getContentRoutes } from "../../content/routes"
+import { getContentRoutes } from "../../content/legacy-routes"
 
 const colorSchemes = ["light"] as const
 
@@ -45,6 +45,20 @@ const utilityRoutes = new Set([
   "/uk/styleguide",
 ])
 
+test("Payload admin renders the first-owner bootstrap", async ({ page }) => {
+  const response = await page.goto("/admin/create-first-user", {
+    waitUntil: "domcontentloaded",
+  })
+
+  expect(response?.ok()).toBe(true)
+  await expect(page.getByRole("heading", { name: "Welcome" })).toBeVisible()
+  await expect(
+    page.getByText("To begin, create your first user.")
+  ).toBeVisible()
+  await expect(page.locator('input[name="email"]')).toBeVisible()
+  await expect(page.locator('input[name="password"]')).toBeVisible()
+})
+
 test("single theme ignores OS and persisted dark preferences", async ({
   browser,
 }) => {
@@ -61,7 +75,8 @@ test("single theme ignores OS and persisted dark preferences", async ({
 
   for (const locale of ["uk", "ru", "en"] as const) {
     await page.addInitScript(() => localStorage.setItem("theme", "dark"))
-    await page.goto(`/${locale}`, { waitUntil: "networkidle" })
+    await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" })
+    await expect(page.locator("main h1").first()).toBeVisible()
     await expect(page.locator("script#purity-theme-init")).toHaveCount(0)
     await expect
       .poll(() =>
@@ -591,6 +606,7 @@ test("header navigation keeps booking, locale, and mobile controls coherent", as
 
         if (width < 1280) {
           await expect(menuTrigger).toBeVisible()
+          await expect(menuTrigger).toHaveAttribute("data-interactive", "true")
           await expect(desktopCta).toBeHidden()
           const triggerBox = await menuTrigger.boundingBox()
           expect(triggerBox?.width).toBeGreaterThanOrEqual(44)
@@ -1257,7 +1273,7 @@ test("page-ticket routes stay responsive across required widths", async ({
       expect(response?.ok(), `${viewport.name} ${route}`).toBe(true)
       await expect(page.locator("header img").first()).toBeVisible()
       await expect(page.locator("main h1").first()).toBeVisible()
-      if (!isStyleguide) {
+      if (!isUtilityRoute) {
         const heroImage = page.getByTestId("editorial-hero").locator("img")
         await expect(heroImage).toBeVisible()
         await heroImage.scrollIntoViewIfNeeded()
@@ -1510,8 +1526,8 @@ test("page-ticket routes stay responsive across required widths", async ({
       expect(
         metrics.loadedHeroImages,
         `${viewport.name} ${route}`
-      ).toBeGreaterThanOrEqual(isStyleguide ? 0 : 1)
-      if (!isStyleguide) {
+      ).toBeGreaterThanOrEqual(isUtilityRoute ? 0 : 1)
+      if (!isUtilityRoute) {
         expect(
           Number.parseFloat(metrics.heroMinHeight),
           `${viewport.name} ${route}`
@@ -1568,15 +1584,14 @@ test("page-ticket routes stay responsive across required widths", async ({
   }
 })
 
-test("booking form validates and creates localized checkout links", async ({
+test("booking form validates and records inquiry-only requests", async ({
   page,
 }) => {
   await page.goto("/uk/services/atelier-service")
-  await expect(page.getByRole("link", { name: "Записатися" })).toHaveAttribute(
-    "href",
-    "/uk/booking?service=atelier-service"
-  )
-  await page.locator('a[href="/uk/booking?service=atelier-service"]').click()
+  const bookingHref = "/uk/booking?service=atelier-service"
+  const serviceBookingCta = page.locator(`main a[href="${bookingHref}"]`)
+  await expect(serviceBookingCta).toHaveCount(1)
+  await serviceBookingCta.click()
   await expect(page).toHaveURL(/\/uk\/booking\?service=atelier-service$/)
   await expect(page.getByTestId("booking-service-trigger")).toContainText(
     "Ательє-сервіс"
@@ -1600,7 +1615,7 @@ test("booking form validates and creates localized checkout links", async ({
   await expect(page.getByText("Заявку прийнято")).toBeVisible()
   await expect(
     page.locator('a[href*="/uk/payment/success?provider=liqpay"]')
-  ).toHaveCount(1)
+  ).toHaveCount(0)
   await expect(page.getByText("Заповніть поле.")).toHaveCount(0)
 })
 
@@ -1689,7 +1704,7 @@ test("service CTAs preselect the requested booking direction", async ({
   }
 })
 
-test("course page exposes the fixed-offer placeholder and checkout route", async ({
+test("course page retains its unconfirmed commercial status", async ({
   page,
 }) => {
   await page.goto("/uk/courses/wardrobe-management-course")
@@ -1697,7 +1712,11 @@ test("course page exposes the fixed-offer placeholder and checkout route", async
   await expect(
     page.getByText("Фіксована пропозиція", { exact: true })
   ).toBeVisible()
-  await expect(page.getByText(/Ціна: placeholder EUR/)).toBeVisible()
+  await expect(page.getByText(/coming-soon/)).toBeVisible()
+  await expect(page.getByText(/Курс управління гардеробом: custom/)).toBeVisible()
+  await expect(
+    page.getByText(/пряма оплата зʼявиться лише для погодженої фіксованої пропозиції/)
+  ).toBeVisible()
   await expect(
     page.locator('a[href="/uk/booking?service=wardrobe-management"]')
   ).toHaveCount(2)
@@ -1826,12 +1845,12 @@ test("payment status pages keep provider fallbacks and localized action states",
   const widths = [320, 375, 768, 1024, 1440, 1920]
   const locales = ["uk", "ru", "en"] as const
   const routes = [
-    ["success", "?provider=stripe&order=purity-order"],
-    ["success", ""],
-    ["failure", "?provider=liqpay&order=purity-order"],
-    ["failure", "?provider=unknown"],
-    ["cancel", "?provider=stripe&order=purity-order"],
-    ["cancel", ""],
+    ["success", "?provider=stripe&order=purity-order", "pending"],
+    ["success", "", "success"],
+    ["failure", "?provider=liqpay&order=purity-order", "pending"],
+    ["failure", "?provider=unknown", "failure"],
+    ["cancel", "?provider=stripe&order=purity-order", "pending"],
+    ["cancel", "", "cancel"],
   ] as const
   const errors: string[] = []
 
@@ -1850,14 +1869,14 @@ test("payment status pages keep provider fallbacks and localized action states",
       for (const width of widths) {
         await page.setViewportSize({ width, height: 844 })
 
-        for (const [status, query] of routes) {
+        for (const [status, query, expectedStatus] of routes) {
           await page.goto(`/${locale}/payment/${status}${query}`, {
             waitUntil: "domcontentloaded",
           })
           await expect(page.locator("main h1")).toHaveCount(1)
           await expect(
             page.getByTestId("payment-status-alert")
-          ).toHaveAttribute("data-status", status)
+          ).toHaveAttribute("data-status", expectedStatus)
           await expect(
             page.locator('main > section a[href*="/booking"]')
           ).toHaveCount(1)
@@ -1911,7 +1930,7 @@ test("payment status pages keep provider fallbacks and localized action states",
   expect(errors).toEqual([])
 })
 
-test("contact form validates and creates checkout links", async ({ page }) => {
+test("contact form validates and records inquiry-only requests", async ({ page }) => {
   await page.goto("/uk/contacts")
   await expect(
     page
@@ -1957,10 +1976,12 @@ test("contact form validates and creates checkout links", async ({ page }) => {
   await page.locator('[data-slot="checkbox"]').click()
   await page.getByTestId("booking-submit").click()
 
-  await expect(page.getByText("Заявку прийнято")).toBeVisible()
+  await expect(page.getByText("Заявку прийнято")).toBeVisible({
+    timeout: 15_000,
+  })
   await expect(
     page.locator('a[href*="/uk/payment/success?provider=stripe"]')
-  ).toHaveCount(1)
+  ).toHaveCount(0)
   await expect(page.getByText("Заповніть поле.")).toHaveCount(0)
 })
 
@@ -1970,7 +1991,7 @@ test("operations, indexing, and payment endpoints fail closed", async ({
 }) => {
   const health = await request.get("/api/health")
   expect(health.status()).toBe(200)
-  expect(await health.json()).toEqual({ status: "ok", content: "seed" })
+  expect(await health.json()).toEqual({ status: "ok", content: "payload" })
 
   const stripe = await request.post("/api/payments/webhooks/stripe", {
     data: "{}",

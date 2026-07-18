@@ -15,14 +15,13 @@ import {
 } from "@/components/ui/card"
 import { getLocalizedMetadata } from "@/content/metadata"
 import {
-  getPublishedServiceSlugs,
   getServiceBySlug,
   type ServicePageData,
 } from "@/content/public-api"
 import { formatOfferPrice } from "@/content/commerce"
 import { collectionPath, coursePath, servicePath } from "@/content/routes"
 import { BookingStartCta } from "@/features/booking/booking-start-cta"
-import { hasLocale, locales, localizePath, type Locale } from "@/i18n/routing"
+import { hasLocale, localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
 type ServicePageProps = {
@@ -30,13 +29,6 @@ type ServicePageProps = {
 }
 
 export const dynamicParams = true
-
-export async function generateStaticParams() {
-  const slugs = await getPublishedServiceSlugs()
-  return locales.flatMap((locale) =>
-    slugs.map((slug) => ({ locale, slug }))
-  )
-}
 
 export async function generateMetadata({
   params,
@@ -69,19 +61,14 @@ function ServiceDetailPage({
   service: ServicePageData
 }) {
   const currentPath = servicePath(service.routeSegment)
-  const primaryOffer = service.offers.find(
-    (offer) => offer.commercialStatus === "active"
-  )
   const bookingHref = localizePath(
     locale,
-    `/booking?service=${service.routeSegment}${primaryOffer ? `&offer=${primaryOffer.id}` : ""}`
+    `/booking?service=${service.routeSegment}`
   )
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      {process.env.CONTENT_SOURCE === "payload" && (
-        <PreviewBanner locale={locale} />
-      )}
+      <PreviewBanner locale={locale} />
       <SiteHeader locale={locale} currentPath={currentPath} />
 
       <main>
