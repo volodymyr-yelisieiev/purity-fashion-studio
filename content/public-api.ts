@@ -17,7 +17,7 @@ import type {
   Service as PayloadService,
 } from "@/payload-types"
 import type { BookingPublicCopy } from "@/features/booking/public-copy"
-import type { MediaAsset } from "./model"
+import type { MediaAsset } from "./media"
 import type { Locale } from "../i18n/routing"
 
 export type ServiceOffer = Pick<
@@ -884,15 +884,11 @@ async function findPayloadCourse(
     commercialStatus:
       offersResult.docs.find((offer) => offer.commercialStatus === "active")
         ?.commercialStatus ?? course.availability,
-    priceNote:
-      offersResult.docs.length > 0
-        ? offersResult.docs
-            .map(
-              (offer) =>
-                `${offer.title}: ${offer.pricingMode === "fixed" ? offer.prices?.map((price) => `${price.amount} ${price.currency}`).join(" / ") : offer.pricingMode}`
-            )
-            .join(" · ")
-        : course.availability,
+    // Courses intentionally render their offer price through the localized
+    // Site Settings labels. `shortDescription` retains the imported source
+    // note on the offer without exposing a technical pricing mode such as
+    // "custom" to visitors.
+    priceNote: "",
     mediaAsset: media ? payloadMediaToView(media as Media, locale) : undefined,
     offers: offersResult.docs as ServiceOffer[],
     cta: course.cta,

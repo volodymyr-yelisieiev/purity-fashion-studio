@@ -42,6 +42,20 @@ const forbiddenPayloadRuntimeReferences = [
   "ContentSnapshot",
 ] as const
 
+const removedLegacyContentFiles = [
+  "content/category-page-specs.ts",
+  "content/cms.ts",
+  "content/collection-page-specs.ts",
+  "content/course-page-spec.ts",
+  "content/data.ts",
+  "content/home-page-spec.ts",
+  "content/legacy-routes.ts",
+  "content/model.ts",
+  "content/portfolio-page-spec.ts",
+  "content/service-page-specs.ts",
+  "scripts/export-cms-seed.ts",
+] as const
+
 for (const file of sourceRoots.flatMap(listSourceFiles)) {
   const source = readFileSync(file, "utf8")
 
@@ -62,7 +76,18 @@ for (const file of sourceRoots.flatMap(listSourceFiles)) {
   }
 }
 
-for (const file of ["content/public-api.ts", "content/routes.ts", "content/metadata.ts", "proxy.ts"]) {
+for (const file of removedLegacyContentFiles) {
+  if (existsSync(file)) {
+    issues.push(`${file}: obsolete static content source must remain deleted.`)
+  }
+}
+
+for (const file of [
+  "content/public-api.ts",
+  "content/routes.ts",
+  "content/metadata.ts",
+  "proxy.ts",
+]) {
   const source = readFileSync(file, "utf8")
   for (const reference of forbiddenPayloadRuntimeReferences) {
     if (source.includes(reference)) {

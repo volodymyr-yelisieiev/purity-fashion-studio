@@ -1,38 +1,15 @@
 import { createHash } from "node:crypto"
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
-import { dirname, resolve } from "node:path"
+import { existsSync, readFileSync } from "node:fs"
+import { resolve } from "node:path"
 
-import { buildCmsSeed, validateCmsSeed } from "../content/cms"
-import {
-  categoryPageCopy,
-  collectionsPageCopy,
-  studioPageCopy,
-} from "../content/category-page-specs"
-import { coursePageCopy } from "../content/course-page-spec"
-import { getContentRoutes } from "../content/legacy-routes"
-import { mediaAssets, navigation } from "../content/data"
-import {
-  beadedDressCopy,
-  capsuleCopy,
-  newYearPartyCopy,
-} from "../content/collection-page-specs"
-import { homePageCopy } from "../content/home-page-spec"
-import { portfolioPageCopy } from "../content/portfolio-page-spec"
-import { serviceDetailCopy } from "../content/service-page-specs"
-import {
-  bookingCopy,
-  bookingErrors,
-  bookingLabels,
-  contactMethodLabels,
-  currencyLabels,
-  formatLabels,
-  inquiryTypeLabels,
-  paymentStatusCopy,
-  providerLabels,
-} from "../features/booking/content"
 import { locales } from "../i18n/routing"
+import {
+  getManifestRoutes,
+  purityContentManifest,
+} from "../payload/seed/manifest"
 
-const manifestVersion = 1
+const manifestPath = "payload/seed/manifests/purity-content-manifest.v1.json"
+const absoluteManifestPath = resolve(manifestPath)
 
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`
@@ -49,90 +26,141 @@ function sha256(value: string | Buffer) {
   return createHash("sha256").update(value).digest("hex")
 }
 
-const seed = buildCmsSeed()
-const validation = validateCmsSeed(seed)
-if (!validation.ok) {
-  throw new Error(`Cannot export invalid migration source:\n${validation.issues.join("\n")}`)
-}
-
-const recordChecksums = Object.fromEntries(
-  Object.entries(seed).map(([collection, records]) => [
-    collection,
-    records.map((record) => ({
-      id:
-        typeof record === "object" && record && "id" in record
-          ? String(record.id)
-          : sha256(canonical(record)).slice(0, 12),
-      checksum: sha256(canonical(record)),
-    })),
-  ])
-)
-const mediaChecksums = mediaAssets.map((asset) => {
-  const filePath = asset.src
-    ? resolve("public", asset.src.replace(/^\//, ""))
-    : asset.sourceFile
-      ? resolve(asset.sourceFile)
-      : undefined
-  return {
-    id: asset.id,
-    checksum: filePath && existsSync(filePath) ? sha256(readFileSync(filePath)) : null,
-    sourceFile: asset.sourceFile ?? asset.src ?? null,
-  }
-})
-
-const manifest = {
-  version: manifestVersion,
-  locales,
-  routes: Object.fromEntries(locales.map((locale) => [locale, getContentRoutes(locale)])),
-  source: seed,
-  migrationCopy: {
-    categoryPageCopy,
-    collectionsPageCopy,
-    studioPageCopy,
-    coursePageCopy,
-    beadedDressCopy,
-    capsuleCopy,
-    newYearPartyCopy,
-    homePageCopy,
-    portfolioPageCopy,
-    serviceDetailCopy,
-    bookingCopy,
-    bookingLabels,
-    inquiryTypeLabels,
-    formatLabels,
-    contactMethodLabels,
-    currencyLabels,
-    providerLabels,
-    paymentStatusCopy,
-    bookingErrors,
-    navigation,
-  },
-  checksums: { records: recordChecksums, media: mediaChecksums },
-}
-const json = `${JSON.stringify(manifest, null, 2)}\n`
-const outputIndex = process.argv.indexOf("--out")
-const outputPath =
-  outputIndex >= 0
-    ? process.argv[outputIndex + 1]
-    : "payload/seed/manifests/purity-content-manifest.v1.json"
-const absolutePath = resolve(outputPath)
-
-if (process.argv.includes("--stdout")) {
-  process.stdout.write(json)
-} else if (process.argv.includes("--verify")) {
-  if (!existsSync(absolutePath)) {
-    throw new Error(`Missing versioned migration manifest: ${absolutePath}`)
+function recordID(record: unknown): string {
+  if (record && typeof record === "object" && "id" in record) {
+    return String(record.id)
   }
 
-  if (readFileSync(absolutePath, "utf8") !== json) {
-    throw new Error(
-      `Migration manifest drifted. Run pnpm content:manifest -- --out ${outputPath}`
+  return sha256(canonical(record)).slice(0, 12)
+}
+
+function verifyManifest() {
+  const issues: string[] = []
+
+  if (!existsSync(absoluteManifestPath)) {
+    issues.push(`Missing versioned migration manifest: ${absoluteManifestPath}`)
+  }
+  if (purityContentManifest.version !== 1) {
+    issues.push(
+      `Unsupported content manifest version: ${purityContentManifest.version}`
     )
   }
+  if (
+    JSON.stringify(purityContentManifest.locales) !== JSON.stringify(locales)
+  ) {
+    issues.push("Manifest locales must remain uk, ru, en without fallback")
+  }
 
-  console.log(`Verified content manifest v${manifestVersion} at ${absolutePath}`)
+  for (const locale of locales) {
+    const routes = getManifestRoutes(locale)
+    const routeKeys = new Set<string>()
+
+    if (!routes.length) {
+      issues.push(`Manifest contains no routes for ${locale}`)
+    }
+
+    for (const route of routes) {
+      if (!route.href.startsWith(`/${locale}`)) {
+        issues.push(`Manifest route does not preserve ${locale}: ${route.href}`)
+      }
+
+      const key = `${route.kind}:${route.href}`
+      if (route.kind !== "navigation" && routeKeys.has(key)) {
+        issues.push(`Manifest duplicates content route: ${key}`)
+      }
+      routeKeys.add(key)
+    }
+  }
+
+  for (const collection of Object.keys(purityContentManifest.source) as Array<
+    keyof typeof purityContentManifest.source
+  >) {
+    const records = purityContentManifest.source[collection] as unknown[]
+    const checksums = purityContentManifest.checksums.records[
+      collection
+    ] as Array<{
+      id: string
+      checksum: string
+    }>
+
+    if (!checksums) {
+      issues.push(`Manifest lacks record checksums for ${collection}`)
+      continue
+    }
+    if (checksums.length !== records.length) {
+      issues.push(`Manifest record checksum count drifted for ${collection}`)
+      continue
+    }
+
+    const expectedByID = new Map(
+      checksums.map((entry) => [entry.id, entry.checksum])
+    )
+    for (const record of records) {
+      const id = recordID(record)
+      const expected = expectedByID.get(id)
+      const actual = sha256(canonical(record))
+
+      if (!expected) {
+        issues.push(`Manifest checksum lacks ${collection}:${id}`)
+      } else if (expected !== actual) {
+        issues.push(`Manifest checksum drifted for ${collection}:${id}`)
+      }
+    }
+  }
+
+  const mediaByID = new Map(
+    purityContentManifest.checksums.media.map((entry) => [entry.id, entry])
+  )
+  for (const asset of purityContentManifest.source["media-assets"]) {
+    const expected = mediaByID.get(asset.id)
+    const sourceFile = asset.sourceFile ?? asset.src ?? null
+    const filePath = asset.src
+      ? resolve("public", asset.src.replace(/^\//, ""))
+      : asset.sourceFile
+        ? resolve(asset.sourceFile)
+        : undefined
+    const checksum =
+      filePath && existsSync(filePath) ? sha256(readFileSync(filePath)) : null
+
+    if (!expected) {
+      issues.push(`Manifest media checksum lacks ${asset.id}`)
+      continue
+    }
+    if (expected.sourceFile !== sourceFile) {
+      issues.push(`Manifest media source drifted for ${asset.id}`)
+    }
+    if (expected.checksum !== checksum) {
+      issues.push(`Manifest media checksum drifted for ${asset.id}`)
+    }
+  }
+
+  if (mediaByID.size !== purityContentManifest.source["media-assets"].length) {
+    issues.push("Manifest has an unexpected media checksum entry")
+  }
+
+  const migrationCopyChecksum = sha256(
+    canonical(purityContentManifest.migrationCopy)
+  )
+  if (purityContentManifest.checksums.migrationCopy !== migrationCopyChecksum) {
+    issues.push("Manifest migration copy checksum drifted")
+  }
+
+  if (issues.length) {
+    throw new Error(`Content manifest invalid:\n${issues.join("\n")}`)
+  }
+}
+
+if (process.argv.includes("--out")) {
+  throw new Error(
+    "The migration manifest is immutable. Update it only through a reviewed migration change."
+  )
+}
+
+if (process.argv.includes("--stdout")) {
+  process.stdout.write(readFileSync(absoluteManifestPath, "utf8"))
 } else {
-  mkdirSync(dirname(absolutePath), { recursive: true })
-  writeFileSync(absolutePath, json)
-  console.log(`Wrote content manifest v${manifestVersion} to ${absolutePath}`)
+  verifyManifest()
+  console.log(
+    `Verified immutable content manifest v1 at ${absoluteManifestPath}`
+  )
 }

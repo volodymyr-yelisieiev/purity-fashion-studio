@@ -33,7 +33,7 @@ Trusted Local API bypasses are limited to named booking/webhook/import contexts.
 Run migrations before import:
 
 ```bash
-pnpm content:manifest -- --out tmp/purity-content-manifest.v1.json
+pnpm content:manifest:verify
 pnpm payload:migrate:status
 pnpm payload:migrate
 ALLOW_CMS_SEED=true pnpm cms:import -- --target=preview --confirm=IMPORT_PREVIEW
@@ -80,6 +80,7 @@ migration input and test fixture; public routes never import it. An application
 rollback must preserve the database because seed is not an authoritative
 runtime or rollback source.
 
-`pnpm content:manifest` writes the versioned route/localization/media checksum
-fixture used for parity review. Run the guarded importer twice in Preview and
-compare the resulting counts and checksums before Production cutover.
+`pnpm content:manifest:verify` validates the immutable versioned
+route/localization/media checksum fixture used for parity review. Run the
+guarded importer twice in Preview and compare the resulting counts and
+checksums before Production cutover.

@@ -18,12 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import type {
-  CategoryPageSpec,
-  MediaAsset,
-  PublicPage,
-  ServiceCategory,
-} from "@/content/model"
+import type { MediaAsset } from "@/content/media"
 import { getLocalizedMetadata } from "@/content/metadata"
 import {
   getCourseBySlug,
@@ -51,7 +46,38 @@ type SectionPageProps = {
   params: Promise<{ locale: string; section: string }>
 }
 
-type PublicPageEntry = PublicPage
+type PublicPagePresentation = {
+  slug: string
+  routeSegment: string
+  title: string
+  eyebrow: string
+  summary: string
+  body: string[]
+  cta?: { label: string; path: string }
+}
+
+type CategoryPresentation = {
+  slug: string
+  routeSegment: string
+  title: string
+  summary: string
+}
+
+type CategoryPagePresentation = {
+  ctaService: string
+  heroNote: string
+  processTitle: string
+  processSteps: Array<{ title: string; text: string }>
+  formatsTitle: string
+  formats: string[]
+  outcomesTitle: string
+  outcomes: string[]
+  ctaTitle: string
+  ctaSummary: string
+  diagnosticLabel?: string
+  faqTitle?: string
+  faq?: Array<{ question: string; answer: string }>
+}
 
 type CollectionCardView = {
   routeSegment: string
@@ -92,76 +118,64 @@ export async function generateMetadata({
   })
 }
 
-function localized(value: string) {
-  return { uk: value, ru: value, en: value }
-}
-
-function toCategoryPageSpec(direction: DirectionPageData): CategoryPageSpec {
+function toCategoryPagePresentation(
+  direction: DirectionPageData
+): CategoryPagePresentation {
   return {
     ctaService: direction.ctaService,
-    heroNote: localized(direction.narrative),
-    processTitle: localized(direction.processTitle),
+    heroNote: direction.narrative,
+    processTitle: direction.processTitle,
     processSteps: direction.process.map((step) => ({
-      title: localized(step.title),
-      text: localized(step.description),
+      title: step.title,
+      text: step.description,
     })),
-    formatsTitle: localized(direction.formatsTitle),
-    formats: direction.formatNotes.map(localized),
-    outcomesTitle: localized(direction.outcomesTitle),
-    outcomes: direction.outcomes.map(localized),
-    ctaTitle: localized(direction.ctaTitle),
-    ctaSummary: localized(direction.ctaSummary),
-    diagnosticLabel: direction.diagnosticLabel
-      ? localized(direction.diagnosticLabel)
-      : undefined,
-    faqTitle: direction.faqTitle ? localized(direction.faqTitle) : undefined,
+    formatsTitle: direction.formatsTitle,
+    formats: direction.formatNotes,
+    outcomesTitle: direction.outcomesTitle,
+    outcomes: direction.outcomes,
+    ctaTitle: direction.ctaTitle,
+    ctaSummary: direction.ctaSummary,
+    diagnosticLabel: direction.diagnosticLabel,
+    faqTitle: direction.faqTitle,
     faq: direction.faq.map((item) => ({
-      question: localized(item.question),
-      answer: localized(item.answer),
+      question: item.question,
+      answer: item.answer,
     })),
   }
 }
 
-function toLegacyPublicPage(page: PublicPageData): PublicPageEntry | undefined {
-  const slug =
-    page.pageType === "studio"
-      ? "studio"
-      : page.pageType === "privacy"
-        ? "privacy"
-        : page.pageType === "terms"
-          ? "terms"
-          : undefined
-  if (!slug) return undefined
+function toSpecialPagePresentation(
+  page: PublicPageData
+): PublicPagePresentation | undefined {
+  if (!["studio", "privacy", "terms"].includes(page.pageType)) {
+    return undefined
+  }
 
   const body = page.sections.length
     ? page.sections.map((section) => section.body)
     : page.body.split(/\n\n+/).filter(Boolean)
   return {
-    slug,
+    slug: page.slug,
     routeSegment: page.routeSegment,
-    title: localized(page.title),
-    eyebrow: localized(page.eyebrow ?? page.title),
-    summary: localized(page.summary),
-    body: { uk: body, ru: body, en: body },
+    title: page.title,
+    eyebrow: page.eyebrow ?? page.title,
+    summary: page.summary,
+    body,
     cta: {
-      label: localized(page.cta.label),
+      label: page.cta.label,
       path: page.cta.action === "contact" ? "/contacts" : "/booking",
-    },
-    mediaIds: page.mediaIds,
-    seo: {
-      uk: page.seo,
-      ru: page.seo,
-      en: page.seo,
     },
   }
 }
 
-function toLegacyCategory(direction: DirectionPageData): ServiceCategory {
+function toCategoryPresentation(
+  direction: DirectionPageData
+): CategoryPresentation {
   return {
     slug: direction.canonicalKey,
     routeSegment: direction.routeSegment,
-    title: localized(direction.title),
-    summary: localized(direction.summary),
+    title: direction.title,
+    summary: direction.summary,
   }
 }
 
@@ -211,15 +225,14 @@ function StudioPageView({
   mediaAsset: mediaAssetOverride,
 }: {
   locale: Locale
-  publicPage: PublicPageEntry
+  publicPage: PublicPagePresentation
   pageData: PublicPageData
   privateServices: Array<{ title: string; summary: string }>
   corporateServices: Array<{ title: string; summary: string }>
   directions: DirectionPageData[]
   mediaAsset?: MediaAsset
 }) {
-  const mediaAsset =
-    mediaAssetOverride
+  const mediaAsset = mediaAssetOverride
   const signalCards = pageData.studioSignals
 
   return (
@@ -229,19 +242,16 @@ function StudioPageView({
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={publicPage.eyebrow[locale]}
-          title={publicPage.title[locale]}
-          summary={publicPage.summary[locale]}
+          eyebrow={publicPage.eyebrow}
+          title={publicPage.title}
+          summary={publicPage.summary}
           mediaAsset={mediaAsset}
           composition="cinematic"
           titleClassName="max-w-none"
         >
           <dl className="grid grid-cols-3 border-y border-border py-5">
             {signalCards.map((signal) => (
-              <div
-                key={signal.label}
-                className="grid content-start gap-2 pr-4"
-              >
+              <div key={signal.label} className="grid content-start gap-2 pr-4">
                 <dt className="text-xs text-muted-foreground">
                   {signal.label}
                 </dt>
@@ -259,7 +269,7 @@ function StudioPageView({
               })
             )}
           >
-            {publicPage.cta?.label[locale] ?? pageData.title}
+            {publicPage.cta?.label ?? pageData.title}
           </Link>
         </EditorialHero>
 
@@ -275,7 +285,7 @@ function StudioPageView({
             </div>
             <div className="grid gap-4">
               <div className="grid gap-3 md:grid-cols-2">
-                {publicPage.body[locale].map((item) => (
+                {publicPage.body.map((item) => (
                   <Card
                     key={item}
                     size="sm"
@@ -374,7 +384,7 @@ function StudioPageView({
                   buttonVariants({ variant: "default", size: "lg" })
                 )}
               >
-                {publicPage.cta?.label[locale] ?? pageData.title}
+                {publicPage.cta?.label ?? pageData.title}
               </Link>
             </div>
             <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -410,10 +420,7 @@ function StudioPageView({
           <SectionActionCard
             title={pageData.ctaTitle ?? pageData.title}
             summary={pageData.ctaSummary ?? pageData.summary}
-            label={
-              publicPage.cta?.label[locale] ??
-              pageData.title
-            }
+            label={publicPage.cta?.label ?? pageData.title}
             href={localizePath(locale, publicPage.cta?.path ?? "/booking")}
           />
         </section>
@@ -429,7 +436,7 @@ function LegalPageView({
   pageData,
 }: {
   locale: Locale
-  publicPage: PublicPageEntry
+  publicPage: PublicPagePresentation
   pageData: PublicPageData
 }) {
   const currentPath = sectionPath(publicPage.routeSegment)
@@ -448,9 +455,9 @@ function LegalPageView({
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={publicPage.eyebrow[locale]}
-          title={publicPage.title[locale]}
-          summary={publicPage.summary[locale]}
+          eyebrow={publicPage.eyebrow}
+          title={publicPage.title}
+          summary={publicPage.summary}
           mediaAsset={pageData.mediaAsset}
           composition="quiet"
         >
@@ -504,10 +511,10 @@ function LegalPageView({
           <div className="mx-auto max-w-4xl md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8">
             <div>
               <h2 className="text-3xl font-medium text-pretty">
-                {publicPage.cta?.label[locale]}
+                {publicPage.cta?.label}
               </h2>
               <p className="mt-3 text-sm leading-7 text-background/70">
-                {publicPage.summary[locale]}
+                {publicPage.summary}
               </p>
             </div>
             {publicPage.cta && (
@@ -520,7 +527,7 @@ function LegalPageView({
                   })
                 )}
               >
-                {publicPage.cta.label[locale]}
+                {publicPage.cta.label}
               </Link>
             )}
           </div>
@@ -538,7 +545,7 @@ function CollectionsPageView({
   direction,
 }: {
   locale: Locale
-  category: ServiceCategory
+  category: CategoryPresentation
   collections: CollectionCardView[]
   direction: DirectionPageData
 }) {
@@ -558,8 +565,8 @@ function CollectionsPageView({
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={category.title[locale]}
-          title={category.title[locale]}
+          eyebrow={category.title}
+          title={category.title}
           summary={direction.narrative}
           mediaAsset={heroMedia}
           composition="editorial"
@@ -567,7 +574,10 @@ function CollectionsPageView({
           <dl className="grid grid-cols-3 border-y border-border py-5">
             {[
               [collections.length, direction.countLabel ?? ""],
-              [direction.availabilityValue ?? "", direction.availabilityLabel ?? ""],
+              [
+                direction.availabilityValue ?? "",
+                direction.availabilityLabel ?? "",
+              ],
               [direction.fittingValue ?? "", direction.fittingLabel ?? ""],
             ].map(([value, label]) => (
               <div key={label} className="grid gap-2 pr-4">
@@ -698,7 +708,7 @@ function OfferCategoryPageView({
   ctaLabel,
 }: {
   locale: Locale
-  category: ServiceCategory
+  category: CategoryPresentation
   entries: Array<{
     href: string
     title: string
@@ -707,7 +717,7 @@ function OfferCategoryPageView({
     priceNote: string
   }>
   mediaAsset?: MediaAsset
-  copy: CategoryPageSpec
+  copy: CategoryPagePresentation
   ctaLabel: string
 }) {
   const relatedEntries = entries
@@ -721,22 +731,22 @@ function OfferCategoryPageView({
       <main>
         <EditorialHero
           locale={locale}
-          eyebrow={category.title[locale]}
-          title={category.title[locale]}
-          summary={copy.heroNote[locale]}
+          eyebrow={category.title}
+          title={category.title}
+          summary={copy.heroNote}
           mediaAsset={mediaAsset}
           composition={category.slug === "atelier" ? "editorial" : "cinematic"}
         >
           <ol className="grid border-t border-border">
             {copy.outcomes.map((outcome, index) => (
               <li
-                key={outcome[locale]}
+                key={outcome}
                 className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 border-b border-border py-3 text-sm"
               >
                 <span className="text-xs text-muted-foreground">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                {outcome[locale]}
+                {outcome}
               </li>
             ))}
           </ol>
@@ -754,7 +764,7 @@ function OfferCategoryPageView({
           </Link>
           {copy.diagnosticLabel && (
             <p className="text-xs leading-5 text-muted-foreground">
-              {copy.diagnosticLabel[locale]}
+              {copy.diagnosticLabel}
             </p>
           )}
         </EditorialHero>
@@ -763,26 +773,26 @@ function OfferCategoryPageView({
           <div className="mx-auto grid max-w-6xl min-w-0 gap-10 px-6 py-16 md:px-10 lg:grid-cols-[minmax(20rem,0.9fr)_minmax(0,1.1fr)]">
             <div className="min-w-0">
               <p className="mb-4 text-xs tracking-normal text-muted-foreground uppercase">
-                {copy.processTitle[locale]}
+                {copy.processTitle}
               </p>
               <h2 className="max-w-[13ch] text-[clamp(2rem,4vw,3.5rem)] leading-[0.98] font-medium text-pretty">
-                {copy.processTitle[locale]}
+                {copy.processTitle}
               </h2>
             </div>
             <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
               <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {copy.processSteps.map((step) => (
                   <Card
-                    key={step.title[locale]}
+                    key={step.title}
                     size="sm"
                     className="border-border bg-background"
                   >
                     <CardHeader>
                       <CardTitle className="min-w-0 break-words">
-                        {step.title[locale]}
+                        {step.title}
                       </CardTitle>
                       <CardDescription className="min-w-0 break-words">
-                        {step.text[locale]}
+                        {step.text}
                       </CardDescription>
                     </CardHeader>
                   </Card>
@@ -792,24 +802,22 @@ function OfferCategoryPageView({
                 <Card className="min-w-0 border-border bg-background">
                   <CardHeader>
                     <CardTitle className="min-w-0 break-words">
-                      {copy.formatsTitle[locale]}
+                      {copy.formatsTitle}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="border-t border-border pt-5">
-                    <FeatureList
-                      items={copy.formats.map((format) => format[locale])}
-                    />
+                    <FeatureList items={copy.formats} />
                   </CardContent>
                 </Card>
                 <Card className="min-w-0 border-primary-foreground/20 bg-primary text-primary-foreground">
                   <CardHeader>
                     <CardTitle className="min-w-0 break-words">
-                      {copy.outcomesTitle[locale]}
+                      {copy.outcomesTitle}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="border-t border-primary-foreground/20 pt-5">
                     <FeatureList
-                      items={copy.outcomes.map((outcome) => outcome[locale])}
+                      items={copy.outcomes}
                       className="text-primary-foreground/80"
                     />
                   </CardContent>
@@ -821,9 +829,9 @@ function OfferCategoryPageView({
 
         {copy.faq && copy.faqTitle && (
           <EditorialFaq
-            title={copy.faqTitle[locale]}
+            title={copy.faqTitle}
             items={copy.faq.map(
-              (item) => [item.question[locale], item.answer[locale]] as const
+              (item) => [item.question, item.answer] as const
             )}
             className="bg-muted"
           />
@@ -832,10 +840,10 @@ function OfferCategoryPageView({
         <section className="mx-auto w-full max-w-6xl px-6 py-14 md:px-10">
           <div className="mb-8 grid gap-4 md:grid-cols-[0.85fr_1.15fr] md:items-start">
             <h2 className="text-3xl leading-tight font-medium md:text-5xl">
-              {category.title[locale]}
+              {category.title}
             </h2>
             <p className="text-sm leading-7 text-muted-foreground">
-              {category.summary[locale]}
+              {category.summary}
             </p>
           </div>
           <div className="grid min-w-0 auto-rows-fr gap-4 md:grid-cols-2">
@@ -870,8 +878,8 @@ function OfferCategoryPageView({
 
         <section className="mx-auto w-full max-w-6xl min-w-0 px-6 py-14 md:px-10">
           <SectionActionCard
-            title={copy.ctaTitle[locale]}
-            summary={copy.ctaSummary[locale]}
+            title={copy.ctaTitle}
+            summary={copy.ctaSummary}
             label={ctaLabel}
             href={localizePath(locale, `/booking?service=${copy.ctaService}`)}
           />
@@ -898,7 +906,7 @@ export default async function SectionPage({ params }: SectionPageProps) {
     getPageBySlug(locale, section),
   ])
   const publicPage = publicPageData
-    ? toLegacyPublicPage(publicPageData)
+    ? toSpecialPagePresentation(publicPageData)
     : undefined
 
   if (publicPage) {
@@ -946,15 +954,15 @@ export default async function SectionPage({ params }: SectionPageProps) {
       <ContentPage
         locale={locale}
         currentPath={sectionPath(publicPage.routeSegment)}
-        eyebrow={publicPage.eyebrow[locale]}
-        title={publicPage.title[locale]}
-        summary={publicPage.summary[locale]}
-        items={publicPage.body[locale]}
+        eyebrow={publicPage.eyebrow}
+        title={publicPage.title}
+        summary={publicPage.summary}
+        items={publicPage.body}
         mediaAsset={publicPageData?.mediaAsset}
         action={
           publicPage.cta
             ? {
-                label: publicPage.cta.label[locale],
+                label: publicPage.cta.label,
                 href: localizePath(locale, publicPage.cta.path),
               }
             : undefined
@@ -997,14 +1005,14 @@ export default async function SectionPage({ params }: SectionPageProps) {
       ? await getDirectionByCanonicalKey(locale, "realisation")
       : null)
   const atelierService = atelierServices[0]
-  const category: ServiceCategory | undefined = directionData
-    ? toLegacyCategory(directionData)
+  const category: CategoryPresentation | undefined = directionData
+    ? toCategoryPresentation(directionData)
     : section === "atelier" && atelierService
       ? {
           slug: "atelier",
           routeSegment: "atelier",
-          title: localized(atelierService.title),
-          summary: localized(atelierService.summary),
+          title: atelierService.title,
+          summary: atelierService.summary,
         }
       : undefined
 
@@ -1021,21 +1029,20 @@ export default async function SectionPage({ params }: SectionPageProps) {
     : category.slug === "atelier"
       ? atelierServices
       : undefined
-  const [payloadCourses, payloadCollections] =
-    await Promise.all([
-        category.slug === "school"
-          ? getPublishedCourseSlugs().then((slugs) =>
-              Promise.all(slugs.map((slug) => getCourseBySlug(locale, slug)))
-            )
-          : [],
-        category.slug === "collections"
-          ? getPublishedFashionCollectionSlugs().then((slugs) =>
-              Promise.all(
-                slugs.map((slug) => getFashionCollectionBySlug(locale, slug))
-              )
-            )
-          : [],
-      ])
+  const [payloadCourses, payloadCollections] = await Promise.all([
+    category.slug === "school"
+      ? getPublishedCourseSlugs().then((slugs) =>
+          Promise.all(slugs.map((slug) => getCourseBySlug(locale, slug)))
+        )
+      : [],
+    category.slug === "collections"
+      ? getPublishedFashionCollectionSlugs().then((slugs) =>
+          Promise.all(
+            slugs.map((slug) => getFashionCollectionBySlug(locale, slug))
+          )
+        )
+      : [],
+  ])
   const categoryMediaAsset =
     directionData?.mediaAsset ??
     payloadCategoryServices?.find((service) => service.mediaAsset)
@@ -1044,40 +1051,41 @@ export default async function SectionPage({ params }: SectionPageProps) {
     payloadCollections.find((collection) => collection?.mediaAssets[0])
       ?.mediaAssets[0]
   const serviceEntries = (payloadCategoryServices ?? []).map((service) => ({
-        href: localizePath(locale, servicePath(service.routeSegment)),
-        title: service.title,
-        summary: service.summary,
-        status: presentationDirection?.narrative ?? service.summary,
-        priceNote: presentationDirection?.outcomes.join(" · ") ?? "",
-      }))
+    href: localizePath(locale, servicePath(service.routeSegment)),
+    title: service.title,
+    summary: service.summary,
+    status: presentationDirection?.narrative ?? service.summary,
+    priceNote: presentationDirection?.outcomes.join(" · ") ?? "",
+  }))
   const courseEntries = payloadCourses.flatMap((course) =>
-        course
-          ? [
-              {
-                href: localizePath(locale, coursePath(course.routeSegment)),
-                title: course.title,
-                summary: course.summary,
-                status: course.commercialStatus,
-                priceNote: course.priceNote,
-              },
-            ]
-          : []
-      )
-  const collectionCards: CollectionCardView[] = payloadCollections.flatMap((collection) =>
-        collection
-          ? [
-              {
-                routeSegment: collection.routeSegment,
-                title: collection.title,
-                summary: collection.summary,
-                materials: collection.materials,
-                commercialStatus: collection.commercialStatus,
-                priceNote: collection.priceNote,
-                mediaAsset: collection.mediaAssets[0],
-              },
-            ]
-          : []
-      )
+    course
+      ? [
+          {
+            href: localizePath(locale, coursePath(course.routeSegment)),
+            title: course.title,
+            summary: course.summary,
+            status: course.commercialStatus,
+            priceNote: course.priceNote,
+          },
+        ]
+      : []
+  )
+  const collectionCards: CollectionCardView[] = payloadCollections.flatMap(
+    (collection) =>
+      collection
+        ? [
+            {
+              routeSegment: collection.routeSegment,
+              title: collection.title,
+              summary: collection.summary,
+              materials: collection.materials,
+              commercialStatus: collection.commercialStatus,
+              priceNote: collection.priceNote,
+              mediaAsset: collection.mediaAssets[0],
+            },
+          ]
+        : []
+  )
   if (category.slug === "collections" && directionData) {
     return (
       <CollectionsPageView
@@ -1104,7 +1112,7 @@ export default async function SectionPage({ params }: SectionPageProps) {
         category={category}
         entries={[...serviceEntries, ...courseEntries]}
         mediaAsset={categoryMediaAsset}
-        copy={toCategoryPageSpec(presentationDirection)}
+        copy={toCategoryPagePresentation(presentationDirection)}
         ctaLabel={presentationDirection.ctaLabel}
       />
     )

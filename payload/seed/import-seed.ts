@@ -87,6 +87,7 @@ const {
   navigation,
   newYearPartyCopy,
   paymentStatusCopy,
+  pricingLabels,
   portfolioPageCopy,
   providerLabels,
   serviceDetailCopy,
@@ -175,7 +176,10 @@ function postgresErrorCode(error: unknown): string | undefined {
   return postgresErrorCode(candidate.cause)
 }
 
-async function retryDatabaseStage<T>(label: string, operation: () => Promise<T>) {
+async function retryDatabaseStage<T>(
+  label: string,
+  operation: () => Promise<T>
+) {
   const attempts = 5
 
   for (let attempt = 0; attempt < attempts; attempt += 1) {
@@ -440,9 +444,10 @@ async function importDirections(): Promise<Map<string, ID>> {
           : siteSettings.home.primaryCta.label[locale],
       diagnosticLabel:
         spec && "diagnosticLabel" in spec
-          ? (spec.diagnosticLabel as
-              | Partial<Record<Locale, string>>
-              | undefined)?.[locale]
+          ? (
+              spec.diagnosticLabel as
+                Partial<Record<Locale, string>> | undefined
+            )?.[locale]
           : undefined,
       faqTitle: spec?.faqTitle?.[locale],
       faq:
@@ -1527,6 +1532,10 @@ async function importGlobals({
               : locale === "ru"
                 ? "Получено"
                 : "Reference received",
+        },
+        pricing: {
+          from: pricingLabels.from[locale],
+          custom: pricingLabels.custom[locale],
         },
       },
       maintenance: { enabled: false, message: "" },

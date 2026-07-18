@@ -73,6 +73,10 @@ export type BookingPublicCopy = {
     notProvided: string
     referenceReceived: string
   }
+  pricing: {
+    from: string
+    custom: string
+  }
 }
 
 export function localizeBookingError(

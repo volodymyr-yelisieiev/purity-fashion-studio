@@ -113,6 +113,14 @@ const bookingCopyFields: Field[] = [
       localizedText("referenceReceived", "Reference received label"),
     ],
   },
+  {
+    name: "pricing",
+    type: "group",
+    fields: [
+      localizedText("from", "From price label"),
+      localizedText("custom", "By-request price label"),
+    ],
+  },
 ]
 
 export const SiteSettings: GlobalConfig = {

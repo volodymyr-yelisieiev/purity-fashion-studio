@@ -4,30 +4,38 @@ import { basename } from "node:path"
 import { z } from "zod"
 
 import {
-  collections,
-  courses,
-  mediaAssets,
-  navigation,
-  portfolioCases,
-  publicPages,
-  serviceCategories,
-  services,
-  siteSettings,
-} from "../content/data"
-import {
   collectionPath,
   coursePath,
   portfolioCasePath,
   sectionPath,
   servicePath,
 } from "../content/routes"
-import { getContentRoutes } from "../content/legacy-routes"
-import {
-  publicPageSlugs,
-  serviceCategorySlugs,
-  type MediaAsset,
-} from "../content/model"
 import { locales } from "../i18n/routing"
+import {
+  getManifestRoutes,
+  purityContentManifest,
+} from "../payload/seed/manifest"
+
+const {
+  collections,
+  courses,
+  "media-assets": mediaAssets,
+  "portfolio-cases": portfolioCases,
+  pages: publicPages,
+  "service-categories": serviceCategories,
+  services,
+  settings: [siteSettings],
+} = purityContentManifest.source
+const { navigation } = purityContentManifest.migrationCopy
+const serviceCategorySlugs = serviceCategories.map((item) => item.slug) as [
+  string,
+  ...string[],
+]
+const publicPageSlugs = publicPages.map((item) => item.slug) as [
+  string,
+  ...string[],
+]
+type MediaAsset = (typeof mediaAssets)[number]
 
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
 const path = z.string().regex(/^\/(?:[a-z0-9-]+(?:\/[a-z0-9-]+)*)?$/)
@@ -611,7 +619,7 @@ for (const cta of [
 }
 
 for (const locale of locales) {
-  const routes = getContentRoutes(locale)
+  const routes = getManifestRoutes(locale)
   const contentHrefs = new Set<string>()
 
   for (const route of routes) {

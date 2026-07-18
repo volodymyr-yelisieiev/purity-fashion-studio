@@ -1,10 +1,6 @@
 {
   "version": 1,
-  "locales": [
-    "uk",
-    "ru",
-    "en"
-  ],
+  "locales": ["uk", "ru", "en"],
   "routes": {
     "uk": [
       {
@@ -971,9 +967,7 @@
             "Stylist recommendations"
           ]
         },
-        "mediaIds": [
-          "editorial-stylist-mirror"
-        ],
+        "mediaIds": ["editorial-stylist-mirror"],
         "seo": {
           "uk": {
             "title": "Персональний лукбук | PURITY",
@@ -1034,9 +1028,7 @@
             "Studio or home fitting"
           ]
         },
-        "mediaIds": [
-          "editorial-shopping-rail"
-        ],
+        "mediaIds": ["editorial-shopping-rail"],
         "seo": {
           "uk": {
             "title": "Супровід реалізації | PURITY",
@@ -1081,25 +1073,15 @@
           "en": "Historical atelier references: dresses from 7700 UAH and coats from 14900 UAH; final pricing follows sketch, fabric, timing, and request."
         },
         "outcomes": {
-          "uk": [
-            "Ескіз і тканина",
-            "Макет або лекала",
-            "Примірки до посадки"
-          ],
-          "ru": [
-            "Эскиз и ткань",
-            "Макет или лекала",
-            "Примерки до посадки"
-          ],
+          "uk": ["Ескіз і тканина", "Макет або лекала", "Примірки до посадки"],
+          "ru": ["Эскиз и ткань", "Макет или лекала", "Примерки до посадки"],
           "en": [
             "Sketch and fabric",
             "Mock-up or patterns",
             "Fittings until fit"
           ]
         },
-        "mediaIds": [
-          "generated-editorial-create"
-        ],
+        "mediaIds": ["generated-editorial-create"],
         "seo": {
           "uk": {
             "title": "Ательє-сервіс | PURITY",
@@ -1144,25 +1126,11 @@
           "en": "Historical references: wardrobe revision with stylist visit 3000 UAH; offsite service from 300 UAH. Current pricing by request."
         },
         "outcomes": {
-          "uk": [
-            "Фото речей",
-            "Колажі образів",
-            "Памʼятка що з чим носити"
-          ],
-          "ru": [
-            "Фото вещей",
-            "Коллажи образов",
-            "Памятка что с чем носить"
-          ],
-          "en": [
-            "Item photos",
-            "Look collages",
-            "What-to-wear guide"
-          ]
+          "uk": ["Фото речей", "Колажі образів", "Памʼятка що з чим носити"],
+          "ru": ["Фото вещей", "Коллажи образов", "Памятка что с чем носить"],
+          "en": ["Item photos", "Look collages", "What-to-wear guide"]
         },
-        "mediaIds": [
-          "editorial-wardrobe-archive"
-        ],
+        "mediaIds": ["editorial-wardrobe-archive"],
         "seo": {
           "uk": {
             "title": "Трансформація гардероба | PURITY",
@@ -1226,9 +1194,7 @@
             "Training cases for teams"
           ]
         },
-        "mediaIds": [
-          "editorial-corporate-tailoring"
-        ],
+        "mediaIds": ["editorial-corporate-tailoring"],
         "seo": {
           "uk": {
             "title": "Корпоративний імідж | PURITY",
@@ -1273,25 +1239,11 @@
           "en": "Final pricing is confirmed after format and scope are clarified."
         },
         "outcomes": {
-          "uk": [
-            "Система шафи",
-            "Критерії покупок",
-            "Повторюваний процес"
-          ],
-          "ru": [
-            "Система шкафа",
-            "Критерии покупок",
-            "Повторяемый процесс"
-          ],
-          "en": [
-            "Wardrobe system",
-            "Buying criteria",
-            "Repeatable process"
-          ]
+          "uk": ["Система шафи", "Критерії покупок", "Повторюваний процес"],
+          "ru": ["Система шкафа", "Критерии покупок", "Повторяемый процесс"],
+          "en": ["Wardrobe system", "Buying criteria", "Repeatable process"]
         },
-        "mediaIds": [
-          "editorial-utility-patternmaking"
-        ],
+        "mediaIds": ["editorial-utility-patternmaking"],
         "seo": {
           "uk": {
             "title": "Управління гардеробом | PURITY",
@@ -1336,25 +1288,11 @@
           "en": "Availability, sizing, fitting format, and current price are confirmed by request."
         },
         "outcomes": {
-          "uk": [
-            "Капсула",
-            "Матеріали",
-            "Сценарії носіння"
-          ],
-          "ru": [
-            "Капсула",
-            "Материалы",
-            "Сценарии носки"
-          ],
-          "en": [
-            "Capsule",
-            "Materials",
-            "Wear scenarios"
-          ]
+          "uk": ["Капсула", "Матеріали", "Сценарії носіння"],
+          "ru": ["Капсула", "Материалы", "Сценарии носки"],
+          "en": ["Capsule", "Materials", "Wear scenarios"]
         },
-        "mediaIds": [
-          "editorial-collections-flatlay"
-        ],
+        "mediaIds": ["editorial-collections-flatlay"],
         "seo": {
           "uk": {
             "title": "Капсульна колекція | PURITY",
@@ -1405,28 +1343,11 @@
           "en": "For people who want to make style decisions independently."
         },
         "lessons": {
-          "uk": [
-            "Аудит",
-            "Силует",
-            "Палітра",
-            "Покупки"
-          ],
-          "ru": [
-            "Аудит",
-            "Силуэт",
-            "Палитра",
-            "Покупки"
-          ],
-          "en": [
-            "Audit",
-            "Silhouette",
-            "Palette",
-            "Buying"
-          ]
+          "uk": ["Аудит", "Силует", "Палітра", "Покупки"],
+          "ru": ["Аудит", "Силуэт", "Палитра", "Покупки"],
+          "en": ["Audit", "Silhouette", "Palette", "Buying"]
         },
-        "mediaIds": [
-          "editorial-utility-patternmaking"
-        ],
+        "mediaIds": ["editorial-utility-patternmaking"],
         "seo": {
           "uk": {
             "title": "Курс управління гардеробом | PURITY",
@@ -1472,26 +1393,11 @@
           "en": "Current availability and price for capsule pieces are confirmed by request."
         },
         "materials": {
-          "uk": [
-            "Вовна",
-            "Шовк",
-            "Підкладка"
-          ],
-          "ru": [
-            "Шерсть",
-            "Шелк",
-            "Подкладка"
-          ],
-          "en": [
-            "Wool",
-            "Silk",
-            "Lining"
-          ]
+          "uk": ["Вовна", "Шовк", "Підкладка"],
+          "ru": ["Шерсть", "Шелк", "Подкладка"],
+          "en": ["Wool", "Silk", "Lining"]
         },
-        "mediaIds": [
-          "editorial-collections-flatlay",
-          "generated-fabric-study"
-        ],
+        "mediaIds": ["editorial-collections-flatlay", "generated-fabric-study"],
         "seo": {
           "uk": {
             "title": "PURITY Capsule | PURITY",
@@ -1535,16 +1441,8 @@
           "en": "Historical price reference: 3,100 UAH; current availability and price are confirmed by request."
         },
         "materials": {
-          "uk": [
-            "Вечірні фактури",
-            "Готові комплекти",
-            "Наявність за запитом"
-          ],
-          "ru": [
-            "Вечерние фактуры",
-            "Готовые комплекты",
-            "Наличие по запросу"
-          ],
+          "uk": ["Вечірні фактури", "Готові комплекти", "Наявність за запитом"],
+          "ru": ["Вечерние фактуры", "Готовые комплекты", "Наличие по запросу"],
           "en": [
             "Evening textures",
             "Ready combinations",
@@ -1598,21 +1496,9 @@
           "en": "Historical price reference: 20,987 UAH; current availability and price are confirmed by request."
         },
         "materials": {
-          "uk": [
-            "Намистини",
-            "Паєтки",
-            "Наявність за запитом"
-          ],
-          "ru": [
-            "Бусины",
-            "Пайетки",
-            "Наличие по запросу"
-          ],
-          "en": [
-            "Beading",
-            "Sequins",
-            "Availability by request"
-          ]
+          "uk": ["Намистини", "Паєтки", "Наявність за запитом"],
+          "ru": ["Бусины", "Пайетки", "Наличие по запросу"],
+          "en": ["Beading", "Sequins", "Availability by request"]
         },
         "mediaIds": [
           "generated-atelier-detail",
@@ -1650,9 +1536,7 @@
           "ru": "Внутренний плейсхолдер до появления реальных клиентских материалов.",
           "en": "An internal placeholder until real client material exists."
         },
-        "mediaIds": [
-          "editorial-portfolio-process"
-        ],
+        "mediaIds": ["editorial-portfolio-process"],
         "isRealClientProof": false,
         "seo": {
           "uk": {
@@ -1681,10 +1565,7 @@
         "aspectRatio": "2212:1079",
         "sourceFile": "assets/brand/Logo_PURITY.ai",
         "src": "/brand/purity/wordmark-black.png",
-        "usage": [
-          "header",
-          "light brand moments"
-        ],
+        "usage": ["header", "light brand moments"],
         "internalLabel": {
           "uk": "Чорний wordmark PURITY з клієнтського AI-файлу",
           "ru": "Чёрный wordmark PURITY из клиентского AI-файла",
@@ -1707,10 +1588,7 @@
         "aspectRatio": "2245:1103",
         "sourceFile": "assets/brand/Logo_PURITY.ai",
         "src": "/brand/purity/lockup-black.png",
-        "usage": [
-          "footer",
-          "light brand moments"
-        ],
+        "usage": ["footer", "light brand moments"],
         "internalLabel": {
           "uk": "Чорний lockup PURITY з підписом",
           "ru": "Чёрный lockup PURITY с подписью",
@@ -1733,11 +1611,7 @@
         "aspectRatio": "487:808",
         "sourceFile": "assets/brand/Logo_PURITY.ai",
         "src": "/brand/purity/mark-grey.png",
-        "usage": [
-          "favicon",
-          "app icon",
-          "apple touch icon"
-        ],
+        "usage": ["favicon", "app icon", "apple touch icon"],
         "internalLabel": {
           "uk": "Сірий знак PURITY",
           "ru": "Серый знак PURITY",
@@ -1760,9 +1634,7 @@
         "aspectRatio": "2218:1085",
         "sourceFile": "assets/brand/Logo_PURITY.ai",
         "src": "/brand/purity/wordmark-white.png",
-        "usage": [
-          "dark brand moments"
-        ],
+        "usage": ["dark brand moments"],
         "internalLabel": {
           "uk": "Reversed wordmark PURITY",
           "ru": "Reversed wordmark PURITY",
@@ -1785,10 +1657,7 @@
         "aspectRatio": "2238:1103",
         "sourceFile": "assets/brand/Logo_PURITY.ai",
         "src": "/brand/purity/lockup-white.png",
-        "usage": [
-          "dark footer",
-          "dark brand moments"
-        ],
+        "usage": ["dark footer", "dark brand moments"],
         "internalLabel": {
           "uk": "Reversed lockup PURITY з підписом",
           "ru": "Reversed lockup PURITY с подписью",
@@ -1811,10 +1680,7 @@
         "aspectRatio": "1200:630",
         "sourceFile": "assets/brand/Logo_PURITY.ai",
         "src": "/brand/logo-og.png",
-        "usage": [
-          "open graph",
-          "twitter social preview"
-        ],
+        "usage": ["open graph", "twitter social preview"],
         "internalLabel": {
           "uk": "Соціальне превʼю PURITY",
           "ru": "Социальное превью PURITY",
@@ -1873,10 +1739,7 @@
         },
         "src": "/generated/editorial/hero-flow.webp",
         "heroFocalPoint": "right",
-        "usage": [
-          "homepage hero",
-          "cinematic brand moments"
-        ],
+        "usage": ["homepage hero", "cinematic brand moments"],
         "internalLabel": {
           "uk": "Кінематографічний герой PURITY",
           "ru": "Кинематографический герой PURITY",
@@ -1902,10 +1765,7 @@
           "prompt": "Editorial close-up of a stylist researching a wardrobe through garment sketches and neutral fabric swatches in warm atelier light."
         },
         "src": "/generated/editorial/research-process.webp",
-        "usage": [
-          "homepage research story",
-          "research category pages"
-        ],
+        "usage": ["homepage research story", "research category pages"],
         "internalLabel": {
           "uk": "Редакційний кадр дослідження",
           "ru": "Редакционный кадр исследования",
@@ -1931,10 +1791,7 @@
           "prompt": "Editorial close-up of a tailor pinning and hand-stitching ivory fabric in warm directional atelier light."
         },
         "src": "/generated/editorial/create-process.webp",
-        "usage": [
-          "homepage creation story",
-          "atelier category pages"
-        ],
+        "usage": ["homepage creation story", "atelier category pages"],
         "internalLabel": {
           "uk": "Редакційний кадр створення",
           "ru": "Редакционный кадр создания",
@@ -2154,9 +2011,7 @@
         },
         "src": "/generated/editorial/directions-texture.webp",
         "heroFocalPoint": "center",
-        "usage": [
-          "homepage directions background"
-        ],
+        "usage": ["homepage directions background"],
         "internalLabel": {
           "uk": "Фактури напряму",
           "ru": "Фактуры направления",
@@ -2183,10 +2038,7 @@
         },
         "src": "/generated/editorial/stylist-mirror.webp",
         "heroFocalPoint": "right",
-        "usage": [
-          "stylist category",
-          "personal lookbook service"
-        ],
+        "usage": ["stylist category", "personal lookbook service"],
         "internalLabel": {
           "uk": "Робота стиліста біля дзеркала",
           "ru": "Работа стилиста у зеркала",
@@ -2213,10 +2065,7 @@
         },
         "src": "/generated/editorial/shopping-rail.webp",
         "heroFocalPoint": "right",
-        "usage": [
-          "shopping category",
-          "realisation support service"
-        ],
+        "usage": ["shopping category", "realisation support service"],
         "internalLabel": {
           "uk": "Кураторська добірка речей",
           "ru": "Кураторская подборка вещей",
@@ -2243,10 +2092,7 @@
         },
         "src": "/generated/editorial/wardrobe-archive.webp",
         "heroFocalPoint": "right",
-        "usage": [
-          "wardrobe category",
-          "wardrobe transformation service"
-        ],
+        "usage": ["wardrobe category", "wardrobe transformation service"],
         "internalLabel": {
           "uk": "Гардероб як архів",
           "ru": "Гардероб как архив",
@@ -2273,10 +2119,7 @@
         },
         "src": "/generated/editorial/corporate-tailoring.webp",
         "heroFocalPoint": "right",
-        "usage": [
-          "corporate category",
-          "corporate image service"
-        ],
+        "usage": ["corporate category", "corporate image service"],
         "internalLabel": {
           "uk": "Корпоративний крій",
           "ru": "Корпоративный крой",
@@ -2334,10 +2177,7 @@
         },
         "src": "/generated/editorial/studio-method.webp",
         "heroFocalPoint": "center",
-        "usage": [
-          "homepage method",
-          "studio page"
-        ],
+        "usage": ["homepage method", "studio page"],
         "internalLabel": {
           "uk": "Робоча студія PURITY",
           "ru": "Рабочая студия PURITY",
@@ -2364,10 +2204,7 @@
         },
         "src": "/generated/editorial/portfolio-process.webp",
         "heroFocalPoint": "right",
-        "usage": [
-          "portfolio page",
-          "honest process story"
-        ],
+        "usage": ["portfolio page", "honest process story"],
         "internalLabel": {
           "uk": "Документування процесу",
           "ru": "Документирование процесса",
@@ -2394,9 +2231,7 @@
         },
         "src": "/generated/editorial/booking-consultation.webp",
         "heroFocalPoint": "right",
-        "usage": [
-          "booking page"
-        ],
+        "usage": ["booking page"],
         "internalLabel": {
           "uk": "Перша консультація",
           "ru": "Первая консультация",
@@ -2423,9 +2258,7 @@
         },
         "src": "/generated/editorial/contacts-studio.webp",
         "heroFocalPoint": "right",
-        "usage": [
-          "contacts page"
-        ],
+        "usage": ["contacts page"],
         "internalLabel": {
           "uk": "Вхід до студії",
           "ru": "Вход в студию",
@@ -2452,12 +2285,7 @@
         },
         "src": "/generated/editorial/utility-patternmaking.webp",
         "heroFocalPoint": "right",
-        "usage": [
-          "school",
-          "course",
-          "legal",
-          "payment status"
-        ],
+        "usage": ["school", "course", "legal", "payment status"],
         "internalLabel": {
           "uk": "Робочий стіл конструктора",
           "ru": "Рабочий стол конструктора",
@@ -2514,9 +2342,7 @@
             "For private clients it creates a system of pieces and decisions; for corporate clients it creates uniform, dress code, and brand visibility through employees."
           ]
         },
-        "mediaIds": [
-          "editorial-studio-method"
-        ],
+        "mediaIds": ["editorial-studio-method"],
         "cta": {
           "label": {
             "uk": "Почати з консультації",
@@ -2575,9 +2401,7 @@
             "After the contact channel is confirmed, the team will confirm the next step."
           ]
         },
-        "mediaIds": [
-          "editorial-booking-consultation"
-        ],
+        "mediaIds": ["editorial-booking-consultation"],
         "cta": {
           "label": {
             "uk": "Перейти до контактів",
@@ -2808,12 +2632,7 @@
           "studio",
           "booking"
         ],
-        "footerNavigation": [
-          "portfolio",
-          "contacts",
-          "privacy",
-          "terms"
-        ],
+        "footerNavigation": ["portfolio", "contacts", "privacy", "terms"],
         "seo": {
           "uk": {
             "title": "PURITY Fashion Studio",
@@ -2857,10 +2676,7 @@
           "actionPath": "/booking",
           "email": "voronina@purity-fashion.com",
           "phone": "+38 067 656 19 12",
-          "phones": [
-            "+38 066 00 44 066",
-            "+38 067 656 19 12"
-          ],
+          "phones": ["+38 066 00 44 066", "+38 067 656 19 12"],
           "viberUrl": "viber://chat?number=%2B380676561912",
           "socials": [
             {
@@ -4699,21 +4515,9 @@
     },
     "homePageCopy": {
       "filmSteps": {
-        "uk": [
-          "Досліджуємо",
-          "Уявляємо",
-          "Створюємо"
-        ],
-        "ru": [
-          "Исследуем",
-          "Воображаем",
-          "Создаём"
-        ],
-        "en": [
-          "Research",
-          "Imagine",
-          "Create"
-        ]
+        "uk": ["Досліджуємо", "Уявляємо", "Створюємо"],
+        "ru": ["Исследуем", "Воображаем", "Создаём"],
+        "en": ["Research", "Imagine", "Create"]
       },
       "serviceIntro": {
         "uk": "Від першої консультації до примірки, капсули або корпоративного образу: кожен напрям має зрозумілий вхід, результат і комерційний статус.",
@@ -4804,21 +4608,13 @@
         "en": "PURITY does not present generated images as client results. A case is published only with an approved brief, process, and media."
       },
       "portfolioSignals": {
-        "uk": [
-          "Погоджений бриф",
-          "Зафіксований процес",
-          "Підтверджені медіа"
-        ],
+        "uk": ["Погоджений бриф", "Зафіксований процес", "Підтверджені медіа"],
         "ru": [
           "Согласованный бриф",
           "Зафиксированный процесс",
           "Подтверждённые медиа"
         ],
-        "en": [
-          "Approved brief",
-          "Documented process",
-          "Verified media"
-        ]
+        "en": ["Approved brief", "Documented process", "Verified media"]
       },
       "faqTitle": {
         "uk": "Поширені запитання",
@@ -5025,12 +4821,7 @@
           "Согласование клиента",
           "Публикация"
         ],
-        "en": [
-          "Documentation",
-          "Fact check",
-          "Client approval",
-          "Publication"
-        ]
+        "en": ["Documentation", "Fact check", "Client approval", "Publication"]
       },
       "ctaTitle": {
         "uk": "Обговоріть вашу задачу з PURITY.",
@@ -6237,6 +6028,18 @@
         "en": "UAH — payment in Ukraine"
       }
     },
+    "pricingLabels": {
+      "from": {
+        "uk": "від",
+        "ru": "от",
+        "en": "from"
+      },
+      "custom": {
+        "uk": "за запитом",
+        "ru": "по запросу",
+        "en": "by request"
+      }
+    },
     "providerLabels": {
       "stripe": {
         "uk": "Stripe",
@@ -6907,6 +6710,7 @@
         "checksum": "310fe1a18f0bd554089e12121e1d869cc64895b064cc9a4874cd7687c6dd330e",
         "sourceFile": "/generated/editorial/utility-patternmaking.webp"
       }
-    ]
+    ],
+    "migrationCopy": "2d1b0e5bf4f50ffef4211302338ef1fbafe5a31e9e5bd2d8b5e6935da1822d1a"
   }
 }

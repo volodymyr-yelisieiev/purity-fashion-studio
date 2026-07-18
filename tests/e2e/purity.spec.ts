@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { getContentRoutes } from "../../content/legacy-routes"
+import { getManifestRoutes } from "../../payload/seed/manifest"
 
 const colorSchemes = ["light"] as const
 
@@ -1053,7 +1053,7 @@ test("detail routes keep canonical hero, status, process, and booking anatomy", 
 
   const widths = [320, 375, 768, 1024, 1440, 1920]
   const locales = ["uk", "ru", "en"] as const
-  const detailPaths = getContentRoutes("uk")
+  const detailPaths = getManifestRoutes("uk")
     .filter((route) => ["service", "course", "collection"].includes(route.kind))
     .map((route) => route.path)
   const errors: string[] = []
@@ -1713,7 +1713,7 @@ test("course page retains its unconfirmed commercial status", async ({
     page.getByText("Фіксована пропозиція", { exact: true })
   ).toBeVisible()
   await expect(page.getByText(/coming-soon/)).toBeVisible()
-  await expect(page.getByText(/Курс управління гардеробом: custom/)).toBeVisible()
+  await expect(page.getByText(/Курс управління гардеробом: за запитом/)).toBeVisible()
   await expect(
     page.getByText(/пряма оплата зʼявиться лише для погодженої фіксованої пропозиції/)
   ).toBeVisible()
