@@ -6,15 +6,12 @@ import type {
   PaymentProvider,
 } from "./schema"
 
-export const paymentStatuses = [
-  "success",
-  "pending",
-  "cancel",
-  "failure",
-  "refunded",
-] as const
-
-export type PaymentStatus = (typeof paymentStatuses)[number]
+export type PaymentStatus =
+  | "success"
+  | "pending"
+  | "cancel"
+  | "failure"
+  | "refunded"
 
 export type BookingPublicCopy = {
   eyebrow: string

@@ -1,7 +1,7 @@
-export type BookingEvent =
+type BookingEvent =
   "cta_click" | "booking_start" | "booking_submit" | "checkout_start"
 
-export type BookingEventPayload = {
+type BookingEventPayload = {
   event: BookingEvent
   serviceSlug?: string
   provider?: string

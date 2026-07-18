@@ -15,7 +15,7 @@ export function hasLocale(locale: string): locale is Locale {
   return locales.includes(locale as Locale)
 }
 
-export function stripLocalePrefix(pathname: string) {
+function stripLocalePrefix(pathname: string) {
   const normalized = pathname.startsWith("/") ? pathname : `/${pathname}`
   const [, maybeLocale, ...segments] = normalized.split("/")
 

@@ -1,0 +1,6 @@
+{
+  "ignoreIssues": {
+    "components/ui/**": ["exports"],
+    "scripts/reset-preview-blob.ts": ["files"]
+  }
+}
