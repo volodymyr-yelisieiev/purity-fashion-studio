@@ -884,15 +884,11 @@ async function findPayloadCourse(
     commercialStatus:
       offersResult.docs.find((offer) => offer.commercialStatus === "active")
         ?.commercialStatus ?? course.availability,
-    priceNote:
-      offersResult.docs.length > 0
-        ? offersResult.docs
-            .map(
-              (offer) =>
-                `${offer.title}: ${offer.pricingMode === "fixed" ? offer.prices?.map((price) => `${price.amount} ${price.currency}`).join(" / ") : offer.pricingMode}`
-            )
-            .join(" · ")
-        : course.availability,
+    // Courses intentionally render their offer price through the localized
+    // Site Settings labels. `shortDescription` retains the imported source
+    // note on the offer without exposing a technical pricing mode such as
+    // "custom" to visitors.
+    priceNote: "",
     mediaAsset: media ? payloadMediaToView(media as Media, locale) : undefined,
     offers: offersResult.docs as ServiceOffer[],
     cta: course.cta,
