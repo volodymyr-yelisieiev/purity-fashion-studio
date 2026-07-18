@@ -391,7 +391,15 @@ async function getPayloadAccess(draft: boolean) {
   }
 }
 
-function getPublicMediaURL(value: string): string {
+function getPublicMediaURL(value: string, filename?: string | null): string {
+  // Payload's built-in local adapter writes upload variants to public/media in
+  // CI and local development. The application still reads the media document
+  // and its filename from Payload; this only selects the local adapter's
+  // public delivery path when Blob storage is explicitly disabled.
+  if (process.env.PAYLOAD_DISABLE_BLOB_STORAGE === "true" && filename) {
+    return `/media/${encodeURIComponent(filename)}`
+  }
+
   try {
     const url = new URL(value)
 
@@ -412,7 +420,8 @@ function payloadMediaToView(
   media: Media,
   locale: Locale
 ): MediaAsset | undefined {
-  const src = media.sizes?.hero?.url ?? media.url ?? undefined
+  const preferredSize = media.sizes?.hero
+  const src = preferredSize?.url ?? media.url ?? undefined
   if (!src) return undefined
 
   const alt = { uk: media.alt, ru: media.alt, en: media.alt }
@@ -431,7 +440,7 @@ function payloadMediaToView(
     fileName: media.filename ?? media.id,
     aspectRatio:
       media.width && media.height ? `${media.width}/${media.height}` : "4/3",
-    src: getPublicMediaURL(src),
+    src: getPublicMediaURL(src, preferredSize?.filename ?? media.filename),
     heroFocalPoint: focalX < 34 ? "left" : focalX > 66 ? "right" : "center",
     usage: media.allowedUsageContexts ?? [],
     internalLabel,

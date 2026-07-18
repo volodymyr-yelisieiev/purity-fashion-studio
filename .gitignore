@@ -12,6 +12,7 @@
 /coverage
 /test-results
 /playwright-report
+/public/media
 
 # next.js
 /.next/

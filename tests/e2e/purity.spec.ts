@@ -55,8 +55,8 @@ test("Payload admin renders the first-owner bootstrap", async ({ page }) => {
   await expect(
     page.getByText("To begin, create your first user.")
   ).toBeVisible()
-  await expect(page.getByLabel("Email Address")).toBeVisible()
-  await expect(page.getByLabel("New Password")).toBeVisible()
+  await expect(page.locator('input[name="email"]')).toBeVisible()
+  await expect(page.locator('input[name="password"]')).toBeVisible()
 })
 
 test("single theme ignores OS and persisted dark preferences", async ({
