@@ -26,5 +26,12 @@ export function getSiteURL() {
 }
 
 export function getPayloadURL() {
-  return previewDeploymentURL() ?? env.NEXT_PUBLIC_PAYLOAD_URL
+  // Payload's public origin is normally the canonical site URL. Keeping this
+  // fallback outside the env schema avoids its localhost development default
+  // leaking into a production admin bundle when a separate payload URL was
+  // not configured.
+  return (
+    previewDeploymentURL() ??
+    (process.env.NEXT_PUBLIC_PAYLOAD_URL?.trim() || getSiteURL())
+  )
 }
