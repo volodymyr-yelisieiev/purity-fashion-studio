@@ -1259,7 +1259,7 @@ test("page-ticket routes stay responsive across required widths", async ({
       expect(response?.ok(), `${viewport.name} ${route}`).toBe(true)
       await expect(page.locator("header img").first()).toBeVisible()
       await expect(page.locator("main h1").first()).toBeVisible()
-      if (!isStyleguide) {
+      if (!isUtilityRoute) {
         const heroImage = page.getByTestId("editorial-hero").locator("img")
         await expect(heroImage).toBeVisible()
         await heroImage.scrollIntoViewIfNeeded()
@@ -1570,7 +1570,7 @@ test("page-ticket routes stay responsive across required widths", async ({
   }
 })
 
-test("booking form validates and creates localized checkout links", async ({
+test("booking form validates and records inquiry-only requests", async ({
   page,
 }) => {
   await page.goto("/uk/services/atelier-service")
@@ -1601,7 +1601,7 @@ test("booking form validates and creates localized checkout links", async ({
   await expect(page.getByText("Заявку прийнято")).toBeVisible()
   await expect(
     page.locator('a[href*="/uk/payment/success?provider=liqpay"]')
-  ).toHaveCount(1)
+  ).toHaveCount(0)
   await expect(page.getByText("Заповніть поле.")).toHaveCount(0)
 })
 
@@ -1690,7 +1690,7 @@ test("service CTAs preselect the requested booking direction", async ({
   }
 })
 
-test("course page exposes the fixed-offer placeholder and checkout route", async ({
+test("course page retains its unconfirmed commercial status", async ({
   page,
 }) => {
   await page.goto("/uk/courses/wardrobe-management-course")
@@ -1698,7 +1698,11 @@ test("course page exposes the fixed-offer placeholder and checkout route", async
   await expect(
     page.getByText("Фіксована пропозиція", { exact: true })
   ).toBeVisible()
-  await expect(page.getByText(/Ціна: placeholder EUR/)).toBeVisible()
+  await expect(page.getByText(/coming-soon/)).toBeVisible()
+  await expect(page.getByText(/Курс управління гардеробом: custom/)).toBeVisible()
+  await expect(
+    page.getByText(/пряма оплата зʼявиться лише для погодженої фіксованої пропозиції/)
+  ).toBeVisible()
   await expect(
     page.locator('a[href="/uk/booking?service=wardrobe-management"]')
   ).toHaveCount(2)
@@ -1912,7 +1916,7 @@ test("payment status pages keep provider fallbacks and localized action states",
   expect(errors).toEqual([])
 })
 
-test("contact form validates and creates checkout links", async ({ page }) => {
+test("contact form validates and records inquiry-only requests", async ({ page }) => {
   await page.goto("/uk/contacts")
   await expect(
     page
@@ -1961,7 +1965,7 @@ test("contact form validates and creates checkout links", async ({ page }) => {
   await expect(page.getByText("Заявку прийнято")).toBeVisible()
   await expect(
     page.locator('a[href*="/uk/payment/success?provider=stripe"]')
-  ).toHaveCount(1)
+  ).toHaveCount(0)
   await expect(page.getByText("Заповніть поле.")).toHaveCount(0)
 })
 
