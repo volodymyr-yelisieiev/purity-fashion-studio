@@ -68,6 +68,7 @@ export async function transitionPayment({
       transition.refundedAmount != null &&
       transition.refundedAmount > (order.refundedAmount ?? 0)
     const shouldUpdateOrder = statusChanged || refundAdvanced
+    if (!shouldUpdateOrder) return { applied: false as const, order }
 
     const req = await createLocalReq({ context: { service } }, payload)
     await initTransaction(req)
