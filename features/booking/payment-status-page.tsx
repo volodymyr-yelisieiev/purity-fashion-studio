@@ -4,8 +4,8 @@ import { notFound } from "next/navigation"
 import { EditorialHero } from "@/components/purity"
 import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { buttonVariants } from "@/components/ui/button"
-import { providerLabels, type PaymentStatus } from "@/features/booking/content"
-import { getPageBySlug } from "@/content/public-api"
+import type { PaymentStatus } from "@/features/booking/public-copy"
+import { getPageBySlug, getSiteSettings } from "@/content/public-api"
 import {
   paymentProviders,
   type PaymentProvider,
@@ -35,25 +35,24 @@ async function PaymentStatusPage({
     notFound()
   }
 
-  const verified = await getVerifiedPaymentStatus(order, status)
+  const [verified, settings] = await Promise.all([
+    getVerifiedPaymentStatus(order, status),
+    getSiteSettings(locale),
+  ])
   const page = await getPageBySlug(locale, `payment-${verified.status}`)
   if (!page) notFound()
   const verifiedProvider = verified.provider ?? provider
   const providerValue = isPaymentProvider(verifiedProvider)
-    ? providerLabels[verifiedProvider][locale]
-    : { uk: "Не вказано", ru: "Не указан", en: "Not provided" }[locale]
+    ? settings.booking.providers[verifiedProvider]
+    : settings.booking.paymentStatus.notProvided
   const orderValue =
     verified.orderReference &&
-      !/(test|mock|adapter)/i.test(verified.orderReference)
+    !/(test|mock|adapter)/i.test(verified.orderReference)
       ? verified.orderReference
       : verified.orderReference
-        ? { uk: "Отримано", ru: "Получено", en: "Reference received" }[locale]
-        : { uk: "Не вказано", ru: "Не указан", en: "Not provided" }[locale]
-  const detailLabels = {
-    uk: { provider: "Провайдер", order: "Замовлення" },
-    ru: { provider: "Провайдер", order: "Заказ" },
-    en: { provider: "Provider", order: "Order" },
-  }[locale]
+        ? settings.booking.paymentStatus.referenceReceived
+        : settings.booking.paymentStatus.notProvided
+  const detailLabels = settings.booking.paymentStatus
 
   return (
     <div className="min-h-svh bg-background text-foreground">

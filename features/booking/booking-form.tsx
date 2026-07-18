@@ -42,15 +42,9 @@ import { Spinner } from "@/components/ui/spinner"
 import { Textarea } from "@/components/ui/textarea"
 import { submitBooking } from "@/features/booking/actions"
 import {
-  bookingCopy,
-  bookingLabels,
-  contactMethodLabels,
-  currencyLabels,
-  formatLabels,
-  inquiryTypeLabels,
   localizeBookingError,
-  providerLabels,
-} from "@/features/booking/content"
+  type BookingPublicCopy,
+} from "@/features/booking/public-copy"
 import {
   bookingSchema,
   contactMethods,
@@ -74,6 +68,7 @@ type BookingFormProps = {
   services: ServiceOption[]
   initialServiceSlug: string
   initialOfferId?: string
+  copy: BookingPublicCopy
 }
 
 const bookingResolver: Resolver<BookingInput> = async (values) => {
@@ -137,6 +132,7 @@ function BookingForm({
   services,
   initialServiceSlug,
   initialOfferId,
+  copy,
 }: BookingFormProps) {
   const [submissionStartedAt] = useState(() => Date.now())
   const [idempotencyKey] = useState(() => crypto.randomUUID())
@@ -191,11 +187,11 @@ function BookingForm({
   }))
   const currencySelectItems = paymentCurrencies.map((currency) => ({
     value: currency,
-    label: currencyLabels[currency][locale],
+    label: copy.currencies[currency],
   }))
   const selectedServiceTitle =
     serviceOptions.find((service) => service.slug === selectedServiceSlug)
-      ?.title ?? bookingCopy.emptyService[locale]
+      ?.title ?? copy.emptyService
 
   function errorFor(name: FieldPath<BookingInput>) {
     const message = form.formState.errors[name]?.message ?? serverErrors?.[name]
@@ -204,7 +200,7 @@ function BookingForm({
       return undefined
     }
 
-    return localizeBookingError(locale, message)
+    return localizeBookingError(copy.errors, message)
   }
 
   async function onSubmit(values: BookingInput) {
@@ -215,7 +211,10 @@ function BookingForm({
     formData.set("website", "")
     formData.set("submissionStartedAt", String(submissionStartedAt))
     formData.set("idempotencyKey", idempotencyKey)
-    formData.set("sourcePage", `${window.location.pathname}${window.location.search}`)
+    formData.set(
+      "sourcePage",
+      `${window.location.pathname}${window.location.search}`
+    )
     formData.set("referrer", document.referrer)
     const search = new URLSearchParams(window.location.search)
     for (const key of [
@@ -249,8 +248,8 @@ function BookingForm({
   if (!serviceOptions.length) {
     return (
       <Alert>
-        <AlertTitle>{bookingCopy.errorTitle[locale]}</AlertTitle>
-        <AlertDescription>{bookingCopy.emptyService[locale]}</AlertDescription>
+        <AlertTitle>{copy.errorTitle}</AlertTitle>
+        <AlertDescription>{copy.emptyService}</AlertDescription>
       </Alert>
     )
   }
@@ -266,20 +265,18 @@ function BookingForm({
     >
       {(result.status === "error" || hasClientErrors) && (
         <Alert>
-          <AlertTitle>{bookingCopy.errorTitle[locale]}</AlertTitle>
-          <AlertDescription>
-            {bookingCopy.validationError[locale]}
-          </AlertDescription>
+          <AlertTitle>{copy.errorTitle}</AlertTitle>
+          <AlertDescription>{copy.validationError}</AlertDescription>
         </Alert>
       )}
 
       {result.status === "success" && (
         <Alert>
-          <AlertTitle>{bookingCopy.successTitle[locale]}</AlertTitle>
+          <AlertTitle>{copy.successTitle}</AlertTitle>
           <AlertDescription>
-            {bookingCopy.successSummary[locale]}{" "}
+            {copy.successSummary}{" "}
             {result.provider && result.currency
-              ? `${providerLabels[result.provider][locale]} / ${result.currency}`
+              ? `${copy.providers[result.provider]} / ${result.currency}`
               : ""}
           </AlertDescription>
           {result.checkoutUrl && (
@@ -293,7 +290,7 @@ function BookingForm({
                 })
               )}
             >
-              {bookingCopy.checkout[locale]}
+              {copy.checkout}
             </Link>
           )}
         </Alert>
@@ -301,7 +298,7 @@ function BookingForm({
 
       <FieldSet data-testid="booking-contact-fields">
         <FieldLegend className="w-full text-center tracking-[0.16em]">
-          {bookingCopy.contactTitle[locale]}
+          {copy.contactTitle}
         </FieldLegend>
 
         <FieldGroup className="grid gap-8 lg:grid-cols-2">
@@ -311,7 +308,7 @@ function BookingForm({
             render={({ field }) => (
               <FieldSet>
                 <FieldLegend id={fieldId("inquiry-type")} variant="label">
-                  {bookingLabels.inquiryType[locale]}
+                  {copy.labels.inquiryType}
                 </FieldLegend>
                 <RadioGroup
                   value={field.value}
@@ -323,7 +320,7 @@ function BookingForm({
                     <Field key={type} orientation="horizontal">
                       <FieldLabel>
                         <RadioGroupItem value={type} />
-                        {inquiryTypeLabels[type][locale]}
+                        {copy.inquiryTypes[type]}
                       </FieldLabel>
                     </Field>
                   ))}
@@ -335,7 +332,7 @@ function BookingForm({
           <FieldGroup className="grid gap-4 md:grid-cols-2">
             <Field data-invalid={Boolean(errorFor("name"))}>
               <FieldLabel htmlFor={fieldId("name")}>
-                {bookingLabels.name[locale]}
+                {copy.labels.name}
               </FieldLabel>
               <Input
                 id={fieldId("name")}
@@ -350,7 +347,7 @@ function BookingForm({
 
             <Field data-invalid={Boolean(errorFor("email"))}>
               <FieldLabel htmlFor={fieldId("email")}>
-                {bookingLabels.email[locale]}
+                {copy.labels.email}
               </FieldLabel>
               <Input
                 id={fieldId("email")}
@@ -366,7 +363,7 @@ function BookingForm({
 
             <Field data-invalid={Boolean(errorFor("phone"))}>
               <FieldLabel htmlFor={fieldId("phone")}>
-                {bookingLabels.phone[locale]}
+                {copy.labels.phone}
               </FieldLabel>
               <Input
                 id={fieldId("phone")}
@@ -381,7 +378,7 @@ function BookingForm({
 
             <Field data-invalid={Boolean(errorFor("company"))}>
               <FieldLabel htmlFor={fieldId("company")}>
-                {bookingLabels.company[locale]}
+                {copy.labels.company}
               </FieldLabel>
               <Input
                 id={fieldId("company")}
@@ -402,7 +399,7 @@ function BookingForm({
         className="border-t border-border pt-10"
       >
         <FieldLegend className="w-full text-center tracking-[0.16em]">
-          {bookingCopy.paymentTitle[locale]}
+          {copy.paymentTitle}
         </FieldLegend>
 
         <FieldGroup className="grid gap-8 lg:grid-cols-2">
@@ -411,14 +408,14 @@ function BookingForm({
             name="serviceSlug"
             render={({ field }) => (
               <Field data-invalid={Boolean(errorFor("serviceSlug"))}>
-                <FieldLabel>{bookingLabels.serviceSlug[locale]}</FieldLabel>
+                <FieldLabel>{copy.labels.serviceSlug}</FieldLabel>
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                   items={serviceSelectItems}
                 >
                   <SelectTrigger
-                    aria-label={bookingLabels.serviceSlug[locale]}
+                    aria-label={copy.labels.serviceSlug}
                     aria-invalid={Boolean(errorFor("serviceSlug"))}
                     aria-describedby={
                       errorFor("serviceSlug")
@@ -428,9 +425,7 @@ function BookingForm({
                     className="w-full"
                     data-testid="booking-service-trigger"
                   >
-                    <SelectValue
-                      placeholder={bookingCopy.emptyService[locale]}
-                    />
+                    <SelectValue placeholder={copy.emptyService} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -456,7 +451,7 @@ function BookingForm({
             render={({ field }) => (
               <FieldSet>
                 <FieldLegend id={fieldId("format")} variant="label">
-                  {bookingLabels.format[locale]}
+                  {copy.labels.format}
                 </FieldLegend>
                 <RadioGroup
                   value={field.value}
@@ -468,7 +463,7 @@ function BookingForm({
                     <Field key={format} orientation="horizontal">
                       <FieldLabel>
                         <RadioGroupItem value={format} />
-                        {formatLabels[format][locale]}
+                        {copy.formats[format]}
                       </FieldLabel>
                     </Field>
                   ))}
@@ -483,7 +478,7 @@ function BookingForm({
             render={({ field }) => (
               <FieldSet>
                 <FieldLegend id={fieldId("contact-method")} variant="label">
-                  {bookingLabels.contactMethod[locale]}
+                  {copy.labels.contactMethod}
                 </FieldLegend>
                 <RadioGroup
                   value={field.value}
@@ -495,7 +490,7 @@ function BookingForm({
                     <Field key={method} orientation="horizontal">
                       <FieldLabel>
                         <RadioGroupItem value={method} />
-                        {contactMethodLabels[method][locale]}
+                        {copy.contactMethods[method]}
                       </FieldLabel>
                     </Field>
                   ))}
@@ -510,16 +505,14 @@ function BookingForm({
               name="budgetCurrency"
               render={({ field }) => (
                 <Field>
-                  <FieldLabel>
-                    {bookingLabels.budgetCurrency[locale]}
-                  </FieldLabel>
+                  <FieldLabel>{copy.labels.budgetCurrency}</FieldLabel>
                   <Select
                     value={field.value}
                     onValueChange={field.onChange}
                     items={currencySelectItems}
                   >
                     <SelectTrigger
-                      aria-label={bookingLabels.budgetCurrency[locale]}
+                      aria-label={copy.labels.budgetCurrency}
                       className="w-full"
                       data-testid="booking-currency-trigger"
                     >
@@ -529,7 +522,7 @@ function BookingForm({
                       <SelectGroup>
                         {paymentCurrencies.map((currency) => (
                           <SelectItem key={currency} value={currency}>
-                            {currencyLabels[currency][locale]}
+                            {copy.currencies[currency]}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -540,17 +533,16 @@ function BookingForm({
             />
 
             <Alert data-testid="booking-routing-note">
-              <AlertTitle>{bookingCopy.routingTitle[locale]}</AlertTitle>
+              <AlertTitle>{copy.routingTitle}</AlertTitle>
               <AlertDescription>
-                {bookingCopy.routingSummary[locale]}{" "}
-                {providerLabels[provider][locale]}
+                {copy.routingSummary} {copy.providers[provider]}
               </AlertDescription>
             </Alert>
           </div>
 
           <Field className="lg:col-span-2 lg:max-w-xl">
             <FieldLabel htmlFor={fieldId("preferredAt")}>
-              {bookingLabels.preferredAt[locale]}
+              {copy.labels.preferredAt}
             </FieldLabel>
             <Input
               id={fieldId("preferredAt")}
@@ -564,7 +556,7 @@ function BookingForm({
             data-invalid={Boolean(errorFor("message"))}
           >
             <FieldLabel htmlFor={fieldId("message")}>
-              {bookingLabels.message[locale]}
+              {copy.labels.message}
             </FieldLabel>
             <Textarea
               id={fieldId("message")}
@@ -593,7 +585,7 @@ function BookingForm({
                       errorFor("consent") ? fieldErrorId("consent") : undefined
                     }
                   />
-                  <span>{bookingLabels.consent[locale]}</span>
+                  <span>{copy.labels.consent}</span>
                 </FieldLabel>
                 <BookingFieldError
                   name="consent"
@@ -607,39 +599,35 @@ function BookingForm({
 
       <Card data-testid="booking-review">
         <CardHeader>
-          <CardTitle>{bookingCopy.reviewTitle[locale]}</CardTitle>
-          <CardDescription>{bookingCopy.reviewSummary[locale]}</CardDescription>
+          <CardTitle>{copy.reviewTitle}</CardTitle>
+          <CardDescription>{copy.reviewSummary}</CardDescription>
         </CardHeader>
         <CardContent>
           <dl className="grid gap-2 text-sm sm:grid-cols-2">
             <div>
               <dt className="text-muted-foreground">
-                {bookingLabels.serviceSlug[locale]}
+                {copy.labels.serviceSlug}
               </dt>
               <dd className="font-medium">{selectedServiceTitle}</dd>
             </div>
             <div>
+              <dt className="text-muted-foreground">{copy.labels.format}</dt>
+              <dd className="font-medium">{copy.formats[selectedFormat]}</dd>
+            </div>
+            <div>
               <dt className="text-muted-foreground">
-                {bookingLabels.format[locale]}
+                {copy.labels.contactMethod}
               </dt>
               <dd className="font-medium">
-                {formatLabels[selectedFormat][locale]}
+                {copy.contactMethods[selectedContactMethod]}
               </dd>
             </div>
             <div>
               <dt className="text-muted-foreground">
-                {bookingLabels.contactMethod[locale]}
+                {copy.labels.preferredAt}
               </dt>
               <dd className="font-medium">
-                {contactMethodLabels[selectedContactMethod][locale]}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">
-                {bookingLabels.preferredAt[locale]}
-              </dt>
-              <dd className="font-medium">
-                {preferredAt || bookingCopy.notSpecified[locale]}
+                {preferredAt || copy.notSpecified}
               </dd>
             </div>
           </dl>
@@ -655,9 +643,7 @@ function BookingForm({
         data-testid="booking-submit"
       >
         {isPending && <Spinner data-icon="inline-start" />}
-        {isPending
-          ? bookingCopy.submitting[locale]
-          : bookingCopy.submit[locale]}
+        {isPending ? copy.submitting : copy.submit}
       </Button>
     </form>
   )

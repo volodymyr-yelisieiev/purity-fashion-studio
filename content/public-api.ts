@@ -16,6 +16,7 @@ import type {
   PortfolioCase as PayloadPortfolioCase,
   Service as PayloadService,
 } from "@/payload-types"
+import type { BookingPublicCopy } from "@/features/booking/public-copy"
 import type { MediaAsset } from "./model"
 import type { Locale } from "../i18n/routing"
 
@@ -297,7 +298,26 @@ export type SiteSettingsData = {
     viberURL?: string
   }
   localeLabels: Record<Locale, string>
-  uiLabels: { language: string; close: string; externalLink: string }
+  uiLabels: {
+    language: string
+    close: string
+    externalLink: string
+    menu: string
+    footerDirections: string
+    footerContacts: string
+  }
+  contactLabels: {
+    phone: string
+    email: string
+    viber: string
+    socials: string
+    direct: string
+    address: string
+    hours: string
+    request: string
+    requestSummary: string
+  }
+  booking: BookingPublicCopy
   maintenance: { enabled: boolean; message?: string }
 }
 
@@ -1839,6 +1859,8 @@ async function findPayloadSiteSettings(locale: Locale) {
       contacts: true,
       localeLabels: true,
       uiLabels: true,
+      contactLabels: true,
+      booking: true,
       maintenance: true,
     },
   })
@@ -1851,6 +1873,8 @@ async function findPayloadSiteSettings(locale: Locale) {
     },
     localeLabels: settings.localeLabels,
     uiLabels: settings.uiLabels,
+    contactLabels: settings.contactLabels,
+    booking: settings.booking,
     maintenance: {
       enabled: settings.maintenance.enabled,
       message: settings.maintenance.message ?? undefined,

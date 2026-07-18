@@ -3359,6 +3359,95 @@ export interface SiteSetting {
     language: string;
     close: string;
     externalLink: string;
+    menu: string;
+    footerDirections: string;
+    footerContacts: string;
+  };
+  contactLabels: {
+    phone: string;
+    email: string;
+    viber: string;
+    socials: string;
+    direct: string;
+    address: string;
+    hours: string;
+    request: string;
+    requestSummary: string;
+  };
+  booking: {
+    eyebrow: string;
+    title: string;
+    summary: string;
+    privateInquiry: string;
+    corporateInquiry: string;
+    submit: string;
+    submitting: string;
+    emptyService: string;
+    successTitle: string;
+    successSummary: string;
+    errorTitle: string;
+    validationError: string;
+    checkout: string;
+    routingTitle: string;
+    routingSummary: string;
+    contactTitle: string;
+    paymentTitle: string;
+    stepsTitle: string;
+    stepDetails: string;
+    stepReview: string;
+    reviewTitle: string;
+    reviewSummary: string;
+    notSpecified: string;
+    labels: {
+      inquiryType: string;
+      serviceSlug: string;
+      name: string;
+      email: string;
+      phone: string;
+      company: string;
+      format: string;
+      contactMethod: string;
+      budgetCurrency: string;
+      preferredAt: string;
+      message: string;
+      consent: string;
+    };
+    inquiryTypes: {
+      private: string;
+      corporate: string;
+    };
+    formats: {
+      studio: string;
+      online: string;
+      atelier: string;
+    };
+    contactMethods: {
+      email: string;
+      phone: string;
+      viber: string;
+    };
+    currencies: {
+      EUR: string;
+      UAH: string;
+    };
+    providers: {
+      stripe: string;
+      liqpay: string;
+    };
+    errors: {
+      required: string;
+      email: string;
+      message: string;
+      consent: string;
+      companyRequired: string;
+      phoneRequired: string;
+    };
+    paymentStatus: {
+      provider: string;
+      order: string;
+      notProvided: string;
+      referenceReceived: string;
+    };
   };
   localeLabels: {
     uk: string;
@@ -3578,6 +3667,115 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         language?: T;
         close?: T;
         externalLink?: T;
+        menu?: T;
+        footerDirections?: T;
+        footerContacts?: T;
+      };
+  contactLabels?:
+    | T
+    | {
+        phone?: T;
+        email?: T;
+        viber?: T;
+        socials?: T;
+        direct?: T;
+        address?: T;
+        hours?: T;
+        request?: T;
+        requestSummary?: T;
+      };
+  booking?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        summary?: T;
+        privateInquiry?: T;
+        corporateInquiry?: T;
+        submit?: T;
+        submitting?: T;
+        emptyService?: T;
+        successTitle?: T;
+        successSummary?: T;
+        errorTitle?: T;
+        validationError?: T;
+        checkout?: T;
+        routingTitle?: T;
+        routingSummary?: T;
+        contactTitle?: T;
+        paymentTitle?: T;
+        stepsTitle?: T;
+        stepDetails?: T;
+        stepReview?: T;
+        reviewTitle?: T;
+        reviewSummary?: T;
+        notSpecified?: T;
+        labels?:
+          | T
+          | {
+              inquiryType?: T;
+              serviceSlug?: T;
+              name?: T;
+              email?: T;
+              phone?: T;
+              company?: T;
+              format?: T;
+              contactMethod?: T;
+              budgetCurrency?: T;
+              preferredAt?: T;
+              message?: T;
+              consent?: T;
+            };
+        inquiryTypes?:
+          | T
+          | {
+              private?: T;
+              corporate?: T;
+            };
+        formats?:
+          | T
+          | {
+              studio?: T;
+              online?: T;
+              atelier?: T;
+            };
+        contactMethods?:
+          | T
+          | {
+              email?: T;
+              phone?: T;
+              viber?: T;
+            };
+        currencies?:
+          | T
+          | {
+              EUR?: T;
+              UAH?: T;
+            };
+        providers?:
+          | T
+          | {
+              stripe?: T;
+              liqpay?: T;
+            };
+        errors?:
+          | T
+          | {
+              required?: T;
+              email?: T;
+              message?: T;
+              consent?: T;
+              companyRequired?: T;
+              phoneRequired?: T;
+            };
+        paymentStatus?:
+          | T
+          | {
+              provider?: T;
+              order?: T;
+              notProvided?: T;
+              referenceReceived?: T;
+            };
       };
   localeLabels?:
     | T

@@ -7,6 +7,7 @@ import * as migration_20260716_234850_payment_notification_state from './2026071
 import * as migration_20260717_143501 from './20260717_143501';
 import * as migration_20260717_154226 from './20260717_154226';
 import * as migration_20260717_160309 from './20260717_160309';
+import * as migration_20260718_025411_payload_public_copy from './20260718_025411_payload_public_copy';
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260717_160309.up,
     down: migration_20260717_160309.down,
     name: '20260717_160309'
+  },
+  {
+    up: migration_20260718_025411_payload_public_copy.up,
+    down: migration_20260718_025411_payload_public_copy.down,
+    name: '20260718_025411_payload_public_copy'
   },
 ];

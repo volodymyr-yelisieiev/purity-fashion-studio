@@ -1,4 +1,4 @@
-import type { GlobalConfig } from "payload"
+import type { Field, GlobalConfig } from "payload"
 
 import { hasRole } from "../access"
 import { localizedText } from "../fields/shared"
@@ -6,6 +6,114 @@ import { revalidateGlobal } from "../hooks/revalidation"
 
 const ownerOrEditor = ({ req }: { req: { user?: unknown } }) =>
   hasRole(req.user, ["owner", "editor"])
+
+const bookingCopyFields: Field[] = [
+  localizedText("eyebrow", "Eyebrow"),
+  localizedText("title", "Title"),
+  localizedText("summary", "Summary"),
+  localizedText("privateInquiry", "Private inquiry"),
+  localizedText("corporateInquiry", "Corporate inquiry"),
+  localizedText("submit", "Submit label"),
+  localizedText("submitting", "Submitting label"),
+  localizedText("emptyService", "Empty service label"),
+  localizedText("successTitle", "Success title"),
+  localizedText("successSummary", "Success summary"),
+  localizedText("errorTitle", "Error title"),
+  localizedText("validationError", "Validation error summary"),
+  localizedText("checkout", "Checkout label"),
+  localizedText("routingTitle", "Payment routing title"),
+  localizedText("routingSummary", "Payment routing summary"),
+  localizedText("contactTitle", "Contact details title"),
+  localizedText("paymentTitle", "Format and payment title"),
+  localizedText("stepsTitle", "Steps title"),
+  localizedText("stepDetails", "Request details step"),
+  localizedText("stepReview", "Review step"),
+  localizedText("reviewTitle", "Review title"),
+  localizedText("reviewSummary", "Review summary"),
+  localizedText("notSpecified", "Not specified label"),
+  {
+    name: "labels",
+    type: "group",
+    fields: [
+      localizedText("inquiryType", "Inquiry type"),
+      localizedText("serviceSlug", "Direction"),
+      localizedText("name", "Name"),
+      localizedText("email", "Email"),
+      localizedText("phone", "Phone"),
+      localizedText("company", "Company"),
+      localizedText("format", "Format"),
+      localizedText("contactMethod", "Preferred contact"),
+      localizedText("budgetCurrency", "Currency"),
+      localizedText("preferredAt", "Preferred date and time"),
+      localizedText("message", "Request"),
+      localizedText("consent", "Consent"),
+    ],
+  },
+  {
+    name: "inquiryTypes",
+    type: "group",
+    fields: [
+      localizedText("private", "Private inquiry label"),
+      localizedText("corporate", "Corporate inquiry label"),
+    ],
+  },
+  {
+    name: "formats",
+    type: "group",
+    fields: [
+      localizedText("studio", "Studio format"),
+      localizedText("online", "Online format"),
+      localizedText("atelier", "Atelier format"),
+    ],
+  },
+  {
+    name: "contactMethods",
+    type: "group",
+    fields: [
+      localizedText("email", "Email contact method"),
+      localizedText("phone", "Phone contact method"),
+      localizedText("viber", "Viber contact method"),
+    ],
+  },
+  {
+    name: "currencies",
+    type: "group",
+    fields: [
+      localizedText("EUR", "EUR label"),
+      localizedText("UAH", "UAH label"),
+    ],
+  },
+  {
+    name: "providers",
+    type: "group",
+    fields: [
+      localizedText("stripe", "Stripe label"),
+      localizedText("liqpay", "LiqPay label"),
+    ],
+  },
+  {
+    name: "errors",
+    type: "group",
+    fields: [
+      localizedText("required", "Required field error"),
+      localizedText("email", "Email validation error"),
+      localizedText("message", "Request validation error"),
+      localizedText("consent", "Consent validation error"),
+      localizedText("companyRequired", "Company validation error"),
+      localizedText("phoneRequired", "Phone validation error"),
+    ],
+  },
+  {
+    name: "paymentStatus",
+    type: "group",
+    fields: [
+      localizedText("provider", "Payment provider label"),
+      localizedText("order", "Payment order label"),
+      localizedText("notProvided", "Not provided label"),
+      localizedText("referenceReceived", "Reference received label"),
+    ],
+  },
+]
 
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
@@ -44,7 +152,34 @@ export const SiteSettings: GlobalConfig = {
         localizedText("externalLink", "External link label", {
           maxLength: 120,
         }),
+        localizedText("menu", "Menu label", { maxLength: 80 }),
+        localizedText("footerDirections", "Footer directions label", {
+          maxLength: 120,
+        }),
+        localizedText("footerContacts", "Footer contacts label", {
+          maxLength: 120,
+        }),
       ],
+    },
+    {
+      name: "contactLabels",
+      type: "group",
+      fields: [
+        localizedText("phone", "Phone label"),
+        localizedText("email", "Email label"),
+        localizedText("viber", "Viber label"),
+        localizedText("socials", "Social channels label"),
+        localizedText("direct", "Contact directly title"),
+        localizedText("address", "Studio address label"),
+        localizedText("hours", "Opening hours label"),
+        localizedText("request", "Send inquiry title"),
+        localizedText("requestSummary", "Send inquiry summary"),
+      ],
+    },
+    {
+      name: "booking",
+      type: "group",
+      fields: bookingCopyFields,
     },
     {
       name: "localeLabels",

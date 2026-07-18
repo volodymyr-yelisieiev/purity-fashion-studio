@@ -27,54 +27,6 @@ type ContactsPageProps = {
   params: Promise<{ locale: string }>
 }
 
-const contactEntryLabels = {
-  phone: {
-    uk: "Телефон",
-    ru: "Телефон",
-    en: "Phone",
-  },
-  email: {
-    uk: "Email",
-    ru: "Email",
-    en: "Email",
-  },
-  viber: {
-    uk: "Viber",
-    ru: "Viber",
-    en: "Viber",
-  },
-  socials: {
-    uk: "Соціальні канали",
-    ru: "Социальные каналы",
-    en: "Social channels",
-  },
-  direct: {
-    uk: "Зв’язатися напряму",
-    ru: "Связаться напрямую",
-    en: "Contact directly",
-  },
-  address: {
-    uk: "Адреса студії",
-    ru: "Адрес студии",
-    en: "Studio address",
-  },
-  hours: {
-    uk: "Години роботи",
-    ru: "Часы работы",
-    en: "Opening hours",
-  },
-  request: {
-    uk: "Надіслати запит",
-    ru: "Отправить запрос",
-    en: "Send an inquiry",
-  },
-  requestSummary: {
-    uk: "Оберіть напрям і зручний спосіб зв’язку. Форма одразу покаже відповідний платіжний маршрут.",
-    ru: "Выберите направление и удобный способ связи. Форма сразу покажет подходящий платежный маршрут.",
-    en: "Choose a direction and preferred contact method. The form immediately shows the matching payment route.",
-  },
-} as const
-
 const contactButtonClass =
   "h-auto min-h-11 w-full min-w-0 shrink justify-start overflow-hidden whitespace-normal px-4 text-left leading-5 sm:px-8"
 
@@ -88,20 +40,21 @@ type ContactDetails = {
 function ContactEntrypoints({
   details,
   externalLinkLabel,
-  locale,
+  labels,
 }: {
   details: ContactDetails
   externalLinkLabel: string
-  locale: Locale
+  labels: {
+    phone: string
+    email: string
+    viber: string
+    socials: string
+    direct: string
+  }
 }) {
   return (
-    <section
-      aria-label={contactEntryLabels.socials[locale]}
-      className="grid gap-5"
-    >
-      <h2 className="text-2xl font-medium md:text-3xl">
-        {contactEntryLabels.direct[locale]}
-      </h2>
+    <section aria-label={labels.socials} className="grid gap-5">
+      <h2 className="text-2xl font-medium md:text-3xl">{labels.direct}</h2>
       <div className="grid gap-3 sm:grid-cols-2">
         {details.phones.map((phone) => (
           <a
@@ -115,13 +68,13 @@ function ContactEntrypoints({
               })
             )}
           >
-            {contactEntryLabels.phone[locale]}: {phone}
+            {labels.phone}: {phone}
           </a>
         ))}
         {details.email && (
           <a
             href={`mailto:${details.email}`}
-            aria-label={`${contactEntryLabels.email[locale]}: ${details.email}`}
+            aria-label={`${labels.email}: ${details.email}`}
             title={details.email}
             className={cn(
               buttonVariants({
@@ -131,12 +84,8 @@ function ContactEntrypoints({
               })
             )}
           >
-            <span className="shrink-0">
-              {contactEntryLabels.email[locale]}:
-            </span>{" "}
-            <span className="min-w-0 truncate">
-              {details.email}
-            </span>
+            <span className="shrink-0">{labels.email}:</span>{" "}
+            <span className="min-w-0 truncate">{details.email}</span>
           </a>
         )}
         {details.viberUrl && (
@@ -150,7 +99,7 @@ function ContactEntrypoints({
               })
             )}
           >
-            {contactEntryLabels.viber[locale]}: {details.phones[0]}
+            {labels.viber}: {details.phones[0]}
           </a>
         )}
       </div>
@@ -172,9 +121,7 @@ function ContactEntrypoints({
           >
             {social.label}
             <ExternalLinkIcon aria-hidden="true" className="size-3.5" />
-            <span className="sr-only">
-              {externalLinkLabel}
-            </span>
+            <span className="sr-only">{externalLinkLabel}</span>
           </a>
         ))}
       </div>
@@ -259,7 +206,7 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
                 <Card className="min-w-0 border-border bg-background">
                   <CardHeader>
                     <CardTitle className="min-w-0 break-words">
-                      {contactEntryLabels.address[locale]}
+                      {settings.contactLabels.address}
                     </CardTitle>
                     <CardDescription className="min-w-0 break-words">
                       {settings.contacts.address}
@@ -272,7 +219,7 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
                 <Card className="min-w-0 border-border bg-background">
                   <CardHeader>
                     <CardTitle className="min-w-0 break-words">
-                      {contactEntryLabels.hours[locale]}
+                      {settings.contactLabels.hours}
                     </CardTitle>
                     <CardDescription className="min-w-0 break-words">
                       {settings.contacts.hours}
@@ -281,19 +228,19 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
                 </Card>
               </div>
               <ContactEntrypoints
-                locale={locale}
                 details={details}
                 externalLinkLabel={settings.uiLabels.externalLink}
+                labels={settings.contactLabels}
               />
             </div>
 
             <Card className="min-w-0 border-border bg-background">
               <CardHeader>
                 <CardTitle className="min-w-0 break-words">
-                  {contactEntryLabels.request[locale]}
+                  {settings.contactLabels.request}
                 </CardTitle>
                 <CardDescription className="min-w-0 break-words">
-                  {contactEntryLabels.requestSummary[locale]}
+                  {settings.contactLabels.requestSummary}
                 </CardDescription>
               </CardHeader>
               <CardContent className="border-t border-border pt-6">
@@ -301,6 +248,7 @@ export default async function ContactsPage({ params }: ContactsPageProps) {
                   locale={locale}
                   services={serviceOptions}
                   initialServiceSlug={serviceOptions[0]?.slug ?? ""}
+                  copy={settings.booking}
                 />
               </CardContent>
             </Card>

@@ -26,25 +26,6 @@ import type {
 import { localizePath, type Locale } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
-const menuLabel = {
-  uk: "Меню",
-  ru: "Меню",
-  en: "Menu",
-} as const
-
-const footerLabels = {
-  directions: {
-    uk: "Напрями",
-    ru: "Направления",
-    en: "Directions",
-  },
-  contacts: {
-    uk: "Контакти",
-    ru: "Контакты",
-    en: "Contacts",
-  },
-} as const
-
 function MenuToggleIcon({ open }: { open: boolean }) {
   return (
     <span className="relative flex size-6 items-center justify-center text-2xl">
@@ -127,6 +108,7 @@ function SiteHeaderClient({
     settingsData.contacts.actionLabel
   const brandName = settingsData.brandName
   const languageLabel = settingsData.uiLabels.language
+  const menuLabel = settingsData.uiLabels.menu
   const [menuOpen, setMenuOpen] = React.useState(false)
   const [menuClosing, setMenuClosing] = React.useState(false)
   const [isAtTop, setIsAtTop] = React.useState(true)
@@ -246,7 +228,7 @@ function SiteHeaderClient({
           >
             <Button
               type="button"
-              aria-label={menuLabel[locale]}
+              aria-label={menuLabel}
               aria-hidden={menuOpen || undefined}
               aria-controls="mobile-site-menu"
               aria-expanded={menuOpen}
@@ -292,11 +274,9 @@ function SiteHeaderClient({
                 >
                   <MenuToggleIcon open />
                 </SheetClose>
-                <SheetTitle className="sr-only">
-                  {brandName}
-                </SheetTitle>
+                <SheetTitle className="sr-only">{brandName}</SheetTitle>
                 <SheetDescription className="sr-only">
-                  {menuLabel[locale]}
+                  {menuLabel}
                 </SheetDescription>
               </SheetHeader>
               <div className="grid flex-1 content-start gap-10 overflow-y-auto px-6 pt-16 pb-8 opacity-100 transition-opacity delay-150 duration-150 group-data-ending-style/menu:opacity-0 group-data-ending-style/menu:delay-0 group-data-ending-style/menu:duration-100 group-data-starting-style/menu:opacity-0 group-data-[closing=true]/menu:opacity-0 group-data-[closing=true]/menu:delay-0 md:px-10">
@@ -399,11 +379,11 @@ function SiteFooterClient({
         </div>
 
         <nav
-          aria-label={footerLabels.directions[locale]}
+          aria-label={settingsData.uiLabels.footerDirections}
           className="grid min-w-0 content-start uppercase"
         >
           <p className="mb-6 font-semibold text-background">
-            {footerLabels.directions[locale]}
+            {settingsData.uiLabels.footerDirections}
           </p>
           {navigation.slice(0, 8).map((item) => (
             <ShellLink key={item.id} href={item.href}>
@@ -416,9 +396,7 @@ function SiteFooterClient({
           aria-label={brandName}
           className="grid min-w-0 content-start uppercase"
         >
-          <p className="mb-6 font-semibold text-background">
-            {brandName}
-          </p>
+          <p className="mb-6 font-semibold text-background">{brandName}</p>
           {footerNavigation.map((item) => (
             <ShellLink key={item.id} href={item.href}>
               {item.label}
@@ -428,7 +406,7 @@ function SiteFooterClient({
 
         <div className="grid min-w-0 content-start uppercase">
           <p className="mb-6 font-semibold text-background">
-            {footerLabels.contacts[locale]}
+            {settingsData.uiLabels.footerContacts}
           </p>
           {phones.map((phone) => (
             <a

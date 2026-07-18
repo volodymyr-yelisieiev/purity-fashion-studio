@@ -3,7 +3,11 @@ import { notFound } from "next/navigation"
 
 import { SiteFooter, SiteHeader } from "@/components/cms-site-shell"
 import { getLocalizedMetadata } from "@/content/metadata"
-import { getPageBySlug, getPublishedServices } from "@/content/public-api"
+import {
+  getPageBySlug,
+  getPublishedServices,
+  getSiteSettings,
+} from "@/content/public-api"
 import { EditorialHero } from "@/components/purity"
 import {
   Card,
@@ -60,7 +64,10 @@ export default async function BookingPage({
   }
 
   const locale: Locale = rawLocale
-  const page = await getPageBySlug(locale, "booking")
+  const [page, settings] = await Promise.all([
+    getPageBySlug(locale, "booking"),
+    getSiteSettings(locale),
+  ])
 
   if (!page) {
     notFound()
@@ -139,6 +146,7 @@ export default async function BookingPage({
                   services={serviceOptions}
                   initialServiceSlug={initialServiceSlug ?? ""}
                   initialOfferId={requestedOfferId}
+                  copy={settings.booking}
                 />
               </CardContent>
             </Card>
