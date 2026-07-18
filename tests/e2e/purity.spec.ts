@@ -45,6 +45,20 @@ const utilityRoutes = new Set([
   "/uk/styleguide",
 ])
 
+test("Payload admin renders the first-owner bootstrap", async ({ page }) => {
+  const response = await page.goto("/admin/create-first-user", {
+    waitUntil: "domcontentloaded",
+  })
+
+  expect(response?.ok()).toBe(true)
+  await expect(page.getByRole("heading", { name: "Welcome" })).toBeVisible()
+  await expect(
+    page.getByText("To begin, create your first user.")
+  ).toBeVisible()
+  await expect(page.getByLabel("Email Address")).toBeVisible()
+  await expect(page.getByLabel("New Password")).toBeVisible()
+})
+
 test("single theme ignores OS and persisted dark preferences", async ({
   browser,
 }) => {

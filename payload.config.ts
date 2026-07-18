@@ -69,6 +69,32 @@ const payloadSecret =
   process.env.PAYLOAD_SECRET ??
   "cms-disabled-build-only-secret-replace-before-runtime-use"
 
+function vercelDeploymentURL() {
+  const deploymentURL = process.env.VERCEL_URL?.trim()
+  if (!deploymentURL) return undefined
+
+  try {
+    return new URL(
+      deploymentURL.startsWith("http")
+        ? deploymentURL
+        : `https://${deploymentURL}`
+    ).origin
+  } catch {
+    return undefined
+  }
+}
+
+const previewDeploymentURL =
+  process.env.VERCEL_ENV === "preview" ? vercelDeploymentURL() : undefined
+const siteURL =
+  previewDeploymentURL ??
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  process.env.NEXT_PUBLIC_PAYLOAD_URL ??
+  "http://localhost:3000"
+const payloadURL =
+  previewDeploymentURL ?? process.env.NEXT_PUBLIC_PAYLOAD_URL ?? siteURL
+const allowedOrigins = [...new Set([siteURL, payloadURL])]
+
 function secureDatabaseURL(value: string): string {
   const url = new URL(value)
 
@@ -112,8 +138,7 @@ function getPublicURL({
 }
 
 function getPreviewURL(args: Parameters<typeof getPublicURL>[0]): string {
-  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-  const url = new URL("/api/preview", origin)
+  const url = new URL("/api/preview", siteURL)
   url.searchParams.set("secret", process.env.PREVIEW_SECRET ?? "disabled")
   url.searchParams.set("path", getPublicURL(args))
   return url.toString()
@@ -164,14 +189,8 @@ export default buildConfig({
     PaymentOrders,
     WebhookEvents,
   ],
-  cors: [
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-    process.env.NEXT_PUBLIC_PAYLOAD_URL ?? "http://localhost:3000",
-  ],
-  csrf: [
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-    process.env.NEXT_PUBLIC_PAYLOAD_URL ?? "http://localhost:3000",
-  ],
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
   db: postgresAdapter({
     idType: "uuid",
     migrationDir: path.resolve(dirname, "payload/migrations"),
@@ -225,9 +244,7 @@ export default buildConfig({
           doc,
           locale,
         })
-        const origin =
-          process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-        return new URL(relativeURL, origin).toString()
+        return new URL(relativeURL, siteURL).toString()
       },
       globals: ["home"],
       tabbedUI: true,
@@ -262,10 +279,7 @@ export default buildConfig({
     }),
   ],
   secret: payloadSecret,
-  serverURL:
-    process.env.NEXT_PUBLIC_PAYLOAD_URL ??
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    "http://localhost:3000",
+  serverURL: payloadURL,
   sharp,
   telemetry: false,
   upload: {
