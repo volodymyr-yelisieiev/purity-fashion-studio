@@ -334,6 +334,9 @@ async function updateGlobalLocalized(
       locale,
       overrideAccess: true,
       publishAllLocales: publish,
+      // Global drafts use one publication status. Publish the imported locale
+      // without replacing localized fields inside navigation array rows.
+      publishSpecificLocale: locale,
     } as never)
   }
   increment(`${slug}:updated`)
