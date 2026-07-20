@@ -37,7 +37,9 @@ export async function POST(request: Request) {
   const result = await payload.find({
     collection: "payment-orders",
     depth: 0,
-    limit: 100,
+    // Process a full scheduled batch so a short-lived backlog does not take
+    // several days to drain. The query remains bounded for provider safety.
+    limit: 1000,
     overrideAccess: true,
     pagination: false,
     sort: "nextReconcileAt",

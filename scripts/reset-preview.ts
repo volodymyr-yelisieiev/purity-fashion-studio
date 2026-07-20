@@ -23,5 +23,5 @@ function run(command: string, args: string[]) {
   }
 }
 
-run("pnpm", ["payload", "migrate:fresh", "--force-accept-warning"])
 run("pnpm", ["tsx", "scripts/reset-preview-blob.ts", "--confirm=RESET_PREVIEW"])
+run("pnpm", ["payload", "migrate:fresh", "--force-accept-warning"])

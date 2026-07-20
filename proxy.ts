@@ -2,6 +2,7 @@ import createMiddleware from "next-intl/middleware"
 import { NextResponse, type NextRequest } from "next/server"
 
 import { routing } from "./i18n/routing"
+import { getPayloadURL } from "./lib/site-url"
 
 const handleI18n = createMiddleware(routing)
 
@@ -38,13 +39,13 @@ function referencePath(document: RedirectDocument, locale: string) {
   return prefix === undefined ? null : `/${locale}${prefix}/${slug}`
 }
 
-async function getRedirects(request: NextRequest) {
+async function getRedirects() {
   if (process.env.PAYLOAD_ENABLED !== "true") return []
   if (redirectCache && redirectCache.expiresAt > Date.now()) {
     return redirectCache.documents
   }
   try {
-    const url = new URL("/api/redirects", request.url)
+    const url = new URL("/api/redirects", getPayloadURL())
     url.searchParams.set("depth", "1")
     url.searchParams.set("limit", "1000")
     url.searchParams.set("pagination", "false")
@@ -63,7 +64,7 @@ async function getRedirects(request: NextRequest) {
 }
 
 export default async function proxy(request: NextRequest) {
-  const documents = await getRedirects(request)
+  const documents = await getRedirects()
   const bySource = new Map(documents.map((item) => [item.from, item]))
   let document = bySource.get(request.nextUrl.pathname)
 
@@ -85,8 +86,9 @@ export default async function proxy(request: NextRequest) {
         next.to?.type === "custom" ? next.to.url : referencePath(next, locale)
     }
 
-    if (destination?.startsWith("/")) {
+    if (destination?.startsWith("/") && !destination.startsWith("//")) {
       const target = new URL(destination, request.url)
+      if (target.origin !== request.nextUrl.origin) return handleI18n(request)
       if (!target.search && request.nextUrl.search) {
         target.search = request.nextUrl.search
       }
