@@ -1509,7 +1509,7 @@ test("page-ticket routes stay responsive across required widths", async ({
         /Noto Serif/
       )
       expect(metrics.headerLogoSrc, `${viewport.name} ${route}`).toContain(
-        isStyleguide ? "wordmark-black.png" : "wordmark-white.png"
+        "wordmark-black.png"
       )
       expect(metrics.headerLogoTransform, `${viewport.name} ${route}`).toBe(
         "none"
