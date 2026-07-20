@@ -184,7 +184,8 @@ function SiteHeaderClient({
         >
           <BrandLogo
             locale={locale}
-            variant={lightHeader ? "reversedWordmark" : "wordmark"}
+            variant="wordmark"
+            className={lightHeader ? "brightness-0 invert" : undefined}
             priority
           />
         </Link>
@@ -257,7 +258,7 @@ function SiteHeaderClient({
               ref={menuContentRef}
               initialFocus={menuContentRef}
               data-closing={menuClosing || undefined}
-              className="group/menu inset-0 size-full overscroll-contain border-0 shadow-none transition-[clip-path] duration-300 ease-out [clip-path:circle(150vmax_at_calc(100%_-_2.875rem)_2.375rem)] data-ending-style:[clip-path:circle(0_at_calc(100%_-_2.875rem)_2.375rem)] data-starting-style:[clip-path:circle(0_at_calc(100%_-_2.875rem)_2.375rem)] data-[side=right]:left-0 data-[side=right]:w-full data-[side=right]:max-w-none data-[side=right]:border-0 data-[side=right]:data-ending-style:translate-x-0 data-[side=right]:data-starting-style:translate-x-0 sm:size-full sm:max-w-none"
+              className="group/menu inset-0 size-full overscroll-contain border-0 shadow-none transition-[clip-path] duration-300 ease-out [clip-path:circle(150vmax_at_calc(100%_-_2.875rem)_2.375rem)] data-ending-style:[clip-path:circle(0_at_calc(100%_-_2.875rem)_2.375rem)] data-starting-style:[clip-path:circle(0_at_calc(100%_-_2.875rem)_2.375rem)] data-[side=right]:left-0 data-[side=right]:w-full data-[side=right]:max-w-none data-[side=right]:border-0 data-[side=right]:data-ending-style:translate-x-0 data-[side=right]:data-starting-style:translate-x-0 sm:size-full sm:max-w-none data-[side=right]:sm:max-w-none"
               showCloseButton={false}
               side="right"
             >
@@ -291,13 +292,13 @@ function SiteHeaderClient({
                 <nav
                   aria-label={brandName}
                   data-testid="mobile-navigation"
-                  className="grid font-heading text-3xl leading-none uppercase"
+                  className="grid justify-items-center text-center font-heading text-3xl leading-none uppercase"
                 >
                   {primaryNavigation.slice(0, 8).map((item) => (
                     <ShellLink
                       key={item.id}
                       href={item.href}
-                      className="min-h-14 py-2"
+                      className="min-h-14 w-full justify-center py-2"
                     >
                       {item.label}
                     </ShellLink>

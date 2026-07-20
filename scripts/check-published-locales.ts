@@ -70,7 +70,7 @@ function missingLocale(value: unknown): string[] {
           if (!item || typeof item !== "object") return !hasContent(item)
           const localizedItem = item as Record<string, unknown>
           return !hasContent(
-            locales.every((candidate) => candidate in localizedItem)
+            locales.some((candidate) => candidate in localizedItem)
               ? localizedItem[locale]
               : item
           )
