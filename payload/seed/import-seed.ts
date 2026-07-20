@@ -309,10 +309,6 @@ async function upsertLocalized({
       locale,
       overrideAccess: true,
       publishAllLocales: publish,
-      // Global drafts use a single publication status. Merge the locale being
-      // imported into the current published version so array children retain
-      // their UK/RU/EN values instead of the last locale replacing them.
-      publishSpecificLocale: locale,
     } as never)
   }
 
