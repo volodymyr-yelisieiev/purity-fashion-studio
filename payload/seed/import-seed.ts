@@ -326,10 +326,15 @@ async function updateGlobalLocalized(
     return
   }
 
+  const publicationStatus = drafts && publish ? { _status: "published" } : {}
+
   for (const locale of locales) {
     await payload.updateGlobal({
       slug,
-      data: mergeGlobalData(common, localizedData[locale]),
+      data: {
+        ...mergeGlobalData(common, localizedData[locale]),
+        ...publicationStatus,
+      },
       draft: drafts ? !publish : undefined,
       locale,
       overrideAccess: true,
