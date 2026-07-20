@@ -78,7 +78,8 @@ jobs:
           case "$OPERATION" in
             verify)
               test "$CONFIRMATION" = "VERIFY_${TARGET^^}"
-              pnpm cms:verify
+              pnpm cms:verify -- --target="$TARGET"
+              pnpm cms:locales
               ;;
             migrate)
               test "$CONFIRMATION" = "MIGRATE_${TARGET^^}"
@@ -89,11 +90,13 @@ jobs:
               test "$CONFIRMATION" = "BOOTSTRAP_${TARGET^^}"
               pnpm payload:migrate
               pnpm cms:bootstrap -- --target="$TARGET" "--confirm=$CONFIRMATION"
+              pnpm cms:locales
               ;;
             restore)
               test "$CONFIRMATION" = "RESTORE_${TARGET^^}"
               pnpm payload:migrate
               pnpm cms:restore -- --target="$TARGET" "--confirm=$CONFIRMATION" --force --refresh-media
+              pnpm cms:locales
               ;;
             reset-preview)
               test "$TARGET" = preview

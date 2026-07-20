@@ -29,6 +29,12 @@ if (target === "preview" || target === "production") {
   assertTargetResourceIdentity(target)
 }
 
+if (verifyOnly && !["local", "preview", "production"].includes(target ?? "")) {
+  throw new Error(
+    "CMS verification requires --target=local|preview|production so resource identity can be checked."
+  )
+}
+
 if (
   !dryRun &&
   !verifyOnly &&
@@ -328,10 +334,6 @@ async function updateGlobalLocalized(
       locale,
       overrideAccess: true,
       publishAllLocales: publish,
-      // Global drafts use a single publication status. Merge the locale being
-      // imported into the current published version so array children retain
-      // their UK/RU/EN values instead of the last locale replacing them.
-      publishSpecificLocale: locale,
     } as never)
   }
   increment(`${slug}:updated`)
@@ -1628,22 +1630,24 @@ async function verifyPublishedContent() {
   for (const [collection, minimum] of Object.entries(expected) as Array<
     [CollectionSlug, number]
   >) {
-    const result = await payload.find({
-      collection,
-      depth: 0,
-      draft: false,
-      fallbackLocale: false,
-      limit: 1000,
-      locale: "uk",
-      overrideAccess: false,
-      pagination: false,
-      select: { id: true },
-    } as never)
+    for (const locale of locales) {
+      const result = await payload.find({
+        collection,
+        depth: 0,
+        draft: false,
+        fallbackLocale: false,
+        limit: 1000,
+        locale,
+        overrideAccess: false,
+        pagination: false,
+        select: { id: true },
+      } as never)
 
-    if (result.docs.length < minimum) {
-      throw new Error(
-        `Published ${collection} mismatch: expected at least ${minimum}, found ${result.docs.length}.`
-      )
+      if (result.docs.length < minimum) {
+        throw new Error(
+          `Published ${collection} mismatch for ${locale}: expected at least ${minimum}, found ${result.docs.length}.`
+        )
+      }
     }
 
     increment(`${collection}:published`)

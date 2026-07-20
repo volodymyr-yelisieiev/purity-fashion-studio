@@ -338,10 +338,12 @@ export async function submitBooking(
       }
     }
 
-    const forwardedIP = requestHeaders.get("x-forwarded-for")?.split(",")[0]
+    // Vercel's x-real-ip is set at the trusted ingress boundary. Do not use
+    // the left-most X-Forwarded-For value: callers can supply that header.
+    const clientIP = requestHeaders.get("x-real-ip")?.trim() || "unknown"
     const fingerprint = createHmac("sha256", env.PAYLOAD_SECRET ?? "disabled")
       .update(
-        `${forwardedIP ?? "unknown"}|${requestHeaders.get("user-agent") ?? "unknown"}`
+        `${clientIP}|${requestHeaders.get("user-agent") ?? "unknown"}`
       )
       .digest("hex")
     const recent = await payload.count({
