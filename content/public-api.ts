@@ -1794,7 +1794,7 @@ async function findPayloadHeader(locale: Locale, draft: boolean) {
   return {
     navigation:
       header.navigation?.map((item) => ({
-        label: item.label,
+        label: item.label ?? item.path,
         path: item.path,
         visible: item.visible,
         external: item.external,
@@ -1850,7 +1850,7 @@ async function findPayloadFooter(locale: Locale, draft: boolean) {
       })) ?? [],
     legalNavigation:
       footer.legalNavigation?.map((item) => ({
-        label: item.label,
+        label: item.label ?? item.path,
         path: item.path,
       })) ?? [],
     copyright: footer.copyright,
